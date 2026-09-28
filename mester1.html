@@ -117,9 +117,11 @@
             display: none;
             align-items: center;
             gap: 6px;
+        }
+        .autosave-bar.show {
+            display: flex;
             animation: slideIn 0.3s ease;
         }
-        .autosave-bar.show { display: flex; }
         .autosave-bar .dot {
             width: 8px;
             height: 8px;
@@ -542,18 +544,18 @@
         const subjectsData = {
             'KG1': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
             'KG2': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
-            
+
             'الأول الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
             'الثاني الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
             'الثالث الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية'],
             'الرابع الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الخامس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'السادس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            
+
             'الأول الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الثاني الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الثالث الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            
+
             'الأول الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'فلسفة ومنطق'],
             'الثاني الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا'],
             'الثالث الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا', 'إحصاء']
@@ -606,6 +608,7 @@
                     }
                 }
                 localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                console.log('💾 تم الحفظ:', finalData);
                 showAutosaveBar();
             } catch(e) {
                 console.error('خطأ في الحفظ التلقائي:', e);
@@ -615,8 +618,12 @@
         function restoreMester1() {
             try {
                 const raw = localStorage.getItem(MESTER1_SAVE_KEY);
-                if (!raw) return false;
+                if (!raw) {
+                    console.log('📭 لا يوجد حفظ سابق');
+                    return false;
+                }
                 const saved = JSON.parse(raw);
+                console.log('📂 الحفظ الموجود:', saved);
 
                 let hasAny = false;
 
@@ -643,21 +650,25 @@
                     // رسم المواد (بدون فتح تلقائي)
                     renderSubjects(grade, stageId, false);
 
-                    // تفعيل المواد المختارة
+                    // تفعيل المواد المختارة بعد الرسم
                     setTimeout(() => {
                         document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
-                            const subjName = btn.textContent.trim().replace('✓ ', '').replace('✓', '').trim();
+                            // استخراج اسم المادة بدون علامة ✓
+                            const subjName = btn.textContent.replace('✓', '').trim();
                             if (subjects.includes(subjName)) {
                                 btn.classList.add('selected');
                             }
                         });
-                    }, 50);
+                    }, 100);
 
                     // رسم الشارات
                     renderBadges(stageId);
                 });
 
-                if (hasAny) updateSummary();
+                if (hasAny) {
+                    updateSummary();
+                    console.log('✅ تم استرجاع الاختيارات');
+                }
                 return hasAny;
             } catch(e) {
                 console.error('خطأ في استرجاع الحفظ:', e);
@@ -678,7 +689,7 @@
         }
 
         // =========================================
-        // اختيار الصف
+        // ✅ اختيار الصف - مع حفظ تلقائي
         // =========================================
         function selectGrade(gradeName, stageId, btn) {
             const currentGrade = selections[stageId].grade;
@@ -746,7 +757,7 @@
         }
 
         // =========================================
-        // اختيار / إلغاء مادة
+        // ✅ اختيار / إلغاء مادة - مع حفظ تلقائي
         // =========================================
         function toggleSubject(btn, subjectName, stageId, gradeName) {
             const isSelected = selections[stageId].subjects.includes(subjectName);
@@ -877,13 +888,15 @@
         // ✅✅✅ تشغيل عند تحميل الصفحة ✅✅✅
         // =========================================
         window.addEventListener('DOMContentLoaded', function() {
-            // استرجاع الاختيارات المحفوظة
+            console.log('🚀 mester1 تحميل');
+
+            // ✅ استرجاع الاختيارات المحفوظة
             const restored = restoreMester1();
             if (restored) {
                 console.log('✅ تم استرجاع اختيارات mester1');
             }
 
-            // إعداد الحفظ عند مغادرة الصفحة
+            // ✅ الحفظ عند مغادرة الصفحة
             window.addEventListener('beforeunload', function() {
                 try {
                     const finalData = {};
@@ -897,11 +910,10 @@
                 } catch(e) {}
             });
 
-            // إعداد الحفظ عند الرجوع (BFCache)
+            // ✅ استرجاع عند الرجوع (BFCache)
             window.addEventListener('pageshow', function(e) {
                 if (e.persisted) {
-                    // الصفحة رجعت من cache
-                    // نتأكد إن الاختيارات محدثة
+                    console.log('🔄 الرجوع من cache');
                     restoreMester1();
                 }
             });
