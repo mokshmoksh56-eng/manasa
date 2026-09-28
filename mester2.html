@@ -114,8 +114,70 @@
     .time-slot.locked .btn-save-slot { display: none; }
     .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
     .btn-remove-slot:hover { background: #c82333; }
-    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-add-slot:hover { background: #2b5c9e; color: white; }
+
+    /* 🎯 زر إضافة موعد جديد - أخضر 3D بارز */
+    .btn-add-slot {
+        background: linear-gradient(180deg, #2ecc71 0%, #27ae60 50%, #229954 100%);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 900;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 
+            0 6px 0 #1e7e34,
+            0 8px 15px rgba(39, 174, 96, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-add-slot::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-add-slot:hover {
+        background: linear-gradient(180deg, #3ddc84 0%, #2ecc71 50%, #27ae60 100%);
+        box-shadow: 
+            0 6px 0 #1e7e34,
+            0 12px 22px rgba(39, 174, 96, 0.55),
+            inset 0 1px 0 rgba(255,255,255,0.4);
+        transform: translateY(-1px);
+    }
+
+    .btn-add-slot:hover::before {
+        left: 100%;
+    }
+
+    .btn-add-slot:active {
+        transform: translateY(5px);
+        box-shadow: 
+            0 1px 0 #1e7e34,
+            0 3px 8px rgba(39, 174, 96, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .btn-add-slot .plus-icon {
+        font-size: 18px;
+        font-weight: 900;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
 
     .slot-range {
         background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
@@ -239,12 +301,8 @@
         cursor: grabbing;
     }
 
-    .monthly-grid-wrapper.swipe-left {
-        animation: swipeLeft 0.35s ease;
-    }
-    .monthly-grid-wrapper.swipe-right {
-        animation: swipeRight 0.35s ease;
-    }
+    .monthly-grid-wrapper.swipe-left { animation: swipeLeft 0.35s ease; }
+    .monthly-grid-wrapper.swipe-right { animation: swipeRight 0.35s ease; }
 
     @keyframes swipeLeft {
         0% { transform: translateX(0); opacity: 1; }
@@ -282,12 +340,29 @@
     .monthly-head-cell { padding: 12px 6px; text-align: center; font-weight: 900; font-size: 13px; color: white; border-left: 1px solid rgba(255,255,255,0.15); }
     .monthly-head-cell.friday { color: #f1c40f; }
 
-    .monthly-body { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e4e8; gap: 1px; }
+    /* 🎯 الجدول بيكبر تلقائياً حسب المحتوى */
+    .monthly-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #e0e4e8;
+        gap: 1px;
+        /* 🎯 كل صف ياخد ارتفاعه الأدنى 90px ويكبر تلقائياً */
+        grid-auto-rows: minmax(90px, auto);
+        align-items: stretch;
+    }
 
     .monthly-day {
-        background: #fff; min-height: 130px; padding: 6px;
-        display: flex; flex-direction: column; gap: 3px;
-        transition: 0.2s; position: relative; overflow: hidden; cursor: pointer;
+        background: #fff;
+        min-height: 90px;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        transition: 0.2s;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        height: auto;
     }
     .monthly-day:hover { background: #f8fafc; }
     .monthly-day.other-month { background: #f8fafc; opacity: 0.55; cursor: default; }
@@ -295,7 +370,6 @@
     .monthly-day.friday { background: #fef9f3; }
     .monthly-day.other-month.friday { background: #f8fafc; }
 
-    /* 🎯 الأيام اللي فاتت (رمادي باهت) */
     .monthly-day.past-day {
         background: #f1f5f9 !important;
         opacity: 0.65;
@@ -332,14 +406,28 @@
         background: #94a3b8;
     }
 
-    .day-sessions { display: flex; flex-direction: column; gap: 3px; flex: 1; overflow: hidden; }
+    .day-sessions { display: flex; flex-direction: column; gap: 3px; flex: 1; }
 
+    /* 🎯 الحصة بتبان أوضح */
     .day-session-chip {
         background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        color: white; font-size: 10px; font-weight: bold; padding: 3px 6px;
-        border-radius: 5px; border-right: 3px solid #f1c40f;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        direction: ltr; text-align: center; transition: 0.2s;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 4px 6px;
+        border-radius: 5px;
+        border-right: 3px solid #f1c40f;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: ltr;
+        text-align: center;
+        transition: 0.2s;
+        line-height: 1.4;
+        min-height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .day-session-chip.past { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); border-right-color: #475569; opacity: 0.75; }
 
@@ -383,9 +471,9 @@
     @media (max-width: 700px) {
         .header-3d h1 { font-size: 22px; }
         .view-tab { font-size: 12px; padding: 10px 6px; min-width: 0; }
-        .monthly-day { min-height: 85px; padding: 4px; }
+        .monthly-day { min-height: 75px; padding: 4px; }
         .day-num { font-size: 12px; }
-        .day-session-chip { font-size: 9px; padding: 2px 4px; }
+        .day-session-chip { font-size: 9px; padding: 3px 4px; min-height: 18px; }
         .month-nav-title .month-name { font-size: 17px; }
         .month-nav-btn { padding: 6px 10px; font-size: 12px; }
         .monthly-head-cell { font-size: 11px; padding: 10px 4px; }
@@ -394,6 +482,7 @@
         .day-title { flex-direction: column; align-items: flex-start; gap: 4px; }
         .day-date { font-size: 11px; padding: 3px 8px; }
         .swipe-hint { font-size: 11px; }
+        .monthly-body { grid-auto-rows: minmax(75px, auto); }
     }
 
     @media (max-width: 600px) {
@@ -808,7 +897,10 @@
                     </div>
                     <div class="day-body" id="body-${day.id}" onclick="event.stopPropagation()">
                         <div class="slots-container" id="slots-${day.id}"></div>
-                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">➕ إضافة موعد جديد</button>
+                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">
+                            <span class="plus-icon">➕</span>
+                            <span>إضافة موعد جديد</span>
+                        </button>
                     </div>
                 </div>
             `;
@@ -1133,7 +1225,6 @@
         const todayDate = today.getDate();
         const todayDateOnly = new Date(todayYear, todayMonth, todayDate);
 
-        // 🎯 هل الشهر المعروض هو الشهر الحالي الفعلي؟
         const isCurrentMonthView = (currentYear === todayYear && currentMonth === todayMonth);
 
         let html = '';
@@ -1170,12 +1261,10 @@
             
             const isFriday = cellJsDay === 5;
             
-            // 🎯 النهاردة لازم يكون في نفس الشهر المعروض
             const isTodayCell = isCurrentMonthView && 
                                 actualDateObj.getDate() === todayDate &&
                                 !isOtherMonth;
             
-            // 🎯 اليوم فات لو كان قبل النهاردة، ومش في شهر تاني
             const cellDateOnly = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate());
             const isPastDay = cellDateOnly < todayDateOnly && !isOtherMonth;
 
@@ -1190,14 +1279,12 @@
             html += `<div class="day-sessions">`;
             if (matchingSessions.length > 0 && !isOtherMonth) {
                 const now = new Date();
-                matchingSessions.slice(0, 3).forEach(sess => {
+                // 🎯 عرض كل الحصص (الجدول هيكبر تلقائياً)
+                matchingSessions.forEach(sess => {
                     const sessDateTime = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate(), Math.floor(sess.startMin / 60), sess.startMin % 60);
                     const isPast = sessDateTime < now;
                     html += `<div class="day-session-chip ${isPast ? 'past' : ''}" dir="ltr">${sess.start}</div>`;
                 });
-                if (matchingSessions.length > 3) {
-                    html += `<div class="day-more">+${matchingSessions.length - 3} أخرى</div>`;
-                }
             }
             html += `</div>`;
             html += `</div>`;
