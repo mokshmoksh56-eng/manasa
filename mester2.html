@@ -44,10 +44,12 @@
     .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
     
     .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
+    /* 🎯 الإطار الأزرق بس لما يكون فيه مواعيد محفوظة */
     .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
     
     .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
-    .day-card.active .day-header { background: #e3f2fd; }
+    /* 🎯 خلفية الهيدر بتتغير عند الفتح فقط */
+    .day-card.expanded .day-header { background: #e3f2fd; }
     
     .day-title { display: flex; align-items: center; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; }
     
@@ -70,7 +72,6 @@
         max-width: 100%;
         justify-content: center;
     }
-    .day-card.active .day-status { background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3); }
     
     .session-pill {
         display: inline-flex;
@@ -95,7 +96,6 @@
 
     .expand-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 50%; color: #1a3c6d; font-size: 12px; transition: 0.3s; flex-shrink: 0; }
     .day-card.expanded .expand-icon { transform: rotate(180deg); }
-    .day-card.active .expand-icon { background: rgba(43,92,158,0.1); color: #2b5c9e; }
 
     .day-body { display: none; padding: 15px 20px; border-top: 1px solid #e0e4e8; background: #fff; }
     .day-card.expanded .day-body { display: block; animation: slideDown 0.3s ease; }
@@ -436,21 +436,38 @@
         });
     }
 
-    // طي وفتح التفاصيل
+    // ==========================================
+    // 🎯 فتح/طي اليوم - بدون تفعيل تلقائي
+    // ==========================================
     function toggleDayExpand(dayId) {
         const card = document.getElementById(`card-${dayId}`);
-        const isActive = card.classList.contains('active');
-        
-        if (!isActive) {
-            card.classList.add('active');
+        const isExpanded = card.classList.contains('expanded');
+
+        if (!isExpanded) {
             const slotsContainer = document.getElementById(`slots-${dayId}`);
             if (slotsContainer.children.length === 0) {
                 addSlot(dayId);
             }
         }
-        
+
         card.classList.toggle('expanded');
         updateDayStatusDisplay(dayId);
+    }
+
+    // ==========================================
+    // 🎯 التحقق من تفعيل اليوم (لو فيه مواعيد محفوظة)
+    // ==========================================
+    function checkDayActive(dayId) {
+        const card = document.getElementById(`card-${dayId}`);
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const hasSaved = Array.from(slotsContainer.querySelectorAll('.time-slot'))
+            .some(slot => slot.querySelector('.btn-save-slot').classList.contains('saved'));
+        
+        if (hasSaved) {
+            card.classList.add('active');
+        } else {
+            card.classList.remove('active');
+        }
     }
 
     // 🎯 إضافة موعد جديد
@@ -530,7 +547,9 @@
         };
     }
 
-    // 🎯 حفظ الموعد مع قفل القوائم
+    // ==========================================
+    // 🎯 حفظ الموعد - يفعل اليوم تلقائياً
+    // ==========================================
     function saveSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
@@ -576,11 +595,16 @@
         saveBtn.classList.add('saved');
         slot.classList.add('locked');
         
+        // 🎯 تفعيل اليوم تلقائياً عند حفظ أول موعد
+        document.getElementById(`card-${dayId}`).classList.add('active');
+        
         updateDayStatusDisplay(dayId);
         alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير.");
     }
 
+    // ==========================================
     // 🎯 تعديل موعد مقفول
+    // ==========================================
     function editSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
@@ -589,6 +613,8 @@
         const saveBtn = slot.querySelector('.btn-save-slot');
         saveBtn.classList.remove('saved');
         
+        // 🎯 لو فاضل مواعيد محفوظة تانية في اليوم، اليوم يفضل مفعّل
+        checkDayActive(dayId);
         updateDayStatusDisplay(dayId);
     }
 
@@ -601,13 +627,12 @@
     }
 
     // ==========================================
-    // 🎯 حذف موعد مع رسالة تأكيد
+    // 🎯 حذف موعد - يلغي تفعيل اليوم لو مفيش مواعيد
     // ==========================================
     function removeSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
         
-        // 🎯 الحصول على تفاصيل الموعد لعرضها في الرسالة
         const startTime = readTime(slot, 'start');
         const endTime = readTime(slot, 'end');
         const saveBtn = slot.querySelector('.btn-save-slot');
@@ -621,20 +646,19 @@
             confirmMessage = `⚠️ هذا الموعد لم يتم حفظه بعد.\n\nهل أنت متأكد من إلغائه؟`;
         }
         
-        // 🎯 عرض رسالة التأكيد
         if (confirm(confirmMessage)) {
             slot.remove();
+            // 🎯 التحقق من تفعيل اليوم بعد الحذف
+            checkDayActive(dayId);
             updateDayStatusDisplay(dayId);
         }
     }
 
     // ==========================================
-    // 🎯 تحديث الحالة - الحصص مرتبة زمنيًا
+    // 🎯 تحديث الحالة - الأخضر بس لو فيه مواعيد محفوظة
     // ==========================================
     function updateDayStatusDisplay(dayId) {
         const statusText = document.getElementById(`status-${dayId}`);
-        const card = document.getElementById(`card-${dayId}`);
-        const isActive = card.classList.contains('active');
         
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const timeSlots = slotsContainer.querySelectorAll('.time-slot');
@@ -660,28 +684,23 @@
 
         sessions.sort((a, b) => a.startMin - b.startMin);
 
-        if (isActive) {
+        // 🎯 الأخضر بس لو فيه مواعيد محفوظة فعلاً
+        if (sessions.length > 0) {
             statusText.style.background = "#28a745";
             statusText.style.color = "white";
             statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
             
-            if (sessions.length > 0) {
-                let pillsHTML = sessions.map((s, i) => 
-                    `<span class="session-pill">
-                        <span class="session-num">${i + 1}</span>
-                        <span dir="ltr">${s.start} - ${s.end}</span>
-                    </span>`
-                ).join('');
-                
-                statusText.innerHTML = pillsHTML;
-            } else {
-                statusText.innerHTML = `0 حصة`;
-            }
+            statusText.innerHTML = sessions.map((s, i) => 
+                `<span class="session-pill">
+                    <span class="session-num">${i + 1}</span>
+                    <span dir="ltr">${s.start} - ${s.end}</span>
+                </span>`
+            ).join('');
         } else {
             statusText.style.background = "#e0e4e8";
             statusText.style.color = "#666";
             statusText.style.boxShadow = "none";
-            statusText.innerHTML = `${sessions.length} حصة`;
+            statusText.innerHTML = `0 حصة`;
         }
     }
 
