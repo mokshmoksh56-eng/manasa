@@ -8,6 +8,36 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
+    /* 🎯 شريط "آخر حفظ" */
+    .last-save-bar {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(43, 92, 158, 0.95);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: bold;
+        z-index: 9998;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+    .last-save-bar.show { display: flex; }
+    .last-save-bar .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #2ecc71;
+        animation: pulseDot 1.5s infinite;
+    }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
     .header-3d {
         width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat;
         padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f;
@@ -44,45 +74,77 @@
     .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .view-tab.active { background: #2b5c9e; color: white; box-shadow: 0 4px 12px rgba(43,92,158,0.3); }
 
+    .week-nav {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        border-radius: 12px; padding: 12px 16px; color: white;
+        box-shadow: 0 6px 15px rgba(43,92,158,0.25);
+    }
+    .week-nav-btn {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.25);
+        color: white; width: 45px; height: 45px;
+        border-radius: 50%; font-weight: 900; font-size: 22px;
+        cursor: pointer; transition: 0.2s;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0; line-height: 1; flex-shrink: 0;
+    }
+    .week-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
+    .week-nav-btn:active { transform: scale(0.95); }
+    .week-nav-title { text-align: center; flex: 1; }
+    .week-nav-title .week-label { font-size: 12px; opacity: 0.85; display: block; margin-bottom: 3px; font-weight: bold; letter-spacing: 0.5px; }
+    .week-nav-title .week-range { font-size: 18px; font-weight: 900; color: #f1c40f; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; direction: ltr; }
+    .week-nav-title .week-range .week-num-badge { background: rgba(241,196,15,0.25); border: 1px solid rgba(241,196,15,0.5); color: #f1c40f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; direction: rtl; }
+    .week-nav-title .week-status { font-size: 11px; margin-top: 3px; display: inline-block; padding: 2px 10px; border-radius: 8px; font-weight: 900; }
+    .week-nav-title .week-status.current { background: rgba(40,167,69,0.3); color: #2ecc71; }
+    .week-nav-title .week-status.past { background: rgba(148,163,184,0.3); color: #cbd5e1; }
+    .week-nav-title .week-status.future { background: rgba(241,196,15,0.3); color: #f1c40f; }
+
+    .week-today-wrapper { text-align: center; margin-bottom: 15px; }
+    .week-today-btn {
+        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+        color: #1a3c6d; border: none; padding: 10px 22px;
+        border-radius: 10px; font-weight: 900; font-size: 14px;
+        cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
+        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .week-today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
+
+    .vertical-schedule-wrapper { position: relative; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+    .vertical-schedule-wrapper:active { cursor: grabbing; }
+    .vertical-schedule-wrapper.swipe-left { animation: swipeLeft 0.35s ease; }
+    .vertical-schedule-wrapper.swipe-right { animation: swipeRight 0.35s ease; }
+
+    @keyframes swipeLeft {
+        0% { transform: translateX(0); opacity: 1; }
+        40% { transform: translateX(-30px); opacity: 0.6; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes swipeRight {
+        0% { transform: translateX(0); opacity: 1; }
+        40% { transform: translateX(30px); opacity: 0.6; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+
     .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
     .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
     .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
+    .day-card.past-day-card { opacity: 0.6; background: #f8fafc; }
+    .day-card.past-day-card .day-header { background: #f1f5f9; }
+    .day-card.past-day-card .day-title label { color: #94a3b8; }
+    .day-card.past-day-card .day-date { background: #e2e8f0; color: #94a3b8; border-color: #cbd5e1; }
+    .day-card.past-day-card .day-status { opacity: 0.8; }
+    .day-card.today-day-card { border-color: #f1c40f; box-shadow: 0 4px 20px rgba(241,196,15,0.25); }
+    .day-card.today-day-card .day-header { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%); }
+    .day-card.future-day-card { border-color: #b8d4f0; }
+
     .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
     .day-card.expanded .day-header { background: #e3f2fd; }
-    
-    .day-title {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 16px;
-        font-weight: 900;
-        color: #1a3c6d;
-        flex-shrink: 0;
-        flex-wrap: wrap;
-    }
+    .day-title { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; flex-wrap: wrap; }
     .day-title label { cursor: pointer; }
-    
-    .day-date {
-        font-size: 12px;
-        font-weight: bold;
-        color: #2b5c9e;
-        background: #e3f2fd;
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid #b8d4f0;
-        direction: ltr;
-        display: inline-block;
-        letter-spacing: 0.5px;
-        font-family: 'Consolas', 'Courier New', monospace;
-    }
-    
-    .day-date.today-date {
-        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-        color: #1a3c6d;
-        border-color: #d4a017;
-        box-shadow: 0 2px 6px rgba(241,196,15,0.4);
-    }
-    
+    .day-date { font-size: 12px; font-weight: bold; color: #2b5c9e; background: #e3f2fd; padding: 4px 10px; border-radius: 6px; border: 1px solid #b8d4f0; direction: ltr; display: inline-block; letter-spacing: 0.5px; font-family: 'Consolas', 'Courier New', monospace; }
+    .day-date.today-date { background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%); color: #1a3c6d; border-color: #d4a017; box-shadow: 0 2px 6px rgba(241,196,15,0.4); }
     .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
     .day-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 8px; background: #e0e4e8; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 5px; direction: rtl; flex-wrap: wrap; line-height: 1.5; max-width: 100%; justify-content: center; }
     .session-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; }
@@ -104,7 +166,38 @@
     .period-select { width: 60px; background: #e3f2fd; color: #1a3c6d; font-weight: 900; flex-shrink: 0; }
     .minute-select { width: 85px; flex: 0 0 auto; }
     .hour-select { width: 85px; flex-shrink: 0; }
-    .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
+    .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; align-items: center; }
+
+    /* 🎯 رسالة توضيحية بجانب زر الحفظ */
+    .slot-apply-note {
+        display: none;
+        font-size: 11px;
+        color: #166534;
+        background: #dcfce7;
+        border: 1px dashed #28a745;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 700;
+        align-items: center;
+        gap: 5px;
+        line-height: 1.5;
+        max-width: 100%;
+        text-align: right;
+        flex: 1;
+        min-width: 180px;
+    }
+    .slot-apply-note.show { display: inline-flex; }
+    .slot-apply-note .note-icon { font-size: 13px; flex-shrink: 0; }
+    .slot-apply-note b { color: #14532d; }
+
+    /* عند القفل تظهر الرسالة بلون أخضر فاتح ثابت */
+    .time-slot.locked .slot-apply-note {
+        display: inline-flex;
+        background: #f0fdf4;
+        border-color: #28a745;
+        color: #14532d;
+    }
+
     .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
     .btn-save-slot:hover { background: #1a3c6d; }
     .btn-save-slot.saved { background: #28a745; }
@@ -115,164 +208,73 @@
     .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
     .btn-remove-slot:hover { background: #c82333; }
 
-    /* 🎯 زر إضافة موعد جديد - أخضر 3D بارز */
     .btn-add-slot {
         background: linear-gradient(180deg, #2ecc71 0%, #27ae60 50%, #229954 100%);
-        color: white;
-        border: none;
-        width: 100%;
-        padding: 14px 20px;
-        border-radius: 12px;
-        font-weight: 900;
-        font-size: 15px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        box-shadow: 
-            0 6px 0 #1e7e34,
-            0 8px 15px rgba(39, 174, 96, 0.4),
-            inset 0 1px 0 rgba(255,255,255,0.3);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        letter-spacing: 0.5px;
-        position: relative;
-        overflow: hidden;
+        color: white; border: none; width: 100%; padding: 14px 20px;
+        border-radius: 12px; font-weight: 900; font-size: 15px;
+        cursor: pointer; transition: all 0.15s ease;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 6px 0 #1e7e34, 0 8px 15px rgba(39, 174, 96, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2); letter-spacing: 0.5px;
+        position: relative; overflow: hidden;
     }
-
     .btn-add-slot::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
+        content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
         transition: left 0.6s ease;
     }
-
     .btn-add-slot:hover {
         background: linear-gradient(180deg, #3ddc84 0%, #2ecc71 50%, #27ae60 100%);
-        box-shadow: 
-            0 6px 0 #1e7e34,
-            0 12px 22px rgba(39, 174, 96, 0.55),
-            inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 0 #1e7e34, 0 12px 22px rgba(39, 174, 96, 0.55), inset 0 1px 0 rgba(255,255,255,0.4);
         transform: translateY(-1px);
     }
-
-    .btn-add-slot:hover::before {
-        left: 100%;
-    }
-
+    .btn-add-slot:hover::before { left: 100%; }
     .btn-add-slot:active {
         transform: translateY(5px);
-        box-shadow: 
-            0 1px 0 #1e7e34,
-            0 3px 8px rgba(39, 174, 96, 0.4),
-            inset 0 1px 0 rgba(255,255,255,0.3);
+        box-shadow: 0 1px 0 #1e7e34, 0 3px 8px rgba(39, 174, 96, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
     }
+    .btn-add-slot .plus-icon { font-size: 18px; font-weight: 900; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
-    .btn-add-slot .plus-icon {
-        font-size: 18px;
-        font-weight: 900;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-
-    .slot-range {
-        background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
-        border: 2px dashed #f39c12;
-        border-radius: 10px;
-        padding: 10px 12px;
-        margin-top: 4px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-        justify-content: center;
-    }
-    .slot-range-label {
-        font-size: 13px;
-        font-weight: 900;
-        color: #7a5c00;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        white-space: nowrap;
-    }
+    .slot-range { background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%); border: 2px dashed #f39c12; border-radius: 10px; padding: 10px 12px; margin-top: 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: center; }
+    .slot-range-label { font-size: 13px; font-weight: 900; color: #7a5c00; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
     .slot-range-arrow { color: #f39c12; font-size: 16px; font-weight: 900; }
-
     .slot-range-select {
-        padding: 8px 12px;
-        border: 2px solid #f39c12;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #7a5c00;
-        background: #ffffff;
-        cursor: pointer;
-        outline: none;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-        min-width: 150px;
-        text-align: center;
-        letter-spacing: 0.3px;
-        transition: 0.2s;
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
+        padding: 8px 12px; border: 2px solid #f39c12; border-radius: 8px;
+        font-size: 13px; font-weight: 700; color: #7a5c00; background: #ffffff;
+        cursor: pointer; outline: none; font-family: 'Segoe UI', Tahoma, sans-serif;
+        min-width: 150px; text-align: center; letter-spacing: 0.3px; transition: 0.2s;
+        appearance: none; -webkit-appearance: none; -moz-appearance: none;
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: left 8px center;
-        background-size: 14px;
-        padding-left: 30px;
-        padding-right: 12px;
+        background-repeat: no-repeat; background-position: left 8px center; background-size: 14px;
+        padding-left: 30px; padding-right: 12px;
     }
-    .slot-range-select:hover {
-        border-color: #e67e22;
-        box-shadow: 0 2px 8px rgba(243,156,18,0.2);
-    }
-    .slot-range-select:focus {
-        border-color: #e67e22;
-        box-shadow: 0 0 0 3px rgba(243,156,18,0.25);
-    }
-
-    .time-slot.locked .slot-range {
-        background: #f0fdf4;
-        border-color: #28a745;
-        border-style: solid;
-    }
+    .slot-range-select:hover { border-color: #e67e22; box-shadow: 0 2px 8px rgba(243,156,18,0.2); }
+    .slot-range-select:focus { border-color: #e67e22; box-shadow: 0 0 0 3px rgba(243,156,18,0.25); }
+    .time-slot.locked .slot-range { background: #f0fdf4; border-color: #28a745; border-style: solid; }
     .time-slot.locked .slot-range-label { color: #166534; }
-    .time-slot.locked .slot-range-select {
-        background: #f0f0f0;
-        color: #555;
-        cursor: not-allowed;
-        pointer-events: none;
-        border-color: #ccc;
-        opacity: 0.85;
-        background-image: none;
-        padding-left: 12px;
-    }
+    .time-slot.locked .slot-range-select { background: #f0f0f0; color: #555; cursor: not-allowed; pointer-events: none; border-color: #ccc; opacity: 0.85; background-image: none; padding-left: 12px; }
 
     .monthly-calendar { display: none; }
     .monthly-calendar.active { display: block; }
 
     .month-nav {
         display: flex; align-items: center; justify-content: space-between; gap: 10px;
-        margin-bottom: 15px;
-        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        margin-bottom: 15px; background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
         border-radius: 12px; padding: 12px 16px; color: white;
         box-shadow: 0 6px 15px rgba(43,92,158,0.25);
     }
     .month-nav-btn {
-        background: rgba(255,255,255,0.15);
-        border: 2px solid rgba(255,255,255,0.25);
-        color: white; padding: 8px 16px; border-radius: 8px;
-        font-weight: 900; font-size: 14px; cursor: pointer;
-        transition: 0.2s; display: flex; align-items: center; gap: 5px;
+        background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.25);
+        color: white; width: 45px; height: 45px; border-radius: 50%;
+        font-weight: 900; font-size: 22px; cursor: pointer; transition: 0.2s;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0; line-height: 1; flex-shrink: 0;
     }
-    .month-nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    .month-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
+    .month-nav-btn:active { transform: scale(0.95); }
     .month-nav-title { text-align: center; flex: 1; }
-    .month-nav-title .month-name { font-size: 22px; font-weight: 900; color: #f1c40f; display: block; }
+    .month-nav-title .month-name { font-size: 22px; font-weight: 900; color: #f1c40f; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .month-nav-title .month-name .month-num-badge { background: rgba(241,196,15,0.25); border: 1px solid rgba(241,196,15,0.5); color: #f1c40f; padding: 2px 10px; border-radius: 8px; font-size: 14px; font-weight: 900; letter-spacing: 1px; }
     .month-nav-title .month-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 
     .today-btn-wrapper { text-align: center; margin-bottom: 15px; }
@@ -286,156 +288,63 @@
     .today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
 
     .monthly-grid-wrapper {
-        border-radius: 12px;
-        border: 2px solid #e0e4e8;
-        background: #fff;
-        overflow: hidden;
-        position: relative;
-        cursor: grab;
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: pan-y;
-        transition: transform 0.3s ease;
+        border-radius: 12px; border: 2px solid #e0e4e8; background: #fff;
+        overflow: hidden; position: relative; cursor: grab;
+        user-select: none; -webkit-user-select: none;
+        touch-action: pan-y; transition: transform 0.3s ease;
     }
-    .monthly-grid-wrapper:active {
-        cursor: grabbing;
-    }
-
+    .monthly-grid-wrapper:active { cursor: grabbing; }
     .monthly-grid-wrapper.swipe-left { animation: swipeLeft 0.35s ease; }
     .monthly-grid-wrapper.swipe-right { animation: swipeRight 0.35s ease; }
 
-    @keyframes swipeLeft {
-        0% { transform: translateX(0); opacity: 1; }
-        40% { transform: translateX(-30px); opacity: 0.6; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes swipeRight {
-        0% { transform: translateX(0); opacity: 1; }
-        40% { transform: translateX(30px); opacity: 0.6; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-
-    .swipe-hint {
-        text-align: center;
-        font-size: 12px;
-        color: #94a3b8;
-        margin-top: 12px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-    .swipe-hint .arrow {
-        font-size: 16px;
-        color: #2b5c9e;
-        animation: pulseArrow 1.5s infinite;
-    }
+    .swipe-hint { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .swipe-hint .arrow { font-size: 16px; color: #2b5c9e; animation: pulseArrow 1.5s infinite; }
     @keyframes pulseArrow {
         0%, 100% { opacity: 0.4; transform: scale(1); }
         50% { opacity: 1; transform: scale(1.15); }
     }
 
     .monthly-head { display: grid; grid-template-columns: repeat(7, 1fr); background: linear-gradient(180deg, #2b5c9e, #1a3c6d); }
-    .monthly-head-cell { padding: 12px 6px; text-align: center; font-weight: 900; font-size: 13px; color: white; border-left: 1px solid rgba(255,255,255,0.15); }
+    .monthly-head-cell { padding: 10px 6px 8px; text-align: center; font-weight: 900; font-size: 13px; color: white; border-left: 1px solid rgba(255,255,255,0.15); }
     .monthly-head-cell.friday { color: #f1c40f; }
 
-    /* 🎯 الجدول بيكبر تلقائياً حسب المحتوى */
-    .monthly-body {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        background: #e0e4e8;
-        gap: 1px;
-        /* 🎯 كل صف ياخد ارتفاعه الأدنى 90px ويكبر تلقائياً */
-        grid-auto-rows: minmax(90px, auto);
-        align-items: stretch;
-    }
+    .monthly-body { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e4e8; gap: 1px; grid-auto-rows: minmax(90px, auto); align-items: stretch; }
 
-    .monthly-day {
-        background: #fff;
-        min-height: 90px;
-        padding: 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        transition: 0.2s;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        height: auto;
-    }
+    .monthly-day { background: #fff; min-height: 90px; padding: 6px; display: flex; flex-direction: column; gap: 3px; transition: 0.2s; position: relative; overflow: hidden; cursor: pointer; height: auto; }
     .monthly-day:hover { background: #f8fafc; }
     .monthly-day.other-month { background: #f8fafc; opacity: 0.55; cursor: default; }
     .monthly-day.today { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%); box-shadow: inset 0 0 0 2px #f1c40f; }
     .monthly-day.friday { background: #fef9f3; }
     .monthly-day.other-month.friday { background: #f8fafc; }
-
-    .monthly-day.past-day {
-        background: #f1f5f9 !important;
-        opacity: 0.65;
-    }
-    .monthly-day.past-day .day-num {
-        color: #94a3b8;
-    }
-    .monthly-day.past-day .day-session-chip {
-        background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important;
-        border-right-color: #64748b !important;
-        opacity: 0.7;
-    }
-    .monthly-day.past-day:hover {
-        background: #e2e8f0 !important;
-        opacity: 0.8;
-    }
-    .monthly-day.other-month.past-day {
-        background: #f8fafc !important;
-        opacity: 0.4;
-    }
-    .monthly-day.today {
-        background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%) !important;
-        opacity: 1 !important;
-    }
-    .monthly-day.today .day-num {
-        color: #b38f00 !important;
-    }
+    .monthly-day.past-day { background: #f1f5f9 !important; opacity: 0.65; }
+    .monthly-day.past-day .day-num { color: #94a3b8; }
+    .monthly-day.past-day .day-session-chip { background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important; border-right-color: #64748b !important; opacity: 0.7; }
+    .monthly-day.past-day:hover { background: #e2e8f0 !important; opacity: 0.8; }
+    .monthly-day.other-month.past-day { background: #f8fafc !important; opacity: 0.4; }
+    .monthly-day.today { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%) !important; opacity: 1 !important; }
+    .monthly-day.today .day-num { color: #b38f00 !important; }
 
     .day-num { font-size: 14px; font-weight: 900; color: #1a3c6d; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .monthly-day.today .day-num { color: #b38f00; }
     .day-num .today-badge { background: #f1c40f; color: #1a3c6d; font-size: 9px; padding: 1px 6px; border-radius: 6px; font-weight: 900; }
     .day-num .session-count-badge { background: #2b5c9e; color: white; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 900; }
-    .monthly-day.past-day .day-num .session-count-badge {
-        background: #94a3b8;
-    }
+    .monthly-day.past-day .day-num .session-count-badge { background: #94a3b8; }
 
     .day-sessions { display: flex; flex-direction: column; gap: 3px; flex: 1; }
 
-    /* 🎯 الحصة بتبان أوضح */
     .day-session-chip {
         background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        color: white;
-        font-size: 10px;
-        font-weight: bold;
-        padding: 4px 6px;
-        border-radius: 5px;
-        border-right: 3px solid #f1c40f;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        direction: ltr;
-        text-align: center;
-        transition: 0.2s;
-        line-height: 1.4;
-        min-height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        color: white; font-size: 10px; font-weight: bold; padding: 4px 6px;
+        border-radius: 5px; border-right: 3px solid #f1c40f;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        direction: ltr; text-align: center; transition: 0.2s;
+        line-height: 1.4; min-height: 20px;
+        display: flex; align-items: center; justify-content: center;
     }
     .day-session-chip.past { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); border-right-color: #475569; opacity: 0.75; }
 
     .day-more { font-size: 10px; font-weight: 900; color: #2b5c9e; text-align: center; padding: 2px; background: #e3f2fd; border-radius: 4px; }
-    .monthly-day.past-day .day-more {
-        background: #e2e8f0;
-        color: #94a3b8;
-    }
+    .monthly-day.past-day .day-more { background: #e2e8f0; color: #94a3b8; }
 
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
     .modal-overlay.active { display: flex; }
@@ -458,11 +367,7 @@
     .modal-session-item.past .time { color: #64748b; }
     .modal-session-item .sess-num { background: #f1c40f; color: #1a3c6d; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 900; }
     .modal-session-item.past .sess-num { background: #cbd5e1; color: #475569; }
-    .modal-close-btn {
-        width: 100%; padding: 12px; background: #2b5c9e; color: white;
-        border: none; border-radius: 8px; font-weight: 900; font-size: 14px;
-        cursor: pointer; margin-top: 12px;
-    }
+    .modal-close-btn { width: 100%; padding: 12px; background: #2b5c9e; color: white; border: none; border-radius: 8px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; }
     .modal-close-btn:hover { background: #1a3c6d; }
 
     .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; }
@@ -474,15 +379,21 @@
         .monthly-day { min-height: 75px; padding: 4px; }
         .day-num { font-size: 12px; }
         .day-session-chip { font-size: 9px; padding: 3px 4px; min-height: 18px; }
-        .month-nav-title .month-name { font-size: 17px; }
-        .month-nav-btn { padding: 6px 10px; font-size: 12px; }
-        .monthly-head-cell { font-size: 11px; padding: 10px 4px; }
+        .month-nav-title .month-name { font-size: 17px; gap: 5px; }
+        .month-nav-title .month-name .month-num-badge { font-size: 12px; padding: 1px 8px; }
+        .month-nav-btn { width: 38px; height: 38px; font-size: 18px; }
+        .week-nav-btn { width: 38px; height: 38px; font-size: 18px; }
+        .week-nav-title .week-range { font-size: 14px; gap: 5px; }
+        .week-nav-title .week-range .week-num-badge { font-size: 10px; padding: 1px 6px; }
+        .week-nav-title .week-label { font-size: 11px; }
+        .monthly-head-cell { font-size: 10px; padding: 8px 3px 6px; }
         .slot-range-select { min-width: 130px; font-size: 12px; padding: 6px 8px; padding-left: 26px; background-size: 12px; }
         .slot-range-label { font-size: 11px; }
         .day-title { flex-direction: column; align-items: flex-start; gap: 4px; }
         .day-date { font-size: 11px; padding: 3px 8px; }
         .swipe-hint { font-size: 11px; }
         .monthly-body { grid-auto-rows: minmax(75px, auto); }
+        .slot-apply-note { font-size: 10px; min-width: 140px; }
     }
 
     @media (max-width: 600px) {
@@ -493,10 +404,18 @@
         .period-select { width: 52px; font-size: 12px; padding: 6px 4px; }
         .minute-select { width: 72px; font-size: 12px; padding: 6px 4px; }
         .hour-select { width: 72px; font-size: 12px; padding: 6px 4px; }
+        .slot-actions { justify-content: center; }
+        .slot-apply-note { flex: 1 1 100%; justify-content: center; text-align: center; }
     }
 </style>
 </head>
 <body>
+
+<!-- 🎯 شريط "آخر حفظ" (بدون رسائل) -->
+<div class="last-save-bar" id="last-save-bar">
+    <span class="dot"></span>
+    <span id="last-save-time">آخر حفظ: —</span>
+</div>
 
 <header class="header-3d">
     <h1>إعداد تفاصيل المجموعة</h1>
@@ -568,20 +487,44 @@
         <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، وحدد نطاق الشهور، واضغط حفظ 💾.</div>
 
         <div class="view-tabs">
-            <button class="view-tab active" id="tab-list" onclick="switchView('list')">📋 قائمة الإعداد</button>
+            <button class="view-tab active" id="tab-list" onclick="switchView('list')">📋 قائمة الحجز</button>
             <button class="view-tab" id="tab-month" onclick="switchView('month')">🗓️ التقويم الشهري</button>
         </div>
 
-        <div class="vertical-schedule" id="vertical-schedule"></div>
+        <div id="vertical-schedule-view">
+            <div class="week-nav">
+                <button class="week-nav-btn" onclick="goToPrevWeekWithAnimation()" title="الأسبوع السابق">❯</button>
+                <div class="week-nav-title">
+                    <span class="week-label" id="week-label">الأسبوع الحالي</span>
+                    <span class="week-range" id="week-range">—</span>
+                    <span class="week-status current" id="week-status">اليوم</span>
+                </div>
+                <button class="week-nav-btn" onclick="goToNextWeekWithAnimation()" title="الأسبوع التالي">❮</button>
+            </div>
+
+            <div class="week-today-wrapper">
+                <button class="week-today-btn" onclick="goToCurrentWeek()">📍 الأسبوع الحالي</button>
+            </div>
+
+            <div class="vertical-schedule-wrapper" id="vertical-schedule-wrapper">
+                <div class="vertical-schedule" id="vertical-schedule"></div>
+            </div>
+
+            <div class="swipe-hint">
+                <span class="arrow">❯</span>
+                <span>اسحب يمين أو شمال للتنقل بين الأسابيع</span>
+                <span class="arrow">❮</span>
+            </div>
+        </div>
 
         <div class="monthly-calendar" id="monthly-calendar">
             <div class="month-nav">
-                <button class="month-nav-btn" onclick="goToPrevMonthWithAnimation()">❯ السابق</button>
+                <button class="month-nav-btn" onclick="goToPrevMonthWithAnimation()" title="الشهر السابق">❯</button>
                 <div class="month-nav-title">
                     <span class="month-name" id="month-name">—</span>
                     <span class="month-sub" id="month-sub">—</span>
                 </div>
-                <button class="month-nav-btn" onclick="goToNextMonthWithAnimation()">التالي ❮</button>
+                <button class="month-nav-btn" onclick="goToNextMonthWithAnimation()" title="الشهر التالي">❮</button>
             </div>
             <div class="today-btn-wrapper">
                 <button class="today-btn" onclick="goToday()">📍 الشهر الحالي</button>
@@ -630,11 +573,254 @@
 
     let currentYear = new Date().getFullYear();
     let currentMonth = new Date().getMonth();
+    let currentWeekOffset = 0;
 
     const MONTH_NAMES_AR = [
         'يناير','فبراير','مارس','أبريل','مايو','يونيو',
         'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
     ];
+
+    // ==========================================
+    // 🎯 نظام الحفظ التلقائي (بدون رسائل)
+    // ==========================================
+    const STORAGE_KEY = 'mester2_auto_save';
+    let saveTimeout = null;
+    let isRestoring = false;
+
+    // 🎯 تحديث وقت آخر حفظ (الشريط الصغير بس)
+    function updateLastSaveTime() {
+        const bar = document.getElementById('last-save-bar');
+        const timeEl = document.getElementById('last-save-time');
+        if (!bar || !timeEl) return;
+        const now = new Date();
+        const hh = now.getHours().toString().padStart(2, '0');
+        const mm = now.getMinutes().toString().padStart(2, '0');
+        const ss = now.getSeconds().toString().padStart(2, '0');
+        timeEl.textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
+        bar.classList.add('show');
+    }
+
+    // 🎯 بناء نص الرسالة التوضيحية للميعاد
+    function buildApplyNote(dayId, fromVal, toVal) {
+        const dayObj = daysOfWeek.find(d => d.id === dayId);
+        const dayName = dayObj ? dayObj.name : 'اليوم';
+        
+        let rangeText = 'مدى الحياة';
+        if (fromVal && toVal) {
+            const [fy, fm] = fromVal.split('-').map(Number);
+            const [ty, tm] = toVal.split('-').map(Number);
+            rangeText = `من <b>${MONTH_NAMES_AR[fm]} ${fy}</b> إلى <b>${MONTH_NAMES_AR[tm]} ${ty}</b>`;
+        }
+        
+        return `<span class="note-icon">📌</span> <span>سيُطبَّق الميعاد في جميع أيام <b>${dayName}</b> ${rangeText}</span>`;
+    }
+
+    // 🎯 جمع كل بيانات الصفحة
+    function collectAllData() {
+        const data = {
+            groupName: document.getElementById('group-name')?.value || '',
+            teacherName: document.getElementById('teacher-name')?.value || '',
+            studentsCount: document.getElementById('students-count')?.value || '',
+            gender: document.querySelector('input[name="gender"]:checked')?.value || 'مختلط',
+            location: document.querySelector('input[name="location"]:checked')?.value || 'السنتر',
+            gpsCoords: document.getElementById('gps-coords')?.value || '',
+            locationText: document.getElementById('location-text')?.textContent || 'لم يتم التحديد',
+            currentTab: document.querySelector('.view-tab.active')?.id || 'tab-list',
+            currentYear: currentYear,
+            currentMonth: currentMonth,
+            currentWeekOffset: currentWeekOffset,
+            schedule: {},
+            savedAt: new Date().toISOString()
+        };
+        
+        daysOfWeek.forEach(day => {
+            const slotsContainer = document.getElementById(`slots-${day.id}`);
+            if (!slotsContainer) return;
+            const slots = [];
+            slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
+                const saveBtn = slot.querySelector('.btn-save-slot');
+                const startTime = readTime(slot, 'start');
+                const endTime = readTime(slot, 'end');
+                slots.push({
+                    startHour: startTime?.hour || '',
+                    startMinute: startTime?.minute || '',
+                    startPeriod: startTime?.period || 'م',
+                    endHour: endTime?.hour || '',
+                    endMinute: endTime?.minute || '',
+                    endPeriod: endTime?.period || 'م',
+                    isSaved: saveBtn?.classList.contains('saved') || false,
+                    isLocked: slot.classList.contains('locked'),
+                    rangeFrom: slot.dataset.rangeFrom || '',
+                    rangeTo: slot.dataset.rangeTo || ''
+                });
+            });
+            data.schedule[day.id] = slots;
+        });
+        
+        return data;
+    }
+
+    // 🎯 حفظ البيانات في localStorage (بصمت)
+    function saveAllData() {
+        if (isRestoring) return;
+        try {
+            const data = collectAllData();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateLastSaveTime();
+        } catch (e) {
+            console.error('خطأ في الحفظ:', e);
+        }
+    }
+
+    // 🎯 حفظ بتأخير (debounce)
+    function saveAllDataDebounced() {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            saveAllData();
+        }, 400);
+    }
+
+    // 🎯 استرجاع البيانات
+    function restoreAllData() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            
+            const data = JSON.parse(raw);
+            isRestoring = true;
+            
+            if (data.groupName) document.getElementById('group-name').value = data.groupName;
+            if (data.teacherName) document.getElementById('teacher-name').value = data.teacherName;
+            if (data.studentsCount) document.getElementById('students-count').value = data.studentsCount;
+            
+            if (data.gender) {
+                const genderRadio = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
+                if (genderRadio) genderRadio.checked = true;
+            }
+            if (data.location) {
+                const locationRadio = document.querySelector(`input[name="location"][value="${data.location}"]`);
+                if (locationRadio) locationRadio.checked = true;
+            }
+            
+            if (data.gpsCoords) {
+                document.getElementById('gps-coords').value = data.gpsCoords;
+                const btn = document.querySelector('.btn-gps');
+                if (btn) {
+                    btn.innerHTML = '✅ تم التحديد';
+                    btn.style.backgroundColor = '#1a3c6d';
+                }
+            }
+            if (data.locationText && data.locationText !== 'لم يتم التحديد') {
+                document.getElementById('location-text').textContent = data.locationText;
+            }
+            
+            if (typeof data.currentYear === 'number') currentYear = data.currentYear;
+            if (typeof data.currentMonth === 'number') currentMonth = data.currentMonth;
+            if (typeof data.currentWeekOffset === 'number') currentWeekOffset = data.currentWeekOffset;
+            
+            setTimeout(() => {
+                daysOfWeek.forEach(day => {
+                    const daySlots = data.schedule?.[day.id];
+                    if (!daySlots || daySlots.length === 0) return;
+                    
+                    const slotsContainer = document.getElementById(`slots-${day.id}`);
+                    if (!slotsContainer) return;
+                    
+                    slotsContainer.innerHTML = '';
+                    
+                    daySlots.forEach(slotData => {
+                        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+                        const hOpts = hourOptions();
+                        const mOpts = minuteOptions();
+                        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom);
+                        const toOptions = buildMonthRangeOptions(slotData.rangeTo);
+                        
+                        const slotHTML = `
+                            <div class="time-slot ${slotData.isLocked ? 'locked' : ''}" id="${slotId}"
+                                 data-range-from="${slotData.rangeFrom || ''}"
+                                 data-range-to="${slotData.rangeTo || ''}">
+                                <div class="time-row">
+                                    <span class="time-label">من:</span>
+                                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
+                                        <option value="ص">ص</option>
+                                        <option value="م">م</option>
+                                    </select>
+                                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
+                                </div>
+                                <div class="time-row">
+                                    <span class="time-label">إلى:</span>
+                                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
+                                        <option value="ص">ص</option>
+                                        <option value="م">م</option>
+                                    </select>
+                                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
+                                </div>
+                                
+                                <div class="slot-range">
+                                    <span class="slot-range-label">📆 من:</span>
+                                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
+                                    <span class="slot-range-arrow">←</span>
+                                    <span class="slot-range-label">إلى:</span>
+                                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
+                                </div>
+                                
+                                <div class="slot-actions">
+                                    <span class="slot-apply-note ${slotData.isSaved ? 'show' : ''}">${buildApplyNote(day.id, slotData.rangeFrom, slotData.rangeTo)}</span>
+                                    <button class="btn-save-slot ${slotData.isSaved ? 'saved' : ''}" onclick="saveSlot('${slotId}', '${day.id}')">💾 حفظ</button>
+                                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${day.id}')">✏️ تعديل</button>
+                                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${day.id}')">✖ إلغاء</button>
+                                </div>
+                            </div>
+                        `;
+                        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
+                        
+                        const slot = document.getElementById(slotId);
+                        slot.querySelector('.start-period').value = slotData.startPeriod || 'م';
+                        slot.querySelector('.start-minute').value = slotData.startMinute || '';
+                        slot.querySelector('.start-hour').value = slotData.startHour || '';
+                        slot.querySelector('.end-period').value = slotData.endPeriod || 'م';
+                        slot.querySelector('.end-minute').value = slotData.endMinute || '';
+                        slot.querySelector('.end-hour').value = slotData.endHour || '';
+                        
+                        if (slotData.isSaved) {
+                            const card = document.getElementById(`card-${day.id}`);
+                            if (card) card.classList.add('active');
+                        }
+                    });
+                    
+                    updateDayStatusDisplay(day.id);
+                });
+                
+                if (data.currentTab === 'tab-month') {
+                    switchView('month');
+                } else {
+                    renderVerticalSchedule();
+                    updateWeekNavBar();
+                }
+                
+                isRestoring = false;
+                
+                // 🎯 تحديث وقت آخر حفظ بس (بدون رسائل)
+                if (data.savedAt) {
+                    const savedDate = new Date(data.savedAt);
+                    const hh = savedDate.getHours().toString().padStart(2, '0');
+                    const mm = savedDate.getMinutes().toString().padStart(2, '0');
+                    const ss = savedDate.getSeconds().toString().padStart(2, '0');
+                    document.getElementById('last-save-time').textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
+                    document.getElementById('last-save-bar').classList.add('show');
+                }
+                
+            }, 100);
+            
+            return true;
+        } catch (e) {
+            console.error('خطأ في الاسترجاع:', e);
+            isRestoring = false;
+            return false;
+        }
+    }
 
     function hourOptions() {
         let html = '<option value="">ساعة</option>';
@@ -689,37 +875,58 @@
         return { fromVal, toVal };
     }
 
-    function getWeekStartSaturday() {
+    function getWeekStartSaturday(offset = 0) {
         const today = new Date();
         const todayJs = today.getDay();
         const daysToSaturday = (todayJs + 1) % 7;
         const saturday = new Date(today);
-        saturday.setDate(today.getDate() - daysToSaturday);
+        saturday.setDate(today.getDate() - daysToSaturday + (offset * 7));
         saturday.setHours(0, 0, 0, 0);
         return saturday;
     }
 
-    function getNextDateForDay(targetJsDay) {
-        const weekStart = getWeekStartSaturday();
-        
+    function formatDateShort(date) {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        return `${day}/${month}`;
+    }
+
+    function formatDateFull(date) {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    function getDateForDayInCurrentWeek(targetJsDay) {
+        const weekStart = getWeekStartSaturday(currentWeekOffset);
         let offset;
         if (targetJsDay === 6) offset = 0;
         else offset = targetJsDay + 1;
-        
         const target = new Date(weekStart);
         target.setDate(weekStart.getDate() + offset);
-        
-        const day = target.getDate().toString().padStart(2, '0');
-        const month = (target.getMonth() + 1).toString().padStart(2, '0');
-        const year = target.getFullYear();
-        
+        return target;
+    }
+
+    function getDayStatus(targetDate) {
         const today = new Date();
-        const isToday = target.toDateString() === today.toDateString();
+        today.setHours(0, 0, 0, 0);
+        const target = new Date(targetDate);
+        target.setHours(0, 0, 0, 0);
+        if (target.getTime() === today.getTime()) return 'today';
+        if (target < today) return 'past';
+        return 'future';
+    }
+
+    function getNextDateForDay(targetJsDay) {
+        const targetDate = getDateForDayInCurrentWeek(targetJsDay);
+        const status = getDayStatus(targetDate);
+        const dateStr = formatDateFull(targetDate);
         
-        if (isToday) {
-            return `<span class="day-date today-date">📅 ${day}/${month}/${year} • اليوم</span>`;
+        if (status === 'today') {
+            return `<span class="day-date today-date">📅 ${dateStr} • اليوم</span>`;
         }
-        return `<span class="day-date">📅 ${day}/${month}/${year}</span>`;
+        return `<span class="day-date">📅 ${dateStr}</span>`;
     }
 
     window.onload = function() {
@@ -742,85 +949,231 @@
 
         renderVerticalSchedule();
         renderMonthlyCalendar();
+        updateWeekNavBar();
+        
+        restoreAllData();
         setTimeout(setupSwipeNavigation, 100);
+        setupAutoSaveListeners();
     };
 
+    function setupAutoSaveListeners() {
+        ['group-name', 'teacher-name', 'students-count'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => saveAllDataDebounced());
+            }
+        });
+        
+        document.querySelectorAll('input[name="gender"], input[name="location"]').forEach(radio => {
+            radio.addEventListener('change', () => saveAllData());
+        });
+        
+        window.addEventListener('beforeunload', () => {
+            saveAllData();
+        });
+        
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+            try {
+                const data = JSON.parse(raw);
+                if (data.savedAt) {
+                    const savedDate = new Date(data.savedAt);
+                    const hh = savedDate.getHours().toString().padStart(2, '0');
+                    const mm = savedDate.getMinutes().toString().padStart(2, '0');
+                    const ss = savedDate.getSeconds().toString().padStart(2, '0');
+                    document.getElementById('last-save-time').textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
+                    document.getElementById('last-save-bar').classList.add('show');
+                }
+            } catch(e) {}
+        }
+    }
+
+    function updateWeekNavBar() {
+        const weekStart = getWeekStartSaturday(currentWeekOffset);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        
+        const rangeEl = document.getElementById('week-range');
+        const labelEl = document.getElementById('week-label');
+        const statusEl = document.getElementById('week-status');
+        
+        rangeEl.innerHTML = `
+            <span>${formatDateShort(weekStart)}</span>
+            <span class="week-num-badge">7 أيام</span>
+            <span>${formatDateShort(weekEnd)}</span>
+        `;
+        
+        if (currentWeekOffset === 0) {
+            labelEl.textContent = 'الأسبوع الحالي';
+            statusEl.textContent = '📍 النهاردة';
+            statusEl.className = 'week-status current';
+        } else if (currentWeekOffset < 0) {
+            const weeksAgo = Math.abs(currentWeekOffset);
+            labelEl.textContent = weeksAgo === 1 ? 'الأسبوع اللي فات' : `قبل ${weeksAgo} أسابيع`;
+            statusEl.textContent = '⏪ ماضي';
+            statusEl.className = 'week-status past';
+        } else {
+            labelEl.textContent = currentWeekOffset === 1 ? 'الأسبوع الجاي' : `بعد ${currentWeekOffset} أسابيع`;
+            statusEl.textContent = '⏩ قادم';
+            statusEl.className = 'week-status future';
+        }
+    }
+
+    function goToPrevWeekWithAnimation() {
+        const wrapper = document.getElementById('vertical-schedule-wrapper');
+        if (wrapper) {
+            wrapper.classList.remove('swipe-left', 'swipe-right');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('swipe-right');
+        }
+        currentWeekOffset--;
+        renderVerticalSchedule();
+        updateWeekNavBar();
+        saveAllData();
+    }
+
+    function goToNextWeekWithAnimation() {
+        const wrapper = document.getElementById('vertical-schedule-wrapper');
+        if (wrapper) {
+            wrapper.classList.remove('swipe-left', 'swipe-right');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('swipe-left');
+        }
+        currentWeekOffset++;
+        renderVerticalSchedule();
+        updateWeekNavBar();
+        saveAllData();
+    }
+
+    function goToCurrentWeek() {
+        currentWeekOffset = 0;
+        renderVerticalSchedule();
+        updateWeekNavBar();
+        saveAllData();
+    }
+
     function setupSwipeNavigation() {
-        const wrapper = document.querySelector('.monthly-grid-wrapper');
+        setupWeekSwipe();
+        setupMonthSwipe();
+    }
+
+    function setupWeekSwipe() {
+        const wrapper = document.getElementById('vertical-schedule-wrapper');
         if (!wrapper) return;
 
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isDragging = false;
-        let isHorizontalSwipe = false;
-
+        let touchStartX = 0, touchStartY = 0, isDragging = false, isHorizontalSwipe = false;
         const MIN_SWIPE_DISTANCE = 60;
-
-        function handleStart(x, y) {
-            touchStartX = x;
-            touchStartY = y;
-            isDragging = true;
-            isHorizontalSwipe = false;
-        }
-
-        function handleMove(x, y) {
-            if (!isDragging) return;
-            const diffX = Math.abs(x - touchStartX);
-            const diffY = Math.abs(y - touchStartY);
-            if (diffX > diffY && diffX > 10) {
-                isHorizontalSwipe = true;
-            }
-        }
-
-        function handleEnd(x, y) {
-            if (!isDragging) return;
-            isDragging = false;
-            if (!isHorizontalSwipe) return;
-
-            const diffX = x - touchStartX;
-            const diffY = y - touchStartY;
-
-            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
-
-            if (diffX > 0) {
-                goToPrevMonthWithAnimation();
-            } else {
-                goToNextMonthWithAnimation();
-            }
-        }
 
         wrapper.addEventListener('touchstart', (e) => {
             const t = e.changedTouches[0];
-            handleStart(t.clientX, t.clientY);
+            touchStartX = t.clientX; touchStartY = t.clientY;
+            isDragging = true; isHorizontalSwipe = false;
         }, { passive: true });
 
         wrapper.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
             const t = e.changedTouches[0];
-            handleMove(t.clientX, t.clientY);
+            const diffX = Math.abs(t.clientX - touchStartX);
+            const diffY = Math.abs(t.clientY - touchStartY);
+            if (diffX > diffY && diffX > 10) isHorizontalSwipe = true;
         }, { passive: true });
 
         wrapper.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            if (!isHorizontalSwipe) return;
             const t = e.changedTouches[0];
-            handleEnd(t.clientX, t.clientY);
+            const diffX = t.clientX - touchStartX;
+            const diffY = t.clientY - touchStartY;
+            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
+            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
+            if (diffX > 0) goToPrevWeekWithAnimation();
+            else goToNextWeekWithAnimation();
         }, { passive: true });
 
+        let mouseStartX = 0, mouseStartY = 0, mouseDragging = false, mouseHorizontal = false;
         wrapper.addEventListener('mousedown', (e) => {
             if (e.target.closest('button, a, select, input')) return;
-            handleStart(e.clientX, e.clientY);
+            mouseStartX = e.clientX; mouseStartY = e.clientY;
+            mouseDragging = true; mouseHorizontal = false;
             e.preventDefault();
         });
-
         document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            handleMove(e.clientX, e.clientY);
+            if (!mouseDragging) return;
+            const diffX = Math.abs(e.clientX - mouseStartX);
+            const diffY = Math.abs(e.clientY - mouseStartY);
+            if (diffX > diffY && diffX > 10) mouseHorizontal = true;
         });
-
         document.addEventListener('mouseup', (e) => {
-            if (!isDragging) return;
-            handleEnd(e.clientX, e.clientY);
+            if (!mouseDragging) return;
+            mouseDragging = false;
+            if (!mouseHorizontal) return;
+            const diffX = e.clientX - mouseStartX;
+            const diffY = e.clientY - mouseStartY;
+            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
+            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
+            if (diffX > 0) goToPrevWeekWithAnimation();
+            else goToNextWeekWithAnimation();
         });
+        wrapper.addEventListener('dragstart', (e) => e.preventDefault());
+    }
 
+    function setupMonthSwipe() {
+        const wrapper = document.querySelector('.monthly-grid-wrapper');
+        if (!wrapper) return;
+
+        let touchStartX = 0, touchStartY = 0, isDragging = false, isHorizontalSwipe = false;
+        const MIN_SWIPE_DISTANCE = 60;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            const t = e.changedTouches[0];
+            touchStartX = t.clientX; touchStartY = t.clientY;
+            isDragging = true; isHorizontalSwipe = false;
+        }, { passive: true });
+        wrapper.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const t = e.changedTouches[0];
+            const diffX = Math.abs(t.clientX - touchStartX);
+            const diffY = Math.abs(t.clientY - touchStartY);
+            if (diffX > diffY && diffX > 10) isHorizontalSwipe = true;
+        }, { passive: true });
+        wrapper.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            if (!isHorizontalSwipe) return;
+            const t = e.changedTouches[0];
+            const diffX = t.clientX - touchStartX;
+            const diffY = t.clientY - touchStartY;
+            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
+            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
+            if (diffX > 0) goToPrevMonthWithAnimation();
+            else goToNextMonthWithAnimation();
+        }, { passive: true });
+
+        let mouseStartX = 0, mouseStartY = 0, mouseDragging = false, mouseHorizontal = false;
+        wrapper.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button, a, select, input')) return;
+            mouseStartX = e.clientX; mouseStartY = e.clientY;
+            mouseDragging = true; mouseHorizontal = false;
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!mouseDragging) return;
+            const diffX = Math.abs(e.clientX - mouseStartX);
+            const diffY = Math.abs(e.clientY - mouseStartY);
+            if (diffX > diffY && diffX > 10) mouseHorizontal = true;
+        });
+        document.addEventListener('mouseup', (e) => {
+            if (!mouseDragging) return;
+            mouseDragging = false;
+            if (!mouseHorizontal) return;
+            const diffX = e.clientX - mouseStartX;
+            const diffY = e.clientY - mouseStartY;
+            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
+            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
+            if (diffX > 0) goToPrevMonthWithAnimation();
+            else goToNextMonthWithAnimation();
+        });
         wrapper.addEventListener('dragstart', (e) => e.preventDefault());
     }
 
@@ -832,6 +1185,7 @@
             wrapper.classList.add('swipe-right');
         }
         changeMonth(-1);
+        saveAllData();
     }
 
     function goToNextMonthWithAnimation() {
@@ -842,6 +1196,7 @@
             wrapper.classList.add('swipe-left');
         }
         changeMonth(1);
+        saveAllData();
     }
 
     function getLocation(e) {
@@ -850,8 +1205,18 @@
         btn.innerHTML = '⏳ جاري...';
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                position => { hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`; btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d'; textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`; },
-                error => { btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545'; textDisplay.textContent = 'تأكد من تفعيل الـ GPS'; }
+                position => { 
+                    hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`; 
+                    btn.innerHTML = '✅ تم التحديد'; 
+                    btn.style.backgroundColor = '#1a3c6d'; 
+                    textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`; 
+                    saveAllData();
+                },
+                error => { 
+                    btn.innerHTML = '❌ فشل'; 
+                    btn.style.backgroundColor = '#dc3545'; 
+                    textDisplay.textContent = 'تأكد من تفعيل الـ GPS'; 
+                }
             );
         }
     }
@@ -859,11 +1224,11 @@
     function switchView(view) {
         const tabList = document.getElementById('tab-list');
         const tabMonth = document.getElementById('tab-month');
-        const vSchedule = document.getElementById('vertical-schedule');
+        const vScheduleView = document.getElementById('vertical-schedule-view');
         const mCalendar = document.getElementById('monthly-calendar');
 
         [tabList, tabMonth].forEach(t => t.classList.remove('active'));
-        vSchedule.style.display = 'none';
+        vScheduleView.style.display = 'none';
         mCalendar.classList.remove('active');
 
         if (view === 'month') {
@@ -872,19 +1237,40 @@
             renderMonthlyCalendar();
         } else {
             tabList.classList.add('active');
-            vSchedule.style.display = 'flex';
+            vScheduleView.style.display = 'block';
         }
+        
+        saveAllData();
     }
 
     function renderVerticalSchedule() {
         const container = document.getElementById('vertical-schedule');
+        if (!container) return;
+        
+        const existingSlots = {};
+        daysOfWeek.forEach(day => {
+            const card = document.getElementById(`card-${day.id}`);
+            if (card && card.dataset.savedSlots) {
+                try {
+                    existingSlots[day.id] = JSON.parse(card.dataset.savedSlots);
+                } catch(e) {}
+            }
+        });
+        
         container.innerHTML = '';
 
         daysOfWeek.forEach(day => {
             const dateInfo = getNextDateForDay(day.jsDay);
+            const targetDate = getDateForDayInCurrentWeek(day.jsDay);
+            const status = getDayStatus(targetDate);
+            
+            let statusClass = '';
+            if (status === 'today') statusClass = 'today-day-card';
+            else if (status === 'past') statusClass = 'past-day-card';
+            else statusClass = 'future-day-card';
             
             container.innerHTML += `
-                <div class="day-card" id="card-${day.id}" data-day="${day.name}">
+                <div class="day-card ${statusClass}" id="card-${day.id}" data-day="${day.name}">
                     <div class="day-header" onclick="toggleDayExpand('${day.id}')">
                         <div class="day-title">
                             <label>${day.name}</label>
@@ -905,6 +1291,78 @@
                 </div>
             `;
         });
+
+        daysOfWeek.forEach(day => {
+            const savedSlots = existingSlots[day.id];
+            if (savedSlots && savedSlots.length > 0) {
+                const card = document.getElementById(`card-${day.id}`);
+                card.dataset.savedSlots = JSON.stringify(savedSlots);
+                savedSlots.forEach(slotData => {
+                    rebuildSlot(day.id, slotData);
+                });
+            }
+        });
+    }
+
+    function rebuildSlot(dayId, slotData) {
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        if (!slotsContainer) return;
+        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        const hOpts = hourOptions();
+        const mOpts = minuteOptions();
+        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom);
+        const toOptions = buildMonthRangeOptions(slotData.rangeTo);
+        
+        const slotHTML = `
+            <div class="time-slot ${slotData.isLocked ? 'locked' : ''}" id="${slotId}"
+                 data-range-from="${slotData.rangeFrom || ''}"
+                 data-range-to="${slotData.rangeTo || ''}">
+                <div class="time-row">
+                    <span class="time-label">من:</span>
+                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
+                        <option value="ص">ص</option><option value="م">م</option>
+                    </select>
+                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
+                </div>
+                <div class="time-row">
+                    <span class="time-label">إلى:</span>
+                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
+                        <option value="ص">ص</option><option value="م">م</option>
+                    </select>
+                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
+                </div>
+                <div class="slot-range">
+                    <span class="slot-range-label">📆 من:</span>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
+                    <span class="slot-range-arrow">←</span>
+                    <span class="slot-range-label">إلى:</span>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
+                </div>
+                <div class="slot-actions">
+                    <span class="slot-apply-note ${slotData.isSaved ? 'show' : ''}">${buildApplyNote(dayId, slotData.rangeFrom, slotData.rangeTo)}</span>
+                    <button class="btn-save-slot ${slotData.isSaved ? 'saved' : ''}" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
+                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
+                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
+                </div>
+            </div>
+        `;
+        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
+        
+        const slot = document.getElementById(slotId);
+        slot.querySelector('.start-period').value = slotData.startPeriod || 'م';
+        slot.querySelector('.start-minute').value = slotData.startMinute || '';
+        slot.querySelector('.start-hour').value = slotData.startHour || '';
+        slot.querySelector('.end-period').value = slotData.endPeriod || 'م';
+        slot.querySelector('.end-minute').value = slotData.endMinute || '';
+        slot.querySelector('.end-hour').value = slotData.endHour || '';
+        
+        if (slotData.isSaved) {
+            const card = document.getElementById(`card-${dayId}`);
+            if (card) card.classList.add('active');
+        }
+        updateDayStatusDisplay(dayId);
     }
 
     function toggleDayExpand(dayId) {
@@ -948,30 +1406,29 @@
             <div class="time-slot" id="${slotId}">
                 <div class="time-row">
                     <span class="time-label">من:</span>
-                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
+                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
                         <option value="ص">ص</option><option value="م" selected>م</option>
                     </select>
-                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
                 </div>
                 <div class="time-row">
                     <span class="time-label">إلى:</span>
-                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
+                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
                         <option value="ص">ص</option><option value="م" selected>م</option>
                     </select>
-                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
+                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
                 </div>
-                
                 <div class="slot-range">
                     <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
                     <span class="slot-range-arrow">←</span>
                     <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
                 </div>
-                
                 <div class="slot-actions">
+                    <span class="slot-apply-note">${buildApplyNote(dayId, fromVal, toVal)}</span>
                     <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
                     <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
                     <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
@@ -980,11 +1437,24 @@
         `;
         slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
         updateDayStatusDisplay(dayId);
+        saveAllData();
     }
 
     function markUnsaved(slotId) {
         const slot = document.getElementById(slotId);
-        if (slot) { slot.querySelector('.btn-save-slot').classList.remove('saved'); }
+        if (!slot) return;
+        slot.querySelector('.btn-save-slot').classList.remove('saved');
+        
+        // 🎯 تحديث الرسالة التوضيحية عند تغيير أي حقل
+        const noteEl = slot.querySelector('.slot-apply-note');
+        if (noteEl) {
+            const dayCard = slot.closest('.day-card');
+            const dayId = dayCard ? dayCard.id.replace('card-', '') : '';
+            const fromVal = slot.querySelector('.slot-range-from').value;
+            const toVal = slot.querySelector('.slot-range-to').value;
+            noteEl.innerHTML = buildApplyNote(dayId, fromVal, toVal);
+            noteEl.classList.remove('show');
+        }
     }
 
     function readTime(slot, prefix) {
@@ -1045,6 +1515,16 @@
         document.getElementById(`card-${dayId}`).classList.add('active');
         updateDayStatusDisplay(dayId);
         renderMonthlyCalendar();
+        saveDaySlotsToCard(dayId);
+        
+        // 🎯 تحديث الرسالة التوضيحية بعد الحفظ
+        const noteEl = slot.querySelector('.slot-apply-note');
+        if (noteEl) {
+            noteEl.innerHTML = buildApplyNote(dayId, slot.dataset.rangeFrom, slot.dataset.rangeTo);
+            noteEl.classList.add('show');
+        }
+        
+        saveAllData();
         
         let rangeMsg = '';
         if (slotRangeFrom && slotRangeTo) {
@@ -1055,6 +1535,33 @@
         alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير." + rangeMsg);
     }
 
+    function saveDaySlotsToCard(dayId) {
+        const card = document.getElementById(`card-${dayId}`);
+        if (!card) return;
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const savedSlots = [];
+        slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            if (!saveBtn.classList.contains('saved')) return;
+            const startTime = readTime(slot, 'start');
+            const endTime = readTime(slot, 'end');
+            if (!startTime || !endTime) return;
+            savedSlots.push({
+                startHour: startTime.hour,
+                startMinute: startTime.minute,
+                startPeriod: startTime.period,
+                endHour: endTime.hour,
+                endMinute: endTime.minute,
+                endPeriod: endTime.period,
+                isSaved: true,
+                isLocked: true,
+                rangeFrom: slot.dataset.rangeFrom || '',
+                rangeTo: slot.dataset.rangeTo || ''
+            });
+        });
+        card.dataset.savedSlots = JSON.stringify(savedSlots);
+    }
+
     function editSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
@@ -1062,6 +1569,7 @@
         slot.querySelector('.btn-save-slot').classList.remove('saved');
         checkDayActive(dayId);
         updateDayStatusDisplay(dayId);
+        saveAllData();
     }
 
     function timeToMinutes(hour, minute, period) {
@@ -1089,13 +1597,16 @@
             slot.remove();
             checkDayActive(dayId);
             updateDayStatusDisplay(dayId);
+            saveDaySlotsToCard(dayId);
             renderMonthlyCalendar();
+            saveAllData();
         }
     }
 
     function updateDayStatusDisplay(dayId) {
         const statusText = document.getElementById(`status-${dayId}`);
         const slotsContainer = document.getElementById(`slots-${dayId}`);
+        if (!statusText || !slotsContainer) return;
         const timeSlots = slotsContainer.querySelectorAll('.time-slot');
         let sessions = [];
         timeSlots.forEach(slot => {
@@ -1173,6 +1684,7 @@
         currentYear = now.getFullYear();
         currentMonth = now.getMonth();
         renderMonthlyCalendar();
+        saveAllData();
     }
 
     function jsDayToCol(jsDay) {
@@ -1207,7 +1719,12 @@
 
         const weeklySessions = getAllWeeklySessions();
         
-        nameEl.textContent = `${MONTH_NAMES_AR[currentMonth]} ${currentYear}`;
+        const monthNum = (currentMonth + 1).toString().padStart(2, '0');
+        nameEl.innerHTML = `
+            <span>${MONTH_NAMES_AR[currentMonth]}</span>
+            <span class="month-num-badge">${monthNum}</span>
+            <span>${currentYear}</span>
+        `;
 
         const actualMonthSessions = countMonthSessions(currentYear, currentMonth, weeklySessions);
 
@@ -1279,7 +1796,6 @@
             html += `<div class="day-sessions">`;
             if (matchingSessions.length > 0 && !isOtherMonth) {
                 const now = new Date();
-                // 🎯 عرض كل الحصص (الجدول هيكبر تلقائياً)
                 matchingSessions.forEach(sess => {
                     const sessDateTime = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate(), Math.floor(sess.startMin / 60), sess.startMin % 60);
                     const isPast = sessDateTime < now;
