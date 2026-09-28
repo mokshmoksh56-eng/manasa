@@ -2,8 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>منصة احجزلي - مجموعتي</title>
+
+<!-- ✅ مكتبة Leaflet للخرائط -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
@@ -59,7 +64,7 @@
     }
     .teacher-info-text { flex: 1; min-width: 200px; }
     .teacher-info-text .label { font-size: 12px; color: #64748b; font-weight: 700; margin-bottom: 2px; }
-    .teacher-info-text .name { font-size: 22px; color: #1a3c6d; font-weight: 900; }
+    .teacher-info-text .name { font-size: 22px; color: #1a3c6d; font-weight: 900; word-break: break-word; }
 
     /* =========================================
        عنوان القسم
@@ -95,11 +100,39 @@
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
+        position: relative;
     }
     .group-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 14px 30px rgba(43,92,158,0.18);
         border-color: #2b5c9e;
+    }
+
+    /* ✅ شارة "منشور" */
+    .published-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 3px 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(46,204,113,0.4);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .published-badge::before {
+        content: '●';
+        font-size: 8px;
+        animation: pulseDot 1.5s infinite;
+    }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
     }
 
     .group-card-header {
@@ -137,8 +170,15 @@
     }
     .info-row:last-child { border-bottom: none; }
     .info-row .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
-    .info-row .key { color: #64748b; font-weight: 700; min-width: 90px; }
-    .info-row .value { color: #1a3c6d; font-weight: 900; flex: 1; }
+    .info-row .key { color: #64748b; font-weight: 700; min-width: 90px; flex-shrink: 0; }
+    .info-row .value {
+        color: #1a3c6d;
+        font-weight: 900;
+        flex: 1;
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
 
     /* شارات صغيرة */
     .chip {
@@ -154,39 +194,172 @@
     .chip.green { background: #dcfce7; color: #166534; border-color: #86efac; }
     .chip.gold { background: #fff8e1; color: #7a5c00; border-color: #f1c40f; }
 
-    /* شارات أيام الأسبوع */
-    .days-chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 5px;
+    /* =========================================
+       قسم مواعيد الحصص
+       ========================================= */
+    .schedule-section {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 2px dashed #e0e4e8;
     }
-    .day-chip {
-        background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
-        color: white;
-        font-size: 11px;
+    .schedule-section-title {
+        font-size: 13px;
         font-weight: 900;
-        padding: 4px 10px;
+        color: #1a3c6d;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .schedule-day-block {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border-right: 4px solid #2b5c9e;
+        transition: 0.2s;
+    }
+    .schedule-day-block:hover {
+        background: linear-gradient(135deg, #e3f2fd 0%, #dbeafe 100%);
+        border-right-color: #f1c40f;
+    }
+    .schedule-day-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 900;
+        color: #1a3c6d;
+        margin-bottom: 6px;
+    }
+    .schedule-day-header .day-icon { font-size: 15px; flex-shrink: 0; }
+    .schedule-day-header .day-name { flex: 1; }
+    .schedule-day-header .day-count {
+        background: #2b5c9e;
+        color: white;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 2px 8px;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+    .schedule-times {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .schedule-time-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: white;
+        padding: 6px 10px;
         border-radius: 8px;
-        box-shadow: 0 2px 0 #1e7e34;
+        font-size: 12px;
+        font-weight: 800;
+        color: #1a3c6d;
+        border: 1px solid #e0e4e8;
+        direction: ltr;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    .schedule-time-item .time-num {
+        background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%);
+        color: #1a3c6d;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 1px 7px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+    .schedule-time-item .time-range {
+        color: #1a3c6d;
+        font-family: 'Consolas', 'Courier New', monospace;
+        letter-spacing: 0.5px;
+    }
+    .schedule-time-item .time-arrow {
+        color: #f39c12;
+        font-weight: 900;
+        font-size: 14px;
+    }
+    .no-schedule {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 10px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px dashed #cbd5e1;
     }
 
     /* =========================================
-       أزرار التعديل والحذف
+       أزرار الكارت (تعديل / حذف / نشر)
        ========================================= */
     .group-card-actions {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         padding: 12px 15px;
         background: #f8fafc;
         border-top: 2px solid #e0e4e8;
+        flex-wrap: wrap;
     }
+
+    /* ✅ زر النشر - بارز */
+    .btn-publish {
+        flex: 1 1 100%;
+        padding: 12px 14px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(180deg, #2ecc71 0%, #27ae60 50%, #229954 100%);
+        color: white;
+        box-shadow: 0 5px 0 #1e7e34, 0 6px 15px rgba(39,174,96,0.35);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-publish::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.6s ease;
+    }
+    .btn-publish:hover {
+        background: linear-gradient(180deg, #3ddc84 0%, #2ecc71 50%, #27ae60 100%);
+        box-shadow: 0 5px 0 #1e7e34, 0 10px 22px rgba(39,174,96,0.5);
+        transform: translateY(-1px);
+    }
+    .btn-publish:hover::before { left: 100%; }
+    .btn-publish:active {
+        transform: translateY(4px);
+        box-shadow: 0 1px 0 #1e7e34, 0 3px 8px rgba(39,174,96,0.4);
+    }
+
+    /* ✅ زر "منشور" بعد النشر */
+    .btn-published {
+        background: linear-gradient(180deg, #95a5a6 0%, #7f8c8d 100%) !important;
+        box-shadow: 0 5px 0 #5d6d6e, 0 6px 15px rgba(127,140,141,0.3) !important;
+        cursor: default;
+    }
+    .btn-published:hover { transform: none; }
+
     .btn-edit, .btn-delete {
         flex: 1;
         padding: 10px 12px;
         border: none;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 900;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -210,6 +383,414 @@
     }
     .btn-delete:hover { background: linear-gradient(180deg, #ff6b5b 0%, #e74c3c 100%); }
     .btn-delete:active { transform: translateY(4px); box-shadow: 0 0 0 #8b2418; }
+
+    /* =========================================
+       نافذة النشر - الابتكار الرئيسي
+       ========================================= */
+    .publish-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        backdrop-filter: blur(5px);
+        overflow-y: auto;
+    }
+    .publish-modal-overlay.active { display: flex; }
+
+    .publish-modal {
+        background: white;
+        border-radius: 20px;
+        max-width: 700px;
+        width: 100%;
+        max-height: 95vh;
+        overflow: hidden;
+        box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+        animation: publishIn 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    @keyframes publishIn {
+        from { opacity: 0; transform: scale(0.85) translateY(30px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* رأس النافذة */
+    .publish-modal-header {
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        padding: 20px 25px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 4px solid #f1c40f;
+        position: relative;
+    }
+    .publish-modal-header .title-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 0;
+    }
+    .publish-modal-header .title-icon {
+        font-size: 28px;
+        flex-shrink: 0;
+    }
+    .publish-modal-header .title-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .publish-modal-header .title-text .main-title {
+        font-size: 20px;
+        font-weight: 900;
+        color: #f1c40f;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .publish-modal-header .title-text .sub-title {
+        font-size: 13px;
+        color: #d0d9e8;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .publish-modal-close {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        color: white;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        line-height: 1;
+    }
+    .publish-modal-close:hover {
+        background: rgba(255,255,255,0.3);
+        transform: rotate(90deg);
+    }
+
+    /* جسم النافذة */
+    .publish-modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 25px;
+    }
+
+    /* ✅ شريط النجاح */
+    .publish-success-bar {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        border: 2px solid #2ecc71;
+        border-radius: 12px;
+        padding: 12px 18px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #166534;
+        font-weight: 800;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(46,204,113,0.2);
+    }
+    .publish-success-bar .success-icon {
+        font-size: 26px;
+        flex-shrink: 0;
+        animation: bounceIn 0.6s ease;
+    }
+    @keyframes bounceIn {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    .publish-success-bar .success-text { flex: 1; line-height: 1.5; }
+
+    /* ✅ الخريطة */
+    .map-wrapper {
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        border: 3px solid #2b5c9e;
+        margin-bottom: 18px;
+        position: relative;
+    }
+    .map-header {
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 900;
+    }
+    .map-header .map-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #f1c40f;
+    }
+    .map-header .map-actions {
+        display: flex;
+        gap: 6px;
+    }
+    .map-header .map-btn {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: 0.2s;
+    }
+    .map-header .map-btn:hover {
+        background: rgba(255,255,255,0.3);
+    }
+    #publish-map {
+        width: 100%;
+        height: 280px;
+        background: #e0e4e8;
+    }
+    .no-gps-message {
+        padding: 40px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
+        color: #7a5c00;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+    .no-gps-message .icon {
+        font-size: 40px;
+        display: block;
+        margin-bottom: 10px;
+        opacity: 0.7;
+    }
+
+    /* ✅ بطاقة مواصفات الدرس */
+    .lesson-specs {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 14px;
+        padding: 18px 20px;
+        border: 2px solid #e0e4e8;
+        border-right: 5px solid #f1c40f;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 18px;
+    }
+    .lesson-specs-title {
+        font-size: 16px;
+        font-weight: 900;
+        color: #1a3c6d;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 10px;
+        border-bottom: 2px dashed #e0e4e8;
+    }
+    .lesson-specs-title .title-icon {
+        font-size: 20px;
+    }
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+    }
+    .spec-item {
+        background: white;
+        border-radius: 10px;
+        padding: 10px 12px;
+        border: 1px solid #e0e4e8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.2s;
+    }
+    .spec-item:hover {
+        border-color: #2b5c9e;
+        box-shadow: 0 4px 12px rgba(43,92,158,0.12);
+        transform: translateY(-2px);
+    }
+    .spec-item .spec-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    .spec-item .spec-content {
+        flex: 1;
+        min-width: 0;
+    }
+    .spec-item .spec-label {
+        font-size: 10px;
+        color: #64748b;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+    .spec-item .spec-value {
+        font-size: 13px;
+        color: #1a3c6d;
+        font-weight: 900;
+        word-break: break-word;
+    }
+    .spec-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    /* ✅ شريط التاريخ والوقت */
+    .datetime-bar {
+        background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
+        border: 2px dashed #f1c40f;
+        border-radius: 12px;
+        padding: 12px 18px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        color: #7a5c00;
+        font-weight: 800;
+        font-size: 13px;
+    }
+    .datetime-bar .dt-icon { font-size: 20px; }
+    .datetime-bar .dt-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        text-align: center;
+    }
+    .datetime-bar .dt-text .dt-main {
+        font-size: 15px;
+        font-weight: 900;
+        color: #7a5c00;
+    }
+    .datetime-bar .dt-text .dt-sub {
+        font-size: 11px;
+        color: #a18230;
+    }
+
+    /* ✅ قسم المشاركة */
+    .share-section {
+        background: linear-gradient(135deg, #e3f2fd 0%, #dbeafe 100%);
+        border-radius: 12px;
+        padding: 15px 18px;
+        margin-bottom: 18px;
+        border: 2px solid #b8d4f0;
+    }
+    .share-title {
+        font-size: 14px;
+        font-weight: 900;
+        color: #1a3c6d;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .share-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+    }
+    .share-btn {
+        padding: 10px 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-decoration: none;
+        color: white;
+    }
+    .share-btn.whatsapp {
+        background: linear-gradient(180deg, #25d366 0%, #128c7e 100%);
+        box-shadow: 0 3px 0 #0a5e54;
+    }
+    .share-btn.whatsapp:hover { background: linear-gradient(180deg, #3ddc84 0%, #25d366 100%); }
+    .share-btn.whatsapp:active { transform: translateY(3px); box-shadow: 0 0 0 #0a5e54; }
+    .share-btn.copy {
+        background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+        box-shadow: 0 3px 0 #1c5a85;
+    }
+    .share-btn.copy:hover { background: linear-gradient(180deg, #5dade2 0%, #3498db 100%); }
+    .share-btn.copy:active { transform: translateY(3px); box-shadow: 0 0 0 #1c5a85; }
+    .share-btn.print {
+        background: linear-gradient(180deg, #95a5a6 0%, #7f8c8d 100%);
+        box-shadow: 0 3px 0 #5d6d6e;
+    }
+    .share-btn.print:hover { background: linear-gradient(180deg, #b0bcbc 0%, #95a5a6 100%); }
+    .share-btn.print:active { transform: translateY(3px); box-shadow: 0 0 0 #5d6d6e; }
+
+    /* أزرار أسفل النافذة */
+    .publish-modal-footer {
+        padding: 15px 25px;
+        background: #f8fafc;
+        border-top: 2px solid #e0e4e8;
+        display: flex;
+        gap: 10px;
+    }
+    .publish-modal-footer .btn-close-footer {
+        flex: 1;
+        padding: 12px;
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 4px 0 #0d2342;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .publish-modal-footer .btn-close-footer:hover {
+        background: linear-gradient(180deg, #3d7ebf 0%, #2b5c9e 100%);
+    }
+    .publish-modal-footer .btn-close-footer:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 #0d2342;
+    }
+
+    /* ✅ أنيميشن دخول العناصر */
+    .publish-modal-body > * {
+        animation: slideUpFade 0.5s ease backwards;
+    }
+    .publish-modal-body > *:nth-child(1) { animation-delay: 0.05s; }
+    .publish-modal-body > *:nth-child(2) { animation-delay: 0.1s; }
+    .publish-modal-body > *:nth-child(3) { animation-delay: 0.15s; }
+    .publish-modal-body > *:nth-child(4) { animation-delay: 0.2s; }
+    .publish-modal-body > *:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
     /* =========================================
        صفحة فارغة
@@ -318,17 +899,291 @@
     .btn-confirm-delete:hover { background: linear-gradient(180deg, #ff6b5b 0%, #e74c3c 100%); }
     .btn-confirm-delete:active { transform: translateY(4px); box-shadow: 0 0 0 #8b2418; }
 
+    /* ✅ Toast للنسخ */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 900;
+        box-shadow: 0 8px 25px rgba(46,204,113,0.4);
+        z-index: 3000;
+        opacity: 0;
+        transition: all 0.4s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+    }
+    .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
     /* =========================================
        استجابة الموبايل
        ========================================= */
     @media (max-width: 700px) {
-        .header-3d h1 { font-size: 24px; }
-        .header-3d p { font-size: 13px; }
-        .groups-grid { grid-template-columns: 1fr; }
-        .teacher-info-card { padding: 15px; }
-        .teacher-avatar { width: 55px; height: 55px; font-size: 28px; }
-        .teacher-info-text .name { font-size: 18px; }
-        .section-title { font-size: 17px; }
+        body { padding-bottom: 20px; }
+
+        .header-3d { padding: 25px 15px 40px; }
+        .header-3d h1 { font-size: 22px; margin-bottom: 6px; }
+        .header-3d p { font-size: 12px; }
+
+        .container { padding: 0 8px; margin-top: -25px; }
+
+        .teacher-info-card {
+            padding: 12px 15px;
+            gap: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .teacher-avatar {
+            width: 50px; height: 50px;
+            font-size: 24px;
+            box-shadow: 0 4px 0 #90caf9, 0 6px 12px rgba(43,92,158,0.25);
+        }
+        .teacher-info-text { min-width: 0; }
+        .teacher-info-text .label { font-size: 10px; }
+        .teacher-info-text .name { font-size: 16px; }
+
+        .section-title {
+            font-size: 15px;
+            margin: 15px 0 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .section-title .count-badge {
+            font-size: 11px;
+            padding: 3px 10px;
+        }
+
+        .groups-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .group-card {
+            border-radius: 12px;
+            border-width: 1px;
+        }
+        .group-card:hover { transform: none; }
+
+        .published-badge {
+            top: 8px;
+            left: 8px;
+            font-size: 9px;
+            padding: 2px 8px;
+        }
+
+        .group-card-header {
+            padding: 10px 12px;
+            border-bottom-width: 2px;
+        }
+        .group-card-header .group-title {
+            font-size: 14px;
+            gap: 6px;
+        }
+        .group-card-header .group-icon { font-size: 18px; }
+
+        .group-card-body { padding: 10px 12px; }
+
+        .info-row {
+            padding: 6px 0;
+            gap: 6px;
+            font-size: 12px;
+        }
+        .info-row .icon { font-size: 14px; width: 18px; }
+        .info-row .key {
+            min-width: 75px;
+            font-size: 11px;
+        }
+        .info-row .value { font-size: 12px; }
+
+        .chip {
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+
+        .schedule-section {
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+        .schedule-section-title {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .schedule-day-block {
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            border-right-width: 3px;
+        }
+        .schedule-day-header {
+            font-size: 12px;
+            margin-bottom: 5px;
+            gap: 5px;
+        }
+        .schedule-day-header .day-icon { font-size: 13px; }
+        .schedule-day-header .day-count {
+            font-size: 9px;
+            padding: 1px 6px;
+        }
+
+        .schedule-times { gap: 3px; }
+        .schedule-time-item {
+            padding: 6px 8px;
+            font-size: 11px;
+            gap: 5px;
+            border-radius: 6px;
+            justify-content: center;
+        }
+        .schedule-time-item .time-num {
+            font-size: 9px;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+        .schedule-time-item .time-range {
+            font-size: 11px;
+            letter-spacing: 0;
+        }
+        .schedule-time-item .time-arrow { font-size: 12px; }
+
+        .no-schedule {
+            font-size: 11px;
+            padding: 8px;
+        }
+
+        .group-card-actions {
+            padding: 10px 12px;
+            gap: 6px;
+        }
+        .btn-publish {
+            font-size: 13px;
+            padding: 10px 12px;
+            gap: 6px;
+        }
+        .btn-edit, .btn-delete {
+            padding: 9px 10px;
+            font-size: 12px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        /* نافذة النشر على الموبايل */
+        .publish-modal-overlay { padding: 0; align-items: flex-end; }
+        .publish-modal {
+            border-radius: 20px 20px 0 0;
+            max-height: 95vh;
+        }
+        .publish-modal-header { padding: 15px 18px; }
+        .publish-modal-header .title-icon { font-size: 22px; }
+        .publish-modal-header .title-text .main-title { font-size: 16px; }
+        .publish-modal-header .title-text .sub-title { font-size: 11px; }
+        .publish-modal-close { width: 32px; height: 32px; font-size: 17px; }
+        .publish-modal-body { padding: 15px 18px; }
+
+        .publish-success-bar { font-size: 12px; padding: 10px 14px; gap: 8px; }
+        .publish-success-bar .success-icon { font-size: 20px; }
+
+        #publish-map { height: 220px; }
+        .map-header { font-size: 12px; padding: 8px 12px; }
+        .map-header .map-btn { font-size: 10px; padding: 4px 8px; }
+
+        .lesson-specs { padding: 14px 15px; }
+        .lesson-specs-title { font-size: 14px; margin-bottom: 10px; }
+        .specs-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+        .spec-item { padding: 8px 10px; gap: 8px; }
+        .spec-item .spec-icon { font-size: 18px; }
+        .spec-item .spec-label { font-size: 9px; }
+        .spec-item .spec-value { font-size: 11px; }
+
+        .datetime-bar { font-size: 11px; padding: 10px 12px; gap: 8px; }
+        .datetime-bar .dt-icon { font-size: 16px; }
+        .datetime-bar .dt-text .dt-main { font-size: 13px; }
+        .datetime-bar .dt-text .dt-sub { font-size: 10px; }
+
+        .share-section { padding: 12px 14px; }
+        .share-title { font-size: 12px; }
+        .share-buttons { grid-template-columns: 1fr 1fr; gap: 6px; }
+        .share-btn { font-size: 11px; padding: 9px 10px; gap: 4px; }
+
+        .publish-modal-footer { padding: 12px 18px; }
+        .publish-modal-footer .btn-close-footer { font-size: 13px; padding: 10px; }
+
+        .empty-state {
+            padding: 40px 15px;
+            border-radius: 12px;
+        }
+        .empty-state .empty-icon { font-size: 50px; margin-bottom: 10px; }
+        .empty-state h2 { font-size: 17px; }
+        .empty-state p { font-size: 13px; margin-bottom: 15px; }
+        .btn-create-new {
+            padding: 12px 22px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .modal-box {
+            padding: 20px 15px;
+            border-radius: 12px;
+        }
+        .modal-box .modal-icon { font-size: 40px; }
+        .modal-box h3 { font-size: 17px; }
+        .modal-box p { font-size: 13px; }
+        .modal-actions button { padding: 10px; font-size: 13px; }
+    }
+
+    @media (max-width: 380px) {
+        .header-3d h1 { font-size: 19px; }
+        .teacher-info-text .name { font-size: 14px; }
+        .section-title { font-size: 14px; }
+        .group-card-header .group-title { font-size: 13px; }
+        .info-row { font-size: 11px; }
+        .info-row .key { min-width: 65px; font-size: 10px; }
+        .info-row .value { font-size: 11px; }
+        .schedule-time-item { font-size: 10px; padding: 5px 6px; }
+        .schedule-time-item .time-range { font-size: 10px; }
+        .schedule-time-item .time-num { font-size: 8px; padding: 1px 4px; }
+        .btn-edit, .btn-delete { font-size: 11px; padding: 8px 8px; }
+        .btn-publish { font-size: 12px; padding: 9px 10px; }
+        .specs-grid { grid-template-columns: 1fr; }
+        .share-buttons { grid-template-columns: 1fr; }
+    }
+
+    /* =========================================
+       تنسيق الطباعة
+       ========================================= */
+    @media print {
+        body * { visibility: hidden; }
+        .publish-modal, .publish-modal * { visibility: visible; }
+        .publish-modal {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%;
+            max-width: 100%;
+            max-height: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+        .publish-modal-close,
+        .publish-modal-footer,
+        .share-section,
+        .map-header .map-actions { display: none !important; }
+        #publish-map { height: 300px; }
     }
 </style>
 </head>
@@ -393,12 +1248,122 @@
     </div>
 </div>
 
+<!-- ✅ نافذة النشر - الابتكار الرئيسي -->
+<div class="publish-modal-overlay" id="publish-modal" onclick="if(event.target===this) closePublishModal()">
+    <div class="publish-modal">
+        <!-- رأس النافذة -->
+        <div class="publish-modal-header">
+            <div class="title-area">
+                <span class="title-icon">🎉</span>
+                <div class="title-text">
+                    <span class="main-title">تم النشر بنجاح!</span>
+                    <span class="sub-title" id="publish-group-name">—</span>
+                </div>
+            </div>
+            <button class="publish-modal-close" onclick="closePublishModal()" title="إغلاق">✕</button>
+        </div>
+
+        <!-- جسم النافذة -->
+        <div class="publish-modal-body" id="publish-modal-body">
+
+            <!-- ✅ شريط النجاح -->
+            <div class="publish-success-bar">
+                <span class="success-icon">✅</span>
+                <div class="success-text">
+                    تم نشر المجموعة بنجاح! يمكنك الآن مشاركتها مع الطلاب.
+                </div>
+            </div>
+
+            <!-- ✅ الخريطة -->
+            <div class="map-wrapper">
+                <div class="map-header">
+                    <span class="map-title">📍 مكان الدرس</span>
+                    <div class="map-actions">
+                        <a href="#" class="map-btn" id="open-maps-btn" target="_blank">🗺️ فتح في الخرائط</a>
+                    </div>
+                </div>
+                <div id="publish-map"></div>
+                <div class="no-gps-message" id="no-gps-message" style="display:none;">
+                    <span class="icon">📍</span>
+                    لم يتم تحديد الموقع الجغرافي لهذه المجموعة.<br>
+                    يمكنك تعديل المجموعة وإضافة الموقع.
+                </div>
+            </div>
+
+            <!-- ✅ مواصفات الدرس -->
+            <div class="lesson-specs">
+                <div class="lesson-specs-title">
+                    <span class="title-icon">📋</span>
+                    <span>مواصفات الدرس</span>
+                </div>
+                <div class="specs-grid" id="specs-grid">
+                    <!-- يتم ملؤها ديناميكياً -->
+                </div>
+            </div>
+
+            <!-- ✅ شريط التاريخ والوقت -->
+            <div class="datetime-bar">
+                <span class="dt-icon">📅</span>
+                <div class="dt-text">
+                    <span class="dt-main" id="publish-datetime-main">—</span>
+                    <span class="dt-sub" id="publish-datetime-sub">—</span>
+                </div>
+                <span class="dt-icon">🕐</span>
+            </div>
+
+            <!-- ✅ قسم المشاركة -->
+            <div class="share-section">
+                <div class="share-title">
+                    <span>📤</span>
+                    <span>شارك المجموعة</span>
+                </div>
+                <div class="share-buttons">
+                    <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                        <span>💬</span>
+                        <span>واتساب</span>
+                    </button>
+                    <button class="share-btn copy" onclick="copyGroupDetails()">
+                        <span>📋</span>
+                        <span>نسخ التفاصيل</span>
+                    </button>
+                    <button class="share-btn print" onclick="printGroup()">
+                        <span>🖨️</span>
+                        <span>طباعة</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- أزرار أسفل النافذة -->
+        <div class="publish-modal-footer">
+            <button class="btn-close-footer" onclick="closePublishModal()">
+                <span>✓</span>
+                <span>تم</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Toast للنسخ -->
+<div class="toast" id="toast">
+    <span>✅</span>
+    <span id="toast-message">تم النسخ بنجاح</span>
+</div>
+
 <script>
     // =========================================
-    // 🎯 مفتاح تخزين المجموعات
+    // 🎯 مفاتيح التخزين
     // =========================================
     const GROUPS_STORAGE_KEY = 'mester_groups_list';
     const TEACHER_NAME_KEY = 'mester_teacher_name';
+
+    // =========================================
+    // 🎯 متغيرات الخريطة
+    // =========================================
+    let publishMap = null;
+    let publishMarker = null;
+    let currentPublishGroup = null;
 
     // =========================================
     // 🎯 تحميل وعرض البيانات
@@ -454,16 +1419,72 @@
     }
 
     // =========================================
+    // ✅ بناء قسم مواعيد الحصص
+    // =========================================
+    function buildScheduleSection(group) {
+        const schedule = group.schedule || {};
+        const dayNames = Object.keys(schedule);
+
+        if (dayNames.length === 0) {
+            return `<div class="no-schedule">📭 لا توجد مواعيد حصص بعد</div>`;
+        }
+
+        const weekOrder = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+        const sortedDays = dayNames.sort((a, b) => {
+            const ia = weekOrder.indexOf(a);
+            const ib = weekOrder.indexOf(b);
+            return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+        });
+
+        let html = '';
+        sortedDays.forEach(dayName => {
+            const daySlots = schedule[dayName];
+            if (!Array.isArray(daySlots) || daySlots.length === 0) return;
+
+            const sortedSlots = [...daySlots].sort((a, b) => {
+                return parseTimeToMin(a.start) - parseTimeToMin(b.start);
+            });
+
+            const timesHtml = sortedSlots.map((s, i) => `
+                <div class="schedule-time-item">
+                    <span class="time-num">${i + 1}</span>
+                    <span class="time-range">${escapeHtml(s.start)}</span>
+                    <span class="time-arrow">→</span>
+                    <span class="time-range">${escapeHtml(s.end)}</span>
+                </div>
+            `).join('');
+
+            html += `
+                <div class="schedule-day-block">
+                    <div class="schedule-day-header">
+                        <span class="day-icon">📅</span>
+                        <span class="day-name">${escapeHtml(dayName)}</span>
+                        <span class="day-count">${sortedSlots.length} حصة</span>
+                    </div>
+                    <div class="schedule-times">${timesHtml}</div>
+                </div>
+            `;
+        });
+
+        return html || `<div class="no-schedule">📭 لا توجد مواعيد حصص بعد</div>`;
+    }
+
+    function parseTimeToMin(timeStr) {
+        if (!timeStr) return 0;
+        const parts = timeStr.split(' ');
+        const hm = parts[0].split(':');
+        let h = parseInt(hm[0]) || 0;
+        const m = parseInt(hm[1]) || 0;
+        const period = parts[1] || 'م';
+        if (period === 'م' && h !== 12) h += 12;
+        if (period === 'ص' && h === 12) h = 0;
+        return h * 60 + m;
+    }
+
+    // =========================================
     // 🎯 رسم كارت المجموعة
     // =========================================
     function renderGroupCard(group, index) {
-        // بناء قائمة الأيام
-        const dayNames = Object.keys(group.schedule || {});
-        const daysHtml = dayNames.length > 0
-            ? dayNames.map(d => `<span class="day-chip">📅 ${d}</span>`).join('')
-            : '<span class="chip">لا توجد أيام</span>';
-
-        // حساب إجمالي الحصص الأسبوعية
         let totalSessions = 0;
         if (group.schedule) {
             Object.values(group.schedule).forEach(dayArr => {
@@ -471,20 +1492,27 @@
             });
         }
 
-        // حساب تاريخ الإنشاء
-        const createdAt = group.createdAt ? new Date(group.createdAt) : null;
-        let createdStr = '—';
-        if (createdAt) {
-            const d = createdAt.getDate().toString().padStart(2, '0');
-            const m = (createdAt.getMonth() + 1).toString().padStart(2, '0');
-            const y = createdAt.getFullYear();
-            const hh = createdAt.getHours().toString().padStart(2, '0');
-            const mm = createdAt.getMinutes().toString().padStart(2, '0');
-            createdStr = `${d}/${m}/${y} - ${hh}:${mm}`;
-        }
+        const scheduleHtml = buildScheduleSection(group);
+
+        // ✅ شارة "منشور" إذا كانت المجموعة منشورة
+        const publishedBadge = group.published
+            ? `<div class="published-badge">منشور</div>`
+            : '';
+
+        // ✅ زر النشر (يختلف حسب الحالة)
+        const publishBtn = group.published
+            ? `<button class="btn-publish btn-published" onclick="openPublishModal(${index})">
+                   <span>✅</span>
+                   <span>منشور - عرض التفاصيل</span>
+               </button>`
+            : `<button class="btn-publish" onclick="publishGroup(${index})">
+                   <span>🚀</span>
+                   <span>نشر المجموعة</span>
+               </button>`;
 
         return `
             <div class="group-card">
+                ${publishedBadge}
                 <div class="group-card-header">
                     <div class="group-title">
                         <span class="group-icon">📚</span>
@@ -529,22 +1557,17 @@
                         <span class="value"><span class="chip gold">${totalSessions} حصة</span></span>
                     </div>
 
-                    <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="icon">📅</span>
-                            <span class="key">الأيام:</span>
+                    <div class="schedule-section">
+                        <div class="schedule-section-title">
+                            <span>🕐</span>
+                            <span>مواعيد الحصص</span>
                         </div>
-                        <div class="days-chips">${daysHtml}</div>
-                    </div>
-
-                    <div class="info-row">
-                        <span class="icon">🕐</span>
-                        <span class="key">تاريخ الإنشاء:</span>
-                        <span class="value" style="font-size: 12px; direction: ltr;">${createdStr}</span>
+                        ${scheduleHtml}
                     </div>
                 </div>
 
                 <div class="group-card-actions">
+                    ${publishBtn}
                     <button class="btn-edit" onclick="editGroup(${index})">
                         <span>✏️</span>
                         <span>تعديل</span>
@@ -569,18 +1592,456 @@
     }
 
     // =========================================
-    // 🎯 التعديل: فتح mester2 مع بيانات المجموعة
+    // ✅ دالة النشر - الابتكار الرئيسي
+    // =========================================
+    function publishGroup(index) {
+        const groups = getGroups();
+        const group = groups[index];
+        if (!group) return;
+
+        // تحديث حالة المجموعة إلى "منشور"
+        group.published = true;
+        group.publishedAt = new Date().toISOString();
+        groups[index] = group;
+        saveGroups(groups);
+
+        // إعادة رسم الكروت
+        loadAndRenderGroups();
+
+        // فتح نافذة النشر
+        openPublishModal(index);
+
+        // إشعار
+        showToast('🎉 تم نشر المجموعة بنجاح!');
+    }
+
+    // =========================================
+    // ✅ فتح نافذة النشر
+    // =========================================
+    function openPublishModal(index) {
+        const groups = getGroups();
+        const group = groups[index];
+        if (!group) return;
+
+        currentPublishGroup = { ...group, _index: index };
+
+        // ✅ اسم المجموعة في الرأس
+        document.getElementById('publish-group-name').textContent =
+            group.groupName ? '«' + group.groupName + '»' : '';
+
+        // ✅ التاريخ والوقت
+        updatePublishDateTime();
+
+        // ✅ مواصفات الدرس
+        renderLessonSpecs(group);
+
+        // ✅ الخريطة
+        renderPublishMap(group);
+
+        // ✅ فتح النافذة
+        document.getElementById('publish-modal').classList.add('active');
+
+        // ✅ منع تمرير الصفحة الخلفية
+        document.body.style.overflow = 'hidden';
+
+        // ✅ إعادة رسم الخريطة بعد فتح النافذة
+        setTimeout(() => {
+            if (publishMap) publishMap.invalidateSize();
+        }, 300);
+    }
+
+    function closePublishModal() {
+        document.getElementById('publish-modal').classList.remove('active');
+        document.body.style.overflow = '';
+
+        // تنظيف الخريطة
+        if (publishMap) {
+            publishMap.remove();
+            publishMap = null;
+            publishMarker = null;
+        }
+
+        currentPublishGroup = null;
+    }
+
+    // =========================================
+    // ✅ عرض مواصفات الدرس
+    // =========================================
+    function renderLessonSpecs(group) {
+        const specsGrid = document.getElementById('specs-grid');
+
+        // حساب إجمالي الحصص
+        let totalSessions = 0;
+        if (group.schedule) {
+            Object.values(group.schedule).forEach(dayArr => {
+                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
+            });
+        }
+
+        // عدد الأيام
+        const daysCount = group.schedule ? Object.keys(group.schedule).length : 0;
+
+        // اسم المادة
+        const subject = group.subjectData || '—';
+
+        // الفئة
+        const gender = group.genderAllowed || 'مختلط';
+
+        // المكان
+        const location = group.location || 'السنتر';
+
+        // عدد الطلاب
+        const students = group.studentsCount || '—';
+
+        specsGrid.innerHTML = `
+            <div class="spec-item full-width">
+                <span class="spec-icon">📖</span>
+                <div class="spec-content">
+                    <div class="spec-label">المادة والصف</div>
+                    <div class="spec-value">${escapeHtml(subject)}</div>
+                </div>
+            </div>
+
+            <div class="spec-item">
+                <span class="spec-icon">👨‍🏫</span>
+                <div class="spec-content">
+                    <div class="spec-label">المستر</div>
+                    <div class="spec-value">${escapeHtml(group.teacherName || '—')}</div>
+                </div>
+            </div>
+
+            <div class="spec-item">
+                <span class="spec-icon">👥</span>
+                <div class="spec-content">
+                    <div class="spec-label">عدد الطلاب</div>
+                    <div class="spec-value">${escapeHtml(students)} طالب</div>
+                </div>
+            </div>
+
+            <div class="spec-item">
+                <span class="spec-icon">👫</span>
+                <div class="spec-content">
+                    <div class="spec-label">الفئة</div>
+                    <div class="spec-value">${escapeHtml(gender)}</div>
+                </div>
+            </div>
+
+            <div class="spec-item">
+                <span class="spec-icon">📍</span>
+                <div class="spec-content">
+                    <div class="spec-label">المكان</div>
+                    <div class="spec-value">${escapeHtml(location)}</div>
+                </div>
+            </div>
+
+            <div class="spec-item">
+                <span class="spec-icon">📊</span>
+                <div class="spec-content">
+                    <div class="spec-label">الحصص الأسبوعية</div>
+                    <div class="spec-value">${totalSessions} حصة / ${daysCount} يوم</div>
+                </div>
+            </div>
+
+            ${group.gpsLocation ? `
+            <div class="spec-item full-width">
+                <span class="spec-icon">🗺️</span>
+                <div class="spec-content">
+                    <div class="spec-label">الموقع الجغرافي</div>
+                    <div class="spec-value" style="direction:ltr;font-size:11px;font-family:monospace;">${escapeHtml(group.gpsLocation)}</div>
+                </div>
+            </div>
+            ` : ''}
+        `;
+    }
+
+    // =========================================
+    // ✅ عرض الخريطة
+    // =========================================
+    function renderPublishMap(group) {
+        const mapContainer = document.getElementById('publish-map');
+        const noGpsMsg = document.getElementById('no-gps-message');
+        const openMapsBtn = document.getElementById('open-maps-btn');
+
+        // تنظيف الخريطة القديمة
+        if (publishMap) {
+            publishMap.remove();
+            publishMap = null;
+            publishMarker = null;
+        }
+
+        // ✅ التحقق من وجود GPS
+        if (!group.gpsLocation || !group.gpsLocation.includes(',')) {
+            mapContainer.style.display = 'none';
+            noGpsMsg.style.display = 'block';
+            openMapsBtn.style.display = 'none';
+            return;
+        }
+
+        const [lat, lng] = group.gpsLocation.split(',').map(s => parseFloat(s.trim()));
+        if (isNaN(lat) || isNaN(lng)) {
+            mapContainer.style.display = 'none';
+            noGpsMsg.style.display = 'block';
+            openMapsBtn.style.display = 'none';
+            return;
+        }
+
+        mapContainer.style.display = 'block';
+        noGpsMsg.style.display = 'none';
+        openMapsBtn.style.display = 'inline-flex';
+
+        // ✅ رابط Google Maps
+        openMapsBtn.href = `https://www.google.com/maps?q=${lat},${lng}`;
+
+        // ✅ إنشاء الخريطة
+        publishMap = L.map('publish-map', {
+            center: [lat, lng],
+            zoom: 15,
+            zoomControl: true,
+            scrollWheelZoom: false
+        });
+
+        // ✅ طبقة OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(publishMap);
+
+        // ✅ أيقونة مخصصة للماركر
+        const customIcon = L.divIcon({
+            html: `
+                <div style="
+                    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50% 50% 50% 0;
+                    transform: rotate(-45deg);
+                    border: 3px solid white;
+                    box-shadow: 0 4px 12px rgba(231,76,60,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                ">
+                    <span style="
+                        transform: rotate(45deg);
+                        font-size: 20px;
+                        line-height: 1;
+                    ">📚</span>
+                </div>
+            `,
+            className: 'custom-marker',
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+            popupAnchor: [0, -40]
+        });
+
+        // ✅ إضافة الماركر
+        publishMarker = L.marker([lat, lng], { icon: customIcon }).addTo(publishMap);
+
+        // ✅ نافذة منبثقة
+        const popupContent = `
+            <div style="
+                text-align: right;
+                font-family: 'Segoe UI', Tahoma, sans-serif;
+                min-width: 180px;
+                direction: rtl;
+            ">
+                <div style="
+                    font-weight: 900;
+                    color: #1a3c6d;
+                    font-size: 14px;
+                    margin-bottom: 6px;
+                    padding-bottom: 6px;
+                    border-bottom: 2px solid #f1c40f;
+                ">📚 ${escapeHtml(group.groupName || 'المجموعة')}</div>
+                <div style="font-size: 12px; color: #64748b; font-weight: 700; margin-bottom: 4px;">
+                    👨‍🏫 ${escapeHtml(group.teacherName || '—')}
+                </div>
+                <div style="font-size: 12px; color: #64748b; font-weight: 700; margin-bottom: 4px;">
+                    📖 ${escapeHtml(group.subjectData || '—')}
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; font-weight: 600;">
+                    📍 ${escapeHtml(group.location || 'السنتر')}
+                </div>
+            </div>
+        `;
+
+        publishMarker.bindPopup(popupContent).openPopup();
+    }
+
+    // =========================================
+    // ✅ تحديث التاريخ والوقت
+    // =========================================
+    function updatePublishDateTime() {
+        const now = new Date();
+
+        const daysAr = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        const monthsAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                          'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+
+        const dayName = daysAr[now.getDay()];
+        const day = now.getDate();
+        const month = monthsAr[now.getMonth()];
+        const year = now.getFullYear();
+
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const period = hours >= 12 ? 'م' : 'ص';
+        hours = hours % 12 || 12;
+
+        document.getElementById('publish-datetime-main').textContent =
+            `${dayName} ${day} ${month} ${year}`;
+
+        document.getElementById('publish-datetime-sub').textContent =
+            `تم النشر الساعة ${hours}:${minutes} ${period}`;
+    }
+
+    // =========================================
+    // ✅ نسخ التفاصيل
+    // =========================================
+    function copyGroupDetails() {
+        if (!currentPublishGroup) return;
+        const g = currentPublishGroup;
+
+        // بناء نص التفاصيل
+        let scheduleText = '';
+        if (g.schedule) {
+            const weekOrder = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+            const sortedDays = Object.keys(g.schedule).sort((a, b) => {
+                return weekOrder.indexOf(a) - weekOrder.indexOf(b);
+            });
+            sortedDays.forEach(dayName => {
+                const slots = g.schedule[dayName];
+                if (!Array.isArray(slots) || slots.length === 0) return;
+                const sorted = [...slots].sort((a, b) => parseTimeToMin(a.start) - parseTimeToMin(b.start));
+                scheduleText += `\n📅 ${dayName}:\n`;
+                sorted.forEach((s, i) => {
+                    scheduleText += `   ${i + 1}) ${s.start} → ${s.end}\n`;
+                });
+            });
+        }
+
+        let totalSessions = 0;
+        if (g.schedule) {
+            Object.values(g.schedule).forEach(dayArr => {
+                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
+            });
+        }
+
+        const text = `
+🎓 مجموعة جديدة متاحة للحجز!
+━━━━━━━━━━━━━━━━━━━━
+
+📚 المجموعة: ${g.groupName || '—'}
+📖 المادة: ${g.subjectData || '—'}
+👨‍🏫 المستر: ${g.teacherName || '—'}
+👥 العدد المطلوب: ${g.studentsCount || '—'} طالب
+👫 الفئة: ${g.genderAllowed || 'مختلط'}
+📍 المكان: ${g.location || 'السنتر'}
+📊 الحصص الأسبوعية: ${totalSessions} حصة
+
+🕐 المواعيد:${scheduleText}
+${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gpsLocation}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━
+منصة احجزلي 🎓
+        `.trim();
+
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('📋 تم نسخ التفاصيل بنجاح!');
+        }).catch(err => {
+            // طريقة بديلة للنسخ
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('📋 تم نسخ التفاصيل بنجاح!');
+        });
+    }
+
+    // =========================================
+    // ✅ مشاركة واتساب
+    // =========================================
+    function shareWhatsApp() {
+        if (!currentPublishGroup) return;
+        const g = currentPublishGroup;
+
+        let scheduleText = '';
+        if (g.schedule) {
+            const weekOrder = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+            const sortedDays = Object.keys(g.schedule).sort((a, b) => {
+                return weekOrder.indexOf(a) - weekOrder.indexOf(b);
+            });
+            sortedDays.forEach(dayName => {
+                const slots = g.schedule[dayName];
+                if (!Array.isArray(slots) || slots.length === 0) return;
+                const sorted = [...slots].sort((a, b) => parseTimeToMin(a.start) - parseTimeToMin(b.start));
+                scheduleText += `\n📅 ${dayName}:\n`;
+                sorted.forEach((s, i) => {
+                    scheduleText += `   ${i + 1}) ${s.start} → ${s.end}\n`;
+                });
+            });
+        }
+
+        let totalSessions = 0;
+        if (g.schedule) {
+            Object.values(g.schedule).forEach(dayArr => {
+                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
+            });
+        }
+
+        const text = `
+🎓 مجموعة جديدة متاحة للحجز!
+
+📚 ${g.groupName || '—'}
+📖 ${g.subjectData || '—'}
+👨‍🏫 ${g.teacherName || '—'}
+👥 ${g.studentsCount || '—'} طالب
+👫 ${g.genderAllowed || 'مختلط'}
+📍 ${g.location || 'السنتر'}
+📊 ${totalSessions} حصة أسبوعياً
+
+🕐 المواعيد:${scheduleText}
+${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gpsLocation}` : ''}
+
+منصة احجزلي 🎓
+        `.trim();
+
+        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+    }
+
+    // =========================================
+    // ✅ طباعة
+    // =========================================
+    function printGroup() {
+        window.print();
+    }
+
+    // =========================================
+    // ✅ Toast
+    // =========================================
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-message').textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    // =========================================
+    // 🎯 التعديل
     // =========================================
     function editGroup(index) {
         const groups = getGroups();
         const group = groups[index];
         if (!group) return;
 
-        // نحفظ بيانات المجموعة للتعديل
         localStorage.setItem('mester2_edit_index', String(index));
         localStorage.setItem('mester2_edit_data', JSON.stringify(group));
 
-        // نروح لـ mester2
         window.location.href = 'mester2.html?mode=edit&index=' + index;
     }
 
@@ -612,6 +2073,19 @@
         closeDeleteModal();
         loadAndRenderGroups();
     }
+
+    // =========================================
+    // 🎯 إغلاق بالـ Escape
+    // =========================================
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (document.getElementById('publish-modal').classList.contains('active')) {
+                closePublishModal();
+            } else if (document.getElementById('delete-modal').classList.contains('active')) {
+                closeDeleteModal();
+            }
+        }
+    });
 </script>
 
 </body>
