@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة احجزلي - مجموعتي</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
+
+    /* =========================================
+       الهيدر
+       ========================================= */
+    .header-3d {
+        width: 100%;
+        background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%),
+                    url('teacher2.png') center/cover no-repeat;
+        padding: 35px 20px 50px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3);
+        border-bottom: 3px solid #f1c40f;
+    }
+    .header-3d h1 {
+        font-size: 34px; font-weight: 900; color: #f1c40f;
+        text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5);
+        margin-bottom: 10px;
+    }
+    .header-3d p { font-size: 15px; color: #d0d9e8; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+
+    /* =========================================
+       الحاوية
+       ========================================= */
+    .container { width: 100%; max-width: 1100px; margin: -30px auto 0; padding: 0 15px; position: relative; z-index: 10; }
+
+    /* =========================================
+       كارت معلومات المعلم
+       ========================================= */
+    .teacher-info-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border-top: 4px solid #2b5c9e;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .teacher-avatar {
+        width: 70px; height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 36px;
+        box-shadow: 0 6px 0 #90caf9, 0 8px 18px rgba(43,92,158,0.25), inset 0 2px 6px rgba(255,255,255,0.8);
+        flex-shrink: 0;
+    }
+    .teacher-info-text { flex: 1; min-width: 200px; }
+    .teacher-info-text .label { font-size: 12px; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+    .teacher-info-text .name { font-size: 22px; color: #1a3c6d; font-weight: 900; }
+
+    /* =========================================
+       عنوان القسم
+       ========================================= */
+    .section-title {
+        display: flex; align-items: center; gap: 12px;
+        font-size: 20px; font-weight: 900; color: #1a3c6d;
+        margin: 20px 0 15px;
+    }
+    .section-title .count-badge {
+        background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%);
+        color: #1a3c6d; font-size: 14px; font-weight: 900;
+        padding: 4px 12px; border-radius: 20px;
+        box-shadow: 0 3px 0 #b38f00;
+    }
+
+    /* =========================================
+       كارت المجموعة
+       ========================================= */
+    .groups-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .group-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        border: 2px solid #e0e4e8;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    .group-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(43,92,158,0.18);
+        border-color: #2b5c9e;
+    }
+
+    .group-card-header {
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 3px solid #f1c40f;
+    }
+    .group-card-header .group-title {
+        color: #f1c40f;
+        font-size: 18px;
+        font-weight: 900;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        display: flex; align-items: center; gap: 8px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .group-card-header .group-icon { font-size: 22px; flex-shrink: 0; }
+
+    .group-card-body { padding: 15px 20px; flex: 1; }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e0e4e8;
+        font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+    .info-row .key { color: #64748b; font-weight: 700; min-width: 90px; }
+    .info-row .value { color: #1a3c6d; font-weight: 900; flex: 1; }
+
+    /* شارات صغيرة */
+    .chip {
+        display: inline-block;
+        background: #e3f2fd;
+        color: #1a3c6d;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 8px;
+        border: 1px solid #b8d4f0;
+    }
+    .chip.green { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .chip.gold { background: #fff8e1; color: #7a5c00; border-color: #f1c40f; }
+
+    /* شارات أيام الأسبوع */
+    .days-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 5px;
+    }
+    .day-chip {
+        background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 0 #1e7e34;
+    }
+
+    /* =========================================
+       أزرار التعديل والحذف
+       ========================================= */
+    .group-card-actions {
+        display: flex;
+        gap: 8px;
+        padding: 12px 15px;
+        background: #f8fafc;
+        border-top: 2px solid #e0e4e8;
+    }
+    .btn-edit, .btn-delete {
+        flex: 1;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .btn-edit {
+        background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
+        color: white;
+        box-shadow: 0 4px 0 #b35f0a;
+    }
+    .btn-edit:hover { background: linear-gradient(180deg, #ffb13b 0%, #f39c12 100%); }
+    .btn-edit:active { transform: translateY(4px); box-shadow: 0 0 0 #b35f0a; }
+
+    .btn-delete {
+        background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        box-shadow: 0 4px 0 #8b2418;
+    }
+    .btn-delete:hover { background: linear-gradient(180deg, #ff6b5b 0%, #e74c3c 100%); }
+    .btn-delete:active { transform: translateY(4px); box-shadow: 0 0 0 #8b2418; }
+
+    /* =========================================
+       صفحة فارغة
+       ========================================= */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        border: 3px dashed #cbd5e1;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .empty-state .empty-icon { font-size: 70px; margin-bottom: 15px; opacity: 0.6; }
+    .empty-state h2 { color: #1a3c6d; font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+    .empty-state p { color: #64748b; font-size: 15px; font-weight: 600; margin-bottom: 20px; }
+
+    .btn-create-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        padding: 14px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+    }
+    .btn-create-new:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #0d2342, 0 12px 22px rgba(0,0,0,0.3); }
+    .btn-create-new:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d2342; }
+
+    /* =========================================
+       زر العودة
+       ========================================= */
+    .back-btn-wrapper { text-align: center; margin-top: 20px; }
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        color: #1a3c6d;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 900;
+        text-decoration: none;
+        border: 2px solid #2b5c9e;
+        box-shadow: 0 4px 10px rgba(43,92,158,0.15);
+        transition: all 0.2s ease;
+    }
+    .back-btn:hover { background: #e3f2fd; transform: translateY(-2px); }
+
+    /* =========================================
+       نافذة تأكيد الحذف
+       ========================================= */
+    .modal-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(3px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        border-top: 5px solid #e74c3c;
+        animation: modalIn 0.3s ease;
+        text-align: center;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .modal-box .modal-icon { font-size: 50px; margin-bottom: 10px; }
+    .modal-box h3 { color: #1a3c6d; font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+    .modal-box p { color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .modal-box .group-name-confirm { color: #1a3c6d; font-weight: 900; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .btn-cancel {
+        background: #e0e4e8;
+        color: #333;
+    }
+    .btn-cancel:hover { background: #cbd5e1; }
+    .btn-confirm-delete {
+        background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        box-shadow: 0 4px 0 #8b2418;
+    }
+    .btn-confirm-delete:hover { background: linear-gradient(180deg, #ff6b5b 0%, #e74c3c 100%); }
+    .btn-confirm-delete:active { transform: translateY(4px); box-shadow: 0 0 0 #8b2418; }
+
+    /* =========================================
+       استجابة الموبايل
+       ========================================= */
+    @media (max-width: 700px) {
+        .header-3d h1 { font-size: 24px; }
+        .header-3d p { font-size: 13px; }
+        .groups-grid { grid-template-columns: 1fr; }
+        .teacher-info-card { padding: 15px; }
+        .teacher-avatar { width: 55px; height: 55px; font-size: 28px; }
+        .teacher-info-text .name { font-size: 18px; }
+        .section-title { font-size: 17px; }
+    }
+</style>
+</head>
+<body>
+
+<header class="header-3d">
+    <h1>📚 مجموعاتي</h1>
+    <p>إدارة ومتابعة جميع المجموعات التي قمت بإنشائها</p>
+</header>
+
+<div class="container">
+
+    <!-- 🎯 كارت معلومات المعلم -->
+    <div class="teacher-info-card">
+        <div class="teacher-avatar">👨‍🏫</div>
+        <div class="teacher-info-text">
+            <div class="label">المعلم</div>
+            <div class="name" id="teacher-display-name">—</div>
+        </div>
+    </div>
+
+    <!-- 🎯 عنوان القسم -->
+    <div class="section-title">
+        <span>📋 المجموعات المتاحة</span>
+        <span class="count-badge" id="groups-count">0 مجموعة</span>
+    </div>
+
+    <!-- 🎯 شبكة المجموعات -->
+    <div class="groups-grid" id="groups-grid"></div>
+
+    <!-- 🎯 صفحة فارغة -->
+    <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-icon">📭</div>
+        <h2>لا توجد مجموعات بعد</h2>
+        <p>اضغط على الزر أدناه لإنشاء مجموعتك الأولى</p>
+        <a href="mester2.html" class="btn-create-new">
+            <span>➕</span>
+            <span>إنشاء مجموعة جديدة</span>
+        </a>
+    </div>
+
+    <!-- 🎯 زر العودة -->
+    <div class="back-btn-wrapper">
+        <a href="mester2.html" class="back-btn">
+            <span>➕</span>
+            <span>إضافة مجموعة جديدة</span>
+        </a>
+    </div>
+
+</div>
+
+<!-- 🎯 نافذة تأكيد الحذف -->
+<div class="modal-overlay" id="delete-modal" onclick="if(event.target===this) closeDeleteModal()">
+    <div class="modal-box">
+        <div class="modal-icon">🗑️</div>
+        <h3>تأكيد الحذف</h3>
+        <p>هل أنت متأكد من حذف المجموعة <span class="group-name-confirm" id="delete-group-name"></span>؟<br>لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeDeleteModal()">إلغاء</button>
+            <button class="btn-confirm-delete" onclick="confirmDeleteGroup()">🗑️ حذف نهائي</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // =========================================
+    // 🎯 مفتاح تخزين المجموعات
+    // =========================================
+    const GROUPS_STORAGE_KEY = 'mester_groups_list';
+    const TEACHER_NAME_KEY = 'mester_teacher_name';
+
+    // =========================================
+    // 🎯 تحميل وعرض البيانات
+    // =========================================
+    window.onload = function() {
+        loadTeacherName();
+        loadAndRenderGroups();
+    };
+
+    function loadTeacherName() {
+        const teacherName = localStorage.getItem(TEACHER_NAME_KEY) || '—';
+        document.getElementById('teacher-display-name').textContent = teacherName;
+    }
+
+    function getGroups() {
+        try {
+            const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
+            if (!raw) return [];
+            const data = JSON.parse(raw);
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            console.error('خطأ في قراءة المجموعات:', e);
+            return [];
+        }
+    }
+
+    function saveGroups(groups) {
+        try {
+            localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+        } catch (e) {
+            console.error('خطأ في حفظ المجموعات:', e);
+        }
+    }
+
+    function loadAndRenderGroups() {
+        const groups = getGroups();
+        const grid = document.getElementById('groups-grid');
+        const emptyState = document.getElementById('empty-state');
+        const countBadge = document.getElementById('groups-count');
+
+        countBadge.textContent = groups.length + ' مجموعة';
+
+        if (groups.length === 0) {
+            grid.innerHTML = '';
+            grid.style.display = 'none';
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        grid.style.display = 'grid';
+        emptyState.style.display = 'none';
+        grid.innerHTML = groups.map((g, index) => renderGroupCard(g, index)).join('');
+    }
+
+    // =========================================
+    // 🎯 رسم كارت المجموعة
+    // =========================================
+    function renderGroupCard(group, index) {
+        // بناء قائمة الأيام
+        const dayNames = Object.keys(group.schedule || {});
+        const daysHtml = dayNames.length > 0
+            ? dayNames.map(d => `<span class="day-chip">📅 ${d}</span>`).join('')
+            : '<span class="chip">لا توجد أيام</span>';
+
+        // حساب إجمالي الحصص الأسبوعية
+        let totalSessions = 0;
+        if (group.schedule) {
+            Object.values(group.schedule).forEach(dayArr => {
+                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
+            });
+        }
+
+        // حساب تاريخ الإنشاء
+        const createdAt = group.createdAt ? new Date(group.createdAt) : null;
+        let createdStr = '—';
+        if (createdAt) {
+            const d = createdAt.getDate().toString().padStart(2, '0');
+            const m = (createdAt.getMonth() + 1).toString().padStart(2, '0');
+            const y = createdAt.getFullYear();
+            const hh = createdAt.getHours().toString().padStart(2, '0');
+            const mm = createdAt.getMinutes().toString().padStart(2, '0');
+            createdStr = `${d}/${m}/${y} - ${hh}:${mm}`;
+        }
+
+        return `
+            <div class="group-card">
+                <div class="group-card-header">
+                    <div class="group-title">
+                        <span class="group-icon">📚</span>
+                        <span>${escapeHtml(group.groupName || 'بدون اسم')}</span>
+                    </div>
+                </div>
+
+                <div class="group-card-body">
+                    <div class="info-row">
+                        <span class="icon">📖</span>
+                        <span class="key">المادة:</span>
+                        <span class="value">${escapeHtml(group.subjectData || '—')}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">👨‍🏫</span>
+                        <span class="key">اسم المستر:</span>
+                        <span class="value">${escapeHtml(group.teacherName || '—')}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">👥</span>
+                        <span class="key">العدد المطلوب:</span>
+                        <span class="value">${escapeHtml(group.studentsCount || '—')} طالب</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">👫</span>
+                        <span class="key">الفئة:</span>
+                        <span class="value"><span class="chip">${escapeHtml(group.genderAllowed || 'مختلط')}</span></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">📍</span>
+                        <span class="key">المكان:</span>
+                        <span class="value"><span class="chip green">${escapeHtml(group.location || 'السنتر')}</span></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">📊</span>
+                        <span class="key">الحصص الأسبوعية:</span>
+                        <span class="value"><span class="chip gold">${totalSessions} حصة</span></span>
+                    </div>
+
+                    <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="icon">📅</span>
+                            <span class="key">الأيام:</span>
+                        </div>
+                        <div class="days-chips">${daysHtml}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="icon">🕐</span>
+                        <span class="key">تاريخ الإنشاء:</span>
+                        <span class="value" style="font-size: 12px; direction: ltr;">${createdStr}</span>
+                    </div>
+                </div>
+
+                <div class="group-card-actions">
+                    <button class="btn-edit" onclick="editGroup(${index})">
+                        <span>✏️</span>
+                        <span>تعديل</span>
+                    </button>
+                    <button class="btn-delete" onclick="askDeleteGroup(${index})">
+                        <span>🗑️</span>
+                        <span>حذف</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // =========================================
+    // 🎯 التعديل: فتح mester2 مع بيانات المجموعة
+    // =========================================
+    function editGroup(index) {
+        const groups = getGroups();
+        const group = groups[index];
+        if (!group) return;
+
+        // نحفظ بيانات المجموعة للتعديل
+        localStorage.setItem('mester2_edit_index', String(index));
+        localStorage.setItem('mester2_edit_data', JSON.stringify(group));
+
+        // نروح لـ mester2
+        window.location.href = 'mester2.html?mode=edit&index=' + index;
+    }
+
+    // =========================================
+    // 🎯 الحذف
+    // =========================================
+    let deleteTargetIndex = -1;
+
+    function askDeleteGroup(index) {
+        const groups = getGroups();
+        const group = groups[index];
+        if (!group) return;
+
+        deleteTargetIndex = index;
+        document.getElementById('delete-group-name').textContent = '«' + (group.groupName || 'بدون اسم') + '»';
+        document.getElementById('delete-modal').classList.add('active');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.remove('active');
+        deleteTargetIndex = -1;
+    }
+
+    function confirmDeleteGroup() {
+        if (deleteTargetIndex < 0) return;
+        const groups = getGroups();
+        groups.splice(deleteTargetIndex, 1);
+        saveGroups(groups);
+        closeDeleteModal();
+        loadAndRenderGroups();
+    }
+</script>
+
+</body>
+</html>
