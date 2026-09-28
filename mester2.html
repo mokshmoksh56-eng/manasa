@@ -46,12 +46,12 @@
     .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
     .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
     
-    .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; }
+    .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
     .day-card.active .day-header { background: #e3f2fd; }
     
     .day-title { display: flex; align-items: center; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; }
     
-    .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; }
+    .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
 
     .day-status { 
         font-size: 12px; 
@@ -63,16 +63,35 @@
         transition: 0.3s; 
         display: flex; 
         align-items: center; 
-        gap: 6px; 
+        gap: 5px; 
         direction: rtl; 
         flex-wrap: wrap; 
         line-height: 1.5;
         max-width: 100%;
-        text-align: center;
         justify-content: center;
     }
     .day-card.active .day-status { background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3); }
-    .day-status strong { background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 6px; }
+    
+    .session-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255,255,255,0.25);
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    
+    .session-pill .session-num {
+        background: #f1c40f;
+        color: #1a3c6d;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 900;
+    }
 
     .expand-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 50%; color: #1a3c6d; font-size: 12px; transition: 0.3s; flex-shrink: 0; }
     .day-card.expanded .expand-icon { transform: rotate(180deg); }
@@ -83,39 +102,55 @@
     
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .slots-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+    .slots-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
     
-    /* 🎯 تصميم الموعد المبسط */
     .time-slot { 
         display: flex; 
         flex-direction: column;
-        gap: 10px; 
+        gap: 8px; 
         background: #f8fafc; 
-        padding: 14px; 
+        padding: 12px; 
         border-radius: 10px; 
         border: 2px solid #e0e4e8; 
+        transition: 0.3s;
+    }
+    
+    /* 🎯 نمط الموعد المقفول */
+    .time-slot.locked {
+        background: #e8f5e9;
+        border-color: #28a745;
+        position: relative;
+    }
+    .time-slot.locked::before {
+        content: '🔒';
+        position: absolute;
+        top: 6px;
+        left: 8px;
+        font-size: 14px;
     }
     
     .time-row { 
         display: flex; 
         align-items: center; 
         gap: 8px;
-        flex-wrap: wrap;
+        width: 100%;
+        justify-content: space-between;
     }
     
     .time-label { 
         font-weight: bold; 
         color: #1a3c6d; 
-        font-size: 14px; 
-        min-width: 40px;
+        font-size: 13px; 
+        min-width: 32px;
+        flex-shrink: 0;
+        text-align: center;
     }
     
-    /* 🎯 القوائم المنسدلة البسيطة */
     .simple-select {
-        padding: 10px 8px;
+        padding: 8px 6px;
         border: 2px solid #e0e4e8;
-        border-radius: 8px;
-        font-size: 15px;
+        border-radius: 6px;
+        font-size: 14px;
         font-family: inherit;
         font-weight: bold;
         color: #1a3c6d;
@@ -124,14 +159,40 @@
         transition: 0.2s;
         cursor: pointer;
         text-align: center;
-        flex: 1;
-        min-width: 60px;
     }
     .simple-select:focus { border-color: #2b5c9e; box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.15); }
     
+    /* 🎯 عند القفل: منع التفاعل */
+    .time-slot.locked .simple-select {
+        background: #f0f0f0;
+        color: #555;
+        cursor: not-allowed;
+        pointer-events: none;
+        border-color: #ccc;
+        opacity: 0.85;
+    }
+    
+    .period-select { 
+        width: 60px; 
+        background: #e3f2fd;
+        color: #1a3c6d;
+        font-weight: 900;
+        flex-shrink: 0;
+    }
+    
+    .minute-select { 
+        width: 85px; 
+        flex: 0 0 auto;
+    }
+    
+    .hour-select { 
+        width: 85px; 
+        flex-shrink: 0;
+    }
+    
     .slot-actions { 
         display: flex; 
-        gap: 8px; 
+        gap: 6px; 
         justify-content: flex-end;
         margin-top: 4px;
     }
@@ -140,38 +201,58 @@
         background: #2b5c9e; 
         color: white; 
         border: none; 
-        padding: 10px 20px;
-        border-radius: 8px; 
+        padding: 8px 16px;
+        border-radius: 6px; 
         cursor: pointer; 
         font-weight: bold; 
-        font-size: 14px; 
+        font-size: 13px; 
         display: flex; 
         align-items: center; 
         justify-content: center; 
         transition: 0.2s;
-        gap: 5px;
+        gap: 4px;
     }
     .btn-save-slot:hover { background: #1a3c6d; }
     .btn-save-slot.saved { background: #28a745; }
+
+    /* 🎯 زر التعديل */
+    .btn-edit-slot { 
+        background: #f39c12; 
+        color: white; 
+        border: none; 
+        padding: 8px 16px;
+        border-radius: 6px; 
+        cursor: pointer; 
+        font-weight: bold; 
+        font-size: 13px; 
+        display: none; 
+        align-items: center; 
+        justify-content: center; 
+        transition: 0.2s;
+        gap: 4px;
+    }
+    .btn-edit-slot:hover { background: #e67e22; }
+    .time-slot.locked .btn-edit-slot { display: flex; }
+    .time-slot.locked .btn-save-slot { display: none; }
 
     .btn-remove-slot { 
         background: #dc3545; 
         color: white; 
         border: none; 
-        padding: 10px 20px;
-        border-radius: 8px; 
+        padding: 8px 16px;
+        border-radius: 6px; 
         cursor: pointer; 
         font-weight: bold; 
-        font-size: 14px; 
+        font-size: 13px; 
         display: flex; 
         align-items: center; 
         justify-content: center; 
         transition: 0.2s; 
-        gap: 5px;
+        gap: 4px;
     }
     .btn-remove-slot:hover { background: #c82333; }
 
-    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-add-slot:hover { background: #2b5c9e; color: white; }
 
     .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; }
@@ -181,8 +262,10 @@
         .day-header { flex-wrap: wrap; }
         .day-header-left { width: 100%; justify-content: space-between; }
         .day-status { font-size: 11px; padding: 5px 10px; }
-        .time-label { min-width: 35px; font-size: 13px; }
-        .simple-select { font-size: 14px; padding: 9px 6px; }
+        .time-label { min-width: 30px; font-size: 12px; }
+        .period-select { width: 52px; font-size: 12px; padding: 6px 4px; }
+        .minute-select { width: 72px; font-size: 12px; padding: 6px 4px; }
+        .hour-select { width: 72px; font-size: 12px; padding: 6px 4px; }
     }
 </style>
 </head>
@@ -256,7 +339,7 @@
     <!-- 🎯 التقويم الرأسي المتقدم -->
     <div class="calendar-section">
         <div class="section-header-custom"><span class="circle-num">5</span> حدد أيام ومواعيد الحصص <span style="color: #dc3545;">*</span></div>
-        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر الساعة والدقائق (ص/م)، واضغط على حفظ 💾.</div>
+        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، واضغط على حفظ 💾. يتم قفل الوقت بعد الحفظ، واضغط على "تعديل ✏️" لتغييره.</div>
 
         <div class="vertical-schedule" id="vertical-schedule">
             <!-- سيتم توليد الأيام هنا عبر الجافاسكريبت -->
@@ -370,36 +453,50 @@
         updateDayStatusDisplay(dayId);
     }
 
-    // إضافة موعد جديد
+    // 🎯 إضافة موعد جديد
     function addSlot(dayId) {
         const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const slotId = Date.now() + Math.floor(Math.random() * 1000);
+        
+        const existingEmptySlot = Array.from(slotsContainer.querySelectorAll('.time-slot')).find(slot => {
+            const hour = slot.querySelector('.start-hour').value;
+            const minute = slot.querySelector('.start-minute').value;
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            return !hour && !minute && !saveBtn.classList.contains('saved');
+        });
+        
+        if (existingEmptySlot) {
+            alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد.");
+            return;
+        }
+        
+        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
         
         const hOpts = hourOptions();
         const mOpts = minuteOptions();
         
         const slotHTML = `
-            <div class="time-slot" id="slot-${slotId}">
+            <div class="time-slot" id="${slotId}">
                 <div class="time-row">
                     <span class="time-label">من:</span>
-                    <select class="simple-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                    <select class="simple-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select start-period" onchange="markUnsaved('${slotId}')">
+                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
                         <option value="ص">ص</option>
-                        <option value="م">م</option>
+                        <option value="م" selected>م</option>
                     </select>
+                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
                 </div>
                 <div class="time-row">
                     <span class="time-label">إلى:</span>
-                    <select class="simple-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                    <select class="simple-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select end-period" onchange="markUnsaved('${slotId}')">
+                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
                         <option value="ص">ص</option>
-                        <option value="م">م</option>
+                        <option value="م" selected>م</option>
                     </select>
+                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
                 </div>
                 <div class="slot-actions">
                     <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
+                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
                     <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
                 </div>
             </div>
@@ -410,15 +507,14 @@
     }
 
     function markUnsaved(slotId) {
-        const slot = document.getElementById(`slot-${slotId}`);
+        const slot = document.getElementById(slotId);
         if (slot) {
             const saveBtn = slot.querySelector('.btn-save-slot');
             saveBtn.classList.remove('saved');
-            saveBtn.innerHTML = '💾 حفظ';
         }
     }
 
-    // قراءة الوقت من القوائم
+    // قراءة الوقت
     function readTime(slot, prefix) {
         const hour = slot.querySelector(`.${prefix}-hour`).value;
         const minute = slot.querySelector(`.${prefix}-minute`).value;
@@ -434,9 +530,11 @@
         };
     }
 
-    // حفظ الموعد
+    // 🎯 حفظ الموعد مع قفل القوائم
     function saveSlot(slotId, dayId) {
-        const slot = document.getElementById(`slot-${slotId}`);
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        
         const startTime = readTime(slot, 'start');
         const endTime = readTime(slot, 'end');
         
@@ -453,7 +551,6 @@
             return;
         }
         
-        // فحص التعارض
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
         
@@ -477,10 +574,22 @@
         
         const saveBtn = slot.querySelector('.btn-save-slot');
         saveBtn.classList.add('saved');
-        saveBtn.innerHTML = '✓ محفوظ';
+        slot.classList.add('locked');
         
         updateDayStatusDisplay(dayId);
-        alert("✅ تم حفظ الموعد بنجاح.");
+        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير.");
+    }
+
+    // 🎯 تعديل موعد مقفول
+    function editSlot(slotId, dayId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        
+        slot.classList.remove('locked');
+        const saveBtn = slot.querySelector('.btn-save-slot');
+        saveBtn.classList.remove('saved');
+        
+        updateDayStatusDisplay(dayId);
     }
 
     // تحويل الوقت لدقائق
@@ -491,16 +600,37 @@
         return h * 60 + parseInt(minute);
     }
 
-    // حذف موعد
+    // ==========================================
+    // 🎯 حذف موعد مع رسالة تأكيد
+    // ==========================================
     function removeSlot(slotId, dayId) {
-        const slot = document.getElementById(`slot-${slotId}`);
-        if (slot) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        
+        // 🎯 الحصول على تفاصيل الموعد لعرضها في الرسالة
+        const startTime = readTime(slot, 'start');
+        const endTime = readTime(slot, 'end');
+        const saveBtn = slot.querySelector('.btn-save-slot');
+        const isSaved = saveBtn.classList.contains('saved');
+        
+        let confirmMessage = '⚠️ هل أنت متأكد من إلغاء هذا الموعد؟';
+        
+        if (isSaved && startTime && endTime) {
+            confirmMessage = `⚠️ هل أنت متأكد من إلغاء هذه الحصة؟\n\n🕐 من: ${startTime.display}\n🕐 إلى: ${endTime.display}\n\nسيتم حذف الحصة نهائيًا.`;
+        } else if (startTime || endTime) {
+            confirmMessage = `⚠️ هذا الموعد لم يتم حفظه بعد.\n\nهل أنت متأكد من إلغائه؟`;
+        }
+        
+        // 🎯 عرض رسالة التأكيد
+        if (confirm(confirmMessage)) {
             slot.remove();
             updateDayStatusDisplay(dayId);
         }
     }
 
-    // تحديث الحالة
+    // ==========================================
+    // 🎯 تحديث الحالة - الحصص مرتبة زمنيًا
+    // ==========================================
     function updateDayStatusDisplay(dayId) {
         const statusText = document.getElementById(`status-${dayId}`);
         const card = document.getElementById(`card-${dayId}`);
@@ -509,8 +639,7 @@
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const timeSlots = slotsContainer.querySelectorAll('.time-slot');
         
-        let times = [];
-        let count = 0;
+        let sessions = [];
         
         timeSlots.forEach(slot => {
             const saveBtn = slot.querySelector('.btn-save-slot');
@@ -520,18 +649,31 @@
             const end = readTime(slot, 'end');
             
             if (start && end) {
-                times.push(`<span dir="ltr" style="font-size:11px;">${start.display} - ${end.display}</span>`);
-                count++;
+                const startMin = timeToMinutes(start.hour, start.minute, start.period);
+                sessions.push({ 
+                    start: start.display, 
+                    end: end.display,
+                    startMin: startMin
+                });
             }
         });
+
+        sessions.sort((a, b) => a.startMin - b.startMin);
 
         if (isActive) {
             statusText.style.background = "#28a745";
             statusText.style.color = "white";
             statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
             
-            if (count > 0) {
-                statusText.innerHTML = `<strong>${count} حصة</strong> ` + times.join('<span style="color:#f1c40f; margin:0 4px;">|</span>');
+            if (sessions.length > 0) {
+                let pillsHTML = sessions.map((s, i) => 
+                    `<span class="session-pill">
+                        <span class="session-num">${i + 1}</span>
+                        <span dir="ltr">${s.start} - ${s.end}</span>
+                    </span>`
+                ).join('');
+                
+                statusText.innerHTML = pillsHTML;
             } else {
                 statusText.innerHTML = `0 حصة`;
             }
@@ -539,7 +681,7 @@
             statusText.style.background = "#e0e4e8";
             statusText.style.color = "#666";
             statusText.style.boxShadow = "none";
-            statusText.innerHTML = `${count} حصة`;
+            statusText.innerHTML = `${sessions.length} حصة`;
         }
     }
 
@@ -579,13 +721,16 @@
                 if (saveBtn.classList.contains('saved') && startTime && endTime) {
                     slots.push({ 
                         start: startTime.display, 
-                        end: endTime.display
+                        end: endTime.display,
+                        startMin: timeToMinutes(startTime.hour, startTime.minute, startTime.period)
                     });
                     totalSessionsCount++;
                 }
             });
             
             if (slots.length > 0) {
+                slots.sort((a, b) => a.startMin - b.startMin);
+                slots.forEach(s => delete s.startMin);
                 schedule[dayName] = slots;
             } else {
                 hasEmptyActiveDay = true;
