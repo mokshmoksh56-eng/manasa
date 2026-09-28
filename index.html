@@ -9,191 +9,239 @@
 
     body {
         min-height: 100vh;
-        background: linear-gradient(135deg, #1a3c6d 0%, #2b5c9e 50%, #0d2342 100%);
+        background: linear-gradient(180deg, #e8f0fa 0%, #d4e3f7 100%);
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        padding: 30px 20px;
+        padding: 0;
         position: relative;
         overflow-x: hidden;
     }
 
-    body::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image:
-            radial-gradient(circle at 15% 20%, rgba(241,196,15,0.12) 0%, transparent 45%),
-            radial-gradient(circle at 85% 80%, rgba(241,196,15,0.10) 0%, transparent 45%);
-        pointer-events: none;
-    }
-
-    /* ===== الهيدر ===== */
+    /* =========================================
+       الهيدر
+       ========================================= */
     .gate-header {
-        text-align: center;
-        margin-bottom: 45px;
-        position: relative;
-        z-index: 2;
-        padding: 35px 40px;
-        border-radius: 20px;
-        background: #ffffff;
-        box-shadow:
-            0 8px 0 rgba(0,0,0,0.15),
-            0 18px 40px rgba(0,0,0,0.28);
-        max-width: 850px;
         width: 100%;
-        animation: fadeDown 0.7s ease;
-        overflow: hidden;
-    }
-
-    .gate-header h1 {
         position: relative;
-        z-index: 2;
-        font-size: 48px;
-        font-weight: 900;
-        color: #1a3c6d;
-        letter-spacing: 2px;
-        margin-bottom: 10px;
-        text-shadow:
-            0 2px 0 #e0e7f1,
-            0 4px 10px rgba(43,92,158,0.25);
-    }
-
-    .gate-header p {
-        position: relative;
-        z-index: 2;
-        font-size: 17px;
-        color: #2b5c9e;
-        font-weight: 700;
-        text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-    }
-
-    .gate-header .divider-line {
-        position: relative;
-        z-index: 2;
-        width: 120px;
-        height: 4px;
-        background: linear-gradient(90deg, transparent, #f1c40f, transparent);
-        margin: 18px auto 0;
-        border-radius: 4px;
-    }
-
-    @keyframes fadeDown {
-        from { opacity: 0; transform: translateY(-25px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== شبكة البوابات ===== */
-    .gates-wrapper {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        width: 100%;
-        max-width: 850px;
-        position: relative;
-        z-index: 2;
-    }
-
-    /* ===== كارت البوابة ===== */
-    .gate-card {
-        border-radius: 24px;
-        padding: 50px 30px 40px;
+        padding: 50px 30px 70px;
         text-align: center;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 18px;
-        border: 3px solid transparent;
-        box-shadow: 0 10px 0 rgba(0,0,0,0.18), 0 18px 40px rgba(0,0,0,0.28);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        overflow: hidden;
-        animation: fadeUp 0.7s ease backwards;
-        min-height: 420px;
-
-        /* صورة الكارت كاملة - للمعلم */
-        background-image:
-            linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.95) 100%),
-            url('teacher.png');
+        background-image: url('teacher2.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-color: #f4f7fb;
+        overflow: hidden;
+        margin-bottom: 40px;
     }
 
-    .gate-card:nth-child(1) { animation-delay: 0.15s; }
-    .gate-card:nth-child(2) { animation-delay: 0.3s; }
-
-    /* صورة الكارت كاملة - للطالب */
-    .gate-card.student-card {
-        background-image:
-            linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.95) 100%),
-            url('student.png');
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(35px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* شريط علوي ملوّن */
-    .gate-card::before {
+    .gate-header::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 8px;
-        background: linear-gradient(90deg, #2b5c9e, #f1c40f);
-        transition: height 0.3s ease;
-        z-index: 5;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(248,251,255,0.75) 0%, rgba(240,246,253,0.92) 100%);
+        z-index: 1;
     }
 
-    .gate-card.student-card::before {
-        background: linear-gradient(90deg, #28a745, #f1c40f);
+    .gate-header-content {
+        position: relative;
+        z-index: 2;
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .gate-header h1 {
+        font-size: 56px;
+        font-weight: 900;
+        color: #1a2842;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+        line-height: 1.1;
+    }
+
+    .gate-header h1 .highlight {
+        color: #f5a623;
+    }
+
+    .gate-header .title-divider {
+        width: 140px;
+        height: 5px;
+        background: #f5a623;
+        margin: 0 auto 18px;
+        border-radius: 5px;
+    }
+
+    .gate-header .subtitle {
+        font-size: 28px;
+        font-weight: 900;
+        color: #1a2842;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        position: relative;
+    }
+
+    /* 🎯 علامة GPS اللي بتتحرك مع بعض */
+    .gate-header .gps-marker {
+        display: inline-block;
+        font-size: 26px;
+        animation: bounceGps 1.4s ease-in-out infinite;
+        transform-origin: center bottom;
+        filter: drop-shadow(0 4px 6px rgba(231, 76, 60, 0.4));
+    }
+
+    @keyframes bounceGps {
+        0%, 100% {
+            transform: translateY(0) scale(1);
+        }
+        30% {
+            transform: translateY(-10px) scale(1.15);
+        }
+        50% {
+            transform: translateY(0) scale(1);
+        }
+        70% {
+            transform: translateY(-5px) scale(1.08);
+        }
+    }
+
+    /* 🎯 النقاط الثلاث اللي بتتحرك */
+    .gate-header .dots {
+        color: #f5a623;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        line-height: 1;
+        display: inline-block;
+        animation: dotsPulse 1.4s ease-in-out infinite;
+        animation-delay: 0.2s;
+    }
+
+    @keyframes dotsPulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        30% {
+            opacity: 0.6;
+            transform: scale(1.15);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        70% {
+            opacity: 0.8;
+            transform: scale(1.08);
+        }
+    }
+
+    .gate-header .subtitle .gold {
+        color: #f5a623;
+    }
+
+    .gate-header .description {
+        font-size: 18px;
+        font-weight: 900;
+        color: #2e7d32;
+        line-height: 1.7;
+        max-width: 600px;
+        margin: 0 auto;
+        text-shadow: 0 2px 8px rgba(255,255,255,0.95);
+    }
+
+    /* =========================================
+       الكروت
+       ========================================= */
+    .gates-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        width: 100%;
+        max-width: 800px;
+        padding: 0 25px 30px;
+        position: relative;
+        z-index: 2;
+        margin-top: -40px;
+    }
+
+    .gate-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        padding: 22px 28px;
+        border-radius: 20px;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        background: #ffffff;
+        box-shadow:
+            0 5px 0 rgba(0,0,0,0.08),
+            0 8px 25px rgba(43,92,158,0.12);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #e0e8f5;
+    }
+
+    .gate-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #2b5c9e 0%, #1a3c6d 100%);
+    }
+
+    .gate-card.student-card::after {
+        background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
     }
 
     .gate-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 16px 0 rgba(0,0,0,0.18), 0 28px 55px rgba(0,0,0,0.38);
+        transform: translateY(-4px);
+        box-shadow:
+            0 9px 0 rgba(0,0,0,0.08),
+            0 15px 35px rgba(43,92,158,0.2);
+        border-color: #2b5c9e;
     }
 
-    .gate-card:hover::before { height: 12px; }
-
-    .gate-card:active { transform: translateY(-2px) scale(0.99); }
-
-    /* رفع المحتوى فوق الصورة */
-    .gate-card > * {
-        position: relative;
-        z-index: 2;
+    .gate-card.student-card:hover {
+        border-color: #28a745;
     }
 
-    /* ===== النصوص ===== */
+    .gate-card-content {
+        flex: 1;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .gate-title {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 900;
         color: #1a3c6d;
         letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(255,255,255,0.8);
     }
 
     .gate-desc {
         font-size: 14px;
-        color: #334155;
+        color: #475569;
         font-weight: 600;
         line-height: 1.7;
-        max-width: 280px;
+        margin-bottom: 5px;
     }
 
-    /* ===== زر الدخول ===== */
     .gate-btn {
-        margin-top: 8px;
-        padding: 13px 38px;
+        align-self: flex-start;
+        padding: 11px 28px;
         border-radius: 50px;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 900;
         color: white;
         letter-spacing: 0.5px;
@@ -206,90 +254,156 @@
 
     .teacher-card .gate-btn {
         background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
-        box-shadow: 0 5px 0 #0d2342, 0 8px 18px rgba(43,92,158,0.35);
+        box-shadow: 0 4px 0 #0d2342, 0 6px 15px rgba(43,92,158,0.35);
     }
 
     .student-card .gate-btn {
         background: linear-gradient(180deg, #2ecc71 0%, #1e7e34 100%);
-        box-shadow: 0 5px 0 #155724, 0 8px 18px rgba(40,167,69,0.35);
+        box-shadow: 0 4px 0 #155724, 0 6px 15px rgba(40,167,69,0.35);
     }
 
-    .gate-card:hover .gate-btn { transform: translateY(-2px); }
+    .gate-card:hover .gate-btn {
+        transform: translateY(-2px);
+    }
 
-    /* ===== الفوتر ===== */
+    .gate-card-image {
+        width: 130px;
+        height: 130px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.35s ease;
+    }
+
+    .teacher-card .gate-card-image {
+        background-color: #e8f0fc;
+        background-image: url('teacher.png');
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: inset 0 0 0 3px #c5d9f0;
+    }
+
+    .student-card .gate-card-image {
+        background-color: #e8f5ec;
+        background-image: url('student.png');
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: inset 0 0 0 3px #c5e6ce;
+    }
+
+    .gate-card:hover .gate-card-image {
+        transform: scale(1.08);
+    }
+
     .gate-footer {
-        margin-top: 50px;
+        width: 100%;
         text-align: center;
-        color: #94a3b8;
-        font-size: 13px;
-        font-weight: 600;
-        position: relative;
-        z-index: 2;
-        animation: fadeUp 0.7s ease 0.45s backwards;
+        padding: 30px 20px;
+        background: #ffffff;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 20px;
     }
 
-    .gate-footer .brand { color: #f1c40f; font-weight: 900; }
+    .gate-footer .brand {
+        color: #f39c12;
+        font-weight: 900;
+    }
 
-    /* ===== استجابة الشاشات ===== */
     @media (max-width: 700px) {
-        .gate-header { padding: 25px 20px; }
-        .gate-header h1 { font-size: 32px; }
-        .gate-header p { font-size: 14px; }
+        .gate-header { padding: 40px 20px 60px; }
+        .gate-header h1 { font-size: 38px; }
+        .gate-header .subtitle { font-size: 19px; gap: 6px; }
+        .gate-header .gps-marker { font-size: 20px; }
+        .gate-header .dots { font-size: 24px; letter-spacing: 2px; }
+        .gate-header .description { font-size: 14px; }
+        .gate-header .title-divider { width: 100px; height: 4px; }
+
         .gates-wrapper {
-            grid-template-columns: 1fr;
-            gap: 22px;
-            max-width: 420px;
+            padding: 0 15px 20px;
+            margin-top: -30px;
+            gap: 18px;
         }
-        .gate-card { padding: 40px 22px 32px; min-height: 360px; }
-        .gate-title { font-size: 24px; }
-        .gate-desc { font-size: 13px; }
-        .gate-footer { margin-top: 35px; }
+
+        .gate-card { padding: 18px 20px; gap: 15px; }
+        .gate-card-image { width: 100px; height: 100px; }
+        .gate-title { font-size: 20px; }
+        .gate-desc { font-size: 12px; }
+        .gate-btn { padding: 9px 22px; font-size: 13px; }
     }
 
-    @media (max-width: 360px) {
-        .gate-header h1 { font-size: 26px; }
-        .gate-btn { padding: 11px 28px; font-size: 14px; }
+    @media (max-width: 380px) {
+        .gate-header h1 { font-size: 30px; }
+        .gate-header .subtitle { font-size: 15px; }
+        .gate-header .gps-marker { font-size: 17px; }
+        .gate-header .dots { font-size: 20px; }
+        .gate-header .description { font-size: 12px; }
+        .gate-card-image { width: 85px; height: 85px; }
+        .gate-title { font-size: 17px; }
     }
 </style>
 </head>
 <body>
 
     <header class="gate-header">
-        <h1>منصة احجزلي</h1>
-        <p>بوابتك الأولى لحجز وإدارة الدروس والمجموعات</p>
-        <div class="divider-line"></div>
+        <div class="gate-header-content">
+            <h1>منصة <span class="highlight">احجزلي</span></h1>
+            <div class="title-divider"></div>
+            <div class="subtitle">
+                <span>حدد موقعك GPS</span>
+                <span class="gps-marker">📍</span>
+                <span class="dots">...</span>
+                <span>وانطلق نحو <span class="gold">التفوق</span></span>
+            </div>
+            <div class="description">
+                ابحث عن أفضل المعلمين في منطقتك بالـ GPS، واستعد لرحلة تعليمية استثنائية
+            </div>
+        </div>
     </header>
 
     <main class="gates-wrapper">
 
-        <!-- بوابة المعلم -->
         <a href="mester1.html" class="gate-card teacher-card">
-            <div class="gate-title">بوابة المعلم</div>
-            <div class="gate-desc">
-                أنشئ مجموعاتك، حدّد مواعيد الحصص، واختر المواد والصفوف التي تدرّسها بسهولة.
+            <div class="gate-card-content">
+                <div class="gate-title">بوابة المعلم</div>
+                <div class="gate-desc">
+                    أنشئ مجموعاتك، حدد مواعيدك، وتابع الحضور والمدفوعات لطلابك بسهولة.
+                </div>
+                <span class="gate-btn">
+                    <span>❯</span>
+                    <span>دخول المعلمين</span>
+                </span>
             </div>
-            <span class="gate-btn">
-                <span>دخول المعلم</span>
-                <span>❮</span>
-            </span>
+            <div class="gate-card-image"></div>
         </a>
 
-        <!-- بوابة الطالب -->
         <a href="student.html" class="gate-card student-card">
-            <div class="gate-title">بوابة الطالب</div>
-            <div class="gate-desc">
-                ابحث عن المجموعات المتاحة، احجز مكانك، وتابع مواعيد حصصك مع معلميك.
+            <div class="gate-card-content">
+                <div class="gate-title">بوابة الطالب</div>
+                <div class="gate-desc">
+                    ابحث عن أفضل المعلمين في منطقتك، واحجز مكانك بضغطة زر.
+                </div>
+                <span class="gate-btn">
+                    <span>❯</span>
+                    <span>دخول الطلاب</span>
+                </span>
             </div>
-            <span class="gate-btn">
-                <span>دخول الطالب</span>
-                <span>❮</span>
-            </span>
+            <div class="gate-card-image"></div>
         </a>
 
     </main>
 
     <footer class="gate-footer">
-        © 2025 <span class="brand">منصة احجزلي</span> — جميع الحقوق محفوظة
+        جميع الحقوق محفوظة © 2026 - <span class="brand">منصة احجزلي</span>
     </footer>
 
     <script>
