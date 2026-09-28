@@ -18,7 +18,7 @@
     .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
     .step-divider { color: #fff; }
 
-    .container { width: 100%; max-width: 900px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
+    .container { width: 100%; max-width: 1100px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
     .table-container { background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #2b5c9e; margin-bottom: 20px; }
     .data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .data-table td { padding: 15px; border: 1px solid #e0e4e8; vertical-align: top; width: 50%; }
@@ -35,135 +35,101 @@
     .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; }
 
-    /* 🎯 تصميم التقويم الرأسي المتطور */
     .calendar-section { background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 4px solid #f1c40f; padding: 25px; margin-bottom: 20px; }
     .section-header-custom { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: #1a3c6d; margin-bottom: 10px; }
     .section-header-custom .circle-num { background: #2b5c9e; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
     .section-hint { background: #fff8e1; border-right: 4px solid #f1c40f; padding: 12px 15px; border-radius: 8px; font-size: 14px; color: #7a5c00; font-weight: bold; margin-bottom: 20px; }
 
+    .view-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f1f5f9; padding: 6px; border-radius: 12px; flex-wrap: wrap; }
+    .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .view-tab.active { background: #2b5c9e; color: white; box-shadow: 0 4px 12px rgba(43,92,158,0.3); }
+
+    /* العرض الرأسي */
     .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
-    
     .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
-    /* 🎯 الإطار الأزرق بس لما يكون فيه مواعيد محفوظة */
     .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
-    
     .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
-    /* 🎯 خلفية الهيدر بتتغير عند الفتح فقط */
     .day-card.expanded .day-header { background: #e3f2fd; }
-    
     .day-title { display: flex; align-items: center; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; }
-    
     .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
-
-    .day-status { 
-        font-size: 12px; 
-        font-weight: bold; 
-        padding: 6px 12px; 
-        border-radius: 8px; 
-        background: #e0e4e8; 
-        color: #666; 
-        transition: 0.3s; 
-        display: flex; 
-        align-items: center; 
-        gap: 5px; 
-        direction: rtl; 
-        flex-wrap: wrap; 
-        line-height: 1.5;
-        max-width: 100%;
-        justify-content: center;
-    }
-    
-    .session-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: rgba(255,255,255,0.25);
-        padding: 3px 8px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: bold;
-        white-space: nowrap;
-    }
-    
-    .session-pill .session-num {
-        background: #f1c40f;
-        color: #1a3c6d;
-        padding: 1px 6px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: 900;
-    }
-
+    .day-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 8px; background: #e0e4e8; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 5px; direction: rtl; flex-wrap: wrap; line-height: 1.5; max-width: 100%; justify-content: center; }
+    .session-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; }
+    .session-pill .session-num { background: #f1c40f; color: #1a3c6d; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; }
     .expand-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 50%; color: #1a3c6d; font-size: 12px; transition: 0.3s; flex-shrink: 0; }
     .day-card.expanded .expand-icon { transform: rotate(180deg); }
-
     .day-body { display: none; padding: 15px 20px; border-top: 1px solid #e0e4e8; background: #fff; }
     .day-card.expanded .day-body { display: block; animation: slideDown 0.3s ease; }
-    
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
     .slots-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-    
-    .time-slot { 
-        display: flex; 
-        flex-direction: column;
-        gap: 8px; 
-        background: #f8fafc; 
-        padding: 12px; 
-        border-radius: 10px; 
-        border: 2px solid #e0e4e8; 
-        transition: 0.3s;
-    }
-    
-    /* 🎯 نمط الموعد المقفول */
-    .time-slot.locked {
-        background: #e8f5e9;
-        border-color: #28a745;
-        position: relative;
-    }
-    .time-slot.locked::before {
-        content: '🔒';
-        position: absolute;
-        top: 6px;
-        left: 8px;
-        font-size: 14px;
-    }
-    
-    .time-row { 
-        display: flex; 
-        align-items: center; 
-        gap: 8px;
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .time-label { 
-        font-weight: bold; 
-        color: #1a3c6d; 
-        font-size: 13px; 
-        min-width: 32px;
-        flex-shrink: 0;
-        text-align: center;
-    }
-    
-    .simple-select {
-        padding: 8px 6px;
-        border: 2px solid #e0e4e8;
-        border-radius: 6px;
-        font-size: 14px;
-        font-family: inherit;
-        font-weight: bold;
-        color: #1a3c6d;
-        background: #fff;
-        outline: none;
-        transition: 0.2s;
-        cursor: pointer;
-        text-align: center;
-    }
+    .time-slot { display: flex; flex-direction: column; gap: 8px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e0e4e8; transition: 0.3s; }
+    .time-slot.locked { background: #e8f5e9; border-color: #28a745; position: relative; }
+    .time-slot.locked::before { content: '🔒'; position: absolute; top: 6px; left: 8px; font-size: 14px; }
+    .time-row { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: space-between; }
+    .time-label { font-weight: bold; color: #1a3c6d; font-size: 13px; min-width: 32px; flex-shrink: 0; text-align: center; }
+    .simple-select { padding: 8px 6px; border: 2px solid #e0e4e8; border-radius: 6px; font-size: 14px; font-family: inherit; font-weight: bold; color: #1a3c6d; background: #fff; outline: none; transition: 0.2s; cursor: pointer; text-align: center; }
     .simple-select:focus { border-color: #2b5c9e; box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.15); }
-    
-    /* 🎯 عند القفل: منع التفاعل */
-    .time-slot.locked .simple-select {
+    .time-slot.locked .simple-select { background: #f0f0f0; color: #555; cursor: not-allowed; pointer-events: none; border-color: #ccc; opacity: 0.85; }
+    .period-select { width: 60px; background: #e3f2fd; color: #1a3c6d; font-weight: 900; flex-shrink: 0; }
+    .minute-select { width: 85px; flex: 0 0 auto; }
+    .hour-select { width: 85px; flex-shrink: 0; }
+    .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
+    .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-save-slot:hover { background: #1a3c6d; }
+    .btn-save-slot.saved { background: #28a745; }
+    .btn-edit-slot { background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: none; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-edit-slot:hover { background: #e67e22; }
+    .time-slot.locked .btn-edit-slot { display: flex; }
+    .time-slot.locked .btn-save-slot { display: none; }
+    .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-remove-slot:hover { background: #c82333; }
+    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-add-slot:hover { background: #2b5c9e; color: white; }
+
+    /* 🎯 نطاق الشهور داخل صندوق الحصة */
+    .slot-range {
+        background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
+        border: 2px dashed #f39c12;
+        border-radius: 8px;
+        padding: 8px 10px;
+        margin-top: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+    }
+    .slot-range-label {
+        font-size: 12px;
+        font-weight: 900;
+        color: #7a5c00;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .slot-range-select {
+        padding: 6px 8px;
+        border: 2px solid #f39c12;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #7a5c00;
+        background: white;
+        cursor: pointer;
+        outline: none;
+        font-family: inherit;
+        min-width: 105px;
+    }
+    .slot-range-select:focus { box-shadow: 0 0 0 3px rgba(243,156,18,0.25); }
+    .slot-range-arrow { color: #f39c12; font-size: 14px; font-weight: 900; }
+
+    /* 🎯 في وضع القفل: نعرض النطاق كنص مقروء فقط */
+    .time-slot.locked .slot-range {
+        background: #f0fdf4;
+        border-color: #28a745;
+        border-style: solid;
+    }
+    .time-slot.locked .slot-range-label { color: #166534; }
+    .time-slot.locked .slot-range-select {
         background: #f0f0f0;
         color: #555;
         cursor: not-allowed;
@@ -171,92 +137,268 @@
         border-color: #ccc;
         opacity: 0.85;
     }
-    
-    .period-select { 
-        width: 60px; 
-        background: #e3f2fd;
-        color: #1a3c6d;
+
+    /* ============================================
+       🗓️ التقويم الشهري
+       ============================================ */
+    .monthly-calendar { display: none; }
+    .monthly-calendar.active { display: block; }
+
+    .month-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: white;
+        box-shadow: 0 6px 15px rgba(43,92,158,0.25);
+    }
+    .month-nav-btn {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.25);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
         font-weight: 900;
-        flex-shrink: 0;
-    }
-    
-    .minute-select { 
-        width: 85px; 
-        flex: 0 0 auto;
-    }
-    
-    .hour-select { 
-        width: 85px; 
-        flex-shrink: 0;
-    }
-    
-    .slot-actions { 
-        display: flex; 
-        gap: 6px; 
-        justify-content: flex-end;
-        margin-top: 4px;
-    }
-    
-    .btn-save-slot { 
-        background: #2b5c9e; 
-        color: white; 
-        border: none; 
-        padding: 8px 16px;
-        border-radius: 6px; 
-        cursor: pointer; 
-        font-weight: bold; 
-        font-size: 13px; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
+        font-size: 14px;
+        cursor: pointer;
         transition: 0.2s;
-        gap: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
-    .btn-save-slot:hover { background: #1a3c6d; }
-    .btn-save-slot.saved { background: #28a745; }
+    .month-nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    .month-nav-btn:active { transform: translateY(0); }
+    .month-nav-title { text-align: center; flex: 1; }
+    .month-nav-title .month-name { font-size: 22px; font-weight: 900; color: #f1c40f; display: block; }
+    .month-nav-title .month-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; }
 
-    /* 🎯 زر التعديل */
-    .btn-edit-slot { 
-        background: #f39c12; 
-        color: white; 
-        border: none; 
-        padding: 8px 16px;
-        border-radius: 6px; 
-        cursor: pointer; 
-        font-weight: bold; 
-        font-size: 13px; 
-        display: none; 
-        align-items: center; 
-        justify-content: center; 
+    .today-btn-wrapper { text-align: center; margin-bottom: 15px; }
+    .today-btn {
+        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+        color: #1a3c6d;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 10px;
+        font-weight: 900;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(241,196,15,0.4);
         transition: 0.2s;
-        gap: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-    .btn-edit-slot:hover { background: #e67e22; }
-    .time-slot.locked .btn-edit-slot { display: flex; }
-    .time-slot.locked .btn-save-slot { display: none; }
+    .today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
+    .today-btn:active { transform: translateY(0); }
 
-    .btn-remove-slot { 
-        background: #dc3545; 
-        color: white; 
-        border: none; 
-        padding: 8px 16px;
-        border-radius: 6px; 
-        cursor: pointer; 
-        font-weight: bold; 
-        font-size: 13px; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        transition: 0.2s; 
-        gap: 4px;
+    .monthly-grid-wrapper {
+        border-radius: 12px;
+        border: 2px solid #e0e4e8;
+        background: #fff;
+        overflow: hidden;
     }
-    .btn-remove-slot:hover { background: #c82333; }
 
-    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-add-slot:hover { background: #2b5c9e; color: white; }
+    .monthly-head {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: linear-gradient(180deg, #2b5c9e, #1a3c6d);
+    }
+    .monthly-head-cell {
+        padding: 12px 6px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 13px;
+        color: white;
+        border-left: 1px solid rgba(255,255,255,0.15);
+    }
+    .monthly-head-cell.friday { color: #f1c40f; }
+
+    .monthly-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #e0e4e8;
+        gap: 1px;
+    }
+
+    .monthly-day {
+        background: #fff;
+        min-height: 130px;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        transition: 0.2s;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .monthly-day:hover { background: #f8fafc; }
+    .monthly-day.other-month { background: #f8fafc; opacity: 0.55; cursor: default; }
+    .monthly-day.other-month:hover { background: #f8fafc; }
+    .monthly-day.today {
+        background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%);
+        box-shadow: inset 0 0 0 2px #f1c40f;
+    }
+    .monthly-day.friday { background: #fef9f3; }
+    .monthly-day.other-month.friday { background: #f8fafc; }
+
+    .day-num {
+        font-size: 14px;
+        font-weight: 900;
+        color: #1a3c6d;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+    .monthly-day.today .day-num { color: #b38f00; }
+    .day-num .today-badge {
+        background: #f1c40f;
+        color: #1a3c6d;
+        font-size: 9px;
+        padding: 1px 6px;
+        border-radius: 6px;
+        font-weight: 900;
+    }
+    .day-num .session-count-badge {
+        background: #2b5c9e;
+        color: white;
+        font-size: 10px;
+        padding: 1px 7px;
+        border-radius: 10px;
+        font-weight: 900;
+    }
+
+    .day-sessions {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .day-session-chip {
+        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 3px 6px;
+        border-radius: 5px;
+        border-right: 3px solid #f1c40f;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: ltr;
+        text-align: center;
+        transition: 0.2s;
+    }
+    .day-session-chip.past {
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        border-right-color: #475569;
+        opacity: 0.75;
+    }
+
+    .day-more {
+        font-size: 10px;
+        font-weight: 900;
+        color: #2b5c9e;
+        text-align: center;
+        padding: 2px;
+        background: #e3f2fd;
+        border-radius: 4px;
+    }
+
+    /* نافذة تفاصيل اليوم */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(3px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        border-top: 5px solid #2b5c9e;
+        animation: modalIn 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .modal-title { font-size: 17px; font-weight: 900; color: #1a3c6d; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .modal-session-item {
+        background: #f8fafc;
+        border-right: 4px solid #f1c40f;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #1a3c6d;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .modal-session-item.past {
+        background: #f1f5f9;
+        border-right-color: #94a3b8;
+        color: #64748b;
+    }
+    .modal-session-item .time { color: #2b5c9e; direction: ltr; font-size: 14px; }
+    .modal-session-item.past .time { color: #64748b; }
+    .modal-session-item .sess-num {
+        background: #f1c40f;
+        color: #1a3c6d;
+        padding: 2px 8px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 900;
+    }
+    .modal-session-item.past .sess-num {
+        background: #cbd5e1;
+        color: #475569;
+    }
+    .modal-close-btn {
+        width: 100%;
+        padding: 12px;
+        background: #2b5c9e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 900;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 12px;
+    }
+    .modal-close-btn:hover { background: #1a3c6d; }
 
     .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; }
     .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
+
+    @media (max-width: 700px) {
+        .header-3d h1 { font-size: 22px; }
+        .view-tab { font-size: 12px; padding: 10px 6px; min-width: 0; }
+        .monthly-day { min-height: 85px; padding: 4px; }
+        .day-num { font-size: 12px; }
+        .day-session-chip { font-size: 9px; padding: 2px 4px; }
+        .month-nav-title .month-name { font-size: 17px; }
+        .month-nav-btn { padding: 6px 10px; font-size: 12px; }
+        .monthly-head-cell { font-size: 11px; padding: 10px 4px; }
+        .slot-range-select { min-width: 90px; font-size: 11px; padding: 5px 6px; }
+    }
 
     @media (max-width: 600px) {
         .day-header { flex-wrap: wrap; }
@@ -336,38 +478,82 @@
         </table>
     </div>
 
-    <!-- 🎯 التقويم الرأسي المتقدم -->
     <div class="calendar-section">
         <div class="section-header-custom"><span class="circle-num">5</span> حدد أيام ومواعيد الحصص <span style="color: #dc3545;">*</span></div>
-        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، واضغط على حفظ 💾. يتم قفل الوقت بعد الحفظ، واضغط على "تعديل ✏️" لتغييره.</div>
+        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، وحدد نطاق الشهور (اختياري)، واضغط حفظ 💾. لو سيبت نطاق الشهور فاضي، الحصة هتتكرر مدى الحياة.</div>
 
-        <div class="vertical-schedule" id="vertical-schedule">
-            <!-- سيتم توليد الأيام هنا عبر الجافاسكريبت -->
+        <div class="view-tabs">
+            <button class="view-tab active" id="tab-list" onclick="switchView('list')">📋 قائمة الإعداد</button>
+            <button class="view-tab" id="tab-month" onclick="switchView('month')">🗓️ التقويم الشهري</button>
+        </div>
+
+        <div class="vertical-schedule" id="vertical-schedule"></div>
+
+        <!-- 🗓️ التقويم الشهري -->
+        <div class="monthly-calendar" id="monthly-calendar">
+            <div class="month-nav">
+                <button class="month-nav-btn" onclick="changeMonth(-1)">❯ السابق</button>
+                <div class="month-nav-title">
+                    <span class="month-name" id="month-name">—</span>
+                    <span class="month-sub" id="month-sub">—</span>
+                </div>
+                <button class="month-nav-btn" onclick="changeMonth(1)">التالي ❮</button>
+            </div>
+            <div class="today-btn-wrapper">
+                <button class="today-btn" onclick="goToday()">📍 الشهر الحالي</button>
+            </div>
+            <div class="monthly-grid-wrapper">
+                <div class="monthly-head">
+                    <div class="monthly-head-cell">السبت</div>
+                    <div class="monthly-head-cell">الأحد</div>
+                    <div class="monthly-head-cell">الاثنين</div>
+                    <div class="monthly-head-cell">الثلاثاء</div>
+                    <div class="monthly-head-cell">الأربعاء</div>
+                    <div class="monthly-head-cell">الخميس</div>
+                    <div class="monthly-head-cell friday">الجمعة</div>
+                </div>
+                <div class="monthly-body" id="monthly-body"></div>
+            </div>
         </div>
     </div>
 
     <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
 </div>
 
+<!-- نافذة تفاصيل اليوم -->
+<div class="modal-overlay" id="day-modal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+        <div class="modal-title">📅 <span id="modal-day-title"></span></div>
+        <div id="modal-sessions-list"></div>
+        <button class="modal-close-btn" onclick="closeModal()">إغلاق</button>
+    </div>
+</div>
+
 <script>
     const daysOfWeek = [
-        { id: 'sat', name: 'السبت' },
-        { id: 'sun', name: 'الأحد' },
-        { id: 'mon', name: 'الاثنين' },
-        { id: 'tue', name: 'الثلاثاء' },
-        { id: 'wed', name: 'الأربعاء' },
-        { id: 'thu', name: 'الخميس' },
-        { id: 'fri', name: 'الجمعة' }
+        { id: 'sat', name: 'السبت', jsDay: 6 },
+        { id: 'sun', name: 'الأحد', jsDay: 0 },
+        { id: 'mon', name: 'الاثنين', jsDay: 1 },
+        { id: 'tue', name: 'الثلاثاء', jsDay: 2 },
+        { id: 'wed', name: 'الأربعاء', jsDay: 3 },
+        { id: 'thu', name: 'الخميس', jsDay: 4 },
+        { id: 'fri', name: 'الجمعة', jsDay: 5 }
     ];
 
-    // 🎯 خيارات الساعة (1-12)
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+
+    const MONTH_NAMES_AR = [
+        'يناير','فبراير','مارس','أبريل','مايو','يونيو',
+        'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
+    ];
+
     function hourOptions() {
         let html = '<option value="">ساعة</option>';
         for (let i = 1; i <= 12; i++) html += `<option value="${i}">${i}</option>`;
         return html;
     }
 
-    // 🎯 خيارات الدقائق (كل 5 دقائق)
     function minuteOptions() {
         let html = '<option value="">دقيقة</option>';
         for (let i = 0; i < 60; i += 5) {
@@ -377,23 +563,43 @@
         return html;
     }
 
+    // 🎯 بناء خيارات الشهور (15 شهر من الحالي - 3 قبل + 12 بعد)
+    function buildMonthRangeOptions() {
+        const now = new Date();
+        const startY = now.getFullYear();
+        const startM = now.getMonth() - 3;
+
+        let html = '';
+        for (let i = 0; i < 15; i++) {
+            const totalM = startM + i;
+            const y = startY + Math.floor(totalM / 12);
+            const m = ((totalM % 12) + 12) % 12;
+            const label = `${MONTH_NAMES_AR[m]} ${y}`;
+            html += `<option value="${y}-${m}">${label}</option>`;
+        }
+        return html;
+    }
+
     window.onload = function() {
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
         let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
         if (savedDataString) {
-            const savedData = JSON.parse(savedDataString);
-            let subjectsArr = [];
-            for (const stageId in savedData) {
-                const gradeName = savedData[stageId].grade;
-                savedData[stageId].subjects.forEach(subjectName => { subjectsArr.push(`${subjectName} (${gradeName})`); });
-            }
-            if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
+            try {
+                const savedData = JSON.parse(savedDataString);
+                let subjectsArr = [];
+                for (const stageId in savedData) {
+                    const gradeName = savedData[stageId].grade;
+                    savedData[stageId].subjects.forEach(subjectName => { subjectsArr.push(`${subjectName} (${gradeName})`); });
+                }
+                if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
+            } catch(e) {}
         }
         subjectDisplay.textContent = selectedSubjectsText;
         subjectDisplay.dataset.value = selectedSubjectsText;
 
         renderVerticalSchedule();
+        renderMonthlyCalendar();
     };
 
     function getLocation(e) {
@@ -408,9 +614,26 @@
         }
     }
 
-    // ==========================================
-    // 🎯 بناء التقويم
-    // ==========================================
+    function switchView(view) {
+        const tabList = document.getElementById('tab-list');
+        const tabMonth = document.getElementById('tab-month');
+        const vSchedule = document.getElementById('vertical-schedule');
+        const mCalendar = document.getElementById('monthly-calendar');
+
+        [tabList, tabMonth].forEach(t => t.classList.remove('active'));
+        vSchedule.style.display = 'none';
+        mCalendar.classList.remove('active');
+
+        if (view === 'month') {
+            tabMonth.classList.add('active');
+            mCalendar.classList.add('active');
+            renderMonthlyCalendar();
+        } else {
+            tabList.classList.add('active');
+            vSchedule.style.display = 'flex';
+        }
+    }
+
     function renderVerticalSchedule() {
         const container = document.getElementById('vertical-schedule');
         container.innerHTML = '';
@@ -419,9 +642,7 @@
             container.innerHTML += `
                 <div class="day-card" id="card-${day.id}" data-day="${day.name}">
                     <div class="day-header" onclick="toggleDayExpand('${day.id}')">
-                        <div class="day-title">
-                            <label>${day.name}</label>
-                        </div>
+                        <div class="day-title"><label>${day.name}</label></div>
                         <div class="day-header-left">
                             <span class="day-status" id="status-${day.id}">0 حصة</span>
                             <span class="expand-icon">▼</span>
@@ -436,68 +657,46 @@
         });
     }
 
-    // ==========================================
-    // 🎯 فتح/طي اليوم - بدون تفعيل تلقائي
-    // ==========================================
     function toggleDayExpand(dayId) {
         const card = document.getElementById(`card-${dayId}`);
         const isExpanded = card.classList.contains('expanded');
-
         if (!isExpanded) {
             const slotsContainer = document.getElementById(`slots-${dayId}`);
-            if (slotsContainer.children.length === 0) {
-                addSlot(dayId);
-            }
+            if (slotsContainer.children.length === 0) { addSlot(dayId); }
         }
-
         card.classList.toggle('expanded');
         updateDayStatusDisplay(dayId);
     }
 
-    // ==========================================
-    // 🎯 التحقق من تفعيل اليوم (لو فيه مواعيد محفوظة)
-    // ==========================================
     function checkDayActive(dayId) {
         const card = document.getElementById(`card-${dayId}`);
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const hasSaved = Array.from(slotsContainer.querySelectorAll('.time-slot'))
             .some(slot => slot.querySelector('.btn-save-slot').classList.contains('saved'));
-        
-        if (hasSaved) {
-            card.classList.add('active');
-        } else {
-            card.classList.remove('active');
-        }
+        if (hasSaved) { card.classList.add('active'); } else { card.classList.remove('active'); }
     }
 
-    // 🎯 إضافة موعد جديد
     function addSlot(dayId) {
         const slotsContainer = document.getElementById(`slots-${dayId}`);
-        
         const existingEmptySlot = Array.from(slotsContainer.querySelectorAll('.time-slot')).find(slot => {
             const hour = slot.querySelector('.start-hour').value;
             const minute = slot.querySelector('.start-minute').value;
             const saveBtn = slot.querySelector('.btn-save-slot');
             return !hour && !minute && !saveBtn.classList.contains('saved');
         });
-        
-        if (existingEmptySlot) {
-            alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد.");
-            return;
-        }
+        if (existingEmptySlot) { alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد."); return; }
         
         const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        
         const hOpts = hourOptions();
         const mOpts = minuteOptions();
+        const monthRangeOptions = buildMonthRangeOptions();
         
         const slotHTML = `
             <div class="time-slot" id="${slotId}">
                 <div class="time-row">
                     <span class="time-label">من:</span>
                     <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option>
-                        <option value="م" selected>م</option>
+                        <option value="ص">ص</option><option value="م" selected>م</option>
                     </select>
                     <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
                     <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
@@ -505,12 +704,21 @@
                 <div class="time-row">
                     <span class="time-label">إلى:</span>
                     <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option>
-                        <option value="م" selected>م</option>
+                        <option value="ص">ص</option><option value="م" selected>م</option>
                     </select>
                     <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
                     <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
                 </div>
+                
+                <!-- 🎯 نطاق الشهور داخل صندوق الحصة -->
+                <div class="slot-range">
+                    <span class="slot-range-label">📆 من:</span>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${monthRangeOptions}</select>
+                    <span class="slot-range-arrow">←</span>
+                    <span class="slot-range-label">إلى:</span>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${monthRangeOptions}</select>
+                </div>
+                
                 <div class="slot-actions">
                     <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
                     <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
@@ -518,107 +726,94 @@
                 </div>
             </div>
         `;
-        
         slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
         updateDayStatusDisplay(dayId);
     }
 
     function markUnsaved(slotId) {
         const slot = document.getElementById(slotId);
-        if (slot) {
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            saveBtn.classList.remove('saved');
-        }
+        if (slot) { slot.querySelector('.btn-save-slot').classList.remove('saved'); }
     }
 
-    // قراءة الوقت
     function readTime(slot, prefix) {
         const hour = slot.querySelector(`.${prefix}-hour`).value;
         const minute = slot.querySelector(`.${prefix}-minute`).value;
         const period = slot.querySelector(`.${prefix}-period`).value;
-        
         if (!hour || !minute) return null;
-        
-        return {
-            hour: parseInt(hour),
-            minute: minute,
-            period: period,
-            display: `${hour}:${minute} ${period}`
-        };
+        return { hour: parseInt(hour), minute: minute, period: period, display: `${hour}:${minute} ${period}` };
     }
 
-    // ==========================================
-    // 🎯 حفظ الموعد - يفعل اليوم تلقائياً
-    // ==========================================
     function saveSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
-        
         const startTime = readTime(slot, 'start');
         const endTime = readTime(slot, 'end');
+        if (!startTime || !endTime) { alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية."); return; }
         
-        if (!startTime || !endTime) {
-            alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية.");
-            return;
+        // 🎯 قراءة النطاق
+        const rangeFromVal = slot.querySelector('.slot-range-from').value;
+        const rangeToVal = slot.querySelector('.slot-range-to').value;
+        
+        let slotRangeFrom = null, slotRangeTo = null;
+        if (rangeFromVal && rangeToVal) {
+            const [fy, fm] = rangeFromVal.split('-').map(Number);
+            const [ty, tm] = rangeToVal.split('-').map(Number);
+            const fromT = fy * 12 + fm;
+            const toT = ty * 12 + tm;
+            if (fromT > toT) {
+                alert("⚠️ 'من شهر' يجب أن يكون قبل أو يساوي 'إلى شهر'.");
+                return;
+            }
+            slotRangeFrom = { year: fy, month: fm };
+            slotRangeTo = { year: ty, month: tm };
         }
         
         const startMin = timeToMinutes(startTime.hour, startTime.minute, startTime.period);
         const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
-        
-        if (startMin >= endMin) {
-            alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!");
-            return;
-        }
+        if (startMin >= endMin) { alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!"); return; }
         
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
-        
         for (let other of allSlots) {
             if (other.id === slotId) continue;
             const saveBtn = other.querySelector('.btn-save-slot');
             if (!saveBtn.classList.contains('saved')) continue;
-            
             const oStart = readTime(other, 'start');
             const oEnd = readTime(other, 'end');
             if (!oStart || !oEnd) continue;
-            
             const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
             const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
-            
-            if (startMin < oEndMin && endMin > oStartMin) {
-                alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!");
-                return;
-            }
+            if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
         }
         
-        const saveBtn = slot.querySelector('.btn-save-slot');
-        saveBtn.classList.add('saved');
+        // 🎯 نحفظ النطاق على العنصر نفسه
+        slot.dataset.rangeFrom = slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '';
+        slot.dataset.rangeTo = slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : '';
+        
+        slot.querySelector('.btn-save-slot').classList.add('saved');
         slot.classList.add('locked');
-        
-        // 🎯 تفعيل اليوم تلقائياً عند حفظ أول موعد
         document.getElementById(`card-${dayId}`).classList.add('active');
-        
         updateDayStatusDisplay(dayId);
-        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير.");
+        renderMonthlyCalendar();
+        
+        let rangeMsg = '';
+        if (slotRangeFrom && slotRangeTo) {
+            rangeMsg = `\n📆 النطاق: من ${MONTH_NAMES_AR[slotRangeFrom.month]} ${slotRangeFrom.year} إلى ${MONTH_NAMES_AR[slotRangeTo.month]} ${slotRangeTo.year}`;
+        } else {
+            rangeMsg = `\n📆 بدون نطاق: الحصة هتتكرر مدى الحياة`;
+        }
+        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير." + rangeMsg);
     }
 
-    // ==========================================
-    // 🎯 تعديل موعد مقفول
-    // ==========================================
     function editSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
-        
         slot.classList.remove('locked');
-        const saveBtn = slot.querySelector('.btn-save-slot');
-        saveBtn.classList.remove('saved');
-        
-        // 🎯 لو فاضل مواعيد محفوظة تانية في اليوم، اليوم يفضل مفعّل
+        slot.querySelector('.btn-save-slot').classList.remove('saved');
         checkDayActive(dayId);
         updateDayStatusDisplay(dayId);
     }
 
-    // تحويل الوقت لدقائق
     function timeToMinutes(hour, minute, period) {
         let h = hour;
         if (period === 'م' && h !== 12) h += 12;
@@ -626,20 +821,14 @@
         return h * 60 + parseInt(minute);
     }
 
-    // ==========================================
-    // 🎯 حذف موعد - يلغي تفعيل اليوم لو مفيش مواعيد
-    // ==========================================
     function removeSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
-        
         const startTime = readTime(slot, 'start');
         const endTime = readTime(slot, 'end');
-        const saveBtn = slot.querySelector('.btn-save-slot');
-        const isSaved = saveBtn.classList.contains('saved');
+        const isSaved = slot.querySelector('.btn-save-slot').classList.contains('saved');
         
         let confirmMessage = '⚠️ هل أنت متأكد من إلغاء هذا الموعد؟';
-        
         if (isSaved && startTime && endTime) {
             confirmMessage = `⚠️ هل أنت متأكد من إلغاء هذه الحصة؟\n\n🕐 من: ${startTime.display}\n🕐 إلى: ${endTime.display}\n\nسيتم حذف الحصة نهائيًا.`;
         } else if (startTime || endTime) {
@@ -648,53 +837,33 @@
         
         if (confirm(confirmMessage)) {
             slot.remove();
-            // 🎯 التحقق من تفعيل اليوم بعد الحذف
             checkDayActive(dayId);
             updateDayStatusDisplay(dayId);
+            renderMonthlyCalendar();
         }
     }
 
-    // ==========================================
-    // 🎯 تحديث الحالة - الأخضر بس لو فيه مواعيد محفوظة
-    // ==========================================
     function updateDayStatusDisplay(dayId) {
         const statusText = document.getElementById(`status-${dayId}`);
-        
         const slotsContainer = document.getElementById(`slots-${dayId}`);
         const timeSlots = slotsContainer.querySelectorAll('.time-slot');
-        
         let sessions = [];
-        
         timeSlots.forEach(slot => {
             const saveBtn = slot.querySelector('.btn-save-slot');
             if (!saveBtn.classList.contains('saved')) return;
-            
             const start = readTime(slot, 'start');
             const end = readTime(slot, 'end');
-            
             if (start && end) {
-                const startMin = timeToMinutes(start.hour, start.minute, start.period);
-                sessions.push({ 
-                    start: start.display, 
-                    end: end.display,
-                    startMin: startMin
-                });
+                sessions.push({ start: start.display, end: end.display, startMin: timeToMinutes(start.hour, start.minute, start.period) });
             }
         });
-
         sessions.sort((a, b) => a.startMin - b.startMin);
-
-        // 🎯 الأخضر بس لو فيه مواعيد محفوظة فعلاً
         if (sessions.length > 0) {
             statusText.style.background = "#28a745";
             statusText.style.color = "white";
             statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
-            
             statusText.innerHTML = sessions.map((s, i) => 
-                `<span class="session-pill">
-                    <span class="session-num">${i + 1}</span>
-                    <span dir="ltr">${s.start} - ${s.end}</span>
-                </span>`
+                `<span class="session-pill"><span class="session-num">${i + 1}</span><span dir="ltr">${s.start} - ${s.end}</span></span>`
             ).join('');
         } else {
             statusText.style.background = "#e0e4e8";
@@ -704,9 +873,225 @@
         }
     }
 
-    // ==========================================
-    // 🎯 حفظ البيانات النهائية
-    // ==========================================
+    function getAllWeeklySessions() {
+        const sessions = [];
+        daysOfWeek.forEach(day => {
+            const slotsContainer = document.getElementById(`slots-${day.id}`);
+            if (!slotsContainer) return;
+            slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
+                const saveBtn = slot.querySelector('.btn-save-slot');
+                if (!saveBtn.classList.contains('saved')) return;
+                const start = readTime(slot, 'start');
+                const end = readTime(slot, 'end');
+                if (start && end) {
+                    // 🎯 اقرأ النطاق المحفوظ
+                    let slotRangeFrom = null, slotRangeTo = null;
+                    if (slot.dataset.rangeFrom) {
+                        const [fy, fm] = slot.dataset.rangeFrom.split('-').map(Number);
+                        slotRangeFrom = { year: fy, month: fm };
+                    }
+                    if (slot.dataset.rangeTo) {
+                        const [ty, tm] = slot.dataset.rangeTo.split('-').map(Number);
+                        slotRangeTo = { year: ty, month: tm };
+                    }
+                    
+                    sessions.push({
+                        dayId: day.id,
+                        dayName: day.name,
+                        dayJs: day.jsDay,
+                        start: start.display,
+                        end: end.display,
+                        startMin: timeToMinutes(start.hour, start.minute, start.period),
+                        endMin: timeToMinutes(end.hour, end.minute, end.period),
+                        rangeFrom: slotRangeFrom,
+                        rangeTo: slotRangeTo
+                    });
+                }
+            });
+        });
+        return sessions;
+    }
+
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        renderMonthlyCalendar();
+    }
+
+    function goToday() {
+        const now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        renderMonthlyCalendar();
+    }
+
+    function jsDayToCol(jsDay) {
+        return (jsDay + 1) % 7;
+    }
+
+    function countMonthSessions(year, month, weeklySessions) {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let count = 0;
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dt = new Date(year, month, d);
+            const jsD = dt.getDay();
+            // 🎯 نفلتر حسب النطاق
+            const matching = weeklySessions.filter(s => {
+                if (s.dayJs !== jsD) return false;
+                if (s.rangeFrom && s.rangeTo) {
+                    const t = year * 12 + month;
+                    const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
+                    const toT = s.rangeTo.year * 12 + s.rangeTo.month;
+                    if (t < fromT || t > toT) return false;
+                }
+                return true;
+            });
+            count += matching.length;
+        }
+        return count;
+    }
+
+    function renderMonthlyCalendar() {
+        const nameEl = document.getElementById('month-name');
+        const subEl = document.getElementById('month-sub');
+        const bodyEl = document.getElementById('monthly-body');
+
+        const weeklySessions = getAllWeeklySessions();
+        
+        nameEl.textContent = `${MONTH_NAMES_AR[currentMonth]} ${currentYear}`;
+
+        // حساب الحصص الفعلية في الشهر الحالي مع مراعاة النطاقات
+        const actualMonthSessions = countMonthSessions(currentYear, currentMonth, weeklySessions);
+
+        subEl.textContent = `📊 ${actualMonthSessions} حصة هذا الشهر • ${weeklySessions.length} حصة أسبوعياً`;
+
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const firstDayCol = jsDayToCol(firstDayOfMonth.getDay());
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+        const totalCells = Math.ceil((firstDayCol + daysInMonth) / 7) * 7;
+
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth();
+        const todayDate = today.getDate();
+
+        let html = '';
+
+        for (let i = 0; i < totalCells; i++) {
+            const dayIndexInMonth = i - firstDayCol + 1;
+            let dayNum, isOtherMonth = false, actualDateObj;
+
+            if (dayIndexInMonth < 1) {
+                dayNum = daysInPrevMonth + dayIndexInMonth;
+                isOtherMonth = true;
+                actualDateObj = new Date(currentYear, currentMonth - 1, dayNum);
+            } else if (dayIndexInMonth > daysInMonth) {
+                dayNum = dayIndexInMonth - daysInMonth;
+                isOtherMonth = true;
+                actualDateObj = new Date(currentYear, currentMonth + 1, dayNum);
+            } else {
+                dayNum = dayIndexInMonth;
+                actualDateObj = new Date(currentYear, currentMonth, dayNum);
+            }
+
+            const cellJsDay = actualDateObj.getDay();
+            
+            // 🎯 نفلتر الحصص حسب النطاق الخاص بكل حصة
+            const matchingSessions = weeklySessions.filter(s => {
+                if (s.dayJs !== cellJsDay) return false;
+                if (s.rangeFrom && s.rangeTo) {
+                    const t = actualDateObj.getFullYear() * 12 + actualDateObj.getMonth();
+                    const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
+                    const toT = s.rangeTo.year * 12 + s.rangeTo.month;
+                    if (t < fromT || t > toT) return false;
+                }
+                return true;
+            }).sort((a,b) => a.startMin - b.startMin);
+            
+            const isFriday = cellJsDay === 5;
+            const isTodayCell = (actualDateObj.getFullYear() === todayYear && actualDateObj.getMonth() === todayMonth && actualDateObj.getDate() === todayDate);
+
+            html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''}" 
+                        onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()}, ${dayNum})`}">`;
+            
+            html += `<div class="day-num">
+                <span>${dayNum}</span>
+                ${isTodayCell ? '<span class="today-badge">اليوم</span>' : (matchingSessions.length > 0 && !isOtherMonth ? `<span class="session-count-badge">${matchingSessions.length}</span>` : '')}
+            </div>`;
+            
+            html += `<div class="day-sessions">`;
+            if (matchingSessions.length > 0 && !isOtherMonth) {
+                const now = new Date();
+                matchingSessions.slice(0, 3).forEach(sess => {
+                    const sessDateTime = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate(), Math.floor(sess.startMin / 60), sess.startMin % 60);
+                    const isPast = sessDateTime < now;
+                    html += `<div class="day-session-chip ${isPast ? 'past' : ''}" dir="ltr">${sess.start}</div>`;
+                });
+                if (matchingSessions.length > 3) {
+                    html += `<div class="day-more">+${matchingSessions.length - 3} أخرى</div>`;
+                }
+            }
+            html += `</div>`;
+            html += `</div>`;
+        }
+
+        bodyEl.innerHTML = html;
+    }
+
+    function showDayDetails(year, month, dayNum) {
+        const modal = document.getElementById('day-modal');
+        const titleEl = document.getElementById('modal-day-title');
+        const listEl = document.getElementById('modal-sessions-list');
+
+        const dateObj = new Date(year, month, dayNum);
+        const jsDay = dateObj.getDay();
+        const dayObj = daysOfWeek.find(d => d.jsDay === jsDay);
+        const dayName = dayObj ? dayObj.name : '';
+
+        titleEl.textContent = `${dayName} ${dayNum} ${MONTH_NAMES_AR[month]} ${year}`;
+
+        const weeklySessions = getAllWeeklySessions();
+        
+        // 🎯 نفلتر حسب النطاق
+        const sessions = weeklySessions.filter(s => {
+            if (s.dayJs !== jsDay) return false;
+            if (s.rangeFrom && s.rangeTo) {
+                const t = year * 12 + month;
+                const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
+                const toT = s.rangeTo.year * 12 + s.rangeTo.month;
+                if (t < fromT || t > toT) return false;
+            }
+            return true;
+        }).sort((a,b) => a.startMin - b.startMin);
+
+        if (sessions.length === 0) {
+            listEl.innerHTML = `<div style="text-align:center;padding:20px;color:#94a3b8;font-weight:bold;">لا توجد حصص في هذا اليوم</div>`;
+        } else {
+            const now = new Date();
+            listEl.innerHTML = sessions.map((s, i) => {
+                const sessDateTime = new Date(year, month, dayNum, Math.floor(s.startMin / 60), s.startMin % 60);
+                const isPast = sessDateTime < now;
+                return `
+                    <div class="modal-session-item ${isPast ? 'past' : ''}">
+                        <div>
+                            <span class="sess-num">حصة ${i+1}</span>
+                            <span class="time" style="margin-right:8px;">${s.start} → ${s.end}</span>
+                        </div>
+                        <span>${isPast ? '✅ انتهت' : '⏰'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('day-modal').classList.remove('active');
+    }
+
     function submitGroupData() {
         const subjectData = document.getElementById('fixed-subject').dataset.value;
         const groupName = document.getElementById('group-name').value;
@@ -726,27 +1111,27 @@
         activeCards.forEach(card => {
             const dayName = card.dataset.day;
             const slots = [];
-            
             const timeSlotElements = card.querySelectorAll('.time-slot');
             timeSlotElements.forEach(slotEl => {
                 const saveBtn = slotEl.querySelector('.btn-save-slot');
                 const startTime = readTime(slotEl, 'start');
                 const endTime = readTime(slotEl, 'end');
-                
-                if ((startTime || endTime) && !saveBtn.classList.contains('saved')) {
-                    hasUnsavedSlot = true;
-                }
-                
+                if ((startTime || endTime) && !saveBtn.classList.contains('saved')) { hasUnsavedSlot = true; }
                 if (saveBtn.classList.contains('saved') && startTime && endTime) {
-                    slots.push({ 
+                    const slotData = { 
                         start: startTime.display, 
-                        end: endTime.display,
-                        startMin: timeToMinutes(startTime.hour, startTime.minute, startTime.period)
-                    });
+                        end: endTime.display, 
+                        startMin: timeToMinutes(startTime.hour, startTime.minute, startTime.period) 
+                    };
+                    // 🎯 ضيف النطاق لو موجود
+                    if (slotEl.dataset.rangeFrom && slotEl.dataset.rangeTo) {
+                        slotData.rangeFrom = slotEl.dataset.rangeFrom;
+                        slotData.rangeTo = slotEl.dataset.rangeTo;
+                    }
+                    slots.push(slotData);
                     totalSessionsCount++;
                 }
             });
-            
             if (slots.length > 0) {
                 slots.sort((a, b) => a.startMin - b.startMin);
                 slots.forEach(s => delete s.startMin);
@@ -756,26 +1141,11 @@
             }
         });
 
-        if (subjectData.includes('لم تختر')) { 
-            alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); 
-            return; 
-        }
-        if (!groupName || !teacherName) { 
-            alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); 
-            return; 
-        }
-        if (activeCards.length === 0) { 
-            alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة.'); 
-            return; 
-        }
-        if (hasUnsavedSlot) {
-            alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.');
-            return;
-        }
-        if (hasEmptyActiveDay) {
-            alert('⚠️ يوجد أيام مُفعلة ولكن لم تقم بحفظ أوقات الحصص لها.');
-            return;
-        }
+        if (subjectData.includes('لم تختر')) { alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return; }
+        if (!groupName || !teacherName) { alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); return; }
+        if (activeCards.length === 0) { alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة.'); return; }
+        if (hasUnsavedSlot) { alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.'); return; }
+        if (hasEmptyActiveDay) { alert('⚠️ يوجد أيام مُفعلة ولكن لم تقم بحفظ أوقات الحصص لها.'); return; }
 
         const groupData = {
             subjectData, groupName, teacherName, studentsCount, genderAllowed,
