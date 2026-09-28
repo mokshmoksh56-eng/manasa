@@ -8,7 +8,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
-    /* 🎯 شريط "آخر حفظ" */
     .last-save-bar {
         position: fixed;
         bottom: 10px;
@@ -168,7 +167,6 @@
     .hour-select { width: 85px; flex-shrink: 0; }
     .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; align-items: center; }
 
-    /* 🎯 رسالة توضيحية بجانب زر الحفظ */
     .slot-apply-note {
         display: none;
         font-size: 11px;
@@ -190,7 +188,6 @@
     .slot-apply-note .note-icon { font-size: 13px; flex-shrink: 0; }
     .slot-apply-note b { color: #14532d; }
 
-    /* عند القفل تظهر الرسالة بلون أخضر فاتح ثابت */
     .time-slot.locked .slot-apply-note {
         display: inline-flex;
         background: #f0fdf4;
@@ -411,14 +408,8 @@
 </head>
 <body>
 
-<!-- 🎯 شريط "آخر حفظ" (بدون رسائل) -->
-<div class="last-save-bar" id="last-save-bar">
-    <span class="dot"></span>
-    <span id="last-save-time">آخر حفظ: —</span>
-</div>
-
 <header class="header-3d">
-    <h1>إعداد تفاصيل المجموعة</h1>
+    <h1 id="page-header-title">إعداد تفاصيل المجموعة</h1>
     <div class="stepper">
         <div class="step">✓ 1. التخصص</div>
         <div class="step-divider">❯</div>
@@ -549,7 +540,7 @@
         </div>
     </div>
 
-    <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
+    <button class="submit-btn" id="submit-btn-main" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
 </div>
 
 <div class="modal-overlay" id="day-modal" onclick="if(event.target===this) closeModal()">
@@ -580,248 +571,30 @@
         'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
     ];
 
-    // ==========================================
-    // 🎯 نظام الحفظ التلقائي (بدون رسائل)
-    // ==========================================
-    const STORAGE_KEY = 'mester2_auto_save';
-    let saveTimeout = null;
-    let isRestoring = false;
+    const GROUPS_STORAGE_KEY = 'mester_groups_list';
+    const TEACHER_NAME_KEY = 'mester_teacher_name';
 
-    // 🎯 تحديث وقت آخر حفظ (الشريط الصغير بس)
-    function updateLastSaveTime() {
-        const bar = document.getElementById('last-save-bar');
-        const timeEl = document.getElementById('last-save-time');
-        if (!bar || !timeEl) return;
-        const now = new Date();
-        const hh = now.getHours().toString().padStart(2, '0');
-        const mm = now.getMinutes().toString().padStart(2, '0');
-        const ss = now.getSeconds().toString().padStart(2, '0');
-        timeEl.textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
-        bar.classList.add('show');
-    }
+    let IS_EDIT_MODE = false;
+    let EDIT_INDEX = -1;
 
-    // 🎯 بناء نص الرسالة التوضيحية للميعاد
+    // ==========================================
+    // 🎯 رسالة توضيحية للميعاد
+    // ==========================================
     function buildApplyNote(dayId, fromVal, toVal) {
         const dayObj = daysOfWeek.find(d => d.id === dayId);
         const dayName = dayObj ? dayObj.name : 'اليوم';
-        
         let rangeText = 'مدى الحياة';
         if (fromVal && toVal) {
             const [fy, fm] = fromVal.split('-').map(Number);
             const [ty, tm] = toVal.split('-').map(Number);
             rangeText = `من <b>${MONTH_NAMES_AR[fm]} ${fy}</b> إلى <b>${MONTH_NAMES_AR[tm]} ${ty}</b>`;
         }
-        
         return `<span class="note-icon">📌</span> <span>سيُطبَّق الميعاد في جميع أيام <b>${dayName}</b> ${rangeText}</span>`;
     }
 
-    // 🎯 جمع كل بيانات الصفحة
-    function collectAllData() {
-        const data = {
-            groupName: document.getElementById('group-name')?.value || '',
-            teacherName: document.getElementById('teacher-name')?.value || '',
-            studentsCount: document.getElementById('students-count')?.value || '',
-            gender: document.querySelector('input[name="gender"]:checked')?.value || 'مختلط',
-            location: document.querySelector('input[name="location"]:checked')?.value || 'السنتر',
-            gpsCoords: document.getElementById('gps-coords')?.value || '',
-            locationText: document.getElementById('location-text')?.textContent || 'لم يتم التحديد',
-            currentTab: document.querySelector('.view-tab.active')?.id || 'tab-list',
-            currentYear: currentYear,
-            currentMonth: currentMonth,
-            currentWeekOffset: currentWeekOffset,
-            schedule: {},
-            savedAt: new Date().toISOString()
-        };
-        
-        daysOfWeek.forEach(day => {
-            const slotsContainer = document.getElementById(`slots-${day.id}`);
-            if (!slotsContainer) return;
-            const slots = [];
-            slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
-                const saveBtn = slot.querySelector('.btn-save-slot');
-                const startTime = readTime(slot, 'start');
-                const endTime = readTime(slot, 'end');
-                slots.push({
-                    startHour: startTime?.hour || '',
-                    startMinute: startTime?.minute || '',
-                    startPeriod: startTime?.period || 'م',
-                    endHour: endTime?.hour || '',
-                    endMinute: endTime?.minute || '',
-                    endPeriod: endTime?.period || 'م',
-                    isSaved: saveBtn?.classList.contains('saved') || false,
-                    isLocked: slot.classList.contains('locked'),
-                    rangeFrom: slot.dataset.rangeFrom || '',
-                    rangeTo: slot.dataset.rangeTo || ''
-                });
-            });
-            data.schedule[day.id] = slots;
-        });
-        
-        return data;
-    }
-
-    // 🎯 حفظ البيانات في localStorage (بصمت)
-    function saveAllData() {
-        if (isRestoring) return;
-        try {
-            const data = collectAllData();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            updateLastSaveTime();
-        } catch (e) {
-            console.error('خطأ في الحفظ:', e);
-        }
-    }
-
-    // 🎯 حفظ بتأخير (debounce)
-    function saveAllDataDebounced() {
-        if (saveTimeout) clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(() => {
-            saveAllData();
-        }, 400);
-    }
-
-    // 🎯 استرجاع البيانات
-    function restoreAllData() {
-        try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return false;
-            
-            const data = JSON.parse(raw);
-            isRestoring = true;
-            
-            if (data.groupName) document.getElementById('group-name').value = data.groupName;
-            if (data.teacherName) document.getElementById('teacher-name').value = data.teacherName;
-            if (data.studentsCount) document.getElementById('students-count').value = data.studentsCount;
-            
-            if (data.gender) {
-                const genderRadio = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
-                if (genderRadio) genderRadio.checked = true;
-            }
-            if (data.location) {
-                const locationRadio = document.querySelector(`input[name="location"][value="${data.location}"]`);
-                if (locationRadio) locationRadio.checked = true;
-            }
-            
-            if (data.gpsCoords) {
-                document.getElementById('gps-coords').value = data.gpsCoords;
-                const btn = document.querySelector('.btn-gps');
-                if (btn) {
-                    btn.innerHTML = '✅ تم التحديد';
-                    btn.style.backgroundColor = '#1a3c6d';
-                }
-            }
-            if (data.locationText && data.locationText !== 'لم يتم التحديد') {
-                document.getElementById('location-text').textContent = data.locationText;
-            }
-            
-            if (typeof data.currentYear === 'number') currentYear = data.currentYear;
-            if (typeof data.currentMonth === 'number') currentMonth = data.currentMonth;
-            if (typeof data.currentWeekOffset === 'number') currentWeekOffset = data.currentWeekOffset;
-            
-            setTimeout(() => {
-                daysOfWeek.forEach(day => {
-                    const daySlots = data.schedule?.[day.id];
-                    if (!daySlots || daySlots.length === 0) return;
-                    
-                    const slotsContainer = document.getElementById(`slots-${day.id}`);
-                    if (!slotsContainer) return;
-                    
-                    slotsContainer.innerHTML = '';
-                    
-                    daySlots.forEach(slotData => {
-                        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-                        const hOpts = hourOptions();
-                        const mOpts = minuteOptions();
-                        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom);
-                        const toOptions = buildMonthRangeOptions(slotData.rangeTo);
-                        
-                        const slotHTML = `
-                            <div class="time-slot ${slotData.isLocked ? 'locked' : ''}" id="${slotId}"
-                                 data-range-from="${slotData.rangeFrom || ''}"
-                                 data-range-to="${slotData.rangeTo || ''}">
-                                <div class="time-row">
-                                    <span class="time-label">من:</span>
-                                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                                        <option value="ص">ص</option>
-                                        <option value="م">م</option>
-                                    </select>
-                                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                                </div>
-                                <div class="time-row">
-                                    <span class="time-label">إلى:</span>
-                                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                                        <option value="ص">ص</option>
-                                        <option value="م">م</option>
-                                    </select>
-                                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                                </div>
-                                
-                                <div class="slot-range">
-                                    <span class="slot-range-label">📆 من:</span>
-                                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
-                                    <span class="slot-range-arrow">←</span>
-                                    <span class="slot-range-label">إلى:</span>
-                                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
-                                </div>
-                                
-                                <div class="slot-actions">
-                                    <span class="slot-apply-note ${slotData.isSaved ? 'show' : ''}">${buildApplyNote(day.id, slotData.rangeFrom, slotData.rangeTo)}</span>
-                                    <button class="btn-save-slot ${slotData.isSaved ? 'saved' : ''}" onclick="saveSlot('${slotId}', '${day.id}')">💾 حفظ</button>
-                                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${day.id}')">✏️ تعديل</button>
-                                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${day.id}')">✖ إلغاء</button>
-                                </div>
-                            </div>
-                        `;
-                        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
-                        
-                        const slot = document.getElementById(slotId);
-                        slot.querySelector('.start-period').value = slotData.startPeriod || 'م';
-                        slot.querySelector('.start-minute').value = slotData.startMinute || '';
-                        slot.querySelector('.start-hour').value = slotData.startHour || '';
-                        slot.querySelector('.end-period').value = slotData.endPeriod || 'م';
-                        slot.querySelector('.end-minute').value = slotData.endMinute || '';
-                        slot.querySelector('.end-hour').value = slotData.endHour || '';
-                        
-                        if (slotData.isSaved) {
-                            const card = document.getElementById(`card-${day.id}`);
-                            if (card) card.classList.add('active');
-                        }
-                    });
-                    
-                    updateDayStatusDisplay(day.id);
-                });
-                
-                if (data.currentTab === 'tab-month') {
-                    switchView('month');
-                } else {
-                    renderVerticalSchedule();
-                    updateWeekNavBar();
-                }
-                
-                isRestoring = false;
-                
-                // 🎯 تحديث وقت آخر حفظ بس (بدون رسائل)
-                if (data.savedAt) {
-                    const savedDate = new Date(data.savedAt);
-                    const hh = savedDate.getHours().toString().padStart(2, '0');
-                    const mm = savedDate.getMinutes().toString().padStart(2, '0');
-                    const ss = savedDate.getSeconds().toString().padStart(2, '0');
-                    document.getElementById('last-save-time').textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
-                    document.getElementById('last-save-bar').classList.add('show');
-                }
-                
-            }, 100);
-            
-            return true;
-        } catch (e) {
-            console.error('خطأ في الاسترجاع:', e);
-            isRestoring = false;
-            return false;
-        }
-    }
-
+    // ==========================================
+    // 🎯 خيارات القوائم
+    // ==========================================
     function hourOptions() {
         let html = '<option value="">ساعة</option>';
         for (let i = 1; i <= 12; i++) html += `<option value="${i}">${i}</option>`;
@@ -841,19 +614,15 @@
         const now = new Date();
         const currentY = now.getFullYear();
         const currentM = now.getMonth();
-        
         const startTotalM = currentY * 12 + currentM - 3;
         const totalMonths = 24;
-
         let html = '';
         for (let i = 0; i < totalMonths; i++) {
             const totalM = startTotalM + i;
             const y = Math.floor(totalM / 12);
             const m = ((totalM % 12) + 12) % 12;
-            
             const label = `${MONTH_NAMES_AR[m]} ${y}`;
             const value = `${y}-${m}`;
-            
             const selected = (value === selectedValue) ? 'selected' : '';
             html += `<option value="${value}" ${selected}>${label}</option>`;
         }
@@ -864,17 +633,17 @@
         const now = new Date();
         const y = now.getFullYear();
         const m = now.getMonth();
-        
         const fromVal = `${y}-${m}`;
-        
         const toM = m + 10;
         const toY = y + Math.floor(toM / 12);
         const toMonth = ((toM % 12) + 12) % 12;
         const toVal = `${toY}-${toMonth}`;
-        
         return { fromVal, toVal };
     }
 
+    // ==========================================
+    // 🎯 أدوات التاريخ
+    // ==========================================
     function getWeekStartSaturday(offset = 0) {
         const today = new Date();
         const todayJs = today.getDay();
@@ -922,14 +691,25 @@
         const targetDate = getDateForDayInCurrentWeek(targetJsDay);
         const status = getDayStatus(targetDate);
         const dateStr = formatDateFull(targetDate);
-        
         if (status === 'today') {
             return `<span class="day-date today-date">📅 ${dateStr} • اليوم</span>`;
         }
         return `<span class="day-date">📅 ${dateStr}</span>`;
     }
 
+    // ==========================================
+    // 🎯 تشغيل الصفحة
+    // ==========================================
     window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const editIndex = urlParams.get('index');
+
+        if (mode === 'edit' && editIndex !== null && editIndex !== undefined) {
+            IS_EDIT_MODE = true;
+            EDIT_INDEX = parseInt(editIndex);
+        }
+
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
         let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
@@ -950,59 +730,388 @@
         renderVerticalSchedule();
         renderMonthlyCalendar();
         updateWeekNavBar();
-        
-        restoreAllData();
-        setTimeout(setupSwipeNavigation, 100);
-        setupAutoSaveListeners();
+        setupSwipeNavigation();
+
+        if (IS_EDIT_MODE) {
+            loadEditData();
+        }
     };
 
-    function setupAutoSaveListeners() {
-        ['group-name', 'teacher-name', 'students-count'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', () => saveAllDataDebounced());
+    // ==========================================
+    // 🎯 تحميل بيانات التعديل
+    // ==========================================
+    function loadEditData() {
+        try {
+            const raw = localStorage.getItem('mester2_edit_data');
+            if (!raw) {
+                alert('⚠️ لم يتم العثور على بيانات المجموعة للتعديل. الرجاء العودة للصفحة السابقة.');
+                window.location.href = 'mester3.html';
+                return;
             }
-        });
-        
-        document.querySelectorAll('input[name="gender"], input[name="location"]').forEach(radio => {
-            radio.addEventListener('change', () => saveAllData());
-        });
-        
-        window.addEventListener('beforeunload', () => {
-            saveAllData();
-        });
-        
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-            try {
-                const data = JSON.parse(raw);
-                if (data.savedAt) {
-                    const savedDate = new Date(data.savedAt);
-                    const hh = savedDate.getHours().toString().padStart(2, '0');
-                    const mm = savedDate.getMinutes().toString().padStart(2, '0');
-                    const ss = savedDate.getSeconds().toString().padStart(2, '0');
-                    document.getElementById('last-save-time').textContent = `آخر حفظ: ${hh}:${mm}:${ss}`;
-                    document.getElementById('last-save-bar').classList.add('show');
+            const editData = JSON.parse(raw);
+
+            if (editData.groupName) document.getElementById('group-name').value = editData.groupName;
+            if (editData.teacherName) document.getElementById('teacher-name').value = editData.teacherName;
+            if (editData.studentsCount) document.getElementById('students-count').value = editData.studentsCount;
+
+            if (editData.genderAllowed) {
+                const genderRadio = document.querySelector(`input[name="gender"][value="${editData.genderAllowed}"]`);
+                if (genderRadio) genderRadio.checked = true;
+            }
+            if (editData.location) {
+                const locationRadio = document.querySelector(`input[name="location"][value="${editData.location}"]`);
+                if (locationRadio) locationRadio.checked = true;
+            }
+            if (editData.gpsLocation) {
+                document.getElementById('gps-coords').value = editData.gpsLocation;
+                const btn = document.querySelector('.btn-gps');
+                if (btn) {
+                    btn.innerHTML = '✅ تم التحديد';
+                    btn.style.backgroundColor = '#1a3c6d';
                 }
-            } catch(e) {}
+            }
+
+            if (editData.subjectData) {
+                const subjectEl = document.getElementById('fixed-subject');
+                subjectEl.textContent = editData.subjectData;
+                subjectEl.dataset.value = editData.subjectData;
+            }
+
+            if (editData.schedule) {
+                Object.keys(editData.schedule).forEach(dayName => {
+                    const dayObj = daysOfWeek.find(d => d.name === dayName);
+                    if (!dayObj) return;
+                    const slots = editData.schedule[dayName];
+                    if (!Array.isArray(slots)) return;
+
+                    const slotsContainer = document.getElementById(`slots-${dayObj.id}`);
+                    if (!slotsContainer) return;
+                    slotsContainer.innerHTML = '';
+
+                    slots.forEach(slotData => {
+                        rebuildSlotFromEdit(dayObj.id, slotData);
+                    });
+
+                    const card = document.getElementById(`card-${dayObj.id}`);
+                    if (card && slots.length > 0) {
+                        card.classList.add('active', 'expanded');
+                    }
+                    updateDayStatusDisplay(dayObj.id);
+                });
+            }
+
+            const submitBtn = document.getElementById('submit-btn-main');
+            if (submitBtn) submitBtn.innerHTML = '💾 حفظ التعديلات';
+
+            const headerTitle = document.getElementById('page-header-title');
+            if (headerTitle) headerTitle.textContent = 'تعديل المجموعة';
+
+            renderMonthlyCalendar();
+
+        } catch (e) {
+            console.error('خطأ في تحميل وضع التعديل:', e);
         }
     }
 
+    // ==========================================
+    // 🎯 رسم الجدول الأسبوعي
+    // ==========================================
+    function renderVerticalSchedule() {
+        const container = document.getElementById('vertical-schedule');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        daysOfWeek.forEach(day => {
+            const dateInfo = getNextDateForDay(day.jsDay);
+            const targetDate = getDateForDayInCurrentWeek(day.jsDay);
+            const status = getDayStatus(targetDate);
+
+            let statusClass = '';
+            if (status === 'today') statusClass = 'today-day-card';
+            else if (status === 'past') statusClass = 'past-day-card';
+            else statusClass = 'future-day-card';
+
+            container.innerHTML += `
+                <div class="day-card ${statusClass}" id="card-${day.id}" data-day="${day.name}">
+                    <div class="day-header" onclick="toggleDayExpand('${day.id}')">
+                        <div class="day-title">
+                            <label>${day.name}</label>
+                            ${dateInfo}
+                        </div>
+                        <div class="day-header-left">
+                            <span class="day-status" id="status-${day.id}">0 حصة</span>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="day-body" id="body-${day.id}" onclick="event.stopPropagation()">
+                        <div class="slots-container" id="slots-${day.id}"></div>
+                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">
+                            <span class="plus-icon">➕</span>
+                            <span>إضافة موعد جديد</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function toggleDayExpand(dayId) {
+        const card = document.getElementById(`card-${dayId}`);
+        const isExpanded = card.classList.contains('expanded');
+        if (!isExpanded) {
+            const slotsContainer = document.getElementById(`slots-${dayId}`);
+            if (slotsContainer.children.length === 0) { addSlot(dayId); }
+        }
+        card.classList.toggle('expanded');
+        updateDayStatusDisplay(dayId);
+    }
+
+    function checkDayActive(dayId) {
+        const card = document.getElementById(`card-${dayId}`);
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const hasSaved = Array.from(slotsContainer.querySelectorAll('.time-slot'))
+            .some(slot => slot.querySelector('.btn-save-slot').classList.contains('saved'));
+        if (hasSaved) { card.classList.add('active'); } else { card.classList.remove('active'); }
+    }
+
+    // ==========================================
+    // 🎯 إضافة موعد جديد
+    // ==========================================
+    function addSlot(dayId) {
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const existingEmptySlot = Array.from(slotsContainer.querySelectorAll('.time-slot')).find(slot => {
+            const hour = slot.querySelector('.start-hour').value;
+            const minute = slot.querySelector('.start-minute').value;
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            return !hour && !minute && !saveBtn.classList.contains('saved');
+        });
+        if (existingEmptySlot) { alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد."); return; }
+
+        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        const hOpts = hourOptions();
+        const mOpts = minuteOptions();
+
+        const { fromVal, toVal } = getDefaultRangeValues();
+        const fromOptions = buildMonthRangeOptions(fromVal);
+        const toOptions = buildMonthRangeOptions(toVal);
+
+        const slotHTML = `
+            <div class="time-slot" id="${slotId}">
+                <div class="time-row">
+                    <span class="time-label">من:</span>
+                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option><option value="م" selected>م</option>
+                    </select>
+                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                </div>
+                <div class="time-row">
+                    <span class="time-label">إلى:</span>
+                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option><option value="م" selected>م</option>
+                    </select>
+                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                </div>
+                <div class="slot-range">
+                    <span class="slot-range-label">📆 من:</span>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
+                    <span class="slot-range-arrow">←</span>
+                    <span class="slot-range-label">إلى:</span>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
+                </div>
+                <div class="slot-actions">
+                    <span class="slot-apply-note">${buildApplyNote(dayId, fromVal, toVal)}</span>
+                    <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
+                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
+                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
+                </div>
+            </div>
+        `;
+        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
+        updateDayStatusDisplay(dayId);
+    }
+
+    function markUnsaved(slotId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        slot.querySelector('.btn-save-slot').classList.remove('saved');
+        const noteEl = slot.querySelector('.slot-apply-note');
+        if (noteEl) {
+            const dayCard = slot.closest('.day-card');
+            const dayId = dayCard ? dayCard.id.replace('card-', '') : '';
+            const fromVal = slot.querySelector('.slot-range-from').value;
+            const toVal = slot.querySelector('.slot-range-to').value;
+            noteEl.innerHTML = buildApplyNote(dayId, fromVal, toVal);
+            noteEl.classList.remove('show');
+        }
+    }
+
+    function readTime(slot, prefix) {
+        const hour = slot.querySelector(`.${prefix}-hour`).value;
+        const minute = slot.querySelector(`.${prefix}-minute`).value;
+        const period = slot.querySelector(`.${prefix}-period`).value;
+        if (!hour || !minute) return null;
+        return { hour: parseInt(hour), minute: minute, period: period, display: `${hour}:${minute} ${period}` };
+    }
+
+    function timeToMinutes(hour, minute, period) {
+        let h = hour;
+        if (period === 'م' && h !== 12) h += 12;
+        if (period === 'ص' && h === 12) h = 0;
+        return h * 60 + parseInt(minute);
+    }
+
+    // ==========================================
+    // 🎯 حفظ الموعد
+    // ==========================================
+    function saveSlot(slotId, dayId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        const startTime = readTime(slot, 'start');
+        const endTime = readTime(slot, 'end');
+        if (!startTime || !endTime) { alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية."); return; }
+
+        const rangeFromVal = slot.querySelector('.slot-range-from').value;
+        const rangeToVal = slot.querySelector('.slot-range-to').value;
+
+        let slotRangeFrom = null, slotRangeTo = null;
+        if (rangeFromVal && rangeToVal) {
+            const [fy, fm] = rangeFromVal.split('-').map(Number);
+            const [ty, tm] = rangeToVal.split('-').map(Number);
+            const fromT = fy * 12 + fm;
+            const toT = ty * 12 + tm;
+            if (fromT > toT) {
+                alert("⚠️ 'من شهر' يجب أن يكون قبل أو يساوي 'إلى شهر'.");
+                return;
+            }
+            slotRangeFrom = { year: fy, month: fm };
+            slotRangeTo = { year: ty, month: tm };
+        }
+
+        const startMin = timeToMinutes(startTime.hour, startTime.minute, startTime.period);
+        const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
+        if (startMin >= endMin) { alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!"); return; }
+
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
+        for (let other of allSlots) {
+            if (other.id === slotId) continue;
+            const saveBtn = other.querySelector('.btn-save-slot');
+            if (!saveBtn.classList.contains('saved')) continue;
+            const oStart = readTime(other, 'start');
+            const oEnd = readTime(other, 'end');
+            if (!oStart || !oEnd) continue;
+            const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
+            const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
+            if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
+        }
+
+        slot.dataset.rangeFrom = slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '';
+        slot.dataset.rangeTo = slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : '';
+
+        slot.querySelector('.btn-save-slot').classList.add('saved');
+        slot.classList.add('locked');
+        document.getElementById(`card-${dayId}`).classList.add('active');
+        updateDayStatusDisplay(dayId);
+        renderMonthlyCalendar();
+
+        const noteEl = slot.querySelector('.slot-apply-note');
+        if (noteEl) {
+            noteEl.innerHTML = buildApplyNote(dayId, slot.dataset.rangeFrom, slot.dataset.rangeTo);
+            noteEl.classList.add('show');
+        }
+
+        let rangeMsg = '';
+        if (slotRangeFrom && slotRangeTo) {
+            rangeMsg = `\n📆 النطاق: من ${MONTH_NAMES_AR[slotRangeFrom.month]} ${slotRangeFrom.year} إلى ${MONTH_NAMES_AR[slotRangeTo.month]} ${slotRangeTo.year}`;
+        } else {
+            rangeMsg = `\n📆 بدون نطاق: الحصة هتتكرر مدى الحياة`;
+        }
+        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير." + rangeMsg);
+    }
+
+    function editSlot(slotId, dayId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        slot.classList.remove('locked');
+        slot.querySelector('.btn-save-slot').classList.remove('saved');
+        checkDayActive(dayId);
+        updateDayStatusDisplay(dayId);
+    }
+
+    function removeSlot(slotId, dayId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        const startTime = readTime(slot, 'start');
+        const endTime = readTime(slot, 'end');
+        const isSaved = slot.querySelector('.btn-save-slot').classList.contains('saved');
+
+        let confirmMessage = '⚠️ هل أنت متأكد من إلغاء هذا الموعد؟';
+        if (isSaved && startTime && endTime) {
+            confirmMessage = `⚠️ هل أنت متأكد من إلغاء هذه الحصة؟\n\n🕐 من: ${startTime.display}\n🕐 إلى: ${endTime.display}\n\nسيتم حذف الحصة نهائيًا.`;
+        } else if (startTime || endTime) {
+            confirmMessage = `⚠️ هذا الموعد لم يتم حفظه بعد.\n\nهل أنت متأكد من إلغائه؟`;
+        }
+
+        if (confirm(confirmMessage)) {
+            slot.remove();
+            checkDayActive(dayId);
+            updateDayStatusDisplay(dayId);
+            renderMonthlyCalendar();
+        }
+    }
+
+    function updateDayStatusDisplay(dayId) {
+        const statusText = document.getElementById(`status-${dayId}`);
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        if (!statusText || !slotsContainer) return;
+        const timeSlots = slotsContainer.querySelectorAll('.time-slot');
+        let sessions = [];
+        timeSlots.forEach(slot => {
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            if (!saveBtn.classList.contains('saved')) return;
+            const start = readTime(slot, 'start');
+            const end = readTime(slot, 'end');
+            if (start && end) {
+                sessions.push({ start: start.display, end: end.display, startMin: timeToMinutes(start.hour, start.minute, start.period) });
+            }
+        });
+        sessions.sort((a, b) => a.startMin - b.startMin);
+        if (sessions.length > 0) {
+            statusText.style.background = "#28a745";
+            statusText.style.color = "white";
+            statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
+            statusText.innerHTML = sessions.map((s, i) => 
+                `<span class="session-pill"><span class="session-num">${i + 1}</span><span dir="ltr">${s.start} - ${s.end}</span></span>`
+            ).join('');
+        } else {
+            statusText.style.background = "#e0e4e8";
+            statusText.style.color = "#666";
+            statusText.style.boxShadow = "none";
+            statusText.innerHTML = `0 حصة`;
+        }
+    }
+
+    // ==========================================
+    // 🎯 التنقل بين الأسابيع
+    // ==========================================
     function updateWeekNavBar() {
         const weekStart = getWeekStartSaturday(currentWeekOffset);
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
-        
+
         const rangeEl = document.getElementById('week-range');
         const labelEl = document.getElementById('week-label');
         const statusEl = document.getElementById('week-status');
-        
+
         rangeEl.innerHTML = `
             <span>${formatDateShort(weekStart)}</span>
             <span class="week-num-badge">7 أيام</span>
             <span>${formatDateShort(weekEnd)}</span>
         `;
-        
+
         if (currentWeekOffset === 0) {
             labelEl.textContent = 'الأسبوع الحالي';
             statusEl.textContent = '📍 النهاردة';
@@ -1029,7 +1138,6 @@
         currentWeekOffset--;
         renderVerticalSchedule();
         updateWeekNavBar();
-        saveAllData();
     }
 
     function goToNextWeekWithAnimation() {
@@ -1042,16 +1150,17 @@
         currentWeekOffset++;
         renderVerticalSchedule();
         updateWeekNavBar();
-        saveAllData();
     }
 
     function goToCurrentWeek() {
         currentWeekOffset = 0;
         renderVerticalSchedule();
         updateWeekNavBar();
-        saveAllData();
     }
 
+    // ==========================================
+    // 🎯 Swipe Navigation
+    // ==========================================
     function setupSwipeNavigation() {
         setupWeekSwipe();
         setupMonthSwipe();
@@ -1091,27 +1200,24 @@
             else goToNextWeekWithAnimation();
         }, { passive: true });
 
-        let mouseStartX = 0, mouseStartY = 0, mouseDragging = false, mouseHorizontal = false;
+        let mouseStartX = 0, mouseDragging = false, mouseHorizontal = false;
         wrapper.addEventListener('mousedown', (e) => {
             if (e.target.closest('button, a, select, input')) return;
-            mouseStartX = e.clientX; mouseStartY = e.clientY;
+            mouseStartX = e.clientX;
             mouseDragging = true; mouseHorizontal = false;
             e.preventDefault();
         });
         document.addEventListener('mousemove', (e) => {
             if (!mouseDragging) return;
             const diffX = Math.abs(e.clientX - mouseStartX);
-            const diffY = Math.abs(e.clientY - mouseStartY);
-            if (diffX > diffY && diffX > 10) mouseHorizontal = true;
+            if (diffX > 10) mouseHorizontal = true;
         });
         document.addEventListener('mouseup', (e) => {
             if (!mouseDragging) return;
             mouseDragging = false;
             if (!mouseHorizontal) return;
             const diffX = e.clientX - mouseStartX;
-            const diffY = e.clientY - mouseStartY;
             if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
             if (diffX > 0) goToPrevWeekWithAnimation();
             else goToNextWeekWithAnimation();
         });
@@ -1150,27 +1256,24 @@
             else goToNextMonthWithAnimation();
         }, { passive: true });
 
-        let mouseStartX = 0, mouseStartY = 0, mouseDragging = false, mouseHorizontal = false;
+        let mouseStartX = 0, mouseDragging = false, mouseHorizontal = false;
         wrapper.addEventListener('mousedown', (e) => {
             if (e.target.closest('button, a, select, input')) return;
-            mouseStartX = e.clientX; mouseStartY = e.clientY;
+            mouseStartX = e.clientX;
             mouseDragging = true; mouseHorizontal = false;
             e.preventDefault();
         });
         document.addEventListener('mousemove', (e) => {
             if (!mouseDragging) return;
             const diffX = Math.abs(e.clientX - mouseStartX);
-            const diffY = Math.abs(e.clientY - mouseStartY);
-            if (diffX > diffY && diffX > 10) mouseHorizontal = true;
+            if (diffX > 10) mouseHorizontal = true;
         });
         document.addEventListener('mouseup', (e) => {
             if (!mouseDragging) return;
             mouseDragging = false;
             if (!mouseHorizontal) return;
             const diffX = e.clientX - mouseStartX;
-            const diffY = e.clientY - mouseStartY;
             if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
             if (diffX > 0) goToPrevMonthWithAnimation();
             else goToNextMonthWithAnimation();
         });
@@ -1185,7 +1288,6 @@
             wrapper.classList.add('swipe-right');
         }
         changeMonth(-1);
-        saveAllData();
     }
 
     function goToNextMonthWithAnimation() {
@@ -1196,31 +1298,51 @@
             wrapper.classList.add('swipe-left');
         }
         changeMonth(1);
-        saveAllData();
     }
 
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        renderMonthlyCalendar();
+    }
+
+    function goToday() {
+        const now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        renderMonthlyCalendar();
+    }
+
+    // ==========================================
+    // 🎯 GPS
+    // ==========================================
     function getLocation(e) {
         e.preventDefault();
-        const btn = e.target; const textDisplay = document.getElementById('location-text'); const hiddenInput = document.getElementById('gps-coords');
+        const btn = e.target;
+        const textDisplay = document.getElementById('location-text');
+        const hiddenInput = document.getElementById('gps-coords');
         btn.innerHTML = '⏳ جاري...';
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                position => { 
-                    hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`; 
-                    btn.innerHTML = '✅ تم التحديد'; 
-                    btn.style.backgroundColor = '#1a3c6d'; 
-                    textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`; 
-                    saveAllData();
+                position => {
+                    hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
+                    btn.innerHTML = '✅ تم التحديد';
+                    btn.style.backgroundColor = '#1a3c6d';
+                    textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
                 },
-                error => { 
-                    btn.innerHTML = '❌ فشل'; 
-                    btn.style.backgroundColor = '#dc3545'; 
-                    textDisplay.textContent = 'تأكد من تفعيل الـ GPS'; 
+                error => {
+                    btn.innerHTML = '❌ فشل';
+                    btn.style.backgroundColor = '#dc3545';
+                    textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
                 }
             );
         }
     }
 
+    // ==========================================
+    // 🎯 التبديل بين القائمة والتقويم
+    // ==========================================
     function switchView(view) {
         const tabList = document.getElementById('tab-list');
         const tabMonth = document.getElementById('tab-month');
@@ -1239,401 +1361,11 @@
             tabList.classList.add('active');
             vScheduleView.style.display = 'block';
         }
-        
-        saveAllData();
     }
 
-    function renderVerticalSchedule() {
-        const container = document.getElementById('vertical-schedule');
-        if (!container) return;
-        
-        const existingSlots = {};
-        daysOfWeek.forEach(day => {
-            const card = document.getElementById(`card-${day.id}`);
-            if (card && card.dataset.savedSlots) {
-                try {
-                    existingSlots[day.id] = JSON.parse(card.dataset.savedSlots);
-                } catch(e) {}
-            }
-        });
-        
-        container.innerHTML = '';
-
-        daysOfWeek.forEach(day => {
-            const dateInfo = getNextDateForDay(day.jsDay);
-            const targetDate = getDateForDayInCurrentWeek(day.jsDay);
-            const status = getDayStatus(targetDate);
-            
-            let statusClass = '';
-            if (status === 'today') statusClass = 'today-day-card';
-            else if (status === 'past') statusClass = 'past-day-card';
-            else statusClass = 'future-day-card';
-            
-            container.innerHTML += `
-                <div class="day-card ${statusClass}" id="card-${day.id}" data-day="${day.name}">
-                    <div class="day-header" onclick="toggleDayExpand('${day.id}')">
-                        <div class="day-title">
-                            <label>${day.name}</label>
-                            ${dateInfo}
-                        </div>
-                        <div class="day-header-left">
-                            <span class="day-status" id="status-${day.id}">0 حصة</span>
-                            <span class="expand-icon">▼</span>
-                        </div>
-                    </div>
-                    <div class="day-body" id="body-${day.id}" onclick="event.stopPropagation()">
-                        <div class="slots-container" id="slots-${day.id}"></div>
-                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">
-                            <span class="plus-icon">➕</span>
-                            <span>إضافة موعد جديد</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-
-        daysOfWeek.forEach(day => {
-            const savedSlots = existingSlots[day.id];
-            if (savedSlots && savedSlots.length > 0) {
-                const card = document.getElementById(`card-${day.id}`);
-                card.dataset.savedSlots = JSON.stringify(savedSlots);
-                savedSlots.forEach(slotData => {
-                    rebuildSlot(day.id, slotData);
-                });
-            }
-        });
-    }
-
-    function rebuildSlot(dayId, slotData) {
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        if (!slotsContainer) return;
-        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const hOpts = hourOptions();
-        const mOpts = minuteOptions();
-        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom);
-        const toOptions = buildMonthRangeOptions(slotData.rangeTo);
-        
-        const slotHTML = `
-            <div class="time-slot ${slotData.isLocked ? 'locked' : ''}" id="${slotId}"
-                 data-range-from="${slotData.rangeFrom || ''}"
-                 data-range-to="${slotData.rangeTo || ''}">
-                <div class="time-row">
-                    <span class="time-label">من:</span>
-                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                        <option value="ص">ص</option><option value="م">م</option>
-                    </select>
-                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                </div>
-                <div class="time-row">
-                    <span class="time-label">إلى:</span>
-                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                        <option value="ص">ص</option><option value="م">م</option>
-                    </select>
-                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                </div>
-                <div class="slot-range">
-                    <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
-                    <span class="slot-range-arrow">←</span>
-                    <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
-                </div>
-                <div class="slot-actions">
-                    <span class="slot-apply-note ${slotData.isSaved ? 'show' : ''}">${buildApplyNote(dayId, slotData.rangeFrom, slotData.rangeTo)}</span>
-                    <button class="btn-save-slot ${slotData.isSaved ? 'saved' : ''}" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
-                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
-                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
-                </div>
-            </div>
-        `;
-        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
-        
-        const slot = document.getElementById(slotId);
-        slot.querySelector('.start-period').value = slotData.startPeriod || 'م';
-        slot.querySelector('.start-minute').value = slotData.startMinute || '';
-        slot.querySelector('.start-hour').value = slotData.startHour || '';
-        slot.querySelector('.end-period').value = slotData.endPeriod || 'م';
-        slot.querySelector('.end-minute').value = slotData.endMinute || '';
-        slot.querySelector('.end-hour').value = slotData.endHour || '';
-        
-        if (slotData.isSaved) {
-            const card = document.getElementById(`card-${dayId}`);
-            if (card) card.classList.add('active');
-        }
-        updateDayStatusDisplay(dayId);
-    }
-
-    function toggleDayExpand(dayId) {
-        const card = document.getElementById(`card-${dayId}`);
-        const isExpanded = card.classList.contains('expanded');
-        if (!isExpanded) {
-            const slotsContainer = document.getElementById(`slots-${dayId}`);
-            if (slotsContainer.children.length === 0) { addSlot(dayId); }
-        }
-        card.classList.toggle('expanded');
-        updateDayStatusDisplay(dayId);
-    }
-
-    function checkDayActive(dayId) {
-        const card = document.getElementById(`card-${dayId}`);
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const hasSaved = Array.from(slotsContainer.querySelectorAll('.time-slot'))
-            .some(slot => slot.querySelector('.btn-save-slot').classList.contains('saved'));
-        if (hasSaved) { card.classList.add('active'); } else { card.classList.remove('active'); }
-    }
-
-    function addSlot(dayId) {
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const existingEmptySlot = Array.from(slotsContainer.querySelectorAll('.time-slot')).find(slot => {
-            const hour = slot.querySelector('.start-hour').value;
-            const minute = slot.querySelector('.start-minute').value;
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            return !hour && !minute && !saveBtn.classList.contains('saved');
-        });
-        if (existingEmptySlot) { alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد."); return; }
-        
-        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const hOpts = hourOptions();
-        const mOpts = minuteOptions();
-        
-        const { fromVal, toVal } = getDefaultRangeValues();
-        const fromOptions = buildMonthRangeOptions(fromVal);
-        const toOptions = buildMonthRangeOptions(toVal);
-        
-        const slotHTML = `
-            <div class="time-slot" id="${slotId}">
-                <div class="time-row">
-                    <span class="time-label">من:</span>
-                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                        <option value="ص">ص</option><option value="م" selected>م</option>
-                    </select>
-                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                </div>
-                <div class="time-row">
-                    <span class="time-label">إلى:</span>
-                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">
-                        <option value="ص">ص</option><option value="م" selected>م</option>
-                    </select>
-                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${mOpts}</select>
-                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${hOpts}</select>
-                </div>
-                <div class="slot-range">
-                    <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${fromOptions}</select>
-                    <span class="slot-range-arrow">←</span>
-                    <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}'); saveAllDataDebounced();">${toOptions}</select>
-                </div>
-                <div class="slot-actions">
-                    <span class="slot-apply-note">${buildApplyNote(dayId, fromVal, toVal)}</span>
-                    <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
-                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
-                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
-                </div>
-            </div>
-        `;
-        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
-        updateDayStatusDisplay(dayId);
-        saveAllData();
-    }
-
-    function markUnsaved(slotId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        slot.querySelector('.btn-save-slot').classList.remove('saved');
-        
-        // 🎯 تحديث الرسالة التوضيحية عند تغيير أي حقل
-        const noteEl = slot.querySelector('.slot-apply-note');
-        if (noteEl) {
-            const dayCard = slot.closest('.day-card');
-            const dayId = dayCard ? dayCard.id.replace('card-', '') : '';
-            const fromVal = slot.querySelector('.slot-range-from').value;
-            const toVal = slot.querySelector('.slot-range-to').value;
-            noteEl.innerHTML = buildApplyNote(dayId, fromVal, toVal);
-            noteEl.classList.remove('show');
-        }
-    }
-
-    function readTime(slot, prefix) {
-        const hour = slot.querySelector(`.${prefix}-hour`).value;
-        const minute = slot.querySelector(`.${prefix}-minute`).value;
-        const period = slot.querySelector(`.${prefix}-period`).value;
-        if (!hour || !minute) return null;
-        return { hour: parseInt(hour), minute: minute, period: period, display: `${hour}:${minute} ${period}` };
-    }
-
-    function saveSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        const startTime = readTime(slot, 'start');
-        const endTime = readTime(slot, 'end');
-        if (!startTime || !endTime) { alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية."); return; }
-        
-        const rangeFromVal = slot.querySelector('.slot-range-from').value;
-        const rangeToVal = slot.querySelector('.slot-range-to').value;
-        
-        let slotRangeFrom = null, slotRangeTo = null;
-        if (rangeFromVal && rangeToVal) {
-            const [fy, fm] = rangeFromVal.split('-').map(Number);
-            const [ty, tm] = rangeToVal.split('-').map(Number);
-            const fromT = fy * 12 + fm;
-            const toT = ty * 12 + tm;
-            if (fromT > toT) {
-                alert("⚠️ 'من شهر' يجب أن يكون قبل أو يساوي 'إلى شهر'.");
-                return;
-            }
-            slotRangeFrom = { year: fy, month: fm };
-            slotRangeTo = { year: ty, month: tm };
-        }
-        
-        const startMin = timeToMinutes(startTime.hour, startTime.minute, startTime.period);
-        const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
-        if (startMin >= endMin) { alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!"); return; }
-        
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
-        for (let other of allSlots) {
-            if (other.id === slotId) continue;
-            const saveBtn = other.querySelector('.btn-save-slot');
-            if (!saveBtn.classList.contains('saved')) continue;
-            const oStart = readTime(other, 'start');
-            const oEnd = readTime(other, 'end');
-            if (!oStart || !oEnd) continue;
-            const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
-            const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
-            if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
-        }
-        
-        slot.dataset.rangeFrom = slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '';
-        slot.dataset.rangeTo = slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : '';
-        
-        slot.querySelector('.btn-save-slot').classList.add('saved');
-        slot.classList.add('locked');
-        document.getElementById(`card-${dayId}`).classList.add('active');
-        updateDayStatusDisplay(dayId);
-        renderMonthlyCalendar();
-        saveDaySlotsToCard(dayId);
-        
-        // 🎯 تحديث الرسالة التوضيحية بعد الحفظ
-        const noteEl = slot.querySelector('.slot-apply-note');
-        if (noteEl) {
-            noteEl.innerHTML = buildApplyNote(dayId, slot.dataset.rangeFrom, slot.dataset.rangeTo);
-            noteEl.classList.add('show');
-        }
-        
-        saveAllData();
-        
-        let rangeMsg = '';
-        if (slotRangeFrom && slotRangeTo) {
-            rangeMsg = `\n📆 النطاق: من ${MONTH_NAMES_AR[slotRangeFrom.month]} ${slotRangeFrom.year} إلى ${MONTH_NAMES_AR[slotRangeTo.month]} ${slotRangeTo.year}`;
-        } else {
-            rangeMsg = `\n📆 بدون نطاق: الحصة هتتكرر مدى الحياة`;
-        }
-        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير." + rangeMsg);
-    }
-
-    function saveDaySlotsToCard(dayId) {
-        const card = document.getElementById(`card-${dayId}`);
-        if (!card) return;
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const savedSlots = [];
-        slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            if (!saveBtn.classList.contains('saved')) return;
-            const startTime = readTime(slot, 'start');
-            const endTime = readTime(slot, 'end');
-            if (!startTime || !endTime) return;
-            savedSlots.push({
-                startHour: startTime.hour,
-                startMinute: startTime.minute,
-                startPeriod: startTime.period,
-                endHour: endTime.hour,
-                endMinute: endTime.minute,
-                endPeriod: endTime.period,
-                isSaved: true,
-                isLocked: true,
-                rangeFrom: slot.dataset.rangeFrom || '',
-                rangeTo: slot.dataset.rangeTo || ''
-            });
-        });
-        card.dataset.savedSlots = JSON.stringify(savedSlots);
-    }
-
-    function editSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        slot.classList.remove('locked');
-        slot.querySelector('.btn-save-slot').classList.remove('saved');
-        checkDayActive(dayId);
-        updateDayStatusDisplay(dayId);
-        saveAllData();
-    }
-
-    function timeToMinutes(hour, minute, period) {
-        let h = hour;
-        if (period === 'م' && h !== 12) h += 12;
-        if (period === 'ص' && h === 12) h = 0;
-        return h * 60 + parseInt(minute);
-    }
-
-    function removeSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        const startTime = readTime(slot, 'start');
-        const endTime = readTime(slot, 'end');
-        const isSaved = slot.querySelector('.btn-save-slot').classList.contains('saved');
-        
-        let confirmMessage = '⚠️ هل أنت متأكد من إلغاء هذا الموعد؟';
-        if (isSaved && startTime && endTime) {
-            confirmMessage = `⚠️ هل أنت متأكد من إلغاء هذه الحصة؟\n\n🕐 من: ${startTime.display}\n🕐 إلى: ${endTime.display}\n\nسيتم حذف الحصة نهائيًا.`;
-        } else if (startTime || endTime) {
-            confirmMessage = `⚠️ هذا الموعد لم يتم حفظه بعد.\n\nهل أنت متأكد من إلغائه؟`;
-        }
-        
-        if (confirm(confirmMessage)) {
-            slot.remove();
-            checkDayActive(dayId);
-            updateDayStatusDisplay(dayId);
-            saveDaySlotsToCard(dayId);
-            renderMonthlyCalendar();
-            saveAllData();
-        }
-    }
-
-    function updateDayStatusDisplay(dayId) {
-        const statusText = document.getElementById(`status-${dayId}`);
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        if (!statusText || !slotsContainer) return;
-        const timeSlots = slotsContainer.querySelectorAll('.time-slot');
-        let sessions = [];
-        timeSlots.forEach(slot => {
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            if (!saveBtn.classList.contains('saved')) return;
-            const start = readTime(slot, 'start');
-            const end = readTime(slot, 'end');
-            if (start && end) {
-                sessions.push({ start: start.display, end: end.display, startMin: timeToMinutes(start.hour, start.minute, start.period) });
-            }
-        });
-        sessions.sort((a, b) => a.startMin - b.startMin);
-        if (sessions.length > 0) {
-            statusText.style.background = "#28a745";
-            statusText.style.color = "white";
-            statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
-            statusText.innerHTML = sessions.map((s, i) => 
-                `<span class="session-pill"><span class="session-num">${i + 1}</span><span dir="ltr">${s.start} - ${s.end}</span></span>`
-            ).join('');
-        } else {
-            statusText.style.background = "#e0e4e8";
-            statusText.style.color = "#666";
-            statusText.style.boxShadow = "none";
-            statusText.innerHTML = `0 حصة`;
-        }
-    }
-
+    // ==========================================
+    // 🎯 التقويم الشهري
+    // ==========================================
     function getAllWeeklySessions() {
         const sessions = [];
         daysOfWeek.forEach(day => {
@@ -1654,7 +1386,6 @@
                         const [ty, tm] = slot.dataset.rangeTo.split('-').map(Number);
                         slotRangeTo = { year: ty, month: tm };
                     }
-                    
                     sessions.push({
                         dayId: day.id,
                         dayName: day.name,
@@ -1670,21 +1401,6 @@
             });
         });
         return sessions;
-    }
-
-    function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-        renderMonthlyCalendar();
-    }
-
-    function goToday() {
-        const now = new Date();
-        currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        renderMonthlyCalendar();
-        saveAllData();
     }
 
     function jsDayToCol(jsDay) {
@@ -1718,7 +1434,6 @@
         const bodyEl = document.getElementById('monthly-body');
 
         const weeklySessions = getAllWeeklySessions();
-        
         const monthNum = (currentMonth + 1).toString().padStart(2, '0');
         nameEl.innerHTML = `
             <span>${MONTH_NAMES_AR[currentMonth]}</span>
@@ -1727,7 +1442,6 @@
         `;
 
         const actualMonthSessions = countMonthSessions(currentYear, currentMonth, weeklySessions);
-
         subEl.textContent = `📊 ${actualMonthSessions} حصة هذا الشهر • ${weeklySessions.length} حصة أسبوعياً`;
 
         const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
@@ -1741,7 +1455,6 @@
         const todayMonth = today.getMonth();
         const todayDate = today.getDate();
         const todayDateOnly = new Date(todayYear, todayMonth, todayDate);
-
         const isCurrentMonthView = (currentYear === todayYear && currentMonth === todayMonth);
 
         let html = '';
@@ -1764,7 +1477,6 @@
             }
 
             const cellJsDay = actualDateObj.getDay();
-            
             const matchingSessions = weeklySessions.filter(s => {
                 if (s.dayJs !== cellJsDay) return false;
                 if (s.rangeFrom && s.rangeTo) {
@@ -1775,24 +1487,20 @@
                 }
                 return true;
             }).sort((a,b) => a.startMin - b.startMin);
-            
+
             const isFriday = cellJsDay === 5;
-            
-            const isTodayCell = isCurrentMonthView && 
-                                actualDateObj.getDate() === todayDate &&
-                                !isOtherMonth;
-            
+            const isTodayCell = isCurrentMonthView && actualDateObj.getDate() === todayDate && !isOtherMonth;
             const cellDateOnly = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate());
             const isPastDay = cellDateOnly < todayDateOnly && !isOtherMonth;
 
             html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''} ${isPastDay ? 'past-day' : ''}" 
                         onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()}, ${dayNum})`}">`;
-            
+
             html += `<div class="day-num">
                 <span>${dayNum}</span>
                 ${isTodayCell ? '<span class="today-badge">اليوم</span>' : (matchingSessions.length > 0 && !isOtherMonth ? `<span class="session-count-badge">${matchingSessions.length}</span>` : '')}
             </div>`;
-            
+
             html += `<div class="day-sessions">`;
             if (matchingSessions.length > 0 && !isOtherMonth) {
                 const now = new Date();
@@ -1822,7 +1530,6 @@
         titleEl.textContent = `${dayName} ${dayNum} ${MONTH_NAMES_AR[month]} ${year}`;
 
         const weeklySessions = getAllWeeklySessions();
-        
         const sessions = weeklySessions.filter(s => {
             if (s.dayJs !== jsDay) return false;
             if (s.rangeFrom && s.rangeTo) {
@@ -1860,10 +1567,81 @@
         document.getElementById('day-modal').classList.remove('active');
     }
 
+    // ==========================================
+    // 🎯 إعادة بناء موعد في وضع التعديل
+    // ==========================================
+    function rebuildSlotFromEdit(dayId, slotData) {
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        if (!slotsContainer) return;
+
+        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        const hOpts = hourOptions();
+        const mOpts = minuteOptions();
+        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom || '');
+        const toOptions = buildMonthRangeOptions(slotData.rangeTo || '');
+
+        const parseTime = (str) => {
+            if (!str) return { hour: '', minute: '', period: 'م' };
+            const parts = str.split(' ');
+            const hm = parts[0].split(':');
+            return { hour: parseInt(hm[0]) || '', minute: hm[1] || '', period: parts[1] || 'م' };
+        };
+        const startP = parseTime(slotData.start);
+        const endP = parseTime(slotData.end);
+
+        const slotHTML = `
+            <div class="time-slot locked" id="${slotId}"
+                 data-range-from="${slotData.rangeFrom || ''}"
+                 data-range-to="${slotData.rangeTo || ''}">
+                <div class="time-row">
+                    <span class="time-label">من:</span>
+                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option><option value="م">م</option>
+                    </select>
+                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                </div>
+                <div class="time-row">
+                    <span class="time-label">إلى:</span>
+                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option><option value="م">م</option>
+                    </select>
+                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                </div>
+                <div class="slot-range">
+                    <span class="slot-range-label">📆 من:</span>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
+                    <span class="slot-range-arrow">←</span>
+                    <span class="slot-range-label">إلى:</span>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
+                </div>
+                <div class="slot-actions">
+                    <span class="slot-apply-note show">${buildApplyNote(dayId, slotData.rangeFrom, slotData.rangeTo)}</span>
+                    <button class="btn-save-slot saved" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
+                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
+                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
+                </div>
+            </div>
+        `;
+        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
+
+        const slot = document.getElementById(slotId);
+        slot.querySelector('.start-period').value = startP.period;
+        slot.querySelector('.start-minute').value = startP.minute;
+        slot.querySelector('.start-hour').value = startP.hour;
+        slot.querySelector('.end-period').value = endP.period;
+        slot.querySelector('.end-minute').value = endP.minute;
+        slot.querySelector('.end-hour').value = endP.hour;
+    }
+
+    // ==========================================
+    // 🎯 حفظ ونشر المجموعة
+    // ==========================================
     function submitGroupData() {
         const subjectData = document.getElementById('fixed-subject').dataset.value;
-        const groupName = document.getElementById('group-name').value;
-        const teacherName = document.getElementById('teacher-name').value;
+        const groupName = document.getElementById('group-name').value.trim();
+        const teacherName = document.getElementById('teacher-name').value.trim();
         const studentsCount = document.getElementById('students-count').value;
         const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
         const location = document.querySelector('input[name="location"]:checked').value;
@@ -1875,7 +1653,7 @@
         let hasEmptyActiveDay = false;
 
         const activeCards = document.querySelectorAll('.day-card.active');
-        
+
         activeCards.forEach(card => {
             const dayName = card.dataset.day;
             const slots = [];
@@ -1886,10 +1664,9 @@
                 const endTime = readTime(slotEl, 'end');
                 if ((startTime || endTime) && !saveBtn.classList.contains('saved')) { hasUnsavedSlot = true; }
                 if (saveBtn.classList.contains('saved') && startTime && endTime) {
-                    const slotData = { 
-                        start: startTime.display, 
-                        end: endTime.display, 
-                        startMin: timeToMinutes(startTime.hour, startTime.minute, startTime.period) 
+                    const slotData = {
+                        start: startTime.display,
+                        end: endTime.display
                     };
                     if (slotEl.dataset.rangeFrom && slotEl.dataset.rangeTo) {
                         slotData.rangeFrom = slotEl.dataset.rangeFrom;
@@ -1900,8 +1677,6 @@
                 }
             });
             if (slots.length > 0) {
-                slots.sort((a, b) => a.startMin - b.startMin);
-                slots.forEach(s => delete s.startMin);
                 schedule[dayName] = slots;
             } else {
                 hasEmptyActiveDay = true;
@@ -1915,12 +1690,44 @@
         if (hasEmptyActiveDay) { alert('⚠️ يوجد أيام مُفعلة ولكن لم تقم بحفظ أوقات الحصص لها.'); return; }
 
         const groupData = {
-            subjectData, groupName, teacherName, studentsCount, genderAllowed,
-            location, gpsLocation, schedule, totalWeeklySessions: totalSessionsCount
+            subjectData,
+            groupName,
+            teacherName,
+            studentsCount,
+            genderAllowed,
+            location,
+            gpsLocation,
+            schedule,
+            totalWeeklySessions: totalSessionsCount,
+            createdAt: new Date().toISOString()
         };
 
-        console.log("البيانات الجاهزة للحفظ:", groupData);
-        alert(`✅ تم إنشاء المجموعة بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
+        localStorage.setItem(TEACHER_NAME_KEY, teacherName);
+
+        let groups = [];
+        try {
+            const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
+            groups = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(groups)) groups = [];
+        } catch (e) { groups = []; }
+
+        if (IS_EDIT_MODE && EDIT_INDEX >= 0 && groups[EDIT_INDEX]) {
+            groupData.createdAt = groups[EDIT_INDEX].createdAt || groupData.createdAt;
+            groups[EDIT_INDEX] = groupData;
+            localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+
+            localStorage.removeItem('mester2_edit_data');
+            localStorage.removeItem('mester2_edit_index');
+
+            alert(`✅ تم تحديث المجموعة بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
+        } else {
+            groups.push(groupData);
+            localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+
+            alert(`✅ تم إنشاء المجموعة ونشرها بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
+        }
+
+        window.location.href = 'mester3.html';
     }
 </script>
 </body>
