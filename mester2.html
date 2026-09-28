@@ -519,6 +519,9 @@
 </div>
 
 <script>
+    // ==========================================
+    // 🎯 الثوابت والمتغيرات العامة
+    // ==========================================
     const daysOfWeek = [
         { id: 'sat', name: 'السبت', jsDay: 6 },
         { id: 'sun', name: 'الأحد', jsDay: 0 },
@@ -553,6 +556,12 @@
     // ✅✅✅ تتبع الأيام المفتوحة يدوياً فقط ✅✅✅
     // ==========================================
     let MANUALLY_EXPANDED_DAYS = new Set();
+
+    // ==========================================
+    // ✅✅✅ حفظ تلقائي للبيانات عند الرجوع ✅✅✅
+    // ==========================================
+    const AUTOSAVE_KEY = 'mester2_autosave';
+    const EDIT_DATA_KEY = 'mester2_edit_data';
 
     // ==========================================
     // 🎯 رسالة توضيحية للميعاد
@@ -675,6 +684,113 @@
     }
 
     // ==========================================
+    // ✅✅✅ دوال الحفظ التلقائي ✅✅✅
+    // ==========================================
+    function saveFormState() {
+        // لا تحفظ لو في وضع التعديل (عشان ما يتعارضش مع بيانات المجموعة)
+        if (IS_EDIT_MODE) return;
+        try {
+            const state = {
+                groupName: document.getElementById('group-name')?.value || '',
+                teacherName: document.getElementById('teacher-name')?.value || '',
+                studentsCount: document.getElementById('students-count')?.value || '',
+                gender: document.querySelector('input[name="gender"]:checked')?.value || 'مختلط',
+                location: document.querySelector('input[name="location"]:checked')?.value || 'السنتر',
+                gpsCoords: document.getElementById('gps-coords')?.value || '',
+                locationText: document.getElementById('location-text')?.textContent || '',
+                subjectData: document.getElementById('fixed-subject')?.dataset.value || '',
+                subjectText: document.getElementById('fixed-subject')?.textContent || '',
+                SAVED_SLOTS: SAVED_SLOTS,
+                MANUALLY_EXPANDED_DAYS: Array.from(MANUALLY_EXPANDED_DAYS),
+                currentWeekOffset: currentWeekOffset,
+                savedAt: Date.now()
+            };
+            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+        } catch (e) {
+            console.error('خطأ في الحفظ التلقائي:', e);
+        }
+    }
+
+    function restoreFormState() {
+        try {
+            const raw = localStorage.getItem(AUTOSAVE_KEY);
+            if (!raw) return false;
+            const state = JSON.parse(raw);
+
+            // تجاهل الحفظ لو أقدم من 24 ساعة
+            if (Date.now() - state.savedAt > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem(AUTOSAVE_KEY);
+                return false;
+            }
+
+            if (state.groupName) document.getElementById('group-name').value = state.groupName;
+            if (state.teacherName) document.getElementById('teacher-name').value = state.teacherName;
+            if (state.studentsCount) document.getElementById('students-count').value = state.studentsCount;
+
+            if (state.gender) {
+                const r = document.querySelector(`input[name="gender"][value="${state.gender}"]`);
+                if (r) r.checked = true;
+            }
+            if (state.location) {
+                const r = document.querySelector(`input[name="location"][value="${state.location}"]`);
+                if (r) r.checked = true;
+            }
+            if (state.gpsCoords) {
+                document.getElementById('gps-coords').value = state.gpsCoords;
+                if (state.locationText) document.getElementById('location-text').textContent = state.locationText;
+                const btn = document.querySelector('.btn-gps');
+                if (btn && state.gpsCoords) {
+                    btn.innerHTML = '✅ تم التحديد';
+                    btn.style.backgroundColor = '#1a3c6d';
+                }
+            }
+            if (state.subjectData) {
+                const el = document.getElementById('fixed-subject');
+                el.dataset.value = state.subjectData;
+                if (state.subjectText) el.textContent = state.subjectText;
+            }
+
+            // ✅ استرجاع الحصص
+            if (state.SAVED_SLOTS) SAVED_SLOTS = state.SAVED_SLOTS;
+            if (state.MANUALLY_EXPANDED_DAYS) MANUALLY_EXPANDED_DAYS = new Set(state.MANUALLY_EXPANDED_DAYS);
+            if (typeof state.currentWeekOffset === 'number') currentWeekOffset = state.currentWeekOffset;
+
+            return true;
+        } catch (e) {
+            console.error('خطأ في استرجاع الحفظ:', e);
+            return false;
+        }
+    }
+
+    function clearAutosave() {
+        localStorage.removeItem(AUTOSAVE_KEY);
+    }
+
+    function setupAutosave() {
+        const fields = ['group-name', 'teacher-name', 'students-count'];
+        fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', saveFormState);
+                el.addEventListener('change', saveFormState);
+            }
+        });
+
+        document.querySelectorAll('input[name="gender"], input[name="location"]').forEach(r => {
+            r.addEventListener('change', saveFormState);
+        });
+
+        window.addEventListener('beforeunload', saveFormState);
+        window.addEventListener('pagehide', saveFormState);
+    }
+
+    function updateDayStatusDisplay_all() {
+        daysOfWeek.forEach(day => {
+            updateDayStatusDisplay(day.id);
+        });
+    }
+
+    // ==========================================
     // 🎯 تشغيل الصفحة
     // ==========================================
     window.onload = function() {
@@ -696,7 +812,9 @@
                 let subjectsArr = [];
                 for (const stageId in savedData) {
                     const gradeName = savedData[stageId].grade;
-                    savedData[stageId].subjects.forEach(subjectName => { subjectsArr.push(`${subjectName} (${gradeName})`); });
+                    savedData[stageId].subjects.forEach(subjectName => {
+                        subjectsArr.push(`${subjectName} (${gradeName})`);
+                    });
                 }
                 if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
             } catch(e) {}
@@ -706,12 +824,19 @@
 
         if (IS_EDIT_MODE) {
             loadEditData();
+        } else {
+            // ✅ استرجاع الحفظ التلقائي في وضع الإنشاء
+            const restored = restoreFormState();
+            if (restored) {
+                console.log('✅ تم استرجاع الحفظ التلقائي');
+            }
         }
 
         renderVerticalSchedule();
         renderMonthlyCalendar();
         updateWeekNavBar();
         setupSwipeNavigation();
+        setupAutosave();
     };
 
     // ==========================================
@@ -719,7 +844,7 @@
     // ==========================================
     function loadEditData() {
         try {
-            const raw = localStorage.getItem('mester2_edit_data');
+            const raw = localStorage.getItem(EDIT_DATA_KEY);
             if (!raw) {
                 alert('⚠️ لم يتم العثور على بيانات المجموعة للتعديل. الرجاء العودة للصفحة السابقة.');
                 window.location.href = 'mester3.html';
@@ -746,6 +871,8 @@
                     btn.innerHTML = '✅ تم التحديد';
                     btn.style.backgroundColor = '#1a3c6d';
                 }
+                document.getElementById('location-text').textContent =
+                    `الإحداثيات: ${editData.gpsLocation}`;
             }
 
             if (editData.subjectData) {
@@ -824,7 +951,7 @@
             `;
         });
 
-        // ✅✅✅ استرجاع الحصص المحفوظة من SAVED_SLOTS
+        // ✅ استرجاع الحصص المحفوظة
         Object.keys(SAVED_SLOTS).forEach(dayId => {
             if (!SAVED_SLOTS[dayId] || SAVED_SLOTS[dayId].length === 0) return;
             SAVED_SLOTS[dayId].forEach(slotData => {
@@ -833,7 +960,6 @@
             const card = document.getElementById(`card-${dayId}`);
             if (card) {
                 card.classList.add('active');
-                // ✅✅✅ افتح اليوم فقط إذا كان المستخدم قد فتحه يدوياً
                 if (MANUALLY_EXPANDED_DAYS.has(dayId)) {
                     card.classList.add('expanded');
                 }
@@ -842,20 +968,22 @@
         });
     }
 
+    // ==========================================
+    // 🎯 فتح/إغلاق اليوم
+    // ==========================================
     function toggleDayExpand(dayId) {
         const card = document.getElementById(`card-${dayId}`);
         const isExpanded = card.classList.contains('expanded');
         if (!isExpanded) {
             const slotsContainer = document.getElementById(`slots-${dayId}`);
             if (slotsContainer.children.length === 0) { addSlot(dayId); }
-            // ✅ سجل اليوم كمفتوح يدوياً
             MANUALLY_EXPANDED_DAYS.add(dayId);
         } else {
-            // ✅ أزل اليوم من القائمة عند إغلاقه
             MANUALLY_EXPANDED_DAYS.delete(dayId);
         }
         card.classList.toggle('expanded');
         updateDayStatusDisplay(dayId);
+        saveFormState();
     }
 
     function checkDayActive(dayId) {
@@ -1033,6 +1161,9 @@
             noteEl.classList.add('show');
         }
 
+        // ✅ حفظ تلقائي بعد حفظ الحصة
+        saveFormState();
+
         let rangeMsg = '';
         if (slotRangeFrom && slotRangeTo) {
             rangeMsg = `\n📆 النطاق: من ${MONTH_NAMES_AR[slotRangeFrom.month]} ${slotRangeFrom.year} إلى ${MONTH_NAMES_AR[slotRangeTo.month]} ${slotRangeTo.year}`;
@@ -1079,6 +1210,7 @@
             checkDayActive(dayId);
             updateDayStatusDisplay(dayId);
             renderMonthlyCalendar();
+            saveFormState();
         }
     }
 
@@ -1150,6 +1282,7 @@
         currentWeekOffset--;
         renderVerticalSchedule();
         updateWeekNavBar();
+        saveFormState();
     }
 
     function goToNextWeekWithAnimation() {
@@ -1162,12 +1295,14 @@
         currentWeekOffset++;
         renderVerticalSchedule();
         updateWeekNavBar();
+        saveFormState();
     }
 
     function goToCurrentWeek() {
         currentWeekOffset = 0;
         renderVerticalSchedule();
         updateWeekNavBar();
+        saveFormState();
     }
 
     // ==========================================
@@ -1342,6 +1477,7 @@
                     btn.innerHTML = '✅ تم التحديد';
                     btn.style.backgroundColor = '#1a3c6d';
                     textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+                    saveFormState();
                 },
                 error => {
                     btn.innerHTML = '❌ فشل';
@@ -1655,8 +1791,14 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
-        if (subjectData.includes('لم تختر')) { alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return; }
-        if (!groupName || !teacherName) { alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); return; }
+        if (subjectData.includes('لم تختر')) {
+            alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.');
+            return;
+        }
+        if (!groupName || !teacherName) {
+            alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).');
+            return;
+        }
 
         let hasUnsavedSlot = false;
         document.querySelectorAll('.time-slot').forEach(slotEl => {
@@ -1664,9 +1806,14 @@
             if (!saveBtn) return;
             const startTime = readTime(slotEl, 'start');
             const endTime = readTime(slotEl, 'end');
-            if ((startTime || endTime) && !saveBtn.classList.contains('saved')) { hasUnsavedSlot = true; }
+            if ((startTime || endTime) && !saveBtn.classList.contains('saved')) {
+                hasUnsavedSlot = true;
+            }
         });
-        if (hasUnsavedSlot) { alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.'); return; }
+        if (hasUnsavedSlot) {
+            alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.');
+            return;
+        }
 
         const schedule = {};
         let totalSessionsCount = 0;
@@ -1716,16 +1863,21 @@
 
         if (IS_EDIT_MODE && EDIT_INDEX >= 0 && groups[EDIT_INDEX]) {
             groupData.createdAt = groups[EDIT_INDEX].createdAt || groupData.createdAt;
+            groupData.published = groups[EDIT_INDEX].published || false;
+            groupData.publishedAt = groups[EDIT_INDEX].publishedAt || null;
             groups[EDIT_INDEX] = groupData;
             localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
 
-            localStorage.removeItem('mester2_edit_data');
+            localStorage.removeItem(EDIT_DATA_KEY);
             localStorage.removeItem('mester2_edit_index');
 
             alert(`✅ تم تحديث المجموعة بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
         } else {
             groups.push(groupData);
             localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+
+            // ✅ مسح الحفظ التلقائي بعد النشر الناجح
+            clearAutosave();
 
             alert(`✅ تم إنشاء المجموعة ونشرها بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
         }
