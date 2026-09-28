@@ -9,33 +9,16 @@
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
     .last-save-bar {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background: rgba(43, 92, 158, 0.95);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 15px;
-        font-size: 11px;
-        font-weight: bold;
-        z-index: 9998;
+        position: fixed; bottom: 10px; right: 10px;
+        background: rgba(43, 92, 158, 0.95); color: white;
+        padding: 6px 12px; border-radius: 15px; font-size: 11px;
+        font-weight: bold; z-index: 9998;
         box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        display: none;
-        align-items: center;
-        gap: 5px;
+        display: none; align-items: center; gap: 5px;
     }
     .last-save-bar.show { display: flex; }
-    .last-save-bar .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #2ecc71;
-        animation: pulseDot 1.5s infinite;
-    }
-    @keyframes pulseDot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
+    .last-save-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; animation: pulseDot 1.5s infinite; }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     .header-3d {
         width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat;
@@ -168,32 +151,16 @@
     .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; align-items: center; }
 
     .slot-apply-note {
-        display: none;
-        font-size: 11px;
-        color: #166534;
-        background: #dcfce7;
-        border: 1px dashed #28a745;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 700;
-        align-items: center;
-        gap: 5px;
-        line-height: 1.5;
-        max-width: 100%;
-        text-align: right;
-        flex: 1;
-        min-width: 180px;
+        display: none; font-size: 11px; color: #166534;
+        background: #dcfce7; border: 1px dashed #28a745;
+        padding: 4px 10px; border-radius: 6px; font-weight: 700;
+        align-items: center; gap: 5px; line-height: 1.5;
+        max-width: 100%; text-align: right; flex: 1; min-width: 180px;
     }
     .slot-apply-note.show { display: inline-flex; }
     .slot-apply-note .note-icon { font-size: 13px; flex-shrink: 0; }
     .slot-apply-note b { color: #14532d; }
-
-    .time-slot.locked .slot-apply-note {
-        display: inline-flex;
-        background: #f0fdf4;
-        border-color: #28a745;
-        color: #14532d;
-    }
+    .time-slot.locked .slot-apply-note { display: inline-flex; background: #f0fdf4; border-color: #28a745; color: #14532d; }
 
     .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
     .btn-save-slot:hover { background: #1a3c6d; }
@@ -578,6 +545,16 @@
     let EDIT_INDEX = -1;
 
     // ==========================================
+    // ✅✅✅ مصدر الحقيقة الوحيد لبيانات الحصص ✅✅✅
+    // ==========================================
+    let SAVED_SLOTS = {};
+
+    // ==========================================
+    // ✅✅✅ تتبع الأيام المفتوحة يدوياً فقط ✅✅✅
+    // ==========================================
+    let MANUALLY_EXPANDED_DAYS = new Set();
+
+    // ==========================================
     // 🎯 رسالة توضيحية للميعاد
     // ==========================================
     function buildApplyNote(dayId, fromVal, toVal) {
@@ -727,14 +704,14 @@
         subjectDisplay.textContent = selectedSubjectsText;
         subjectDisplay.dataset.value = selectedSubjectsText;
 
+        if (IS_EDIT_MODE) {
+            loadEditData();
+        }
+
         renderVerticalSchedule();
         renderMonthlyCalendar();
         updateWeekNavBar();
         setupSwipeNavigation();
-
-        if (IS_EDIT_MODE) {
-            loadEditData();
-        }
     };
 
     // ==========================================
@@ -777,26 +754,20 @@
                 subjectEl.dataset.value = editData.subjectData;
             }
 
+            // ✅ تحميل الحصص في SAVED_SLOTS
             if (editData.schedule) {
+                SAVED_SLOTS = {};
                 Object.keys(editData.schedule).forEach(dayName => {
                     const dayObj = daysOfWeek.find(d => d.name === dayName);
                     if (!dayObj) return;
                     const slots = editData.schedule[dayName];
                     if (!Array.isArray(slots)) return;
-
-                    const slotsContainer = document.getElementById(`slots-${dayObj.id}`);
-                    if (!slotsContainer) return;
-                    slotsContainer.innerHTML = '';
-
-                    slots.forEach(slotData => {
-                        rebuildSlotFromEdit(dayObj.id, slotData);
-                    });
-
-                    const card = document.getElementById(`card-${dayObj.id}`);
-                    if (card && slots.length > 0) {
-                        card.classList.add('active', 'expanded');
-                    }
-                    updateDayStatusDisplay(dayObj.id);
+                    SAVED_SLOTS[dayObj.id] = slots.map(s => ({
+                        start: s.start,
+                        end: s.end,
+                        rangeFrom: s.rangeFrom || '',
+                        rangeTo: s.rangeTo || ''
+                    }));
                 });
             }
 
@@ -805,8 +776,6 @@
 
             const headerTitle = document.getElementById('page-header-title');
             if (headerTitle) headerTitle.textContent = 'تعديل المجموعة';
-
-            renderMonthlyCalendar();
 
         } catch (e) {
             console.error('خطأ في تحميل وضع التعديل:', e);
@@ -854,6 +823,23 @@
                 </div>
             `;
         });
+
+        // ✅✅✅ استرجاع الحصص المحفوظة من SAVED_SLOTS
+        Object.keys(SAVED_SLOTS).forEach(dayId => {
+            if (!SAVED_SLOTS[dayId] || SAVED_SLOTS[dayId].length === 0) return;
+            SAVED_SLOTS[dayId].forEach(slotData => {
+                rebuildSlotFromEdit(dayId, slotData);
+            });
+            const card = document.getElementById(`card-${dayId}`);
+            if (card) {
+                card.classList.add('active');
+                // ✅✅✅ افتح اليوم فقط إذا كان المستخدم قد فتحه يدوياً
+                if (MANUALLY_EXPANDED_DAYS.has(dayId)) {
+                    card.classList.add('expanded');
+                }
+            }
+            updateDayStatusDisplay(dayId);
+        });
     }
 
     function toggleDayExpand(dayId) {
@@ -862,6 +848,11 @@
         if (!isExpanded) {
             const slotsContainer = document.getElementById(`slots-${dayId}`);
             if (slotsContainer.children.length === 0) { addSlot(dayId); }
+            // ✅ سجل اليوم كمفتوح يدوياً
+            MANUALLY_EXPANDED_DAYS.add(dayId);
+        } else {
+            // ✅ أزل اليوم من القائمة عند إغلاقه
+            MANUALLY_EXPANDED_DAYS.delete(dayId);
         }
         card.classList.toggle('expanded');
         updateDayStatusDisplay(dayId);
@@ -869,9 +860,8 @@
 
     function checkDayActive(dayId) {
         const card = document.getElementById(`card-${dayId}`);
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const hasSaved = Array.from(slotsContainer.querySelectorAll('.time-slot'))
-            .some(slot => slot.querySelector('.btn-save-slot').classList.contains('saved'));
+        if (!card) return;
+        const hasSaved = SAVED_SLOTS[dayId] && SAVED_SLOTS[dayId].length > 0;
         if (hasSaved) { card.classList.add('active'); } else { card.classList.remove('active'); }
     }
 
@@ -963,6 +953,13 @@
         return h * 60 + parseInt(minute);
     }
 
+    function readTimeFromString(str) {
+        if (!str) return { hour: 0, minute: '00', period: 'م' };
+        const parts = str.split(' ');
+        const hm = parts[0].split(':');
+        return { hour: parseInt(hm[0]), minute: hm[1] || '00', period: parts[1] || 'م' };
+    }
+
     // ==========================================
     // 🎯 حفظ الموعد
     // ==========================================
@@ -994,22 +991,35 @@
         const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
         if (startMin >= endMin) { alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!"); return; }
 
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
-        for (let other of allSlots) {
-            if (other.id === slotId) continue;
-            const saveBtn = other.querySelector('.btn-save-slot');
-            if (!saveBtn.classList.contains('saved')) continue;
-            const oStart = readTime(other, 'start');
-            const oEnd = readTime(other, 'end');
-            if (!oStart || !oEnd) continue;
+        const existing = SAVED_SLOTS[dayId] || [];
+        const currentIdx = parseInt(slot.dataset.savedIndex !== undefined ? slot.dataset.savedIndex : -1);
+        for (let i = 0; i < existing.length; i++) {
+            if (i === currentIdx) continue;
+            const other = existing[i];
+            const oStart = readTimeFromString(other.start);
+            const oEnd = readTimeFromString(other.end);
             const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
             const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
             if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
         }
 
-        slot.dataset.rangeFrom = slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '';
-        slot.dataset.rangeTo = slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : '';
+        if (!SAVED_SLOTS[dayId]) SAVED_SLOTS[dayId] = [];
+        const slotData = {
+            start: startTime.display,
+            end: endTime.display,
+            rangeFrom: slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '',
+            rangeTo: slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : ''
+        };
+
+        if (currentIdx >= 0 && currentIdx < SAVED_SLOTS[dayId].length) {
+            SAVED_SLOTS[dayId][currentIdx] = slotData;
+        } else {
+            SAVED_SLOTS[dayId].push(slotData);
+            slot.dataset.savedIndex = SAVED_SLOTS[dayId].length - 1;
+        }
+
+        slot.dataset.rangeFrom = slotData.rangeFrom;
+        slot.dataset.rangeTo = slotData.rangeTo;
 
         slot.querySelector('.btn-save-slot').classList.add('saved');
         slot.classList.add('locked');
@@ -1056,6 +1066,15 @@
         }
 
         if (confirm(confirmMessage)) {
+            const idx = parseInt(slot.dataset.savedIndex !== undefined ? slot.dataset.savedIndex : -1);
+            if (idx >= 0 && SAVED_SLOTS[dayId] && SAVED_SLOTS[dayId][idx]) {
+                SAVED_SLOTS[dayId].splice(idx, 1);
+                const remainingSlots = document.getElementById(`slots-${dayId}`).querySelectorAll('.time-slot');
+                remainingSlots.forEach((el, i) => {
+                    if (el.dataset.savedIndex !== undefined) el.dataset.savedIndex = i;
+                });
+                if (SAVED_SLOTS[dayId].length === 0) delete SAVED_SLOTS[dayId];
+            }
             slot.remove();
             checkDayActive(dayId);
             updateDayStatusDisplay(dayId);
@@ -1065,20 +1084,13 @@
 
     function updateDayStatusDisplay(dayId) {
         const statusText = document.getElementById(`status-${dayId}`);
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        if (!statusText || !slotsContainer) return;
-        const timeSlots = slotsContainer.querySelectorAll('.time-slot');
-        let sessions = [];
-        timeSlots.forEach(slot => {
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            if (!saveBtn.classList.contains('saved')) return;
-            const start = readTime(slot, 'start');
-            const end = readTime(slot, 'end');
-            if (start && end) {
-                sessions.push({ start: start.display, end: end.display, startMin: timeToMinutes(start.hour, start.minute, start.period) });
-            }
-        });
-        sessions.sort((a, b) => a.startMin - b.startMin);
+        if (!statusText) return;
+        const sessions = (SAVED_SLOTS[dayId] || []).map(s => {
+            const st = readTimeFromString(s.start);
+            const en = readTimeFromString(s.end);
+            return { start: s.start, end: s.end, startMin: timeToMinutes(st.hour, st.minute, st.period) };
+        }).sort((a, b) => a.startMin - b.startMin);
+
         if (sessions.length > 0) {
             statusText.style.background = "#28a745";
             statusText.style.color = "white";
@@ -1369,35 +1381,31 @@
     function getAllWeeklySessions() {
         const sessions = [];
         daysOfWeek.forEach(day => {
-            const slotsContainer = document.getElementById(`slots-${day.id}`);
-            if (!slotsContainer) return;
-            slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
-                const saveBtn = slot.querySelector('.btn-save-slot');
-                if (!saveBtn.classList.contains('saved')) return;
-                const start = readTime(slot, 'start');
-                const end = readTime(slot, 'end');
-                if (start && end) {
-                    let slotRangeFrom = null, slotRangeTo = null;
-                    if (slot.dataset.rangeFrom) {
-                        const [fy, fm] = slot.dataset.rangeFrom.split('-').map(Number);
-                        slotRangeFrom = { year: fy, month: fm };
-                    }
-                    if (slot.dataset.rangeTo) {
-                        const [ty, tm] = slot.dataset.rangeTo.split('-').map(Number);
-                        slotRangeTo = { year: ty, month: tm };
-                    }
-                    sessions.push({
-                        dayId: day.id,
-                        dayName: day.name,
-                        dayJs: day.jsDay,
-                        start: start.display,
-                        end: end.display,
-                        startMin: timeToMinutes(start.hour, start.minute, start.period),
-                        endMin: timeToMinutes(end.hour, end.minute, end.period),
-                        rangeFrom: slotRangeFrom,
-                        rangeTo: slotRangeTo
-                    });
+            const slots = SAVED_SLOTS[day.id];
+            if (!slots || slots.length === 0) return;
+            slots.forEach(slotData => {
+                const start = readTimeFromString(slotData.start);
+                const end = readTimeFromString(slotData.end);
+                let rangeFrom = null, rangeTo = null;
+                if (slotData.rangeFrom) {
+                    const [fy, fm] = slotData.rangeFrom.split('-').map(Number);
+                    rangeFrom = { year: fy, month: fm };
                 }
+                if (slotData.rangeTo) {
+                    const [ty, tm] = slotData.rangeTo.split('-').map(Number);
+                    rangeTo = { year: ty, month: tm };
+                }
+                sessions.push({
+                    dayId: day.id,
+                    dayName: day.name,
+                    dayJs: day.jsDay,
+                    start: slotData.start,
+                    end: slotData.end,
+                    startMin: timeToMinutes(start.hour, start.minute, start.period),
+                    endMin: timeToMinutes(end.hour, end.minute, end.period),
+                    rangeFrom: rangeFrom,
+                    rangeTo: rangeTo
+                });
             });
         });
         return sessions;
@@ -1568,7 +1576,7 @@
     }
 
     // ==========================================
-    // 🎯 إعادة بناء موعد في وضع التعديل
+    // 🎯 إعادة بناء موعد
     // ==========================================
     function rebuildSlotFromEdit(dayId, slotData) {
         const slotsContainer = document.getElementById(`slots-${dayId}`);
@@ -1580,19 +1588,19 @@
         const fromOptions = buildMonthRangeOptions(slotData.rangeFrom || '');
         const toOptions = buildMonthRangeOptions(slotData.rangeTo || '');
 
-        const parseTime = (str) => {
-            if (!str) return { hour: '', minute: '', period: 'م' };
-            const parts = str.split(' ');
-            const hm = parts[0].split(':');
-            return { hour: parseInt(hm[0]) || '', minute: hm[1] || '', period: parts[1] || 'م' };
-        };
-        const startP = parseTime(slotData.start);
-        const endP = parseTime(slotData.end);
+        const startP = readTimeFromString(slotData.start);
+        const endP = readTimeFromString(slotData.end);
+
+        let savedIndex = -1;
+        if (SAVED_SLOTS[dayId]) {
+            savedIndex = SAVED_SLOTS[dayId].findIndex(s => s.start === slotData.start && s.end === slotData.end);
+        }
 
         const slotHTML = `
             <div class="time-slot locked" id="${slotId}"
                  data-range-from="${slotData.rangeFrom || ''}"
-                 data-range-to="${slotData.rangeTo || ''}">
+                 data-range-to="${slotData.rangeTo || ''}"
+                 data-saved-index="${savedIndex}">
                 <div class="time-row">
                     <span class="time-label">من:</span>
                     <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
@@ -1647,47 +1655,42 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
-        const schedule = {};
-        let totalSessionsCount = 0;
-        let hasUnsavedSlot = false;
-        let hasEmptyActiveDay = false;
-
-        const activeCards = document.querySelectorAll('.day-card.active');
-
-        activeCards.forEach(card => {
-            const dayName = card.dataset.day;
-            const slots = [];
-            const timeSlotElements = card.querySelectorAll('.time-slot');
-            timeSlotElements.forEach(slotEl => {
-                const saveBtn = slotEl.querySelector('.btn-save-slot');
-                const startTime = readTime(slotEl, 'start');
-                const endTime = readTime(slotEl, 'end');
-                if ((startTime || endTime) && !saveBtn.classList.contains('saved')) { hasUnsavedSlot = true; }
-                if (saveBtn.classList.contains('saved') && startTime && endTime) {
-                    const slotData = {
-                        start: startTime.display,
-                        end: endTime.display
-                    };
-                    if (slotEl.dataset.rangeFrom && slotEl.dataset.rangeTo) {
-                        slotData.rangeFrom = slotEl.dataset.rangeFrom;
-                        slotData.rangeTo = slotEl.dataset.rangeTo;
-                    }
-                    slots.push(slotData);
-                    totalSessionsCount++;
-                }
-            });
-            if (slots.length > 0) {
-                schedule[dayName] = slots;
-            } else {
-                hasEmptyActiveDay = true;
-            }
-        });
-
         if (subjectData.includes('لم تختر')) { alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return; }
         if (!groupName || !teacherName) { alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); return; }
-        if (activeCards.length === 0) { alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة.'); return; }
+
+        let hasUnsavedSlot = false;
+        document.querySelectorAll('.time-slot').forEach(slotEl => {
+            const saveBtn = slotEl.querySelector('.btn-save-slot');
+            if (!saveBtn) return;
+            const startTime = readTime(slotEl, 'start');
+            const endTime = readTime(slotEl, 'end');
+            if ((startTime || endTime) && !saveBtn.classList.contains('saved')) { hasUnsavedSlot = true; }
+        });
         if (hasUnsavedSlot) { alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.'); return; }
-        if (hasEmptyActiveDay) { alert('⚠️ يوجد أيام مُفعلة ولكن لم تقم بحفظ أوقات الحصص لها.'); return; }
+
+        const schedule = {};
+        let totalSessionsCount = 0;
+
+        Object.keys(SAVED_SLOTS).forEach(dayId => {
+            const dayObj = daysOfWeek.find(d => d.id === dayId);
+            if (!dayObj) return;
+            const slots = SAVED_SLOTS[dayId];
+            if (!slots || slots.length === 0) return;
+            schedule[dayObj.name] = slots.map(s => {
+                const obj = { start: s.start, end: s.end };
+                if (s.rangeFrom && s.rangeTo) {
+                    obj.rangeFrom = s.rangeFrom;
+                    obj.rangeTo = s.rangeTo;
+                }
+                return obj;
+            });
+            totalSessionsCount += slots.length;
+        });
+
+        if (totalSessionsCount === 0) {
+            alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة وحفظها.');
+            return;
+        }
 
         const groupData = {
             subjectData,
