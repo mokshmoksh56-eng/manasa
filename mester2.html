@@ -44,13 +44,45 @@
     .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .view-tab.active { background: #2b5c9e; color: white; box-shadow: 0 4px 12px rgba(43,92,158,0.3); }
 
-    /* العرض الرأسي */
     .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
     .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
     .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
     .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
     .day-card.expanded .day-header { background: #e3f2fd; }
-    .day-title { display: flex; align-items: center; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; }
+    
+    .day-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 900;
+        color: #1a3c6d;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .day-title label { cursor: pointer; }
+    
+    .day-date {
+        font-size: 12px;
+        font-weight: bold;
+        color: #2b5c9e;
+        background: #e3f2fd;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #b8d4f0;
+        direction: ltr;
+        display: inline-block;
+        letter-spacing: 0.5px;
+        font-family: 'Consolas', 'Courier New', monospace;
+    }
+    
+    .day-date.today-date {
+        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+        color: #1a3c6d;
+        border-color: #d4a017;
+        box-shadow: 0 2px 6px rgba(241,196,15,0.4);
+    }
+    
     .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
     .day-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 8px; background: #e0e4e8; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 5px; direction: rtl; flex-wrap: wrap; line-height: 1.5; max-width: 100%; justify-content: center; }
     .session-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; }
@@ -85,44 +117,63 @@
     .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-add-slot:hover { background: #2b5c9e; color: white; }
 
-    /* 🎯 نطاق الشهور داخل صندوق الحصة */
     .slot-range {
         background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%);
         border: 2px dashed #f39c12;
-        border-radius: 8px;
-        padding: 8px 10px;
+        border-radius: 10px;
+        padding: 10px 12px;
         margin-top: 4px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         justify-content: center;
     }
     .slot-range-label {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 900;
         color: #7a5c00;
         display: flex;
         align-items: center;
         gap: 4px;
+        white-space: nowrap;
     }
+    .slot-range-arrow { color: #f39c12; font-size: 16px; font-weight: 900; }
+
     .slot-range-select {
-        padding: 6px 8px;
+        padding: 8px 12px;
         border: 2px solid #f39c12;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: bold;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
         color: #7a5c00;
-        background: white;
+        background: #ffffff;
         cursor: pointer;
         outline: none;
-        font-family: inherit;
-        min-width: 105px;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        min-width: 150px;
+        text-align: center;
+        letter-spacing: 0.3px;
+        transition: 0.2s;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: left 8px center;
+        background-size: 14px;
+        padding-left: 30px;
+        padding-right: 12px;
     }
-    .slot-range-select:focus { box-shadow: 0 0 0 3px rgba(243,156,18,0.25); }
-    .slot-range-arrow { color: #f39c12; font-size: 14px; font-weight: 900; }
+    .slot-range-select:hover {
+        border-color: #e67e22;
+        box-shadow: 0 2px 8px rgba(243,156,18,0.2);
+    }
+    .slot-range-select:focus {
+        border-color: #e67e22;
+        box-shadow: 0 0 0 3px rgba(243,156,18,0.25);
+    }
 
-    /* 🎯 في وضع القفل: نعرض النطاق كنص مقروء فقط */
     .time-slot.locked .slot-range {
         background: #f0fdf4;
         border-color: #28a745;
@@ -136,42 +187,28 @@
         pointer-events: none;
         border-color: #ccc;
         opacity: 0.85;
+        background-image: none;
+        padding-left: 12px;
     }
 
-    /* ============================================
-       🗓️ التقويم الشهري
-       ============================================ */
     .monthly-calendar { display: none; }
     .monthly-calendar.active { display: block; }
 
     .month-nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
         margin-bottom: 15px;
         background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        border-radius: 12px;
-        padding: 12px 16px;
-        color: white;
+        border-radius: 12px; padding: 12px 16px; color: white;
         box-shadow: 0 6px 15px rgba(43,92,158,0.25);
     }
     .month-nav-btn {
         background: rgba(255,255,255,0.15);
         border: 2px solid rgba(255,255,255,0.25);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-weight: 900;
-        font-size: 14px;
-        cursor: pointer;
-        transition: 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        color: white; padding: 8px 16px; border-radius: 8px;
+        font-weight: 900; font-size: 14px; cursor: pointer;
+        transition: 0.2s; display: flex; align-items: center; gap: 5px;
     }
     .month-nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-    .month-nav-btn:active { transform: translateY(0); }
     .month-nav-title { text-align: center; flex: 1; }
     .month-nav-title .month-name { font-size: 22px; font-weight: 900; color: #f1c40f; display: block; }
     .month-nav-title .month-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; }
@@ -179,209 +216,164 @@
     .today-btn-wrapper { text-align: center; margin-bottom: 15px; }
     .today-btn {
         background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-        color: #1a3c6d;
-        border: none;
-        padding: 10px 22px;
-        border-radius: 10px;
-        font-weight: 900;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(241,196,15,0.4);
-        transition: 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+        color: #1a3c6d; border: none; padding: 10px 22px;
+        border-radius: 10px; font-weight: 900; font-size: 14px;
+        cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
+        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
     }
     .today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
-    .today-btn:active { transform: translateY(0); }
 
     .monthly-grid-wrapper {
         border-radius: 12px;
         border: 2px solid #e0e4e8;
         background: #fff;
         overflow: hidden;
+        position: relative;
+        cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: pan-y;
+        transition: transform 0.3s ease;
+    }
+    .monthly-grid-wrapper:active {
+        cursor: grabbing;
     }
 
-    .monthly-head {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        background: linear-gradient(180deg, #2b5c9e, #1a3c6d);
+    .monthly-grid-wrapper.swipe-left {
+        animation: swipeLeft 0.35s ease;
     }
-    .monthly-head-cell {
-        padding: 12px 6px;
+    .monthly-grid-wrapper.swipe-right {
+        animation: swipeRight 0.35s ease;
+    }
+
+    @keyframes swipeLeft {
+        0% { transform: translateX(0); opacity: 1; }
+        40% { transform: translateX(-30px); opacity: 0.6; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes swipeRight {
+        0% { transform: translateX(0); opacity: 1; }
+        40% { transform: translateX(30px); opacity: 0.6; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+
+    .swipe-hint {
         text-align: center;
-        font-weight: 900;
-        font-size: 13px;
-        color: white;
-        border-left: 1px solid rgba(255,255,255,0.15);
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 12px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
+    .swipe-hint .arrow {
+        font-size: 16px;
+        color: #2b5c9e;
+        animation: pulseArrow 1.5s infinite;
+    }
+    @keyframes pulseArrow {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .monthly-head { display: grid; grid-template-columns: repeat(7, 1fr); background: linear-gradient(180deg, #2b5c9e, #1a3c6d); }
+    .monthly-head-cell { padding: 12px 6px; text-align: center; font-weight: 900; font-size: 13px; color: white; border-left: 1px solid rgba(255,255,255,0.15); }
     .monthly-head-cell.friday { color: #f1c40f; }
 
-    .monthly-body {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        background: #e0e4e8;
-        gap: 1px;
-    }
+    .monthly-body { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e4e8; gap: 1px; }
 
     .monthly-day {
-        background: #fff;
-        min-height: 130px;
-        padding: 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        transition: 0.2s;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
+        background: #fff; min-height: 130px; padding: 6px;
+        display: flex; flex-direction: column; gap: 3px;
+        transition: 0.2s; position: relative; overflow: hidden; cursor: pointer;
     }
     .monthly-day:hover { background: #f8fafc; }
     .monthly-day.other-month { background: #f8fafc; opacity: 0.55; cursor: default; }
-    .monthly-day.other-month:hover { background: #f8fafc; }
-    .monthly-day.today {
-        background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%);
-        box-shadow: inset 0 0 0 2px #f1c40f;
-    }
+    .monthly-day.today { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%); box-shadow: inset 0 0 0 2px #f1c40f; }
     .monthly-day.friday { background: #fef9f3; }
     .monthly-day.other-month.friday { background: #f8fafc; }
 
-    .day-num {
-        font-size: 14px;
-        font-weight: 900;
-        color: #1a3c6d;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 4px;
+    /* 🎯 الأيام اللي فاتت (رمادي باهت) */
+    .monthly-day.past-day {
+        background: #f1f5f9 !important;
+        opacity: 0.65;
     }
-    .monthly-day.today .day-num { color: #b38f00; }
-    .day-num .today-badge {
-        background: #f1c40f;
-        color: #1a3c6d;
-        font-size: 9px;
-        padding: 1px 6px;
-        border-radius: 6px;
-        font-weight: 900;
+    .monthly-day.past-day .day-num {
+        color: #94a3b8;
     }
-    .day-num .session-count-badge {
-        background: #2b5c9e;
-        color: white;
-        font-size: 10px;
-        padding: 1px 7px;
-        border-radius: 10px;
-        font-weight: 900;
+    .monthly-day.past-day .day-session-chip {
+        background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important;
+        border-right-color: #64748b !important;
+        opacity: 0.7;
+    }
+    .monthly-day.past-day:hover {
+        background: #e2e8f0 !important;
+        opacity: 0.8;
+    }
+    .monthly-day.other-month.past-day {
+        background: #f8fafc !important;
+        opacity: 0.4;
+    }
+    .monthly-day.today {
+        background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%) !important;
+        opacity: 1 !important;
+    }
+    .monthly-day.today .day-num {
+        color: #b38f00 !important;
     }
 
-    .day-sessions {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        flex: 1;
-        overflow: hidden;
+    .day-num { font-size: 14px; font-weight: 900; color: #1a3c6d; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .monthly-day.today .day-num { color: #b38f00; }
+    .day-num .today-badge { background: #f1c40f; color: #1a3c6d; font-size: 9px; padding: 1px 6px; border-radius: 6px; font-weight: 900; }
+    .day-num .session-count-badge { background: #2b5c9e; color: white; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 900; }
+    .monthly-day.past-day .day-num .session-count-badge {
+        background: #94a3b8;
     }
+
+    .day-sessions { display: flex; flex-direction: column; gap: 3px; flex: 1; overflow: hidden; }
 
     .day-session-chip {
         background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        color: white;
-        font-size: 10px;
-        font-weight: bold;
-        padding: 3px 6px;
-        border-radius: 5px;
-        border-right: 3px solid #f1c40f;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        direction: ltr;
-        text-align: center;
-        transition: 0.2s;
+        color: white; font-size: 10px; font-weight: bold; padding: 3px 6px;
+        border-radius: 5px; border-right: 3px solid #f1c40f;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        direction: ltr; text-align: center; transition: 0.2s;
     }
-    .day-session-chip.past {
-        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-        border-right-color: #475569;
-        opacity: 0.75;
+    .day-session-chip.past { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); border-right-color: #475569; opacity: 0.75; }
+
+    .day-more { font-size: 10px; font-weight: 900; color: #2b5c9e; text-align: center; padding: 2px; background: #e3f2fd; border-radius: 4px; }
+    .monthly-day.past-day .day-more {
+        background: #e2e8f0;
+        color: #94a3b8;
     }
 
-    .day-more {
-        font-size: 10px;
-        font-weight: 900;
-        color: #2b5c9e;
-        text-align: center;
-        padding: 2px;
-        background: #e3f2fd;
-        border-radius: 4px;
-    }
-
-    /* نافذة تفاصيل اليوم */
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        backdrop-filter: blur(3px);
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
     .modal-overlay.active { display: flex; }
     .modal-box {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        max-width: 420px;
-        width: 100%;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        border-top: 5px solid #2b5c9e;
-        animation: modalIn 0.3s ease;
-        max-height: 80vh;
-        overflow-y: auto;
+        background: white; border-radius: 15px; padding: 25px; max-width: 420px;
+        width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        border-top: 5px solid #2b5c9e; animation: modalIn 0.3s ease;
+        max-height: 80vh; overflow-y: auto;
     }
     @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     .modal-title { font-size: 17px; font-weight: 900; color: #1a3c6d; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
     .modal-session-item {
-        background: #f8fafc;
-        border-right: 4px solid #f1c40f;
-        padding: 12px 15px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        font-weight: bold;
-        color: #1a3c6d;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
+        background: #f8fafc; border-right: 4px solid #f1c40f;
+        padding: 12px 15px; border-radius: 8px; margin-bottom: 8px;
+        font-weight: bold; color: #1a3c6d;
+        display: flex; align-items: center; justify-content: space-between; gap: 8px;
     }
-    .modal-session-item.past {
-        background: #f1f5f9;
-        border-right-color: #94a3b8;
-        color: #64748b;
-    }
+    .modal-session-item.past { background: #f1f5f9; border-right-color: #94a3b8; color: #64748b; }
     .modal-session-item .time { color: #2b5c9e; direction: ltr; font-size: 14px; }
     .modal-session-item.past .time { color: #64748b; }
-    .modal-session-item .sess-num {
-        background: #f1c40f;
-        color: #1a3c6d;
-        padding: 2px 8px;
-        border-radius: 5px;
-        font-size: 11px;
-        font-weight: 900;
-    }
-    .modal-session-item.past .sess-num {
-        background: #cbd5e1;
-        color: #475569;
-    }
+    .modal-session-item .sess-num { background: #f1c40f; color: #1a3c6d; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 900; }
+    .modal-session-item.past .sess-num { background: #cbd5e1; color: #475569; }
     .modal-close-btn {
-        width: 100%;
-        padding: 12px;
-        background: #2b5c9e;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 900;
-        font-size: 14px;
-        cursor: pointer;
-        margin-top: 12px;
+        width: 100%; padding: 12px; background: #2b5c9e; color: white;
+        border: none; border-radius: 8px; font-weight: 900; font-size: 14px;
+        cursor: pointer; margin-top: 12px;
     }
     .modal-close-btn:hover { background: #1a3c6d; }
 
@@ -397,7 +389,11 @@
         .month-nav-title .month-name { font-size: 17px; }
         .month-nav-btn { padding: 6px 10px; font-size: 12px; }
         .monthly-head-cell { font-size: 11px; padding: 10px 4px; }
-        .slot-range-select { min-width: 90px; font-size: 11px; padding: 5px 6px; }
+        .slot-range-select { min-width: 130px; font-size: 12px; padding: 6px 8px; padding-left: 26px; background-size: 12px; }
+        .slot-range-label { font-size: 11px; }
+        .day-title { flex-direction: column; align-items: flex-start; gap: 4px; }
+        .day-date { font-size: 11px; padding: 3px 8px; }
+        .swipe-hint { font-size: 11px; }
     }
 
     @media (max-width: 600px) {
@@ -480,7 +476,7 @@
 
     <div class="calendar-section">
         <div class="section-header-custom"><span class="circle-num">5</span> حدد أيام ومواعيد الحصص <span style="color: #dc3545;">*</span></div>
-        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، وحدد نطاق الشهور (اختياري)، واضغط حفظ 💾. لو سيبت نطاق الشهور فاضي، الحصة هتتكرر مدى الحياة.</div>
+        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، وحدد نطاق الشهور، واضغط حفظ 💾.</div>
 
         <div class="view-tabs">
             <button class="view-tab active" id="tab-list" onclick="switchView('list')">📋 قائمة الإعداد</button>
@@ -489,15 +485,14 @@
 
         <div class="vertical-schedule" id="vertical-schedule"></div>
 
-        <!-- 🗓️ التقويم الشهري -->
         <div class="monthly-calendar" id="monthly-calendar">
             <div class="month-nav">
-                <button class="month-nav-btn" onclick="changeMonth(-1)">❯ السابق</button>
+                <button class="month-nav-btn" onclick="goToPrevMonthWithAnimation()">❯ السابق</button>
                 <div class="month-nav-title">
                     <span class="month-name" id="month-name">—</span>
                     <span class="month-sub" id="month-sub">—</span>
                 </div>
-                <button class="month-nav-btn" onclick="changeMonth(1)">التالي ❮</button>
+                <button class="month-nav-btn" onclick="goToNextMonthWithAnimation()">التالي ❮</button>
             </div>
             <div class="today-btn-wrapper">
                 <button class="today-btn" onclick="goToday()">📍 الشهر الحالي</button>
@@ -514,13 +509,17 @@
                 </div>
                 <div class="monthly-body" id="monthly-body"></div>
             </div>
+            <div class="swipe-hint">
+                <span class="arrow">❯</span>
+                <span>اسحب يمين أو شمال للتنقل بين الشهور</span>
+                <span class="arrow">❮</span>
+            </div>
         </div>
     </div>
 
     <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
 </div>
 
-<!-- نافذة تفاصيل اليوم -->
 <div class="modal-overlay" id="day-modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-box">
         <div class="modal-title">📅 <span id="modal-day-title"></span></div>
@@ -563,21 +562,75 @@
         return html;
     }
 
-    // 🎯 بناء خيارات الشهور (15 شهر من الحالي - 3 قبل + 12 بعد)
-    function buildMonthRangeOptions() {
+    function buildMonthRangeOptions(selectedValue) {
         const now = new Date();
-        const startY = now.getFullYear();
-        const startM = now.getMonth() - 3;
+        const currentY = now.getFullYear();
+        const currentM = now.getMonth();
+        
+        const startTotalM = currentY * 12 + currentM - 3;
+        const totalMonths = 24;
 
         let html = '';
-        for (let i = 0; i < 15; i++) {
-            const totalM = startM + i;
-            const y = startY + Math.floor(totalM / 12);
+        for (let i = 0; i < totalMonths; i++) {
+            const totalM = startTotalM + i;
+            const y = Math.floor(totalM / 12);
             const m = ((totalM % 12) + 12) % 12;
+            
             const label = `${MONTH_NAMES_AR[m]} ${y}`;
-            html += `<option value="${y}-${m}">${label}</option>`;
+            const value = `${y}-${m}`;
+            
+            const selected = (value === selectedValue) ? 'selected' : '';
+            html += `<option value="${value}" ${selected}>${label}</option>`;
         }
         return html;
+    }
+
+    function getDefaultRangeValues() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = now.getMonth();
+        
+        const fromVal = `${y}-${m}`;
+        
+        const toM = m + 10;
+        const toY = y + Math.floor(toM / 12);
+        const toMonth = ((toM % 12) + 12) % 12;
+        const toVal = `${toY}-${toMonth}`;
+        
+        return { fromVal, toVal };
+    }
+
+    function getWeekStartSaturday() {
+        const today = new Date();
+        const todayJs = today.getDay();
+        const daysToSaturday = (todayJs + 1) % 7;
+        const saturday = new Date(today);
+        saturday.setDate(today.getDate() - daysToSaturday);
+        saturday.setHours(0, 0, 0, 0);
+        return saturday;
+    }
+
+    function getNextDateForDay(targetJsDay) {
+        const weekStart = getWeekStartSaturday();
+        
+        let offset;
+        if (targetJsDay === 6) offset = 0;
+        else offset = targetJsDay + 1;
+        
+        const target = new Date(weekStart);
+        target.setDate(weekStart.getDate() + offset);
+        
+        const day = target.getDate().toString().padStart(2, '0');
+        const month = (target.getMonth() + 1).toString().padStart(2, '0');
+        const year = target.getFullYear();
+        
+        const today = new Date();
+        const isToday = target.toDateString() === today.toDateString();
+        
+        if (isToday) {
+            return `<span class="day-date today-date">📅 ${day}/${month}/${year} • اليوم</span>`;
+        }
+        return `<span class="day-date">📅 ${day}/${month}/${year}</span>`;
     }
 
     window.onload = function() {
@@ -600,7 +653,107 @@
 
         renderVerticalSchedule();
         renderMonthlyCalendar();
+        setTimeout(setupSwipeNavigation, 100);
     };
+
+    function setupSwipeNavigation() {
+        const wrapper = document.querySelector('.monthly-grid-wrapper');
+        if (!wrapper) return;
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = false;
+
+        const MIN_SWIPE_DISTANCE = 60;
+
+        function handleStart(x, y) {
+            touchStartX = x;
+            touchStartY = y;
+            isDragging = true;
+            isHorizontalSwipe = false;
+        }
+
+        function handleMove(x, y) {
+            if (!isDragging) return;
+            const diffX = Math.abs(x - touchStartX);
+            const diffY = Math.abs(y - touchStartY);
+            if (diffX > diffY && diffX > 10) {
+                isHorizontalSwipe = true;
+            }
+        }
+
+        function handleEnd(x, y) {
+            if (!isDragging) return;
+            isDragging = false;
+            if (!isHorizontalSwipe) return;
+
+            const diffX = x - touchStartX;
+            const diffY = y - touchStartY;
+
+            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
+            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
+
+            if (diffX > 0) {
+                goToPrevMonthWithAnimation();
+            } else {
+                goToNextMonthWithAnimation();
+            }
+        }
+
+        wrapper.addEventListener('touchstart', (e) => {
+            const t = e.changedTouches[0];
+            handleStart(t.clientX, t.clientY);
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (e) => {
+            const t = e.changedTouches[0];
+            handleMove(t.clientX, t.clientY);
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', (e) => {
+            const t = e.changedTouches[0];
+            handleEnd(t.clientX, t.clientY);
+        }, { passive: true });
+
+        wrapper.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button, a, select, input')) return;
+            handleStart(e.clientX, e.clientY);
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            handleMove(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            handleEnd(e.clientX, e.clientY);
+        });
+
+        wrapper.addEventListener('dragstart', (e) => e.preventDefault());
+    }
+
+    function goToPrevMonthWithAnimation() {
+        const wrapper = document.querySelector('.monthly-grid-wrapper');
+        if (wrapper) {
+            wrapper.classList.remove('swipe-left', 'swipe-right');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('swipe-right');
+        }
+        changeMonth(-1);
+    }
+
+    function goToNextMonthWithAnimation() {
+        const wrapper = document.querySelector('.monthly-grid-wrapper');
+        if (wrapper) {
+            wrapper.classList.remove('swipe-left', 'swipe-right');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('swipe-left');
+        }
+        changeMonth(1);
+    }
 
     function getLocation(e) {
         e.preventDefault();
@@ -639,10 +792,15 @@
         container.innerHTML = '';
 
         daysOfWeek.forEach(day => {
+            const dateInfo = getNextDateForDay(day.jsDay);
+            
             container.innerHTML += `
                 <div class="day-card" id="card-${day.id}" data-day="${day.name}">
                     <div class="day-header" onclick="toggleDayExpand('${day.id}')">
-                        <div class="day-title"><label>${day.name}</label></div>
+                        <div class="day-title">
+                            <label>${day.name}</label>
+                            ${dateInfo}
+                        </div>
                         <div class="day-header-left">
                             <span class="day-status" id="status-${day.id}">0 حصة</span>
                             <span class="expand-icon">▼</span>
@@ -689,7 +847,10 @@
         const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
         const hOpts = hourOptions();
         const mOpts = minuteOptions();
-        const monthRangeOptions = buildMonthRangeOptions();
+        
+        const { fromVal, toVal } = getDefaultRangeValues();
+        const fromOptions = buildMonthRangeOptions(fromVal);
+        const toOptions = buildMonthRangeOptions(toVal);
         
         const slotHTML = `
             <div class="time-slot" id="${slotId}">
@@ -710,13 +871,12 @@
                     <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
                 </div>
                 
-                <!-- 🎯 نطاق الشهور داخل صندوق الحصة -->
                 <div class="slot-range">
                     <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${monthRangeOptions}</select>
+                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
                     <span class="slot-range-arrow">←</span>
                     <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${monthRangeOptions}</select>
+                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
                 </div>
                 
                 <div class="slot-actions">
@@ -750,7 +910,6 @@
         const endTime = readTime(slot, 'end');
         if (!startTime || !endTime) { alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية."); return; }
         
-        // 🎯 قراءة النطاق
         const rangeFromVal = slot.querySelector('.slot-range-from').value;
         const rangeToVal = slot.querySelector('.slot-range-to').value;
         
@@ -786,7 +945,6 @@
             if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
         }
         
-        // 🎯 نحفظ النطاق على العنصر نفسه
         slot.dataset.rangeFrom = slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '';
         slot.dataset.rangeTo = slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : '';
         
@@ -884,7 +1042,6 @@
                 const start = readTime(slot, 'start');
                 const end = readTime(slot, 'end');
                 if (start && end) {
-                    // 🎯 اقرأ النطاق المحفوظ
                     let slotRangeFrom = null, slotRangeTo = null;
                     if (slot.dataset.rangeFrom) {
                         const [fy, fm] = slot.dataset.rangeFrom.split('-').map(Number);
@@ -936,7 +1093,6 @@
         for (let d = 1; d <= daysInMonth; d++) {
             const dt = new Date(year, month, d);
             const jsD = dt.getDay();
-            // 🎯 نفلتر حسب النطاق
             const matching = weeklySessions.filter(s => {
                 if (s.dayJs !== jsD) return false;
                 if (s.rangeFrom && s.rangeTo) {
@@ -961,7 +1117,6 @@
         
         nameEl.textContent = `${MONTH_NAMES_AR[currentMonth]} ${currentYear}`;
 
-        // حساب الحصص الفعلية في الشهر الحالي مع مراعاة النطاقات
         const actualMonthSessions = countMonthSessions(currentYear, currentMonth, weeklySessions);
 
         subEl.textContent = `📊 ${actualMonthSessions} حصة هذا الشهر • ${weeklySessions.length} حصة أسبوعياً`;
@@ -976,6 +1131,10 @@
         const todayYear = today.getFullYear();
         const todayMonth = today.getMonth();
         const todayDate = today.getDate();
+        const todayDateOnly = new Date(todayYear, todayMonth, todayDate);
+
+        // 🎯 هل الشهر المعروض هو الشهر الحالي الفعلي؟
+        const isCurrentMonthView = (currentYear === todayYear && currentMonth === todayMonth);
 
         let html = '';
 
@@ -998,7 +1157,6 @@
 
             const cellJsDay = actualDateObj.getDay();
             
-            // 🎯 نفلتر الحصص حسب النطاق الخاص بكل حصة
             const matchingSessions = weeklySessions.filter(s => {
                 if (s.dayJs !== cellJsDay) return false;
                 if (s.rangeFrom && s.rangeTo) {
@@ -1011,9 +1169,17 @@
             }).sort((a,b) => a.startMin - b.startMin);
             
             const isFriday = cellJsDay === 5;
-            const isTodayCell = (actualDateObj.getFullYear() === todayYear && actualDateObj.getMonth() === todayMonth && actualDateObj.getDate() === todayDate);
+            
+            // 🎯 النهاردة لازم يكون في نفس الشهر المعروض
+            const isTodayCell = isCurrentMonthView && 
+                                actualDateObj.getDate() === todayDate &&
+                                !isOtherMonth;
+            
+            // 🎯 اليوم فات لو كان قبل النهاردة، ومش في شهر تاني
+            const cellDateOnly = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate());
+            const isPastDay = cellDateOnly < todayDateOnly && !isOtherMonth;
 
-            html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''}" 
+            html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''} ${isPastDay ? 'past-day' : ''}" 
                         onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()}, ${dayNum})`}">`;
             
             html += `<div class="day-num">
@@ -1054,7 +1220,6 @@
 
         const weeklySessions = getAllWeeklySessions();
         
-        // 🎯 نفلتر حسب النطاق
         const sessions = weeklySessions.filter(s => {
             if (s.dayJs !== jsDay) return false;
             if (s.rangeFrom && s.rangeTo) {
@@ -1123,7 +1288,6 @@
                         end: endTime.display, 
                         startMin: timeToMinutes(startTime.hour, startTime.minute, startTime.period) 
                     };
-                    // 🎯 ضيف النطاق لو موجود
                     if (slotEl.dataset.rangeFrom && slotEl.dataset.rangeTo) {
                         slotData.rangeFrom = slotEl.dataset.rangeFrom;
                         slotData.rangeTo = slotEl.dataset.rangeTo;
