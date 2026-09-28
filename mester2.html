@@ -1,712 +1,626 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة احجزلي - إعداد المجموعة</title>
-    <style>
-        /* =========================================
-           إعدادات عامة
-           ========================================= */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة احجزلي - إعداد المجموعة</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
-        body {
-            background-color: #f4f6f9;
-            padding-bottom: 40px;
-            color: #333;
-        }
+    .header-3d {
+        width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat;
+        padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f;
+    }
+    .header-3d h1 { font-size: 36px; font-weight: 900; color: #f1c40f; text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5); margin-bottom: 10px; }
+    .stepper { display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; padding: 10px 20px; margin: 15px auto 0; width: fit-content; backdrop-filter: blur(5px); }
+    .step { font-size: 14px; font-weight: bold; color: #fff; opacity: 0.6; }
+    .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
+    .step-divider { color: #fff; }
 
-        /* =========================================
-           الهيدر ثلاثي الأبعاد
-           ========================================= */
-        .header-3d {
-            width: 100%;
-            background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%),
-                        url('teacher2.png') center/cover no-repeat;
-            padding: 35px 20px 50px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3);
-            border-bottom: 3px solid #f1c40f;
-        }
+    .container { width: 100%; max-width: 900px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
+    .table-container { background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #2b5c9e; margin-bottom: 20px; }
+    .data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .data-table td { padding: 15px; border: 1px solid #e0e4e8; vertical-align: top; width: 50%; }
+    .cell-title { font-size: 14px; font-weight: 800; color: #1a3c6d; margin-bottom: 10px; display: block; }
+    .fixed-subject { background: #e3f2fd; color: #1a3c6d; padding: 12px 15px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 2px dashed #2b5c9e; display: block; width: 100%; text-align: center; }
+    .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e0e4e8; border-radius: 10px; font-size: 14px; transition: all 0.3s; background: #fff; }
+    .form-control:focus { border-color: #2b5c9e; outline: none; box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1); }
 
-        .header-3d h1 {
-            font-size: 36px;
-            font-weight: 900;
-            color: #f1c40f;
-            text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-        }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; }
+    .cards-grid input[type="radio"] { display: none; }
+    .cards-grid label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; background: #f8fafc; border: 2px solid #e0e4e8; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; font-weight: bold; color: #555; font-size: 12px; }
+    .cards-grid label i { font-size: 18px; margin-bottom: 5px; }
+    .cards-grid input[type="radio"]:checked + label { background: #e3f2fd; border-color: #2b5c9e; color: #1a3c6d; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(43, 92, 158, 0.15); }
+    .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; }
 
-        .stepper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            padding: 10px 20px;
-            margin: 15px auto 0;
-            width: fit-content;
-            backdrop-filter: blur(5px);
-        }
+    /* 🎯 تصميم التقويم الرأسي المتطور */
+    .calendar-section { background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 4px solid #f1c40f; padding: 25px; margin-bottom: 20px; }
+    .section-header-custom { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: #1a3c6d; margin-bottom: 10px; }
+    .section-header-custom .circle-num { background: #2b5c9e; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .section-hint { background: #fff8e1; border-right: 4px solid #f1c40f; padding: 12px 15px; border-radius: 8px; font-size: 14px; color: #7a5c00; font-weight: bold; margin-bottom: 20px; }
 
-        .step { font-size: 14px; font-weight: bold; color: #fff; opacity: 0.6; }
-        .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
-        .step-divider { color: #fff; }
+    .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
+    
+    .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
+    .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
+    
+    .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; }
+    .day-card.active .day-header { background: #e3f2fd; }
+    
+    .day-title { display: flex; align-items: center; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; }
+    
+    .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; }
 
-        /* =========================================
-           الحاوية وجدول البيانات الأساسية
-           ========================================= */
-        .container {
-            width: 100%;
-            max-width: 900px;
-            margin: -30px auto 0;
-            padding: 0 10px;
-            position: relative;
-            z-index: 10;
-        }
+    .day-status { 
+        font-size: 12px; 
+        font-weight: bold; 
+        padding: 6px 12px; 
+        border-radius: 8px; 
+        background: #e0e4e8; 
+        color: #666; 
+        transition: 0.3s; 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        direction: rtl; 
+        flex-wrap: wrap; 
+        line-height: 1.5;
+        max-width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    .day-card.active .day-status { background: #28a745; color: white; box-shadow: 0 2px 8px rgba(40,167,69,0.3); }
+    .day-status strong { background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 6px; }
 
-        .table-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            overflow: hidden;
-            border-top: 4px solid #2b5c9e;
-            margin-bottom: 20px;
-        }
+    .expand-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 50%; color: #1a3c6d; font-size: 12px; transition: 0.3s; flex-shrink: 0; }
+    .day-card.expanded .expand-icon { transform: rotate(180deg); }
+    .day-card.active .expand-icon { background: rgba(43,92,158,0.1); color: #2b5c9e; }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
+    .day-body { display: none; padding: 15px 20px; border-top: 1px solid #e0e4e8; background: #fff; }
+    .day-card.expanded .day-body { display: block; animation: slideDown 0.3s ease; }
+    
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .data-table td {
-            padding: 15px;
-            border: 1px solid #e0e4e8;
-            vertical-align: top;
-            width: 50%;
-        }
+    .slots-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+    
+    /* 🎯 تصميم الموعد المبسط */
+    .time-slot { 
+        display: flex; 
+        flex-direction: column;
+        gap: 10px; 
+        background: #f8fafc; 
+        padding: 14px; 
+        border-radius: 10px; 
+        border: 2px solid #e0e4e8; 
+    }
+    
+    .time-row { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .time-label { 
+        font-weight: bold; 
+        color: #1a3c6d; 
+        font-size: 14px; 
+        min-width: 40px;
+    }
+    
+    /* 🎯 القوائم المنسدلة البسيطة */
+    .simple-select {
+        padding: 10px 8px;
+        border: 2px solid #e0e4e8;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: inherit;
+        font-weight: bold;
+        color: #1a3c6d;
+        background: #fff;
+        outline: none;
+        transition: 0.2s;
+        cursor: pointer;
+        text-align: center;
+        flex: 1;
+        min-width: 60px;
+    }
+    .simple-select:focus { border-color: #2b5c9e; box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.15); }
+    
+    .slot-actions { 
+        display: flex; 
+        gap: 8px; 
+        justify-content: flex-end;
+        margin-top: 4px;
+    }
+    
+    .btn-save-slot { 
+        background: #2b5c9e; 
+        color: white; 
+        border: none; 
+        padding: 10px 20px;
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-weight: bold; 
+        font-size: 14px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        transition: 0.2s;
+        gap: 5px;
+    }
+    .btn-save-slot:hover { background: #1a3c6d; }
+    .btn-save-slot.saved { background: #28a745; }
 
-        .cell-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: #1a3c6d;
-            margin-bottom: 10px;
-            display: block;
-        }
+    .btn-remove-slot { 
+        background: #dc3545; 
+        color: white; 
+        border: none; 
+        padding: 10px 20px;
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-weight: bold; 
+        font-size: 14px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        transition: 0.2s; 
+        gap: 5px;
+    }
+    .btn-remove-slot:hover { background: #c82333; }
 
-        .fixed-subject {
-            background: #e3f2fd;
-            color: #1a3c6d;
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            border: 2px dashed #2b5c9e;
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
+    .btn-add-slot { background: rgba(43, 92, 158, 0.1); color: #2b5c9e; border: 2px dashed #2b5c9e; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-add-slot:hover { background: #2b5c9e; color: white; }
 
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e4e8;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s;
-            background: #fff;
-        }
+    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; }
+    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
 
-        .form-control:focus {
-            border-color: #2b5c9e;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1);
-        }
-
-        /* =========================================
-           البطاقات التفاعلية (أولاد/بنات - المكان)
-           ========================================= */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 8px;
-        }
-
-        .cards-grid input[type="radio"] { display: none; }
-
-        .cards-grid label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            background: #f8fafc;
-            border: 2px solid #e0e4e8;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            font-weight: bold;
-            color: #555;
-            font-size: 12px;
-        }
-
-        .cards-grid label i { font-size: 18px; margin-bottom: 5px; }
-
-        .cards-grid input[type="radio"]:checked + label {
-            background: #e3f2fd;
-            border-color: #2b5c9e;
-            color: #1a3c6d;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(43, 92, 158, 0.15);
-        }
-
-        /* =========================================
-           زر الخريطة GPS
-           ========================================= */
-        .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .btn-gps {
-            background: #28a745; color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px;
-        }
-        .btn-gps:hover { background: #218838; }
-
-        /* =========================================
-           الجدول الذكي وتصميم الأيام
-           ========================================= */
-        .smart-schedule {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border-top: 4px solid #f1c40f;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .section-header-custom {
-            display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: #1a3c6d; margin-bottom: 20px;
-        }
-        .section-header-custom .circle-num {
-            background: #2b5c9e; color: white; width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
-        }
-
-        .days-box-wrapper { background: #f8fafc; border: 1px solid #e0e4e8; border-radius: 12px; padding: 15px; margin-bottom: 25px; }
-        .instruction-banner { background: #fff; border: 1px solid #e0e4e8; border-radius: 8px; padding: 10px; text-align: center; font-weight: bold; color: #1a3c6d; margin-bottom: 15px; font-size: 14px; }
-
-        .innovative-days-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
-        .day-card {
-            background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; padding: 15px 10px; text-align: center;
-            cursor: pointer; position: relative; transition: all 0.3s ease;
-        }
-        .day-card:hover { border-color: #b3c7db; }
-        .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43, 92, 158, 0.15); background: #f4f9ff; }
-        .day-icon { font-size: 30px; margin-bottom: 5px; display: block; }
-        .day-name { font-size: 15px; font-weight: bold; color: #333; }
-
-        .notification-badge {
-            position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; width: 24px; height: 24px;
-            border-radius: 50%; font-size: 12px; font-weight: bold; display: none; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff;
-        }
-
-        /* =========================================
-           تصميم الساعة الرقمية المخصصة (12 ساعة)
-           ========================================= */
-        .time-adder {
-            display: flex; gap: 15px; align-items: flex-end; background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; border: 1px solid #e0e4e8;
-        }
-        .time-adder .input-group { flex: 1; min-width: 170px; }
-        .time-adder label { display: block; font-size: 13px; font-weight: bold; color: #444; margin-bottom: 5px; }
-        
-        .digital-clock-picker {
-            display: flex; align-items: center; justify-content: center;
-            background: #fff; border: 2px solid #ccd6e0; border-radius: 8px; padding: 8px;
-            direction: ltr; /* لجعل الساعة تظهر من اليسار لليمين */
-        }
-        
-        .digital-clock-picker select {
-            border: none; background: transparent; font-size: 16px; font-weight: bold; color: #1a3c6d;
-            outline: none; cursor: pointer;
-        }
-        .digital-clock-picker span { font-weight: bold; margin: 0 3px; color: #666; }
-        
-        .ampm-select {
-            background: #e3f2fd !important; padding: 3px 6px; border-radius: 5px; margin-left: 8px; font-size: 14px !important;
-        }
-
-        .btn-add-time {
-            background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; height: 42px;
-        }
-
-        /* =========================================
-           تصميم البطاقات الزمنية (إظهار جميع المواعيد والتلوين)
-           ========================================= */
-        .timeline-tags { display: flex; flex-wrap: wrap; gap: 10px; min-height: 50px; direction: rtl;}
-        
-        .time-tag {
-            background: #f4f6f9; color: #666; padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: bold;
-            display: flex; align-items: center; gap: 10px; border: 1px dashed #ccd6e0; transition: all 0.3s ease; direction: rtl;
-        }
-        
-        /* تلوين وتكبير الموعد الخاص باليوم المحدد */
-        .time-tag.highlighted {
-            background: #e3f2fd; color: #1a3c6d; border-color: #2b5c9e; 
-            box-shadow: 0 4px 10px rgba(43, 92, 158, 0.25); transform: scale(1.03);
-            border-style: solid;
-        }
-
-        .tag-day-name { color: #dc3545; font-size: 13px; font-weight: 900; }
-        .time-string { direction: ltr; display: inline-block; }
-        .time-tag .delete-btn { cursor: pointer; color: #dc3545; font-size: 18px; margin-right: auto; padding-right: 10px; }
-
-        /* =========================================
-           التقويم الشهري
-           ========================================= */
-        .monthly-calendar { margin-top: 30px; border-top: 2px dashed #e0e4e8; padding-top: 20px; }
-        .btn-generate {
-            width: 100%; background: #f1c40f; color: #1a3c6d; border: none; padding: 15px; border-radius: 10px;
-            font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
-        }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .cal-header { font-weight: bold; color: #1a3c6d; font-size: 14px; padding: 10px 0; background: #f8fafc; border-radius: 5px; }
-        .cal-day {
-            background: #fff; border: 1px solid #e0e4e8; border-radius: 5px; padding: 15px 5px; font-size: 14px; font-weight: bold;
-            color: #333; position: relative; cursor: pointer; transition: 0.2s;
-        }
-        .cal-day.has-session { background: #1a3c6d; color: white; border-color: #1a3c6d; }
-        .cal-day.has-session::after {
-            content: "متاح"; display: block; font-size: 10px; background: #28a745; color: white; border-radius: 3px; margin-top: 5px; padding: 2px;
-        }
-
-        .submit-btn {
-            width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white;
-            border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s;
-        }
-        .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
-
-    </style>
+    @media (max-width: 600px) {
+        .day-header { flex-wrap: wrap; }
+        .day-header-left { width: 100%; justify-content: space-between; }
+        .day-status { font-size: 11px; padding: 5px 10px; }
+        .time-label { min-width: 35px; font-size: 13px; }
+        .simple-select { font-size: 14px; padding: 9px 6px; }
+    }
+</style>
 </head>
 <body>
 
-    <header class="header-3d">
-        <h1>إعداد تفاصيل المجموعة</h1>
-        <div class="stepper">
-            <div class="step">✓ 1. التخصص</div>
-            <div class="step-divider">❯</div>
-            <div class="step active">✏️ 2. بيانات المجموعة</div>
-        </div>
-    </header>
+<header class="header-3d">
+    <h1>إعداد تفاصيل المجموعة</h1>
+    <div class="stepper">
+        <div class="step">✓ 1. التخصص</div>
+        <div class="step-divider">❯</div>
+        <div class="step active">✏️ 2. بيانات المجموعة</div>
+    </div>
+</header>
 
-    <div class="container">
-        
-        <!-- القسم الأول: جدول البيانات الأساسية -->
-        <div class="table-container">
-            <table class="data-table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <span class="cell-title">📚 المادة والصف</span>
-                            <div id="fixed-subject" class="fixed-subject">جاري جلب المادة...</div>
-                        </td>
-                        <td>
-                            <span class="cell-title">🏷️ اسم المجموعة</span>
-                            <input type="text" id="group-name" class="form-control" placeholder="مثال: مجموعة التفوق">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
-                            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
-                        </td>
-                        <td>
-                            <span class="cell-title">👥 العدد المطلوب</span>
-                            <input type="number" id="students-count" class="form-control" placeholder="مثال: 20">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="cell-title">👫 الفئات المسموحة</span>
-                            <div class="cards-grid">
-                                <div class="radio-card">
-                                    <input type="radio" name="gender" id="gender-mixed" value="مختلط" checked>
-                                    <label for="gender-mixed"><i>👫</i> مختلط</label>
-                                </div>
-                                <div class="radio-card">
-                                    <input type="radio" name="gender" id="gender-boys" value="أولاد فقط">
-                                    <label for="gender-boys"><i>👨‍🎓</i> أولاد</label>
-                                </div>
-                                <div class="radio-card">
-                                    <input type="radio" name="gender" id="gender-girls" value="بنات فقط">
-                                    <label for="gender-girls"><i>👩‍🎓</i> بنات</label>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="cell-title">📍 مكان الدرس</span>
-                            <div class="cards-grid">
-                                <div class="radio-card">
-                                    <input type="radio" name="location" id="loc-center" value="السنتر" checked>
-                                    <label for="loc-center"><i>🏫</i> السنتر</label>
-                                </div>
-                                <div class="radio-card">
-                                    <input type="radio" name="location" id="loc-teacher" value="بيت المستر">
-                                    <label for="loc-teacher"><i>🏠</i> المستر</label>
-                                </div>
-                                <div class="radio-card">
-                                    <input type="radio" name="location" id="loc-student" value="منزل الطالب">
-                                    <label for="loc-student"><i>🚗</i> الطالب</label>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="cell-title">🗺️ الموقع (GPS)</span>
-                            <div class="gps-wrapper">
-                                <button class="btn-gps" onclick="getLocation(event)">📍 تحديد موقعي الحالي</button>
-                                <span id="location-text" style="color: #666; font-size: 14px; font-weight: bold;">لم يتم التحديد</span>
-                                <input type="hidden" id="gps-coords" value="">
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- القسم الثاني: الجدول الذكي -->
-        <div class="smart-schedule">
-            
-            <div class="section-header-custom">
-                <span class="circle-num">5</span> أيام الأسبوع <span style="color: #dc3545;">*</span>
-            </div>
-
-            <div class="days-box-wrapper">
-                <div class="instruction-banner">👇 اضغط على أي يوم لعرض أو إضافة مواعيده</div>
-                
-                <div class="innovative-days-grid" id="days-container">
-                    <div class="day-card active" id="card-day-6" onclick="selectDay(this, 'السبت', 6)">
-                        <div class="notification-badge" id="badge-6">0</div>
-                        <span class="day-icon" id="icon-6">☁️</span>
-                        <span class="day-name">السبت</span>
-                    </div>
-                    <div class="day-card" id="card-day-0" onclick="selectDay(this, 'الأحد', 0)">
-                        <div class="notification-badge" id="badge-0">0</div>
-                        <span class="day-icon" id="icon-0">☁️</span>
-                        <span class="day-name">الأحد</span>
-                    </div>
-                    <div class="day-card" id="card-day-1" onclick="selectDay(this, 'الاثنين', 1)">
-                        <div class="notification-badge" id="badge-1">0</div>
-                        <span class="day-icon" id="icon-1">☁️</span>
-                        <span class="day-name">الاثنين</span>
-                    </div>
-                    <div class="day-card" id="card-day-2" onclick="selectDay(this, 'الثلاثاء', 2)">
-                        <div class="notification-badge" id="badge-2">0</div>
-                        <span class="day-icon" id="icon-2">☁️</span>
-                        <span class="day-name">الثلاثاء</span>
-                    </div>
-                    <div class="day-card" id="card-day-3" onclick="selectDay(this, 'الأربعاء', 3)">
-                        <div class="notification-badge" id="badge-3">0</div>
-                        <span class="day-icon" id="icon-3">☁️</span>
-                        <span class="day-name">الأربعاء</span>
-                    </div>
-                    <div class="day-card" id="card-day-4" onclick="selectDay(this, 'الخميس', 4)">
-                        <div class="notification-badge" id="badge-4">0</div>
-                        <span class="day-icon" id="icon-4">☁️</span>
-                        <span class="day-name">الخميس</span>
-                    </div>
-                    <div class="day-card" id="card-day-5" onclick="selectDay(this, 'الجمعة', 5)">
-                        <div class="notification-badge" id="badge-5">0</div>
-                        <span class="day-icon" id="icon-5">☁️</span>
-                        <span class="day-name">الجمعة</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- إضافة الساعات بنظام 12 ساعة (ص/م) -->
-            <div class="time-adder">
-                <div class="input-group">
-                    <label>تبدأ الساعة:</label>
-                    <div class="digital-clock-picker">
-                        <select id="s-hour"></select>
-                        <span>:</span>
-                        <select id="s-minute"></select>
-                        <select id="s-ampm" class="ampm-select">
-                            <option value="صباحاً">ص</option>
-                            <option value="مساءً">م</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label>تنتهي الساعة:</label>
-                    <div class="digital-clock-picker">
-                        <select id="e-hour"></select>
-                        <span>:</span>
-                        <select id="e-minute"></select>
-                        <select id="e-ampm" class="ampm-select">
-                            <option value="مساءً">م</option>
-                            <option value="صباحاً">ص</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="btn-add-time" onclick="addTimeSlot()">➕ إضافة الموعد</button>
-            </div>
-
-            <!-- عرض جميع المواعيد وتلوين مواعيد اليوم المحدد -->
-            <p style="font-size: 14px; color: #1a3c6d; font-weight: bold; margin-bottom: 15px;">جميع المواعيد المسجلة:</p>
-            <div class="timeline-tags" id="tags-container">
-                <span style="color: #999; font-size: 13px;">لم يتم إضافة أي مواعيد بعد.</span>
-            </div>
-
-            <div class="monthly-calendar">
-                <button class="btn-generate" onclick="generateMonthCalendar()">✨ تطبيق المواعيد على التقويم الشهري التفاعلي</button>
-                <div class="calendar-grid" id="calendar-grid">
-                    <!-- سيتم توليد التقويم هنا -->
-                </div>
-            </div>
-        </div>
-
-        <!-- زر الحفظ والنشر النهائي -->
-        <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
-
+<div class="container">
+    <div class="table-container">
+        <table class="data-table">
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="cell-title">📚 المادة والصف</span>
+                        <div id="fixed-subject" class="fixed-subject">جاري جلب المادة...</div>
+                    </td>
+                    <td>
+                        <span class="cell-title">🏷️ اسم المجموعة</span>
+                        <input type="text" id="group-name" class="form-control" placeholder="مثال: مجموعة التفوق">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
+                        <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
+                    </td>
+                    <td>
+                        <span class="cell-title">👥 العدد المطلوب</span>
+                        <input type="number" id="students-count" class="form-control" placeholder="مثال: 20">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="cell-title">👫 الفئات المسموحة</span>
+                        <div class="cards-grid">
+                            <div class="radio-card"><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
+                            <div class="radio-card"><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
+                            <div class="radio-card"><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="cell-title">📍 مكان الدرس</span>
+                        <div class="cards-grid">
+                            <div class="radio-card"><input type="radio" name="location" id="loc-center" value="السنتر" checked><label for="loc-center"><i>🏫</i> السنتر</label></div>
+                            <div class="radio-card"><input type="radio" name="location" id="loc-teacher" value="بيت المستر"><label for="loc-teacher"><i>🏠</i> المستر</label></div>
+                            <div class="radio-card"><input type="radio" name="location" id="loc-student" value="منزل الطالب"><label for="loc-student"><i>🚗</i> الطالب</label></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="cell-title">🗺️ الموقع (GPS)</span>
+                        <div class="gps-wrapper">
+                            <button class="btn-gps" onclick="getLocation(event)">📍 تحديد موقعي الحالي</button>
+                            <span id="location-text" style="color: #666; font-size: 14px; font-weight: bold;">لم يتم التحديد</span>
+                            <input type="hidden" id="gps-coords" value="">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <script>
-        // مصفوفة بأسماء الأيام للربط مع المواعيد
-        const dayNamesArabic = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    <!-- 🎯 التقويم الرأسي المتقدم -->
+    <div class="calendar-section">
+        <div class="section-header-custom"><span class="circle-num">5</span> حدد أيام ومواعيد الحصص <span style="color: #dc3545;">*</span></div>
+        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر الساعة والدقائق (ص/م)، واضغط على حفظ 💾.</div>
 
-        // 1. التهيئة الأولية وتوليد أرقام الساعة والدقائق
-        window.onload = function() {
-            const hoursArr = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-            const minutesArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+        <div class="vertical-schedule" id="vertical-schedule">
+            <!-- سيتم توليد الأيام هنا عبر الجافاسكريبت -->
+        </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
+</div>
+
+<script>
+    const daysOfWeek = [
+        { id: 'sat', name: 'السبت' },
+        { id: 'sun', name: 'الأحد' },
+        { id: 'mon', name: 'الاثنين' },
+        { id: 'tue', name: 'الثلاثاء' },
+        { id: 'wed', name: 'الأربعاء' },
+        { id: 'thu', name: 'الخميس' },
+        { id: 'fri', name: 'الجمعة' }
+    ];
+
+    // 🎯 خيارات الساعة (1-12)
+    function hourOptions() {
+        let html = '<option value="">ساعة</option>';
+        for (let i = 1; i <= 12; i++) html += `<option value="${i}">${i}</option>`;
+        return html;
+    }
+
+    // 🎯 خيارات الدقائق (كل 5 دقائق)
+    function minuteOptions() {
+        let html = '<option value="">دقيقة</option>';
+        for (let i = 0; i < 60; i += 5) {
+            const v = i.toString().padStart(2, '0');
+            html += `<option value="${v}">${v}</option>`;
+        }
+        return html;
+    }
+
+    window.onload = function() {
+        const subjectDisplay = document.getElementById('fixed-subject');
+        const savedDataString = localStorage.getItem('teacherSelections');
+        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+        if (savedDataString) {
+            const savedData = JSON.parse(savedDataString);
+            let subjectsArr = [];
+            for (const stageId in savedData) {
+                const gradeName = savedData[stageId].grade;
+                savedData[stageId].subjects.forEach(subjectName => { subjectsArr.push(`${subjectName} (${gradeName})`); });
+            }
+            if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
+        }
+        subjectDisplay.textContent = selectedSubjectsText;
+        subjectDisplay.dataset.value = selectedSubjectsText;
+
+        renderVerticalSchedule();
+    };
+
+    function getLocation(e) {
+        e.preventDefault();
+        const btn = e.target; const textDisplay = document.getElementById('location-text'); const hiddenInput = document.getElementById('gps-coords');
+        btn.innerHTML = '⏳ جاري...';
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => { hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`; btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d'; textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`; },
+                error => { btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545'; textDisplay.textContent = 'تأكد من تفعيل الـ GPS'; }
+            );
+        }
+    }
+
+    // ==========================================
+    // 🎯 بناء التقويم
+    // ==========================================
+    function renderVerticalSchedule() {
+        const container = document.getElementById('vertical-schedule');
+        container.innerHTML = '';
+
+        daysOfWeek.forEach(day => {
+            container.innerHTML += `
+                <div class="day-card" id="card-${day.id}" data-day="${day.name}">
+                    <div class="day-header" onclick="toggleDayExpand('${day.id}')">
+                        <div class="day-title">
+                            <label>${day.name}</label>
+                        </div>
+                        <div class="day-header-left">
+                            <span class="day-status" id="status-${day.id}">0 حصة</span>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="day-body" id="body-${day.id}" onclick="event.stopPropagation()">
+                        <div class="slots-container" id="slots-${day.id}"></div>
+                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">➕ إضافة موعد جديد</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // طي وفتح التفاصيل
+    function toggleDayExpand(dayId) {
+        const card = document.getElementById(`card-${dayId}`);
+        const isActive = card.classList.contains('active');
+        
+        if (!isActive) {
+            card.classList.add('active');
+            const slotsContainer = document.getElementById(`slots-${dayId}`);
+            if (slotsContainer.children.length === 0) {
+                addSlot(dayId);
+            }
+        }
+        
+        card.classList.toggle('expanded');
+        updateDayStatusDisplay(dayId);
+    }
+
+    // إضافة موعد جديد
+    function addSlot(dayId) {
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const slotId = Date.now() + Math.floor(Math.random() * 1000);
+        
+        const hOpts = hourOptions();
+        const mOpts = minuteOptions();
+        
+        const slotHTML = `
+            <div class="time-slot" id="slot-${slotId}">
+                <div class="time-row">
+                    <span class="time-label">من:</span>
+                    <select class="simple-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                    <select class="simple-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select start-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option>
+                        <option value="م">م</option>
+                    </select>
+                </div>
+                <div class="time-row">
+                    <span class="time-label">إلى:</span>
+                    <select class="simple-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
+                    <select class="simple-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
+                    <select class="simple-select end-period" onchange="markUnsaved('${slotId}')">
+                        <option value="ص">ص</option>
+                        <option value="م">م</option>
+                    </select>
+                </div>
+                <div class="slot-actions">
+                    <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
+                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
+                </div>
+            </div>
+        `;
+        
+        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
+        updateDayStatusDisplay(dayId);
+    }
+
+    function markUnsaved(slotId) {
+        const slot = document.getElementById(`slot-${slotId}`);
+        if (slot) {
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            saveBtn.classList.remove('saved');
+            saveBtn.innerHTML = '💾 حفظ';
+        }
+    }
+
+    // قراءة الوقت من القوائم
+    function readTime(slot, prefix) {
+        const hour = slot.querySelector(`.${prefix}-hour`).value;
+        const minute = slot.querySelector(`.${prefix}-minute`).value;
+        const period = slot.querySelector(`.${prefix}-period`).value;
+        
+        if (!hour || !minute) return null;
+        
+        return {
+            hour: parseInt(hour),
+            minute: minute,
+            period: period,
+            display: `${hour}:${minute} ${period}`
+        };
+    }
+
+    // حفظ الموعد
+    function saveSlot(slotId, dayId) {
+        const slot = document.getElementById(`slot-${slotId}`);
+        const startTime = readTime(slot, 'start');
+        const endTime = readTime(slot, 'end');
+        
+        if (!startTime || !endTime) {
+            alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية.");
+            return;
+        }
+        
+        const startMin = timeToMinutes(startTime.hour, startTime.minute, startTime.period);
+        const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
+        
+        if (startMin >= endMin) {
+            alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!");
+            return;
+        }
+        
+        // فحص التعارض
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const allSlots = Array.from(slotsContainer.querySelectorAll('.time-slot'));
+        
+        for (let other of allSlots) {
+            if (other.id === slotId) continue;
+            const saveBtn = other.querySelector('.btn-save-slot');
+            if (!saveBtn.classList.contains('saved')) continue;
             
-            const sh = document.getElementById('s-hour');
-            const eh = document.getElementById('e-hour');
-            hoursArr.forEach(h => { sh.innerHTML += `<option value="${h}">${h}</option>`; eh.innerHTML += `<option value="${h}">${h}</option>`; });
+            const oStart = readTime(other, 'start');
+            const oEnd = readTime(other, 'end');
+            if (!oStart || !oEnd) continue;
             
-            const sm = document.getElementById('s-minute');
-            const em = document.getElementById('e-minute');
-            minutesArr.forEach(m => { sm.innerHTML += `<option value="${m}">${m}</option>`; em.innerHTML += `<option value="${m}">${m}</option>`; });
+            const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
+            const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
+            
+            if (startMin < oEndMin && endMin > oStartMin) {
+                alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!");
+                return;
+            }
+        }
+        
+        const saveBtn = slot.querySelector('.btn-save-slot');
+        saveBtn.classList.add('saved');
+        saveBtn.innerHTML = '✓ محفوظ';
+        
+        updateDayStatusDisplay(dayId);
+        alert("✅ تم حفظ الموعد بنجاح.");
+    }
 
-            sh.value = '04'; eh.value = '06'; // قيم افتراضية
+    // تحويل الوقت لدقائق
+    function timeToMinutes(hour, minute, period) {
+        let h = hour;
+        if (period === 'م' && h !== 12) h += 12;
+        if (period === 'ص' && h === 12) h = 0;
+        return h * 60 + parseInt(minute);
+    }
 
-            // جلب المادة
-            const subjectDisplay = document.getElementById('fixed-subject');
-            const savedDataString = localStorage.getItem('teacherSelections');
-            let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
-            if (savedDataString) {
-                const savedData = JSON.parse(savedDataString);
-                let subjectsArr = [];
-                for (const stageId in savedData) {
-                    const gradeName = savedData[stageId].grade;
-                    savedData[stageId].subjects.forEach(subjectName => {
-                        subjectsArr.push(`${subjectName} (${gradeName})`);
-                    });
+    // حذف موعد
+    function removeSlot(slotId, dayId) {
+        const slot = document.getElementById(`slot-${slotId}`);
+        if (slot) {
+            slot.remove();
+            updateDayStatusDisplay(dayId);
+        }
+    }
+
+    // تحديث الحالة
+    function updateDayStatusDisplay(dayId) {
+        const statusText = document.getElementById(`status-${dayId}`);
+        const card = document.getElementById(`card-${dayId}`);
+        const isActive = card.classList.contains('active');
+        
+        const slotsContainer = document.getElementById(`slots-${dayId}`);
+        const timeSlots = slotsContainer.querySelectorAll('.time-slot');
+        
+        let times = [];
+        let count = 0;
+        
+        timeSlots.forEach(slot => {
+            const saveBtn = slot.querySelector('.btn-save-slot');
+            if (!saveBtn.classList.contains('saved')) return;
+            
+            const start = readTime(slot, 'start');
+            const end = readTime(slot, 'end');
+            
+            if (start && end) {
+                times.push(`<span dir="ltr" style="font-size:11px;">${start.display} - ${end.display}</span>`);
+                count++;
+            }
+        });
+
+        if (isActive) {
+            statusText.style.background = "#28a745";
+            statusText.style.color = "white";
+            statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
+            
+            if (count > 0) {
+                statusText.innerHTML = `<strong>${count} حصة</strong> ` + times.join('<span style="color:#f1c40f; margin:0 4px;">|</span>');
+            } else {
+                statusText.innerHTML = `0 حصة`;
+            }
+        } else {
+            statusText.style.background = "#e0e4e8";
+            statusText.style.color = "#666";
+            statusText.style.boxShadow = "none";
+            statusText.innerHTML = `${count} حصة`;
+        }
+    }
+
+    // ==========================================
+    // 🎯 حفظ البيانات النهائية
+    // ==========================================
+    function submitGroupData() {
+        const subjectData = document.getElementById('fixed-subject').dataset.value;
+        const groupName = document.getElementById('group-name').value;
+        const teacherName = document.getElementById('teacher-name').value;
+        const studentsCount = document.getElementById('students-count').value;
+        const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
+        const location = document.querySelector('input[name="location"]:checked').value;
+        const gpsLocation = document.getElementById('gps-coords').value;
+
+        const schedule = {};
+        let totalSessionsCount = 0;
+        let hasUnsavedSlot = false;
+        let hasEmptyActiveDay = false;
+
+        const activeCards = document.querySelectorAll('.day-card.active');
+        
+        activeCards.forEach(card => {
+            const dayName = card.dataset.day;
+            const slots = [];
+            
+            const timeSlotElements = card.querySelectorAll('.time-slot');
+            timeSlotElements.forEach(slotEl => {
+                const saveBtn = slotEl.querySelector('.btn-save-slot');
+                const startTime = readTime(slotEl, 'start');
+                const endTime = readTime(slotEl, 'end');
+                
+                if ((startTime || endTime) && !saveBtn.classList.contains('saved')) {
+                    hasUnsavedSlot = true;
                 }
-                if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
-            } 
-            subjectDisplay.textContent = selectedSubjectsText;
-            subjectDisplay.dataset.value = selectedSubjectsText;
+                
+                if (saveBtn.classList.contains('saved') && startTime && endTime) {
+                    slots.push({ 
+                        start: startTime.display, 
+                        end: endTime.display
+                    });
+                    totalSessionsCount++;
+                }
+            });
+            
+            if (slots.length > 0) {
+                schedule[dayName] = slots;
+            } else {
+                hasEmptyActiveDay = true;
+            }
+        });
+
+        if (subjectData.includes('لم تختر')) { 
+            alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); 
+            return; 
+        }
+        if (!groupName || !teacherName) { 
+            alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); 
+            return; 
+        }
+        if (activeCards.length === 0) { 
+            alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة.'); 
+            return; 
+        }
+        if (hasUnsavedSlot) {
+            alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.');
+            return;
+        }
+        if (hasEmptyActiveDay) {
+            alert('⚠️ يوجد أيام مُفعلة ولكن لم تقم بحفظ أوقات الحصص لها.');
+            return;
+        }
+
+        const groupData = {
+            subjectData, groupName, teacherName, studentsCount, genderAllowed,
+            location, gpsLocation, schedule, totalWeeklySessions: totalSessionsCount
         };
 
-        // 2. نظام الـ GPS
-        function getLocation(e) {
-            e.preventDefault();
-            const btn = e.target;
-            const textDisplay = document.getElementById('location-text');
-            const hiddenInput = document.getElementById('gps-coords');
-            btn.innerHTML = '⏳ جاري...';
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                        btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
-                        textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-                    },
-                    function(error) {
-                        btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
-                        textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
-                    }
-                );
-            }
-        }
-
-        // 3. نظام الجدول الذكي (Smart Schedule)
-        let weeklySchedule = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
-        let currentDayIndex = 6; 
-        
-        function selectDay(element, dayName, dayIndex) {
-            // تفعيل شكل البطاقة
-            document.querySelectorAll('.day-card').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            
-            // تحديث اليوم الحالي
-            currentDayIndex = dayIndex;
-            
-            // إعادة رسم المواعيد لتطبيق التظليل (Highlight) على اليوم المختار
-            renderTags();
-        }
-
-        function addTimeSlot() {
-            // التقاط الوقت من القوائم
-            const sHour = document.getElementById('s-hour').value;
-            const sMin = document.getElementById('s-minute').value;
-            const sAmPm = document.getElementById('s-ampm').value;
-            
-            const eHour = document.getElementById('e-hour').value;
-            const eMin = document.getElementById('e-minute').value;
-            const eAmPm = document.getElementById('e-ampm').value;
-            
-            const timeString = `${sHour}:${sMin} ${sAmPm} ➜ ${eHour}:${eMin} ${eAmPm}`;
-            
-            if(!weeklySchedule[currentDayIndex].includes(timeString)) {
-                weeklySchedule[currentDayIndex].push(timeString);
-                updateDayCardUI(currentDayIndex);
-                renderTags();
-            } else {
-                alert('هذا الموعد مضاف بالفعل لهذا اليوم!');
-            }
-        }
-
-        function removeTimeSlot(dayIndex, timeIndex) {
-            weeklySchedule[dayIndex].splice(timeIndex, 1);
-            updateDayCardUI(dayIndex);
-            renderTags();
-        }
-
-        function updateDayCardUI(dayIndex) {
-            const count = weeklySchedule[dayIndex].length;
-            const badge = document.getElementById(`badge-${dayIndex}`);
-            const icon = document.getElementById(`icon-${dayIndex}`);
-
-            if (count > 0) {
-                badge.style.display = 'flex'; 
-                badge.textContent = count;
-                icon.textContent = '🌤️'; 
-            } else {
-                badge.style.display = 'none'; 
-                icon.textContent = '☁️'; 
-            }
-        }
-
-        function renderTags() {
-            const container = document.getElementById('tags-container');
-            container.innerHTML = '';
-            
-            let hasAnySlot = false;
-
-            // المرور على جميع أيام الأسبوع وإظهار المواعيد
-            for(let d = 0; d < 7; d++) {
-                const slots = weeklySchedule[d];
-                if(slots.length > 0) {
-                    hasAnySlot = true;
-                    slots.forEach((time, index) => {
-                        const tag = document.createElement('div');
-                        
-                        // إذا كان الموعد يخص اليوم المحدد حالياً، أعطه كلاس 'highlighted' لتلوينه وتكبيره
-                        const isCurrentDay = (d === currentDayIndex) ? 'highlighted' : '';
-                        tag.className = `time-tag ${isCurrentDay}`;
-                        
-                        tag.innerHTML = `
-                            <span class="tag-day-name">${dayNamesArabic[d]}:</span> 
-                            <span class="time-string">🕒 ${time}</span> 
-                            <span class="delete-btn" onclick="removeTimeSlot(${d}, ${index})">✖</span>
-                        `;
-                        container.appendChild(tag);
-                    });
-                }
-            }
-
-            if(!hasAnySlot) {
-                container.innerHTML = '<span style="color: #999; font-size: 13px;">لم يتم إضافة أي مواعيد بعد.</span>';
-            }
-        }
-
-        function generateMonthCalendar() {
-            const calGrid = document.getElementById('calendar-grid');
-            calGrid.innerHTML = '';
-            const daysNames = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'];
-            daysNames.forEach(day => { calGrid.innerHTML += `<div class="cal-header">${day}</div>`; });
-
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const firstDayIndex = new Date(year, month, 1).getDay(); 
-            const daysInMonth = new Date(year, month + 1, 0).getDate(); 
-
-            for(let x = 0; x < firstDayIndex; x++) {
-                calGrid.innerHTML += `<div class="cal-day" style="background: transparent; border:none;"></div>`;
-            }
-
-            for(let i = 1; i <= daysInMonth; i++) {
-                const currentDayOfWeek = new Date(year, month, i).getDay();
-                const hasSession = weeklySchedule[currentDayOfWeek].length > 0;
-                let dayHTML = `<div class="cal-day ${hasSession ? 'has-session' : ''}" 
-                                ${hasSession ? `title="المواعيد:\n${weeklySchedule[currentDayOfWeek].join('\n')}"` : ''}
-                                onclick="toggleDayOff(this)">${i}</div>`;
-                calGrid.innerHTML += dayHTML;
-            }
-        }
-
-        function toggleDayOff(element) {
-            if(element.classList.contains('has-session')) {
-                const confirmCancel = confirm('هل تريد إلغاء الحجز في هذا اليوم؟ (إجازة)');
-                if(confirmCancel) {
-                    element.classList.remove('has-session');
-                    element.style.background = '#dc3545';
-                    element.style.color = '#fff';
-                    element.style.borderColor = '#dc3545';
-                    element.innerText += '\nملغى';
-                }
-            }
-        }
-
-        // 4. تجميع وإرسال البيانات
-        function submitGroupData() {
-            const subjectData = document.getElementById('fixed-subject').dataset.value;
-            const groupName = document.getElementById('group-name').value;
-            const teacherName = document.getElementById('teacher-name').value;
-            
-            let hasAtLeastOneSlot = false;
-            for(let i=0; i<7; i++) { if(weeklySchedule[i].length > 0) hasAtLeastOneSlot = true; }
-
-            const groupData = {
-                subjectData: subjectData,
-                groupName: groupName,
-                teacherName: teacherName,
-                studentsCount: document.getElementById('students-count').value,
-                genderAllowed: document.querySelector('input[name="gender"]:checked').value,
-                location: document.querySelector('input[name="location"]:checked').value,
-                gpsLocation: document.getElementById('gps-coords').value,
-                schedule: weeklySchedule
-            };
-
-            if (subjectData.includes('لم تختر')) {
-                alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return;
-            }
-            if (!groupName || !teacherName) {
-                alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر).'); return;
-            }
-            if (!hasAtLeastOneSlot) {
-                alert('⚠️ يرجى إضافة موعد حصة واحد على الأقل في الجدول الذكي.'); return;
-            }
-
-            console.log("البيانات الجاهزة للحفظ:", groupData);
-            alert(`✅ تم إنشاء المجموعة بنجاح!\nالمادة: ${groupData.subjectData}\nالاسم: ${groupData.groupName}\nتم حفظ جدول المواعيد الذكي.`);
-        }
-    </script>
-
+        console.log("البيانات الجاهزة للحفظ:", groupData);
+        alert(`✅ تم إنشاء المجموعة بنجاح!\n📚 المادة: ${groupData.subjectData}\n🏷️ الاسم: ${groupData.groupName}\n📊 عدد الحصص الأسبوعية: ${totalSessionsCount}`);
+    }
+</script>
 </body>
 </html>
