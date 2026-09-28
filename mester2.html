@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة احجزلي - إعداد المجموعة</title>
+    <style>
+        /* =========================================
+           إعدادات عامة
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            padding-bottom: 40px;
+            color: #333;
+        }
+
+        /* =========================================
+           الهيدر ثلاثي الأبعاد
+           ========================================= */
+        .header-3d {
+            width: 100%;
+            background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%),
+                        url('teacher2.png') center/cover no-repeat;
+            padding: 35px 20px 50px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid #f1c40f;
+        }
+
+        .header-3d h1 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #f1c40f;
+            text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin: 15px auto 0;
+            width: fit-content;
+            backdrop-filter: blur(5px);
+        }
+
+        .step { font-size: 14px; font-weight: bold; color: #fff; opacity: 0.6; }
+        .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
+        .step-divider { color: #fff; }
+
+        /* =========================================
+           الحاوية وجدول البيانات
+           ========================================= */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: -30px auto 0;
+            padding: 0 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-top: 4px solid #2b5c9e;
+            margin-bottom: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* لتوزيع المسافات بالتساوي */
+        }
+
+        .data-table td {
+            padding: 15px;
+            border: 1px solid #e0e4e8;
+            vertical-align: top;
+            width: 50%; /* نصف العرض لكل خلية لإجبارهم يبقوا جنب بعض */
+        }
+
+        /* عنوان الحقل داخل الخلية */
+        .cell-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a3c6d;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* حقل المادة الثابت */
+        .fixed-subject {
+            background: #e3f2fd;
+            color: #1a3c6d;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px dashed #2b5c9e;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* =========================================
+           حقول الإدخال
+           ========================================= */
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e4e8;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #2b5c9e;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1);
+        }
+
+        .time-range {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-range span {
+            font-weight: bold;
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        /* =========================================
+           البطاقات التفاعلية (Radio & Checkbox)
+           ========================================= */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+        }
+
+        .cards-grid input[type="radio"], 
+        .days-grid input[type="checkbox"] {
+            display: none;
+        }
+
+        .cards-grid label, 
+        .days-grid label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: #f8fafc;
+            border: 2px solid #e0e4e8;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            font-size: 12px;
+        }
+
+        .cards-grid label i { font-size: 18px; margin-bottom: 5px; }
+
+        .cards-grid input[type="radio"]:checked + label,
+        .days-grid input[type="checkbox"]:checked + label {
+            background: #e3f2fd;
+            border-color: #2b5c9e;
+            color: #1a3c6d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(43, 92, 158, 0.15);
+        }
+
+        /* أيام الأسبوع */
+        .days-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .days-grid .check-card { flex: 1; min-width: 60px; }
+        .days-grid label { padding: 8px 5px; font-size: 13px; }
+
+        /* =========================================
+           أزرار الخريطة والحفظ
+           ========================================= */
+        .gps-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-gps {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        
+        .btn-gps:hover { background: #218838; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            margin-bottom: 30px;
+        }
+
+        .submit-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #0d2342, 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* تم إزالة أوامر الموبايل التي كانت تفصل الحقول عن بعضها */
+    </style>
+</head>
+<body>
+
+    <header class="header-3d">
+        <h1>إعداد تفاصيل المجموعة</h1>
+        <div class="stepper">
+            <div class="step">✓ 1. التخصص</div>
+            <div class="step-divider">❯</div>
+            <div class="step active">✏️ 2. بيانات المجموعة</div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="table-container">
+            <table class="data-table">
+                <tbody>
+                    <!-- الصف الأول: المادة وجنبها اسم المجموعة -->
+                    <tr>
+                        <td>
+                            <span class="cell-title">📚 المادة والصف</span>
+                            <div id="fixed-subject" class="fixed-subject">جاري جلب المادة...</div>
+                        </td>
+                        <td>
+                            <span class="cell-title">🏷️ اسم المجموعة</span>
+                            <input type="text" id="group-name" class="form-control" placeholder="مثال: مجموعة التفوق">
+                        </td>
+                    </tr>
+                    
+                    <!-- الصف الثاني: اسم المستر وجنبها العدد المطلوب -->
+                    <tr>
+                        <td>
+                            <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
+                            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
+                        </td>
+                        <td>
+                            <span class="cell-title">👥 العدد المطلوب</span>
+                            <input type="number" id="students-count" class="form-control" placeholder="مثال: 20">
+                        </td>
+                    </tr>
+
+                    <!-- الصف الثالث: وقت الحصة (يأخذ عرض الجدول بالكامل) -->
+                    <tr>
+                        <td colspan="2">
+                            <span class="cell-title">⏰ وقت الحصة</span>
+                            <div class="time-range">
+                                <input type="time" id="session-time-from" class="form-control">
+                                <span>إلى</span>
+                                <input type="time" id="session-time-to" class="form-control">
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- الصف الرابع: الفئات والمكان -->
+                    <tr>
+                        <td>
+                            <span class="cell-title">👫 الفئات المسموحة</span>
+                            <div class="cards-grid">
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" id="gender-mixed" value="مختلط" checked>
+                                    <label for="gender-mixed"><i>👫</i> مختلط</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" id="gender-boys" value="أولاد فقط">
+                                    <label for="gender-boys"><i>👨‍🎓</i> أولاد</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="gender" id="gender-girls" value="بنات فقط">
+                                    <label for="gender-girls"><i>👩‍🎓</i> بنات</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="cell-title">📍 مكان الدرس</span>
+                            <div class="cards-grid">
+                                <div class="radio-card">
+                                    <input type="radio" name="location" id="loc-center" value="السنتر" checked>
+                                    <label for="loc-center"><i>🏫</i> السنتر</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="location" id="loc-teacher" value="بيت المستر">
+                                    <label for="loc-teacher"><i>🏠</i> المستر</label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="location" id="loc-student" value="منزل الطالب">
+                                    <label for="loc-student"><i>🚗</i> الطالب</label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- الصف الخامس: الأيام -->
+                    <tr>
+                        <td colspan="2">
+                            <span class="cell-title">📅 أيام الحجز المتاحة</span>
+                            <div class="days-grid">
+                                <div class="check-card"><input type="checkbox" id="day-sat" value="السبت"><label for="day-sat">السبت</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-sun" value="الأحد"><label for="day-sun">الأحد</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-mon" value="الإثنين"><label for="day-mon">الإثنين</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-tue" value="الثلاثاء"><label for="day-tue">الثلاثاء</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-wed" value="الأربعاء"><label for="day-wed">الأربعاء</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-thu" value="الخميس"><label for="day-thu">الخميس</label></div>
+                                <div class="check-card"><input type="checkbox" id="day-fri" value="الجمعة"><label for="day-fri">الجمعة</label></div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- الصف السادس: الموقع -->
+                    <tr>
+                        <td colspan="2">
+                            <span class="cell-title">🗺️ الموقع (GPS)</span>
+                            <div class="gps-wrapper">
+                                <button class="btn-gps" onclick="getLocation(event)">📍 تحديد موقعي الحالي</button>
+                                <span id="location-text" style="color: #666; font-size: 14px; font-weight: bold;">لم يتم التحديد</span>
+                                <input type="hidden" id="gps-coords" value="">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button class="submit-btn" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
+
+    </div>
+
+    <script>
+        // =========================================
+        // جلب البيانات الحقيقية من صفحة التخصص وعرضها كثابت
+        // =========================================
+        window.onload = function() {
+            const subjectDisplay = document.getElementById('fixed-subject');
+            const savedDataString = localStorage.getItem('teacherSelections');
+            
+            let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+            
+            if (savedDataString) {
+                const savedData = JSON.parse(savedDataString);
+                let subjectsArr = [];
+
+                for (const stageId in savedData) {
+                    const gradeName = savedData[stageId].grade;
+                    savedData[stageId].subjects.forEach(subjectName => {
+                        subjectsArr.push(`${subjectName} (${gradeName})`);
+                    });
+                }
+
+                if (subjectsArr.length > 0) {
+                    selectedSubjectsText = subjectsArr.join(' + ');
+                }
+            } 
+            
+            subjectDisplay.textContent = selectedSubjectsText;
+            subjectDisplay.dataset.value = selectedSubjectsText;
+        };
+
+        // تفعيل GPS
+        function getLocation(e) {
+            e.preventDefault();
+            const btn = e.target;
+            const textDisplay = document.getElementById('location-text');
+            const hiddenInput = document.getElementById('gps-coords');
+            
+            btn.innerHTML = '⏳ جاري...';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        hiddenInput.value = `${lat},${lng}`;
+                        btn.innerHTML = '✅ تم التحديد';
+                        btn.style.backgroundColor = '#1a3c6d';
+                        textDisplay.textContent = `الإحداثيات: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    },
+                    function(error) {
+                        btn.innerHTML = '❌ فشل';
+                        btn.style.backgroundColor = '#dc3545';
+                        textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
+                    }
+                );
+            }
+        }
+
+        // جمع البيانات
+        function submitGroupData() {
+            const selectedDays = [];
+            document.querySelectorAll('.days-grid input[type="checkbox"]:checked').forEach(cb => {
+                selectedDays.push(cb.value);
+            });
+
+            const timeFrom = document.getElementById('session-time-from').value;
+            const timeTo = document.getElementById('session-time-to').value;
+            const subjectData = document.getElementById('fixed-subject').dataset.value;
+
+            const groupData = {
+                subjectData: subjectData,
+                groupName: document.getElementById('group-name').value,
+                teacherName: document.getElementById('teacher-name').value,
+                studentsCount: document.getElementById('students-count').value,
+                sessionTime: (timeFrom && timeTo) ? `من ${timeFrom} إلى ${timeTo}` : '',
+                genderAllowed: document.querySelector('input[name="gender"]:checked').value,
+                location: document.querySelector('input[name="location"]:checked').value,
+                days: selectedDays,
+                gpsLocation: document.getElementById('gps-coords').value
+            };
+
+            if (subjectData.includes('لم تختر')) {
+                alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.');
+                return;
+            }
+
+            if (!groupData.groupName || !groupData.teacherName || groupData.days.length === 0 || !timeFrom || !timeTo) {
+                alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر، المواعيد، وقت الحصة بدايةً ونهايةً)');
+                return;
+            }
+
+            console.log("البيانات الجاهزة للحفظ:", groupData);
+            alert(`✅ تم إنشاء المجموعة بنجاح!\n\nالمادة والصف: ${groupData.subjectData}\nاسم المجموعة: ${groupData.groupName}\nالموعد: ${groupData.sessionTime}\nالأيام: ${groupData.days.join('، ')}`);
+        }
+    </script>
+
+</body>
+</html>
