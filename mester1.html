@@ -25,7 +25,8 @@
            ========================================= */
         .header-3d {
             width: 100%;
-            background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+            background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%),
+                        url('teacher2.png') center/cover no-repeat;
             padding: 35px 20px 50px;
             text-align: center;
             position: relative;
@@ -96,6 +97,43 @@
             font-weight: 800;
             color: #1a3c6d;
             margin: 15px 0 5px;
+        }
+
+        /* =========================================
+           شريط "الحفظ التلقائي"
+           ========================================= */
+        .autosave-bar {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 9998;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            display: none;
+            align-items: center;
+            gap: 6px;
+            animation: slideIn 0.3s ease;
+        }
+        .autosave-bar.show { display: flex; }
+        .autosave-bar .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* =========================================
@@ -367,6 +405,22 @@
             color: #28a745;
         }
 
+        /* =========================================
+           استجابة الموبايل
+           ========================================= */
+        @media (max-width: 600px) {
+            .header-3d h1 { font-size: 30px; }
+            .header-3d p { font-size: 13px; }
+            .page-title { font-size: 18px; }
+            .stage-header { font-size: 15px; padding: 12px 15px; }
+            .grade-btn { font-size: 13px; padding: 10px 14px; }
+            .subject-btn { font-size: 12px; padding: 8px 12px; }
+            .badge { font-size: 11px; padding: 4px 10px; }
+            .badge-grade { font-size: 11px; padding: 5px 10px; }
+            .save-btn { font-size: 16px; padding: 15px; }
+            .summary-box { font-size: 12px; padding: 12px 15px; }
+        }
+
     </style>
 </head>
 <body>
@@ -388,7 +442,7 @@
         <h2 class="page-title">ما هي المادة التي تدرسها؟ 📚</h2>
 
         <!-- رياض الأطفال -->
-        <div class="stage-item active" id="stage-kg">
+        <div class="stage-item" id="stage-kg">
             <div class="stage-header" onclick="toggleStage(event, this)">
                 <div class="stage-title">
                     <span>🧸 رياض الأطفال</span>
@@ -471,8 +525,14 @@
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <button class="save-btn" onclick="saveSelection()">💾 حفظ التخصص</button>
+        <button class="save-btn" onclick="saveSelection()">💾 الانتقال للخطوة التالية</button>
 
+    </div>
+
+    <!-- ✅ شريط الحفظ التلقائي -->
+    <div class="autosave-bar" id="autosave-bar">
+        <span class="dot"></span>
+        <span>تم الحفظ تلقائياً</span>
     </div>
 
     <script>
@@ -518,6 +578,98 @@
         };
 
         // =========================================
+        // ✅✅✅ مفتاح التخزين ✅✅✅
+        // =========================================
+        const MESTER1_SAVE_KEY = 'mester1_selections';
+        let autosaveTimer = null;
+
+        // =========================================
+        // ✅✅✅ دوال الحفظ التلقائي ✅✅✅
+        // =========================================
+        function showAutosaveBar() {
+            const bar = document.getElementById('autosave-bar');
+            if (!bar) return;
+            bar.classList.add('show');
+            clearTimeout(autosaveTimer);
+            autosaveTimer = setTimeout(() => {
+                bar.classList.remove('show');
+            }, 1500);
+        }
+
+        function autoSaveMester1() {
+            try {
+                const finalData = {};
+                for (const stageId in selections) {
+                    const { grade, subjects } = selections[stageId];
+                    if (subjects.length > 0) {
+                        finalData[stageId] = { grade, subjects: [...subjects] };
+                    }
+                }
+                localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                showAutosaveBar();
+            } catch(e) {
+                console.error('خطأ في الحفظ التلقائي:', e);
+            }
+        }
+
+        function restoreMester1() {
+            try {
+                const raw = localStorage.getItem(MESTER1_SAVE_KEY);
+                if (!raw) return false;
+                const saved = JSON.parse(raw);
+
+                let hasAny = false;
+
+                Object.keys(saved).forEach(stageId => {
+                    if (!selections[stageId]) return;
+                    const { grade, subjects } = saved[stageId];
+                    if (!grade || !subjects || subjects.length === 0) return;
+
+                    hasAny = true;
+
+                    // استرجاع الاختيارات
+                    selections[stageId].grade = grade;
+                    selections[stageId].subjects = [...subjects];
+
+                    // تفعيل زر الصف
+                    const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
+                        .find(b => b.textContent.trim() === grade);
+                    if (gradeBtn) gradeBtn.classList.add('selected');
+
+                    // فتح المرحلة
+                    const stageItem = document.getElementById(`stage-${stageId}`);
+                    if (stageItem) stageItem.classList.add('active');
+
+                    // رسم المواد (بدون فتح تلقائي)
+                    renderSubjects(grade, stageId, false);
+
+                    // تفعيل المواد المختارة
+                    setTimeout(() => {
+                        document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
+                            const subjName = btn.textContent.trim().replace('✓ ', '').replace('✓', '').trim();
+                            if (subjects.includes(subjName)) {
+                                btn.classList.add('selected');
+                            }
+                        });
+                    }, 50);
+
+                    // رسم الشارات
+                    renderBadges(stageId);
+                });
+
+                if (hasAny) updateSummary();
+                return hasAny;
+            } catch(e) {
+                console.error('خطأ في استرجاع الحفظ:', e);
+                return false;
+            }
+        }
+
+        function clearMester1Autosave() {
+            localStorage.removeItem(MESTER1_SAVE_KEY);
+        }
+
+        // =========================================
         // فتح وإغلاق المراحل
         // =========================================
         function toggleStage(event, header) {
@@ -549,8 +701,6 @@
 
             // لو صف مختلف
             selections[stageId].grade = gradeName;
-            // ملاحظة: مش بنمسح المواد القديمة عشان لو رجع للصف القديم يلاقيها
-            // بس بنعرض المواد الجديدة
 
             const parentGrid = btn.parentElement;
             parentGrid.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
@@ -559,6 +709,9 @@
             renderSubjects(gradeName, stageId, true);
             renderBadges(stageId);
             updateSummary();
+
+            // ✅ حفظ تلقائي
+            autoSaveMester1();
         }
 
         // =========================================
@@ -608,16 +761,13 @@
                 btn.classList.add('selected');
             }
 
-            // *** الجزء المهم ***
             // لو مفيش مواد مختارة، نشيل الصف كمان
             if (selections[stageId].subjects.length === 0) {
                 selections[stageId].grade = '';
-                // إزالة selected من أزرار الصفوف
                 const stageContent = document.querySelector(`#stage-${stageId} .grades-grid`);
                 if (stageContent) {
                     stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
                 }
-                // إغلاق قسم المواد
                 const container = document.getElementById(`subjects-container-${stageId}`);
                 const section = container.querySelector('.subjects-section');
                 if (section) {
@@ -628,6 +778,9 @@
 
             renderBadges(stageId);
             updateSummary();
+
+            // ✅ حفظ تلقائي
+            autoSaveMester1();
         }
 
         // =========================================
@@ -639,7 +792,6 @@
 
             container.innerHTML = '';
 
-            // شارة الصف - بس لو فيه مواد مختارة
             if (selections[stageId].grade && selections[stageId].subjects.length > 0) {
                 const gradeBadge = document.createElement('span');
                 gradeBadge.className = 'badge-grade';
@@ -672,7 +824,6 @@
 
             for (const stageId in selections) {
                 const { grade, subjects } = selections[stageId];
-                // نسجل بس لو فيه مواد مختارة
                 if (subjects.length > 0) {
                     const parts = [];
                     if (grade) parts.push(`الصف: ${grade}`);
@@ -690,7 +841,7 @@
         }
 
         // =========================================
-        // الحفظ
+        // الحفظ والانتقال للصفحة الثانية
         // =========================================
         function saveSelection() {
             let total = 0;
@@ -699,7 +850,7 @@
             }
 
             if (total === 0) {
-                alert('⚠️ من فضلك اختر مادة واحدة على الأقل قبل الحفظ.');
+                alert('⚠️ من فضلك اختر مادة واحدة على الأقل قبل الانتقال للخطوة التالية.');
                 return;
             }
 
@@ -712,17 +863,49 @@
                 }
             }
 
-            let message = '✅ تم حفظ التخصص بنجاح!\n\nاختياراتك:\n';
-            for (const stageId in finalData) {
-                const { grade, subjects } = finalData[stageId];
-                message += `\n${stageId}:\n`;
-                message += `  الصف: ${grade}\n`;
-                message += `  المواد: ${subjects.join(', ')}\n`;
-            }
-            alert(message);
+            // 1. حفظ البيانات في المتصفح لتقرأها الصفحة الثانية (mester2.html)
+            localStorage.setItem('teacherSelections', JSON.stringify(finalData));
 
-            console.log('البيانات المرسلة:', finalData);
+            // 2. حفظ نسخة احتياطية للحفظ التلقائي
+            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+
+            // 3. الانتقال فوراً للصفحة الجديدة
+            window.location.href = "mester2.html";
         }
+
+        // =========================================
+        // ✅✅✅ تشغيل عند تحميل الصفحة ✅✅✅
+        // =========================================
+        window.addEventListener('DOMContentLoaded', function() {
+            // استرجاع الاختيارات المحفوظة
+            const restored = restoreMester1();
+            if (restored) {
+                console.log('✅ تم استرجاع اختيارات mester1');
+            }
+
+            // إعداد الحفظ عند مغادرة الصفحة
+            window.addEventListener('beforeunload', function() {
+                try {
+                    const finalData = {};
+                    for (const stageId in selections) {
+                        const { grade, subjects } = selections[stageId];
+                        if (subjects.length > 0) {
+                            finalData[stageId] = { grade, subjects };
+                        }
+                    }
+                    localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                } catch(e) {}
+            });
+
+            // إعداد الحفظ عند الرجوع (BFCache)
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    // الصفحة رجعت من cache
+                    // نتأكد إن الاختيارات محدثة
+                    restoreMester1();
+                }
+            });
+        });
     </script>
 
 </body>
