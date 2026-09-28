@@ -19,7 +19,6 @@
         overflow-x: hidden;
     }
 
-    /* خلفية زخرفية */
     body::before {
         content: '';
         position: absolute;
@@ -36,7 +35,7 @@
         margin-bottom: 45px;
         position: relative;
         z-index: 2;
-        padding: 30px 40px;
+        padding: 35px 40px;
         border-radius: 20px;
         background: #ffffff;
         box-shadow:
@@ -48,38 +47,9 @@
         overflow: hidden;
     }
 
-    /* صورة المعلم كخلفية للهيدر */
-    .gate-header::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: url('teacher2.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        opacity: 0.15;
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    /* طبقة بيضاء شفافة فوق الصورة */
-    .gate-header::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.95) 100%);
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .gate-header h1,
-    .gate-header p,
-    .gate-header .divider-line {
+    .gate-header h1 {
         position: relative;
         z-index: 2;
-    }
-
-    .gate-header h1 {
         font-size: 48px;
         font-weight: 900;
         color: #1a3c6d;
@@ -91,6 +61,8 @@
     }
 
     .gate-header p {
+        position: relative;
+        z-index: 2;
         font-size: 17px;
         color: #2b5c9e;
         font-weight: 700;
@@ -98,6 +70,8 @@
     }
 
     .gate-header .divider-line {
+        position: relative;
+        z-index: 2;
         width: 120px;
         height: 4px;
         background: linear-gradient(90deg, transparent, #f1c40f, transparent);
@@ -123,9 +97,8 @@
 
     /* ===== كارت البوابة ===== */
     .gate-card {
-        background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%);
         border-radius: 24px;
-        padding: 40px 25px 32px;
+        padding: 50px 30px 40px;
         text-align: center;
         cursor: pointer;
         text-decoration: none;
@@ -134,17 +107,34 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 14px;
+        gap: 18px;
         border: 3px solid transparent;
         box-shadow: 0 10px 0 rgba(0,0,0,0.18), 0 18px 40px rgba(0,0,0,0.28);
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
         animation: fadeUp 0.7s ease backwards;
+        min-height: 420px;
+
+        /* صورة الكارت كاملة - للمعلم */
+        background-image:
+            linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.95) 100%),
+            url('teacher.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #f4f7fb;
     }
 
     .gate-card:nth-child(1) { animation-delay: 0.15s; }
     .gate-card:nth-child(2) { animation-delay: 0.3s; }
+
+    /* صورة الكارت كاملة - للطالب */
+    .gate-card.student-card {
+        background-image:
+            linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.95) 100%),
+            url('student.png');
+    }
 
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(35px); }
@@ -159,7 +149,11 @@
         height: 8px;
         background: linear-gradient(90deg, #2b5c9e, #f1c40f);
         transition: height 0.3s ease;
-        z-index: 3;
+        z-index: 5;
+    }
+
+    .gate-card.student-card::before {
+        background: linear-gradient(90deg, #28a745, #f1c40f);
     }
 
     .gate-card:hover {
@@ -171,78 +165,24 @@
 
     .gate-card:active { transform: translateY(-2px) scale(0.99); }
 
-    /* لون مميز لبوابة الطالب */
-    .gate-card.student-card::before {
-        background: linear-gradient(90deg, #28a745, #f1c40f);
-    }
-
-    /* ===== صورة البوابة (خلفية الكارت) ===== */
-    .gate-card .gate-bg-image {
-        position: absolute;
-        inset: 0;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        opacity: 0.12;
-        z-index: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-
-    .gate-card:hover .gate-bg-image { opacity: 0.2; }
-
-    /* طبقة بيضاء شفافة فوق الصورة */
-    .gate-card .gate-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.9) 100%);
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    /* رفع محتوى الكارت فوق الصورة */
-    .gate-card > *:not(.gate-bg-image):not(.gate-overlay) {
+    /* رفع المحتوى فوق الصورة */
+    .gate-card > * {
         position: relative;
         z-index: 2;
     }
 
-    /* ===== الأيقونة ===== */
-    .gate-icon {
-        width: 110px;
-        height: 110px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 54px;
-        margin-bottom: 8px;
-        transition: transform 0.35s ease;
-        position: relative;
-    }
-
-    .gate-card:hover .gate-icon { transform: scale(1.12) rotate(-5deg); }
-
-    .teacher-card .gate-icon {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        box-shadow: 0 6px 0 #90caf9, 0 10px 22px rgba(43,92,158,0.3), inset 0 2px 6px rgba(255,255,255,0.8);
-    }
-
-    .student-card .gate-icon {
-        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-        box-shadow: 0 6px 0 #a5d6a7, 0 10px 22px rgba(40,167,69,0.3), inset 0 2px 6px rgba(255,255,255,0.8);
-    }
-
     /* ===== النصوص ===== */
     .gate-title {
-        font-size: 26px;
+        font-size: 28px;
         font-weight: 900;
         color: #1a3c6d;
         letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(255,255,255,0.8);
     }
 
     .gate-desc {
         font-size: 14px;
-        color: #475569;
+        color: #334155;
         font-weight: 600;
         line-height: 1.7;
         max-width: 280px;
@@ -292,23 +232,22 @@
 
     /* ===== استجابة الشاشات ===== */
     @media (max-width: 700px) {
-        .gate-header { padding: 22px 20px; }
-        .gate-header h1 { font-size: 34px; }
+        .gate-header { padding: 25px 20px; }
+        .gate-header h1 { font-size: 32px; }
         .gate-header p { font-size: 14px; }
         .gates-wrapper {
             grid-template-columns: 1fr;
             gap: 22px;
             max-width: 420px;
         }
-        .gate-card { padding: 32px 20px 26px; }
-        .gate-icon { width: 90px; height: 90px; font-size: 44px; }
-        .gate-title { font-size: 22px; }
+        .gate-card { padding: 40px 22px 32px; min-height: 360px; }
+        .gate-title { font-size: 24px; }
         .gate-desc { font-size: 13px; }
         .gate-footer { margin-top: 35px; }
     }
 
     @media (max-width: 360px) {
-        .gate-header h1 { font-size: 28px; }
+        .gate-header h1 { font-size: 26px; }
         .gate-btn { padding: 11px 28px; font-size: 14px; }
     }
 </style>
@@ -325,9 +264,6 @@
 
         <!-- بوابة المعلم -->
         <a href="mester1.html" class="gate-card teacher-card">
-            <div class="gate-bg-image" style="background-image: url('teacher.png');"></div>
-            <div class="gate-overlay"></div>
-            <div class="gate-icon">👨‍🏫</div>
             <div class="gate-title">بوابة المعلم</div>
             <div class="gate-desc">
                 أنشئ مجموعاتك، حدّد مواعيد الحصص، واختر المواد والصفوف التي تدرّسها بسهولة.
@@ -340,9 +276,6 @@
 
         <!-- بوابة الطالب -->
         <a href="student.html" class="gate-card student-card">
-            <div class="gate-bg-image" style="background-image: url('student.png');"></div>
-            <div class="gate-overlay"></div>
-            <div class="gate-icon">👨‍🎓</div>
             <div class="gate-title">بوابة الطالب</div>
             <div class="gate-desc">
                 ابحث عن المجموعات المتاحة، احجز مكانك، وتابع مواعيد حصصك مع معلميك.
@@ -360,7 +293,6 @@
     </footer>
 
     <script>
-        // منع تحذير الرابط الوهمي لبوابة الطالب مؤقتاً
         document.querySelectorAll('.gate-card').forEach(card => {
             card.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
