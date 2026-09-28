@@ -18,9 +18,6 @@
         overflow-x: hidden;
     }
 
-    /* =========================================
-       الهيدر
-       ========================================= */
     .gate-header {
         width: 100%;
         position: relative;
@@ -58,9 +55,7 @@
         line-height: 1.1;
     }
 
-    .gate-header h1 .highlight {
-        color: #f5a623;
-    }
+    .gate-header h1 .highlight { color: #f5a623; }
 
     .gate-header .title-divider {
         width: 140px;
@@ -84,7 +79,6 @@
         position: relative;
     }
 
-    /* 🎯 علامة GPS اللي بتتحرك مع بعض */
     .gate-header .gps-marker {
         display: inline-block;
         font-size: 26px;
@@ -94,21 +88,12 @@
     }
 
     @keyframes bounceGps {
-        0%, 100% {
-            transform: translateY(0) scale(1);
-        }
-        30% {
-            transform: translateY(-10px) scale(1.15);
-        }
-        50% {
-            transform: translateY(0) scale(1);
-        }
-        70% {
-            transform: translateY(-5px) scale(1.08);
-        }
+        0%, 100% { transform: translateY(0) scale(1); }
+        30% { transform: translateY(-10px) scale(1.15); }
+        50% { transform: translateY(0) scale(1); }
+        70% { transform: translateY(-5px) scale(1.08); }
     }
 
-    /* 🎯 النقاط الثلاث اللي بتتحرك */
     .gate-header .dots {
         color: #f5a623;
         font-size: 32px;
@@ -121,27 +106,13 @@
     }
 
     @keyframes dotsPulse {
-        0%, 100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        30% {
-            opacity: 0.6;
-            transform: scale(1.15);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        70% {
-            opacity: 0.8;
-            transform: scale(1.08);
-        }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        30% { opacity: 0.6; transform: scale(1.15); }
+        50% { opacity: 1; transform: scale(1); }
+        70% { opacity: 0.8; transform: scale(1.08); }
     }
 
-    .gate-header .subtitle .gold {
-        color: #f5a623;
-    }
+    .gate-header .subtitle .gold { color: #f5a623; }
 
     .gate-header .description {
         font-size: 18px;
@@ -153,9 +124,6 @@
         text-shadow: 0 2px 8px rgba(255,255,255,0.95);
     }
 
-    /* =========================================
-       الكروت
-       ========================================= */
     .gates-wrapper {
         display: flex;
         flex-direction: column;
@@ -179,9 +147,7 @@
         text-decoration: none;
         color: inherit;
         background: #ffffff;
-        box-shadow:
-            0 5px 0 rgba(0,0,0,0.08),
-            0 8px 25px rgba(43,92,158,0.12);
+        box-shadow: 0 5px 0 rgba(0,0,0,0.08), 0 8px 25px rgba(43,92,158,0.12);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -204,15 +170,11 @@
 
     .gate-card:hover {
         transform: translateY(-4px);
-        box-shadow:
-            0 9px 0 rgba(0,0,0,0.08),
-            0 15px 35px rgba(43,92,158,0.2);
+        box-shadow: 0 9px 0 rgba(0,0,0,0.08), 0 15px 35px rgba(43,92,158,0.2);
         border-color: #2b5c9e;
     }
 
-    .gate-card.student-card:hover {
-        border-color: #28a745;
-    }
+    .gate-card.student-card:hover { border-color: #28a745; }
 
     .gate-card-content {
         flex: 1;
@@ -262,9 +224,7 @@
         box-shadow: 0 4px 0 #155724, 0 6px 15px rgba(40,167,69,0.35);
     }
 
-    .gate-card:hover .gate-btn {
-        transform: translateY(-2px);
-    }
+    .gate-card:hover .gate-btn { transform: translateY(-2px); }
 
     .gate-card-image {
         width: 130px;
@@ -285,8 +245,6 @@
         background-color: #e8f0fc;
         background-image: url('teacher.png');
         background-size: 80%;
-        background-position: center;
-        background-repeat: no-repeat;
         box-shadow: inset 0 0 0 3px #c5d9f0;
     }
 
@@ -294,14 +252,10 @@
         background-color: #e8f5ec;
         background-image: url('student.png');
         background-size: 80%;
-        background-position: center;
-        background-repeat: no-repeat;
         box-shadow: inset 0 0 0 3px #c5e6ce;
     }
 
-    .gate-card:hover .gate-card-image {
-        transform: scale(1.08);
-    }
+    .gate-card:hover .gate-card-image { transform: scale(1.08); }
 
     .gate-footer {
         width: 100%;
@@ -314,10 +268,7 @@
         margin-top: 20px;
     }
 
-    .gate-footer .brand {
-        color: #f39c12;
-        font-weight: 900;
-    }
+    .gate-footer .brand { color: #f39c12; font-weight: 900; }
 
     @media (max-width: 700px) {
         .gate-header { padding: 40px 20px 60px; }
@@ -328,11 +279,7 @@
         .gate-header .description { font-size: 14px; }
         .gate-header .title-divider { width: 100px; height: 4px; }
 
-        .gates-wrapper {
-            padding: 0 15px 20px;
-            margin-top: -30px;
-            gap: 18px;
-        }
+        .gates-wrapper { padding: 0 15px 20px; margin-top: -30px; gap: 18px; }
 
         .gate-card { padding: 18px 20px; gap: 15px; }
         .gate-card-image { width: 100px; height: 100px; }
@@ -371,7 +318,6 @@
     </header>
 
     <main class="gates-wrapper">
-
         <a href="mester1.html" class="gate-card teacher-card">
             <div class="gate-card-content">
                 <div class="gate-title">بوابة المعلم</div>
@@ -399,7 +345,6 @@
             </div>
             <div class="gate-card-image"></div>
         </a>
-
     </main>
 
     <footer class="gate-footer">
@@ -415,6 +360,13 @@
                     alert('🚧 بوابة الطالب قيد التطوير حالياً.\nسيتم إتاحتها قريباً إن شاء الله.');
                 }
             });
+        });
+
+        // ✅ تحسين تجربة الرجوع من الصفحات الأخرى
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                console.log('✅ تم استرجاع الصفحة من BFCache');
+            }
         });
     </script>
 
