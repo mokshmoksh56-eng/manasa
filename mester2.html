@@ -43,9 +43,34 @@
     .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
 
-    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; font-family: inherit; }
-    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
+    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #1e8449, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #1e8449; }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ========================================== */
+    /* 📋 تنسيقات النافذة المنبثقة (Modal) */
+    /* ========================================== */
+    .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
+    .publish-modal-overlay.active { display: flex; }
+    .publish-modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUpModal 0.3s ease-out; }
+    .publish-modal-header { background: linear-gradient(135deg, #2b5c9e, #1a3c6d); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #f1c40f; }
+    .publish-modal-header h2 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px; }
+    .publish-modal-header .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1; transition: transform 0.2s; }
+    .publish-modal-header .close-btn:hover { transform: scale(1.1); color: #f1c40f; }
+    
+    .publish-modal-content { padding: 20px; overflow-y: auto; font-size: 15px; color: #333; line-height: 1.6; }
+    .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #eaeef3; display: flex; flex-direction: column; }
+    .publish-data-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .publish-data-label { color: #566573; font-weight: 800; font-size: 13px; margin-bottom: 4px; }
+    .publish-data-value { color: #2c3e50; font-weight: 700; font-size: 15px; background: #f8fbff; padding: 8px 12px; border-radius: 8px; border: 1px solid #eef2f7; }
+    .publish-data-value.appts { background: #fff9e6; border-color: #fde8b1; }
+    
+    .publish-modal-footer { padding: 15px 20px; background: #f8fbff; border-top: 1px solid #eaeef3; text-align: center; }
+    .publish-modal-footer .btn-confirm { background: #2b5c9e; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.2s; box-shadow: 0 4px 10px rgba(43,92,158,0.2); }
+    .publish-modal-footer .btn-confirm:hover { background: #1a3c6d; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     @media (max-width: 700px) {
         .header-3d { padding: 25px 15px 40px; }
@@ -340,8 +365,24 @@
     </div>
     <!-- 📅 نهاية التقويم -->
 
-    <!-- تم التعديل هنا: الحفظ محلياً ثم الإنتقال -->
-    <button class="submit-btn" id="submit-btn-main" onclick="submitGroupData()">💾 الحفظ والتالي</button>
+    <!-- تم التعديل هنا: نشر بدلا من الحفظ والتالي -->
+    <button class="submit-btn" id="submit-btn-main" onclick="submitGroupData()">🚀 نشر المجموعة</button>
+</div>
+
+<!-- 🟢 نافذة النشر المنبثقة (Modal) -->
+<div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
+  <div class="publish-modal-box">
+    <div class="publish-modal-header">
+      <h2>🎉 تم إعداد المجموعة بنجاح</h2>
+      <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
+    </div>
+    <div class="publish-modal-content" id="publishModalContent">
+      <!-- سيتم إضافة البيانات هنا بواسطة JavaScript -->
+    </div>
+    <div class="publish-modal-footer">
+      <button class="btn-confirm" onclick="closePublishModal(event, true)">إغلاق ومتابعة</button>
+    </div>
+  </div>
 </div>
 
 <div class="last-save-bar" id="autosave-bar">
@@ -639,6 +680,7 @@
   }
 
   function formatTime(value) {
+    if(!value) return '';
     const [h, m] = value.split(':').map(Number);
     const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
     const period = h < 12 ? 'ص' : 'م';
@@ -752,7 +794,7 @@
 </script>
 
 <!-- ========================================== -->
-<!-- 🚀 سكربت الحفظ المحلي وتوجيه الصفحة -->
+<!-- 🚀 سكربت النافذة المنبثقة ومعالجة النشر -->
 <!-- ========================================== -->
 <script>
     function getLocation(e) {
@@ -776,11 +818,18 @@
         }
     }
 
+    // إغلاق النافذة المنبثقة
+    function closePublishModal(e, force = false) {
+        if (force || e.target.id === 'publishModalOverlay') {
+            document.getElementById('publishModalOverlay').classList.remove('active');
+        }
+    }
+
     // ==========================================
-    // 🌐 إرسال البيانات للتخزين المحلي للصفحة 3
+    // 🌐 تجميع البيانات وعرضها في نافذة منبثقة بدلا من الإرسال
     // ==========================================
     function submitGroupData() {
-        const subjectData = document.getElementById('fixed-subject').dataset.value;
+        const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
         const teacherName = document.getElementById('teacher-name').value.trim();
         const studentsCount = document.getElementById('students-count').value;
@@ -795,65 +844,81 @@
         const recurringAppts = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
 
         if (Object.keys(normalAppts).length === 0 && Object.keys(recurringAppts).length === 0) {
-            alert('⚠️ يرجى إضافة موعد واحد على الأقل في التقويم للمتابعة.');
+            alert('⚠️ يرجى إضافة موعد واحد على الأقل في التقويم قبل النشر.');
             return;
         }
 
-        let gradeExtracted = '';
-        const gradeMatch = subjectData ? subjectData.match(/الصف:\s*([^|\n]+)/) : null;
-        if (gradeMatch) gradeExtracted = gradeMatch[1].trim();
-
-        let firstSubject = subjectData || '';
-        const subjMatch = subjectData ? subjectData.match(/المواد:\s*([^|\n]+)/) : null;
-        if (subjMatch) firstSubject = subjMatch[1].split('-')[0].trim();
-
-        let locationType = 'center';
-        if (location === 'بيت المستر') locationType = 'teacher_home';
-        else if (location === 'منزل الطالب') locationType = 'student_home';
-
-        let genderValue = 'mixed';
-        if (genderAllowed === 'أولاد فقط') genderValue = 'boys';
-        else if (genderAllowed === 'بنات فقط') genderValue = 'girls';
-
-        let lat = null, lng = null;
-        if (gpsLocation && gpsLocation.includes(',')) {
-            const parts = gpsLocation.split(',');
-            lat = parseFloat(parts[0]); lng = parseFloat(parts[1]);
+        // تنسيق المواعيد لعرضها في النافذة المنبثقة
+        let apptsHtml = '';
+        let totalAppts = 0;
+        
+        // المواعيد المتكررة
+        for(const day in recurringAppts) {
+            const list = recurringAppts[day];
+            if(list.length) {
+                apptsHtml += `<div style="margin-bottom:8px;"><strong>🔁 تكرار أسبوعي كل ${dayNames[day]}:</strong><br>`;
+                list.forEach(a => { 
+                    apptsHtml += `▪ من ${formatTime(a.start)} إلى ${formatTime(a.end)}<br>`; 
+                    totalAppts++; 
+                });
+                apptsHtml += `</div>`;
+            }
         }
-
-        let teacherTitle = 'مستر';
-        if (teacherName.startsWith('مس ') || teacherName.startsWith('مسة') || teacherName.includes('أ.مس')) teacherTitle = 'مس';
-
-        // تجميع هيكل البيانات وتخزينه محلياً بدلاً من Firebase
-        const groupData = {
-            subjectData, subject: firstSubject, groupName, teacherName, teacherTitle, grade: gradeExtracted,
-            studentsCount: parseInt(studentsCount), maxCapacity: parseInt(studentsCount),
-            genderAllowed, gender: genderValue, location, type: locationType, address: location,
-            gpsLocation: gpsLocation || '', lat: lat, lng: lng, radius: 3000,
-            
-            schedule: { normal: normalAppts, recurring: recurringAppts },
-            totalWeeklySessions: Object.values(recurringAppts).flat().length, 
-            
-            bookedBoys: 0, bookedGirls: 0, isActive: true, published: false, phone: ''
-        };
-
-        const submitBtn = document.getElementById('submit-btn-main');
-        submitBtn.disabled = true; 
-        submitBtn.innerHTML = '⏳ جاري الحفظ...';
-
-        try {
-            // حفظ بيانات المجموعة محليا ليتم سحبها في الصفحة الثالثة
-            localStorage.setItem('mester2_group_data', JSON.stringify(groupData));
-
-            // التوجه للصفحة التالية
-            setTimeout(() => { window.location.href = 'mester3.html'; }, 400);
-
-        } catch (error) {
-            console.error('❌ فشل الحفظ:', error);
-            submitBtn.disabled = false; 
-            submitBtn.innerHTML = '💾 الحفظ والتالي';
-            alert('❌ حدث خطأ أثناء الحفظ.');
+        
+        // المواعيد العادية (أيام محددة)
+        for(const date in normalAppts) {
+            const list = normalAppts[date];
+            if(list.length) {
+                apptsHtml += `<div style="margin-bottom:8px;"><strong>📅 يوم ${date}:</strong><br>`;
+                list.forEach(a => { 
+                    apptsHtml += `▪ من ${formatTime(a.start)} إلى ${formatTime(a.end)}<br>`; 
+                    totalAppts++; 
+                });
+                apptsHtml += `</div>`;
+            }
         }
+        
+        if(!apptsHtml) apptsHtml = '<span style="color:#e74c3c">لا توجد مواعيد</span>';
+
+        // تجهيز محتوى النافذة
+        const contentHtml = `
+            <div class="publish-data-item">
+                <span class="publish-data-label">📚 المادة والصف:</span>
+                <span class="publish-data-value">${subjectData}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">🏷️ اسم المجموعة:</span>
+                <span class="publish-data-value">${groupName}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">👨‍🏫 اسم المستر/السنتر:</span>
+                <span class="publish-data-value">${teacherName}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">👥 العدد المطلوب:</span>
+                <span class="publish-data-value">${studentsCount} طلاب</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">👫 الفئات المسموحة:</span>
+                <span class="publish-data-value">${genderAllowed}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">📍 مكان الدرس:</span>
+                <span class="publish-data-value">${location}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">🗺️ الموقع (GPS):</span>
+                <span class="publish-data-value">${gpsLocation ? 'تم تحديد الإحداثيات' : 'لم يتم التحديد'}</span>
+            </div>
+            <div class="publish-data-item">
+                <span class="publish-data-label">📅 جدول المواعيد (إجمالي ${totalAppts} موعد):</span>
+                <div class="publish-data-value appts">${apptsHtml}</div>
+            </div>
+        `;
+
+        // إدراج المحتوى وفتح النافذة
+        document.getElementById('publishModalContent').innerHTML = contentHtml;
+        document.getElementById('publishModalOverlay').classList.add('active');
     }
 
     // جلب المواد التي اختارها المدرس من الصفحة السابقة
