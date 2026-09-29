@@ -803,33 +803,54 @@
             EDIT_INDEX = parseInt(editIndex);
         }
 
-        const subjectDisplay = document.getElementById('fixed-subject');
-        const savedDataString = localStorage.getItem('teacherSelections');
-        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
-        if (savedDataString) {
-            try {
-                const savedData = JSON.parse(savedDataString);
-                let subjectsArr = [];
-                for (const stageId in savedData) {
-                    const gradeName = savedData[stageId].grade;
-                    savedData[stageId].subjects.forEach(subjectName => {
-                        subjectsArr.push(`${subjectName} (${gradeName})`);
-                    });
-                }
-                if (subjectsArr.length > 0) { selectedSubjectsText = subjectsArr.join(' + '); }
-            } catch(e) {}
-        }
-        subjectDisplay.textContent = selectedSubjectsText;
-        subjectDisplay.dataset.value = selectedSubjectsText;
-
+        // 1. أولاً: تحميل بيانات التعديل أو استرجاع الحفظ التلقائي القديم
         if (IS_EDIT_MODE) {
             loadEditData();
         } else {
-            // ✅ استرجاع الحفظ التلقائي في وضع الإنشاء
             const restored = restoreFormState();
-            if (restored) {
-                console.log('✅ تم استرجاع الحفظ التلقائي');
+            if (restored) console.log('✅ تم استرجاع الحفظ التلقائي');
+        }
+
+        // 2. ثانياً: جلب المادة والصف من mester1 (لضمان عدم مسحها بواسطة الحفظ التلقائي)
+        if (!IS_EDIT_MODE) {
+            const subjectDisplay = document.getElementById('fixed-subject');
+            const savedDataString = localStorage.getItem('teacherSelections');
+            let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+
+            const stageNames = {
+                kg: '🧸 رياض الأطفال',
+                primary: '📗 المرحلة الابتدائية',
+                prep: '📘 المرحلة الإعدادية',
+                secondary: '📙 المرحلة الثانوية'
+            };
+
+            if (savedDataString) {
+                try {
+                    const savedData = JSON.parse(savedDataString);
+                    let summaryParts = [];
+
+                    for (const stageId in savedData) {
+                        const { grade, subjects } = savedData[stageId];
+                        if (subjects && subjects.length > 0) {
+                            const parts = [];
+                            if (grade) parts.push(`الصف: ${grade}`);
+                            parts.push(`المواد: ${subjects.join(' - ')}`);
+
+                            // تنسيق مطابق تماماً لملخص mester1
+                            summaryParts.push(`${stageNames[stageId]}: ${parts.join(' | ')}`);
+                        }
+                    }
+
+                    if (summaryParts.length > 0) {
+                        selectedSubjectsText = summaryParts.join('\n');
+                    }
+                } catch(e) {
+                    console.error('خطأ في قراءة بيانات المواد:', e);
+                }
             }
+
+            subjectDisplay.textContent = selectedSubjectsText;
+            subjectDisplay.dataset.value = selectedSubjectsText;
         }
 
         renderVerticalSchedule();
@@ -1638,7 +1659,7 @@
             const isPastDay = cellDateOnly < todayDateOnly && !isOtherMonth;
 
             html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''} ${isPastDay ? 'past-day' : ''}" 
-                        onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()}, ${dayNum})`}">`;
+                        onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()},${dayNum})`}">`;
 
             html += `<div class="day-num">
                 <span>${dayNum}</span>
