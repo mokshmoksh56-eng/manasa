@@ -49,23 +49,27 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// ✅ دالة آمنة تنتظر جهوزية auth
+// ✅ دالة آمنة لا تعلّق أبداً
 function waitForAuth() {
     return new Promise((resolve) => {
-        // لو المستخدم معروف مسبقاً
+        // ✅ لو auth جاهز → ارجع فوراً
         if (authInitialized) {
             resolve(currentUser);
             return;
         }
         
-        // ننتظر أول إشارة فقط
+        // ⏱️ انتظر أول إشارة فقط + Timeout 3 ثواني
+        let resolved = false;
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (resolved) return;
+            resolved = true;
             unsubscribe();
             resolve(user);
         });
 
-        // ⏱️ Timeout احتياطي (3 ثواني)
         setTimeout(() => {
+            if (resolved) return;
+            resolved = true;
             unsubscribe();
             resolve(auth.currentUser);
         }, 3000);
