@@ -143,7 +143,6 @@
         text-align: left;
     }
 
-    /* ✅ حقل الرقم السري */
     .pin-wrapper {
         position: relative;
     }
@@ -341,7 +340,6 @@
 
     <div class="login-body">
 
-        <!-- ✅ رسائل -->
         <div class="error-msg" id="errorMsg">
             <span>⚠️</span>
             <span id="errorText"></span>
@@ -351,7 +349,6 @@
             <span id="successText"></span>
         </div>
 
-        <!-- 🔐 نموذج تسجيل الدخول -->
         <div class="form-view active" id="loginView">
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
@@ -392,7 +389,6 @@
             </div>
         </div>
 
-        <!-- ✍️ نموذج التسجيل -->
         <div class="form-view" id="registerView">
             <form onsubmit="handleRegister(event)">
                 <div class="form-group">
@@ -461,7 +457,6 @@
     <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
 </div>
 
-<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -473,25 +468,25 @@
     import { 
         auth, db, waitForAuth,
         signInWithEmailAndPassword, createUserWithEmailAndPassword,
-        signOut, onAuthStateChanged, doc, setDoc, getDoc,
-        serverTimestamp
+        doc, setDoc, getDoc, serverTimestamp
     } from './firebase-config.js';
 
     // ==========================================
-    // 🎯 تبويبات التبديل
+    // 🔐 تحويل PIN (4 أرقام) → كلمة سر Firebase
+    // Firebase يشترط 6 أحرف على الأقل
     // ==========================================
-    function switchTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
-        hideMessages();
+    const PIN_PREFIX = 'Agz@';
+    const PIN_SUFFIX = '#T26';
+    
+    function pinToPassword(pin) {
+        return `${PIN_PREFIX}${pin}${PIN_SUFFIX}`;
+    }
 
-        if (tab === 'login') {
-            document.getElementById('tabLogin').classList.add('active');
-            document.getElementById('loginView').classList.add('active');
-        } else {
-            document.getElementById('tabRegister').classList.add('active');
-            document.getElementById('registerView').classList.add('active');
-        }
+    // ==========================================
+    // 🎯 تحويل رقم التليفون لإيميل وهمي
+    // ==========================================
+    function phoneToEmail(phone) {
+        return `${phone}@teacher.ahgazly.app`;
     }
 
     // ==========================================
@@ -505,6 +500,23 @@
         } else {
             input.type = 'password';
             btn.textContent = '👁️';
+        }
+    }
+
+    // ==========================================
+    // 🎯 التبويبات
+    // ==========================================
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+        hideMessages();
+
+        if (tab === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('loginView').classList.add('active');
+        } else {
+            document.getElementById('tabRegister').classList.add('active');
+            document.getElementById('registerView').classList.add('active');
         }
     }
 
@@ -530,14 +542,7 @@
     }
 
     // ==========================================
-    // 🎯 تحويل رقم التليفون لإيميل وهمي
-    // ==========================================
-    function phoneToEmail(phone) {
-        return `${phone}@teacher.ahgazly.app`;
-    }
-
-    // ==========================================
-    // 🎯 التحقق من صحة البيانات
+    // 🎯 التحقق من البيانات
     // ==========================================
     function validatePhone(phone) {
         if (!/^01[0125][0-9]{8}$/.test(phone)) {
@@ -548,7 +553,7 @@
 
     function validatePin(pin) {
         if (!/^[0-9]{4}$/.test(pin)) {
-            return 'الرقم السري يجب أن يكون 4 أرقام فقط.';
+            return 'الرقم السري يجب أن يكون 4 أرقام.';
         }
         return null;
     }
@@ -577,28 +582,33 @@
 
         try {
             const email = phoneToEmail(phone);
-            const userCredential = await signInWithEmailAndPassword(auth, email, pin);
+            const password = pinToPassword(pin);
+            
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
             console.log('✅ تم تسجيل الدخول:', user.uid);
 
-            // ✅ حفظ بيانات المعلم في localStorage
-            const teacherDoc = await getDoc(doc(db, 'teachers', user.uid));
-            if (teacherDoc.exists()) {
-                const teacherData = teacherDoc.data();
-                localStorage.setItem('current_teacher_profile', JSON.stringify({
-                    id: user.uid,
-                    name: teacherData.name,
-                    phone: teacherData.phone
-                }));
-            } else {
-                // لو الحساب موجود في Auth بس مش في Firestore (نادراً)
-                localStorage.setItem('current_teacher_profile', JSON.stringify({
-                    id: user.uid,
-                    name: 'معلم',
-                    phone: phone
-                }));
+            // ✅ جلب بيانات المعلم
+            let teacherName = 'معلم';
+            let teacherPhone = phone;
+            
+            try {
+                const teacherDoc = await getDoc(doc(db, 'teachers', user.uid));
+                if (teacherDoc.exists()) {
+                    const data = teacherDoc.data();
+                    teacherName = data.name || 'معلم';
+                    teacherPhone = data.phone || phone;
+                }
+            } catch (e) {
+                console.warn('لم يتم جلب بيانات المعلم:', e);
             }
+
+            localStorage.setItem('current_teacher_profile', JSON.stringify({
+                id: user.uid,
+                name: teacherName,
+                phone: teacherPhone
+            }));
 
             showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
             
@@ -607,18 +617,20 @@
             }, 800);
 
         } catch (error) {
-            console.error('❌ فشل تسجيل الدخول:', error);
+            console.error('❌ فشل:', error);
             hideLoading();
             btn.disabled = false;
             btn.innerHTML = originalText;
 
             let errorMsg = 'فشل تسجيل الدخول. ';
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            if (error.code === 'auth/user-not-found' || 
+                error.code === 'auth/wrong-password' || 
+                error.code === 'auth/invalid-credential') {
                 errorMsg = 'رقم التليفون أو الرقم السري غير صحيح.';
             } else if (error.code === 'auth/too-many-requests') {
-                errorMsg = 'محاولات كثيرة خاطئة. جرب تاني بعد شوية.';
+                errorMsg = 'محاولات كثيرة خاطئة. جرب بعد شوية.';
             } else if (error.code === 'auth/network-request-failed') {
-                errorMsg = 'فشل الاتصال بالإنترنت. تأكد من اتصالك.';
+                errorMsg = 'فشل الاتصال بالإنترنت.';
             } else {
                 errorMsg += error.message;
             }
@@ -638,7 +650,6 @@
         const pin = document.getElementById('regPin').value.trim();
         const pinConfirm = document.getElementById('regPinConfirm').value.trim();
 
-        // ✅ التحقق
         if (name.length < 3) {
             showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
             return;
@@ -663,16 +674,29 @@
 
         try {
             const email = phoneToEmail(phone);
+            const password = pinToPassword(pin);
 
-            // ✅ محاولة إنشاء الحساب
             let userCredential;
+            let isNewUser = true;
+
             try {
-                userCredential = await createUserWithEmailAndPassword(auth, email, pin);
+                // ✅ محاولة إنشاء حساب
+                userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log('✅ حساب جديد تم إنشاؤه');
             } catch (err) {
-                // لو الرقم مسجل بالفعل → نسجّل دخول ونحدّث البيانات
+                // لو الرقم مسجل بالفعل → نسجّل دخول
                 if (err.code === 'auth/email-already-in-use') {
-                    console.log('⚠️ الرقم مسجل بالفعل، جاري تسجيل الدخول وتحديث البيانات...');
-                    userCredential = await signInWithEmailAndPassword(auth, email, pin);
+                    console.log('⚠️ الرقم مسجل، جاري تسجيل الدخول...');
+                    try {
+                        userCredential = await signInWithEmailAndPassword(auth, email, password);
+                        isNewUser = false;
+                    } catch (loginErr) {
+                        if (loginErr.code === 'auth/wrong-password' || 
+                            loginErr.code === 'auth/invalid-credential') {
+                            throw new Error('هذا الرقم مسجل بكلمة سر مختلفة. جرب تسجيل الدخول أو استخدم رقماً آخر.');
+                        }
+                        throw loginErr;
+                    }
                 } else {
                     throw err;
                 }
@@ -686,26 +710,30 @@
                 phone: phone,
                 email: email,
                 role: 'teacher',
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
+                updatedAt: serverTimestamp(),
+                ...(isNewUser ? { createdAt: serverTimestamp() } : {})
             }, { merge: true });
 
-            // ✅ حفظ في localStorage
             localStorage.setItem('current_teacher_profile', JSON.stringify({
                 id: user.uid,
                 name: name,
                 phone: phone
             }));
 
-            console.log('✅ تم إنشاء الحساب:', user.uid);
-            showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
+            console.log('✅ العملية تمت:', user.uid);
+            
+            if (isNewUser) {
+                showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
+            } else {
+                showSuccess('✅ تم تحديث بياناتك! جاري التحويل...');
+            }
 
             setTimeout(() => {
                 window.location.href = 'mester1.html';
             }, 1000);
 
         } catch (error) {
-            console.error('❌ فشل إنشاء الحساب:', error);
+            console.error('❌ فشل:', error);
             hideLoading();
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -715,12 +743,12 @@
                 errorMsg = 'الرقم السري ضعيف جداً.';
             } else if (error.code === 'auth/invalid-email') {
                 errorMsg = 'رقم التليفون غير صحيح.';
-            } else if (error.code === 'auth/wrong-password') {
-                errorMsg = 'هذا الرقم مسجل بكلمة سر مختلفة. جرب تسجيل الدخول أو استخدم رقماً آخر.';
             } else if (error.code === 'auth/network-request-failed') {
                 errorMsg = 'فشل الاتصال بالإنترنت.';
+            } else if (error.message && error.message.includes('مسجل بكلمة سر')) {
+                errorMsg = error.message;
             } else {
-                errorMsg += error.message;
+                errorMsg += error.message || 'خطأ غير معروف';
             }
             showError(errorMsg);
         }
@@ -739,7 +767,7 @@
     }
 
     // ==========================================
-    // 🎯 التصدير
+    // 🎯 التصدير للنطاق العام
     // ==========================================
     window.switchTab = switchTab;
     window.togglePin = togglePin;
@@ -747,20 +775,19 @@
     window.handleRegister = handleRegister;
 
     // ==========================================
-    // 🎯 تحقق من الجلسة الحالية عند فتح الصفحة
+    // 🎯 فحص الجلسة عند فتح الصفحة
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
         const user = await waitForAuth();
         if (user) {
-            console.log('✅ المستخدم مسجل دخول بالفعل:', user.uid);
-            // لو مسجل، حوّله على mester1
+            console.log('✅ المستخدم مسجل دخول:', user.uid);
             setTimeout(() => {
                 window.location.href = 'mester1.html';
             }, 500);
         }
     });
 
-    console.log('✅ teacher-login.js loaded');
+    console.log('✅ teacher-login loaded');
 </script>
 
 </body>
