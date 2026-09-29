@@ -1915,8 +1915,114 @@
     }
 
     // ==========================================
+    // 🔄 دالة إعادة تعيين الصفحة لمجموعة جديدة فاضية
+    // ==========================================
+    function resetFormForNewGroup() {
+        console.log('🔄 جاري إعادة تعيين الصفحة لمجموعة جديدة...');
+
+        // 1️⃣ مسح كل البيانات من الذاكرة
+        SAVED_SLOTS = {};
+        MANUALLY_EXPANDED_DAYS = new Set();
+        currentWeekOffset = 0;
+        currentYear = new Date().getFullYear();
+        currentMonth = new Date().getMonth();
+
+        // 2️⃣ مسح الحفظ التلقائي
+        clearAutosave();
+
+        // 3️⃣ مسح الحقول الأساسية
+        const groupNameEl = document.getElementById('group-name');
+        const teacherNameEl = document.getElementById('teacher-name');
+        const studentsCountEl = document.getElementById('students-count');
+
+        if (groupNameEl) groupNameEl.value = '';
+        if (studentsCountEl) studentsCountEl.value = '';
+
+        // ✅ الحفاظ على اسم المعلم (لأنه غالباً نفس المعلم)
+        const savedTeacherName = localStorage.getItem(TEACHER_NAME_KEY) || '';
+        if (teacherNameEl) teacherNameEl.value = savedTeacherName;
+
+        // 4️⃣ إعادة الراديو للوضع الافتراضي
+        const genderMixed = document.getElementById('gender-mixed');
+        const locCenter = document.getElementById('loc-center');
+        if (genderMixed) genderMixed.checked = true;
+        if (locCenter) locCenter.checked = true;
+
+        // 5️⃣ مسح GPS
+        const gpsEl = document.getElementById('gps-coords');
+        const locTextEl = document.getElementById('location-text');
+        const gpsBtn = document.querySelector('.btn-gps');
+
+        if (gpsEl) gpsEl.value = '';
+        if (locTextEl) locTextEl.textContent = 'لم يتم التحديد';
+        if (gpsBtn) {
+            gpsBtn.innerHTML = '📍 تحديد موقعي الحالي';
+            gpsBtn.style.backgroundColor = '#28a745';
+        }
+
+        // 6️⃣ إعادة تحميل المادة والصف من teacherSelections
+        const subjectDisplay = document.getElementById('fixed-subject');
+        const savedDataString = localStorage.getItem('teacherSelections');
+        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+
+        const stageNames = {
+            kg: '🧸 رياض الأطفال',
+            primary: '📗 المرحلة الابتدائية',
+            prep: '📘 المرحلة الإعدادية',
+            secondary: '📙 المرحلة الثانوية'
+        };
+
+        if (savedDataString) {
+            try {
+                const savedData = JSON.parse(savedDataString);
+                let summaryParts = [];
+
+                for (const stageId in savedData) {
+                    const { grade, subjects } = savedData[stageId];
+                    if (subjects && subjects.length > 0) {
+                        const parts = [];
+                        if (grade) parts.push(`الصف: ${grade}`);
+                        parts.push(`المواد: ${subjects.join(' - ')}`);
+                        summaryParts.push(`${stageNames[stageId]}: ${parts.join(' | ')}`);
+                    }
+                }
+
+                if (summaryParts.length > 0) {
+                    selectedSubjectsText = summaryParts.join('\n');
+                }
+            } catch(e) {
+                console.error('خطأ في قراءة بيانات المواد:', e);
+            }
+        }
+
+        subjectDisplay.textContent = selectedSubjectsText;
+        subjectDisplay.dataset.value = selectedSubjectsText;
+
+        // 7️⃣ مسح كل الحصص المعروضة (إعادة رسم الجدول)
+        renderVerticalSchedule();
+        renderMonthlyCalendar();
+        updateWeekNavBar();
+
+        // 8️⃣ تحديث يوم الأسبوع الحالي
+        const weekStatusEl = document.getElementById('week-status');
+        const weekLabelEl = document.getElementById('week-label');
+        if (weekStatusEl) {
+            weekStatusEl.textContent = '📍 النهاردة';
+            weekStatusEl.className = 'week-status current';
+        }
+        if (weekLabelEl) {
+            weekLabelEl.textContent = 'الأسبوع الحالي';
+        }
+
+        // 9️⃣ التمرير لأعلى الصفحة
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        console.log('✅ تم إعادة تعيين الصفحة بنجاح');
+    }
+
+    // ==========================================
     // 🚀 حفظ ونشر المجموعة في Firebase
-    // ✅✅✅ مع منع تكرار الحصص نهائياً ✅✅✅
+    // ✅✅✅ مع منع تكرار الحصص + إعادة تعيين الصفحة بعد الحفظ ✅✅✅
     // ==========================================
     async function submitGroupData() {
         const subjectData = document.getElementById('fixed-subject').dataset.value;
@@ -2078,6 +2184,7 @@
             await waitForAuth();
 
             if (IS_EDIT_MODE && EDIT_FIREBASE_ID) {
+                // ✅ وضع التعديل: يرجع لصفحة المجموعات
                 const groupRef = doc(db, 'groups', EDIT_FIREBASE_ID);
                 const editData = JSON.parse(localStorage.getItem(EDIT_DATA_KEY) || '{}');
                 groupData.published = editData.published || false;
@@ -2087,31 +2194,42 @@
                 await updateDoc(groupRef, groupData);
                 console.log('✅ تم تحديث المجموعة في Firestore:', EDIT_FIREBASE_ID);
 
-                alert(`✅ تم تحديث المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً`);
+                loadingText.textContent = '✅ تم التحديث! جاري العودة...';
+                
+                localStorage.setItem(TEACHER_NAME_KEY, teacherName);
+                localStorage.removeItem(EDIT_DATA_KEY);
+                localStorage.removeItem('mester2_edit_index');
+                clearAutosave();
+                
+                setTimeout(() => {
+                    alert(`✅ تم تحديث المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً`);
+                    window.location.href = 'mester3.html';
+                }, 300);
 
             } else {
+                // ✅ وضع الإنشاء الجديد: يبقى في نفس الصفحة ويعمل reset
                 groupData.createdAt = serverTimestamp();
                 const docRef = await addDoc(collection(db, 'groups'), groupData);
                 console.log('✅ تم إنشاء المجموعة بـ ID:', docRef.id);
 
-                alert(`✅ تم إنشاء المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً\n\n🆔 ${docRef.id.substring(0, 8)}...`);
+                loadingText.textContent = '✅ تم الحفظ! جاري تجهيز مجموعة جديدة...';
+                
+                localStorage.setItem(TEACHER_NAME_KEY, teacherName);
+                clearAutosave();
+
+                // ✅✅✅ إعادة تعيين كل شيء لصفحة فاضية جديدة ✅✅✅
+                setTimeout(() => {
+                    alert(`✅ تم إنشاء المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً\n\n🔄 جاري تجهيز مجموعة جديدة...`);
+                    
+                    // إخفاء شاشة التحميل
+                    loadingOverlay.classList.remove('show');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                    
+                    // 🔄 إعادة تعيين الحقول
+                    resetFormForNewGroup();
+                }, 300);
             }
-
-            localStorage.setItem(TEACHER_NAME_KEY, teacherName);
-
-            clearAutosave();
-            localStorage.removeItem(EDIT_DATA_KEY);
-            localStorage.removeItem('mester2_edit_index');
-
-            loadingOverlay.classList.remove('show');
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-            
-            loadingText.textContent = '✅ تم الحفظ! جاري التحويل...';
-            setTimeout(() => {
-                window.location.href = 'mester3.html';
-            }, 500);
 
         } catch (error) {
             console.error('❌ فشل الحفظ:', error);
@@ -2151,8 +2269,9 @@
     window.showDayDetails = showDayDetails;
     window.closeModal = closeModal;
     window.submitGroupData = submitGroupData;
+    window.resetFormForNewGroup = resetFormForNewGroup;
 
-    console.log('✅ mester2.js loaded with Firebase - بدون تكرار');
+    console.log('✅ mester2.js loaded with Firebase - بدون تكرار + reset بعد الحفظ');
 </script>
 
 </body>
