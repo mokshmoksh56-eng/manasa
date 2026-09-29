@@ -1179,6 +1179,35 @@
 </head>
 <body>
 
+<script>
+    // ==========================================
+    // ✅✅✅ إصلاح مشكلة الرجوع من mester3.html ✅✅✅
+    // ==========================================
+    (function() {
+        // ✅ عند الرجوع من BFCache، نضمن تحميل نظيف
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                console.log('✅ تم استرجاع mester3 من cache - تحميل نظيف');
+                
+                // ✅ إخفاء أي نافذة منبثقة عالقة
+                const publishModal = document.getElementById('publish-modal');
+                const deleteModal = document.getElementById('delete-modal');
+                if (publishModal) publishModal.classList.remove('active');
+                if (deleteModal) deleteModal.classList.remove('active');
+                
+                // ✅ إعادة تفعيل scroll
+                document.body.style.overflow = '';
+                
+                // ✅ إزالة أي خرائط قديمة
+                if (window.publishMap) {
+                    try { window.publishMap.remove(); } catch(e) {}
+                    window.publishMap = null;
+                }
+            }
+        });
+    })();
+</script>
+
 <header class="header-3d">
     <h1>📚 مجموعاتي</h1>
     <p>إدارة ومتابعة جميع المجموعات التي قمت بإنشائها</p>
@@ -1331,23 +1360,32 @@
     <span id="toast-message">تم النسخ بنجاح</span>
 </div>
 
-<script>
-    // =========================================
+<script type="module">
+    // ==========================================
+    // 🔥 Firebase Imports
+    // ==========================================
+    import { 
+        db, waitForAuth,
+        collection, getDocs, doc, getDoc, deleteDoc, updateDoc,
+        query, where, orderBy, serverTimestamp
+    } from './firebase-config.js';
+
+    // ==========================================
     // 🎯 مفاتيح التخزين
-    // =========================================
+    // ==========================================
     const GROUPS_STORAGE_KEY = 'mester_groups_list';
     const TEACHER_NAME_KEY = 'mester_teacher_name';
 
-    // =========================================
+    // ==========================================
     // 🎯 متغيرات الخريطة
-    // =========================================
+    // ==========================================
     let publishMap = null;
     let publishMarker = null;
     let currentPublishGroup = null;
 
-    // =========================================
+    // ==========================================
     // 🎯 تحميل وعرض البيانات
-    // =========================================
+    // ==========================================
     window.onload = function() {
         loadTeacherName();
         loadAndRenderGroups();
@@ -1358,28 +1396,31 @@
         document.getElementById('teacher-display-name').textContent = teacherName;
     }
 
-    function getGroups() {
+    // ✅ جلب المجموعات من Firestore
+    async function getGroupsFromFirebase() {
         try {
-            const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
-            if (!raw) return [];
-            const data = JSON.parse(raw);
-            return Array.isArray(data) ? data : [];
+            const groupsCollection = collection(db, 'groups');
+            const querySnapshot = await getDocs(groupsCollection);
+            
+            const groups = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                groups.push({ 
+                    id: doc.id,
+                    firebaseId: doc.id,
+                    ...data
+                });
+            });
+            
+            return groups;
         } catch (e) {
-            console.error('خطأ في قراءة المجموعات:', e);
+            console.error('خطأ في قراءة المجموعات من Firestore:', e);
             return [];
         }
     }
 
-    function saveGroups(groups) {
-        try {
-            localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
-        } catch (e) {
-            console.error('خطأ في حفظ المجموعات:', e);
-        }
-    }
-
-    function loadAndRenderGroups() {
-        const groups = getGroups();
+    async function loadAndRenderGroups() {
+        const groups = await getGroupsFromFirebase();
         const grid = document.getElementById('groups-grid');
         const emptyState = document.getElementById('empty-state');
         const countBadge = document.getElementById('groups-count');
@@ -1479,11 +1520,11 @@
             : '';
 
         const publishBtn = group.published
-            ? `<button class="btn-publish btn-published" onclick="openPublishModal(${index})">
+            ? `<button class="btn-publish btn-published" onclick="openPublishModal('${group.id}')">
                    <span>✅</span>
                    <span>منشور - عرض التفاصيل</span>
                </button>`
-            : `<button class="btn-publish" onclick="publishGroup(${index})">
+            : `<button class="btn-publish" onclick="publishGroup('${group.id}')">
                    <span>🚀</span>
                    <span>نشر المجموعة</span>
                </button>`;
@@ -1546,11 +1587,11 @@
 
                 <div class="group-card-actions">
                     ${publishBtn}
-                    <button class="btn-edit" onclick="editGroup(${index})">
+                    <button class="btn-edit" onclick="editGroup('${group.id}')">
                         <span>✏️</span>
                         <span>تعديل</span>
                     </button>
-                    <button class="btn-delete" onclick="askDeleteGroup(${index})">
+                    <button class="btn-delete" onclick="askDeleteGroup('${group.id}')">
                         <span>🗑️</span>
                         <span>حذف</span>
                     </button>
@@ -1572,44 +1613,57 @@
     // =========================================
     // ✅ دالة النشر
     // =========================================
-    function publishGroup(index) {
-        const groups = getGroups();
-        const group = groups[index];
-        if (!group) return;
-
-        group.published = true;
-        group.publishedAt = new Date().toISOString();
-        groups[index] = group;
-        saveGroups(groups);
-
-        loadAndRenderGroups();
-        openPublishModal(index);
-        showToast('🎉 تم نشر المجموعة بنجاح!');
+    async function publishGroup(firebaseId) {
+        try {
+            const groupRef = doc(db, 'groups', firebaseId);
+            await updateDoc(groupRef, {
+                published: true,
+                publishedAt: new Date().toISOString(),
+                updatedAt: serverTimestamp()
+            });
+            
+            console.log('✅ تم نشر المجموعة في Firestore:', firebaseId);
+            showToast('🎉 تم نشر المجموعة بنجاح!');
+            await loadAndRenderGroups();
+            openPublishModal(firebaseId);
+        } catch (e) {
+            console.error('❌ فشل النشر:', e);
+            alert('فشل النشر: ' + e.message);
+        }
     }
 
     // =========================================
     // ✅ فتح نافذة النشر
     // =========================================
-    function openPublishModal(index) {
-        const groups = getGroups();
-        const group = groups[index];
-        if (!group) return;
+    async function openPublishModal(firebaseId) {
+        try {
+            const groupRef = doc(db, 'groups', firebaseId);
+            const groupSnap = await getDoc(groupRef);
+            if (!groupSnap.exists()) {
+                alert('⚠️ لم يتم العثور على المجموعة.');
+                return;
+            }
+            
+            const group = { id: groupSnap.id, ...groupSnap.data() };
+            currentPublishGroup = group;
 
-        currentPublishGroup = { ...group, _index: index };
+            document.getElementById('publish-group-name').textContent =
+                group.groupName ? '«' + group.groupName + '»' : '';
 
-        document.getElementById('publish-group-name').textContent =
-            group.groupName ? '«' + group.groupName + '»' : '';
+            updatePublishDateTime();
+            renderLessonSpecs(group);
+            renderPublishMap(group);
 
-        updatePublishDateTime();
-        renderLessonSpecs(group);
-        renderPublishMap(group);
+            document.getElementById('publish-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
 
-        document.getElementById('publish-modal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-
-        setTimeout(() => {
-            if (publishMap) publishMap.invalidateSize();
-        }, 300);
+            setTimeout(() => {
+                if (publishMap) publishMap.invalidateSize();
+            }, 300);
+        } catch (e) {
+            console.error('❌ فشل فتح النشر:', e);
+            alert('حدث خطأ أثناء فتح التفاصيل: ' + e.message);
+        }
     }
 
     function closePublishModal() {
@@ -1978,44 +2032,65 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
     // =========================================
     // 🎯 التعديل
     // =========================================
-    function editGroup(index) {
-        const groups = getGroups();
-        const group = groups[index];
-        if (!group) return;
+    async function editGroup(firebaseId) {
+        try {
+            const groupRef = doc(db, 'groups', firebaseId);
+            const groupSnap = await getDoc(groupRef);
+            if (!groupSnap.exists()) {
+                alert('⚠️ لم يتم العثور على المجموعة.');
+                return;
+            }
+            
+            const group = { id: groupSnap.id, ...groupSnap.data() };
+            
+            localStorage.setItem('mester2_edit_index', group.id);
+            localStorage.setItem('mester2_edit_data', JSON.stringify(group));
 
-        localStorage.setItem('mester2_edit_index', String(index));
-        localStorage.setItem('mester2_edit_data', JSON.stringify(group));
-
-        window.location.href = 'mester2.html?mode=edit&index=' + index;
+            window.location.href = 'mester2.html?mode=edit&index=' + encodeURIComponent(group.id);
+        } catch (e) {
+            console.error('❌ فشل التعديل:', e);
+            alert('حدث خطأ أثناء فتح التعديل: ' + e.message);
+        }
     }
 
     // =========================================
     // 🎯 الحذف
     // =========================================
-    let deleteTargetIndex = -1;
+    let deleteTargetId = null;
 
-    function askDeleteGroup(index) {
-        const groups = getGroups();
-        const group = groups[index];
-        if (!group) return;
-
-        deleteTargetIndex = index;
-        document.getElementById('delete-group-name').textContent = '«' + (group.groupName || 'بدون اسم') + '»';
+    function askDeleteGroup(firebaseId) {
+        deleteTargetId = firebaseId;
+        const group = currentPublishGroup && currentPublishGroup.id === firebaseId 
+            ? currentPublishGroup 
+            : null;
+        
+        if (group) {
+            document.getElementById('delete-group-name').textContent = '«' + (group.groupName || 'بدون اسم') + '»';
+        } else {
+            document.getElementById('delete-group-name').textContent = 'هذه المجموعة';
+        }
+        
         document.getElementById('delete-modal').classList.add('active');
     }
 
     function closeDeleteModal() {
         document.getElementById('delete-modal').classList.remove('active');
-        deleteTargetIndex = -1;
+        deleteTargetId = null;
     }
 
-    function confirmDeleteGroup() {
-        if (deleteTargetIndex < 0) return;
-        const groups = getGroups();
-        groups.splice(deleteTargetIndex, 1);
-        saveGroups(groups);
-        closeDeleteModal();
-        loadAndRenderGroups();
+    async function confirmDeleteGroup() {
+        if (!deleteTargetId) return;
+        try {
+            const groupRef = doc(db, 'groups', deleteTargetId);
+            await deleteDoc(groupRef);
+            console.log('✅ تم حذف المجموعة:', deleteTargetId);
+            closeDeleteModal();
+            await loadAndRenderGroups();
+            showToast('🗑️ تم حذف المجموعة بنجاح');
+        } catch (e) {
+            console.error('❌ فشل الحذف:', e);
+            alert('فشل الحذف: ' + e.message);
+        }
     }
 
     // =========================================
@@ -2050,7 +2125,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
         }
     });
 
-    // ✅ إعادة تحميل الكروت عند الرجوع من التعديل (BFCache)
+    // ✅ إعادة تحميل الكروت عند الرجوع (BFCache)
     window.addEventListener('pageshow', function(e) {
         if (e.persisted) {
             console.log('✅ تم استرجاع mester3 من cache');
@@ -2066,6 +2141,22 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
             loadAndRenderGroups();
         }
     });
+
+    // ==========================================
+    // ✅ تصدير الدوال للنطاق العام
+    // ==========================================
+    window.publishGroup = publishGroup;
+    window.openPublishModal = openPublishModal;
+    window.closePublishModal = closePublishModal;
+    window.editGroup = editGroup;
+    window.askDeleteGroup = askDeleteGroup;
+    window.closeDeleteModal = closeDeleteModal;
+    window.confirmDeleteGroup = confirmDeleteGroup;
+    window.copyGroupDetails = copyGroupDetails;
+    window.shareWhatsApp = shareWhatsApp;
+    window.printGroup = printGroup;
+
+    console.log('✅ mester3 loaded with Firebase');
 </script>
 
 </body>
