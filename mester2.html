@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>منصة احجزلي - إعداد المجموعة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
     .last-save-bar {
@@ -36,7 +39,7 @@
     .data-table td { padding: 15px; border: 1px solid #e0e4e8; vertical-align: top; width: 50%; }
     .cell-title { font-size: 14px; font-weight: 800; color: #1a3c6d; margin-bottom: 10px; display: block; }
     .fixed-subject { background: #e3f2fd; color: #1a3c6d; padding: 12px 15px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 2px dashed #2b5c9e; display: block; width: 100%; text-align: center; white-space: pre-line; line-height: 1.7; }
-    .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e0e4e8; border-radius: 10px; font-size: 14px; transition: all 0.3s; background: #fff; }
+    .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e0e4e8; border-radius: 10px; font-size: 14px; transition: all 0.3s; background: #fff; font-family: inherit; font-weight: 700; }
     .form-control:focus { border-color: #2b5c9e; outline: none; box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1); }
 
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; }
@@ -45,7 +48,7 @@
     .cards-grid label i { font-size: 18px; margin-bottom: 5px; }
     .cards-grid input[type="radio"]:checked + label { background: #e3f2fd; border-color: #2b5c9e; color: #1a3c6d; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(43, 92, 158, 0.15); }
     .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; }
+    .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
 
     .calendar-section { background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 4px solid #f1c40f; padding: 25px; margin-bottom: 20px; }
     .section-header-custom { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: #1a3c6d; margin-bottom: 10px; }
@@ -53,7 +56,7 @@
     .section-hint { background: #fff8e1; border-right: 4px solid #f1c40f; padding: 12px 15px; border-radius: 8px; font-size: 14px; color: #7a5c00; font-weight: bold; margin-bottom: 20px; }
 
     .view-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f1f5f9; padding: 6px; border-radius: 12px; flex-wrap: wrap; }
-    .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
     .view-tab.active { background: #2b5c9e; color: white; box-shadow: 0 4px 12px rgba(43,92,158,0.3); }
 
     .week-nav {
@@ -70,7 +73,7 @@
         border-radius: 50%; font-weight: 900; font-size: 22px;
         cursor: pointer; transition: 0.2s;
         display: flex; align-items: center; justify-content: center;
-        padding: 0; line-height: 1; flex-shrink: 0;
+        padding: 0; line-height: 1; flex-shrink: 0; font-family: inherit;
     }
     .week-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
     .week-nav-btn:active { transform: scale(0.95); }
@@ -89,7 +92,7 @@
         color: #1a3c6d; border: none; padding: 10px 22px;
         border-radius: 10px; font-weight: 900; font-size: 14px;
         cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
-        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
     }
     .week-today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
 
@@ -139,12 +142,12 @@
     .time-slot { display: flex; flex-direction: column; gap: 8px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e0e4e8; transition: 0.3s; }
     .time-slot.locked { background: #e8f5e9; border-color: #28a745; position: relative; }
     .time-slot.locked::before { content: '🔒'; position: absolute; top: 6px; left: 8px; font-size: 14px; }
-    .time-row { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: space-between; }
+    .time-row { display: flex; align-items: center; gap: 5px; width: 100%; justify-content: space-between; flex-wrap: wrap; }
     .time-label { font-weight: bold; color: #1a3c6d; font-size: 13px; min-width: 32px; flex-shrink: 0; text-align: center; }
-    .simple-select { padding: 8px 6px; border: 2px solid #e0e4e8; border-radius: 6px; font-size: 14px; font-family: inherit; font-weight: bold; color: #1a3c6d; background: #fff; outline: none; transition: 0.2s; cursor: pointer; text-align: center; }
+    .simple-select { flex: 1; min-width: 0; padding: 8px 4px; border: 2px solid #e0e4e8; border-radius: 6px; font-size: 14px; font-family: inherit; font-weight: bold; color: #1a3c6d; background: #fff; outline: none; transition: 0.2s; cursor: pointer; text-align: center; }
     .simple-select:focus { border-color: #2b5c9e; box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.15); }
     .time-slot.locked .simple-select { background: #f0f0f0; color: #555; cursor: not-allowed; pointer-events: none; border-color: #ccc; opacity: 0.85; }
-    .period-select { width: 60px; background: #e3f2fd; color: #1a3c6d; font-weight: 900; flex-shrink: 0; }
+    .period-select { width: 60px; background: #e3f2fd; color: #1a3c6d; font-weight: 900; flex: 0 0 auto; }
     .minute-select { width: 85px; flex: 0 0 auto; }
     .hour-select { width: 85px; flex-shrink: 0; }
     .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; align-items: center; }
@@ -161,14 +164,14 @@
     .slot-apply-note b { color: #14532d; }
     .time-slot.locked .slot-apply-note { display: inline-flex; background: #f0fdf4; border-color: #28a745; color: #14532d; }
 
-    .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
     .btn-save-slot:hover { background: #1a3c6d; }
     .btn-save-slot.saved { background: #28a745; }
-    .btn-edit-slot { background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: none; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-edit-slot { background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: none; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
     .btn-edit-slot:hover { background: #e67e22; }
     .time-slot.locked .btn-edit-slot { display: flex; }
     .time-slot.locked .btn-save-slot { display: none; }
-    .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; }
+    .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
     .btn-remove-slot:hover { background: #c82333; }
 
     .btn-add-slot {
@@ -179,7 +182,7 @@
         display: flex; align-items: center; justify-content: center; gap: 8px;
         box-shadow: 0 6px 0 #1e7e34, 0 8px 15px rgba(39, 174, 96, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
         text-shadow: 0 1px 2px rgba(0,0,0,0.2); letter-spacing: 0.5px;
-        position: relative; overflow: hidden;
+        position: relative; overflow: hidden; font-family: inherit;
     }
     .btn-add-slot::before {
         content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -204,7 +207,7 @@
     .slot-range-select {
         padding: 8px 12px; border: 2px solid #f39c12; border-radius: 8px;
         font-size: 13px; font-weight: 700; color: #7a5c00; background: #ffffff;
-        cursor: pointer; outline: none; font-family: 'Segoe UI', Tahoma, sans-serif;
+        cursor: pointer; outline: none; font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
         min-width: 150px; text-align: center; letter-spacing: 0.3px; transition: 0.2s;
         appearance: none; -webkit-appearance: none; -moz-appearance: none;
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -231,7 +234,7 @@
         color: white; width: 45px; height: 45px; border-radius: 50%;
         font-weight: 900; font-size: 22px; cursor: pointer; transition: 0.2s;
         display: flex; align-items: center; justify-content: center;
-        padding: 0; line-height: 1; flex-shrink: 0;
+        padding: 0; line-height: 1; flex-shrink: 0; font-family: inherit;
     }
     .month-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
     .month-nav-btn:active { transform: scale(0.95); }
@@ -246,7 +249,7 @@
         color: #1a3c6d; border: none; padding: 10px 22px;
         border-radius: 10px; font-weight: 900; font-size: 14px;
         cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
-        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
     }
     .today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
 
@@ -330,10 +333,10 @@
     .modal-session-item.past .time { color: #64748b; }
     .modal-session-item .sess-num { background: #f1c40f; color: #1a3c6d; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 900; }
     .modal-session-item.past .sess-num { background: #cbd5e1; color: #475569; }
-    .modal-close-btn { width: 100%; padding: 12px; background: #2b5c9e; color: white; border: none; border-radius: 8px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; }
+    .modal-close-btn { width: 100%; padding: 12px; background: #2b5c9e; color: white; border: none; border-radius: 8px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; font-family: inherit; }
     .modal-close-btn:hover { background: #1a3c6d; }
 
-    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; }
+    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; font-family: inherit; }
     .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -355,8 +358,25 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { color: #1a3c6d; font-weight: 900; font-size: 15px; }
 
+    /* ============================================
+       📱 تحسينات الموبايل
+       ============================================ */
     @media (max-width: 700px) {
-        .header-3d h1 { font-size: 22px; }
+        .header-3d { padding: 25px 15px 40px; }
+        .header-3d h1 { font-size: 20px; }
+        .step { font-size: 12px; }
+        .step.active { font-size: 13px; }
+        .stepper { padding: 8px 14px; gap: 10px; }
+
+        .container { padding: 0 8px; margin-top: -25px; }
+        .calendar-section { padding: 15px 12px; }
+        .section-header-custom { font-size: 15px; }
+        .section-hint { font-size: 12px; padding: 10px 12px; }
+
+        .data-table td { padding: 10px; display: block; width: 100%; border: none; border-bottom: 1px solid #e0e4e8; }
+        .data-table tr { display: block; }
+        .data-table { border-collapse: separate; }
+
         .view-tab { font-size: 12px; padding: 10px 6px; min-width: 0; }
         .monthly-day { min-height: 75px; padding: 4px; }
         .day-num { font-size: 12px; }
@@ -369,25 +389,82 @@
         .week-nav-title .week-range .week-num-badge { font-size: 10px; padding: 1px 6px; }
         .week-nav-title .week-label { font-size: 11px; }
         .monthly-head-cell { font-size: 10px; padding: 8px 3px 6px; }
-        .slot-range-select { min-width: 130px; font-size: 12px; padding: 6px 8px; padding-left: 26px; background-size: 12px; }
+        .slot-range-select { min-width: 110px; font-size: 11px; padding: 6px 8px; padding-left: 24px; background-size: 12px; }
         .slot-range-label { font-size: 11px; }
         .day-title { flex-direction: column; align-items: flex-start; gap: 4px; }
         .day-date { font-size: 11px; padding: 3px 8px; }
         .swipe-hint { font-size: 11px; }
         .monthly-body { grid-auto-rows: minmax(75px, auto); }
-        .slot-apply-note { font-size: 10px; min-width: 140px; }
+        .slot-apply-note { font-size: 10px; min-width: 100%; margin-top: 5px; text-align: center; justify-content: center; }
+
+        .day-header { padding: 10px 12px; }
+        .day-status { font-size: 10px; padding: 4px 8px; }
+        .time-slot { padding: 10px 8px; }
+        .submit-btn { font-size: 16px; padding: 16px; }
     }
 
     @media (max-width: 600px) {
         .day-header { flex-wrap: wrap; }
-        .day-header-left { width: 100%; justify-content: space-between; }
-        .day-status { font-size: 11px; padding: 5px 10px; }
-        .time-label { min-width: 30px; font-size: 12px; }
-        .period-select { width: 52px; font-size: 12px; padding: 6px 4px; }
-        .minute-select { width: 72px; font-size: 12px; padding: 6px 4px; }
-        .hour-select { width: 72px; font-size: 12px; padding: 6px 4px; }
-        .slot-actions { justify-content: center; }
-        .slot-apply-note { flex: 1 1 100%; justify-content: center; text-align: center; }
+        .day-header-left { width: 100%; justify-content: space-between; margin-top: 5px; }
+
+        .time-row {
+            justify-content: center;
+            gap: 4px;
+        }
+        .time-label {
+            min-width: 30px;
+            font-size: 12px;
+            margin-left: 2px;
+        }
+
+        .period-select { width: 45px; font-size: 12px; padding: 6px 2px; flex: 0 0 auto; }
+        .minute-select { width: 65px; font-size: 12px; padding: 6px 2px; flex: 1; }
+        .hour-select { width: 65px; font-size: 12px; padding: 6px 2px; flex: 1; }
+
+        .slot-actions {
+            justify-content: center;
+            gap: 8px;
+        }
+        .slot-apply-note {
+            flex: 1 1 100%;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .slot-range {
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px;
+        }
+        .slot-range-label { width: 100%; justify-content: flex-start; }
+        .slot-range-select { width: 100%; min-width: 0; }
+        .slot-range-arrow { transform: rotate(90deg); margin: 2px 0; }
+
+        .monthly-head-cell { font-size: 9px; padding: 6px 2px; }
+        .day-num { font-size: 11px; }
+        .day-session-chip { font-size: 8px; padding: 2px 3px; }
+
+        .btn-add-slot { padding: 12px; font-size: 14px; }
+    }
+
+    @media (max-width: 380px) {
+        .header-3d h1 { font-size: 17px; }
+        .step { font-size: 10px; }
+        .step.active { font-size: 11px; }
+
+        .minute-select { width: 55px; }
+        .hour-select { width: 55px; }
+        .period-select { width: 40px; }
+        .time-label { font-size: 11px; min-width: 25px; }
+
+        .day-title label { font-size: 14px; }
+        .day-date { font-size: 10px; padding: 2px 6px; }
+
+        .view-tab { font-size: 11px; padding: 8px 4px; }
+
+        .month-nav-btn, .week-nav-btn { width: 34px; height: 34px; font-size: 16px; }
+        .month-nav-title .month-name { font-size: 15px; }
     }
 </style>
 </head>
@@ -536,7 +613,6 @@
     </div>
 </div>
 
-<!-- ✅ شاشة التحميل -->
 <div class="loading-overlay" id="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -544,7 +620,6 @@
     </div>
 </div>
 
-<!-- ✅ الشريط السفلي -->
 <div class="last-save-bar" id="autosave-bar">
     <span class="dot"></span>
     <span>تم الحفظ تلقائياً</span>
@@ -816,11 +891,9 @@
     // 🎯 تشغيل الصفحة
     // ==========================================
     window.onload = function() {
-        // ✅✅✅ إخفاء شاشة التحميل فوراً عند تحميل الصفحة ✅✅✅
         const loadingOverlay = document.getElementById('loading-overlay');
         if (loadingOverlay) loadingOverlay.classList.remove('show');
 
-        // ✅ إعادة زر الحفظ لحالته الطبيعية
         const submitBtn = document.getElementById('submit-btn-main');
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -845,7 +918,6 @@
         if (IS_EDIT_MODE) {
             loadEditData();
         } else {
-            // ✅ عند الرجوع من mester3، نستعيد الحفظ التلقائي
             const restored = restoreFormState();
             if (restored) {
                 console.log('✅ تم استرجاع الحفظ التلقائي');
@@ -1827,7 +1899,6 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
-        // ✅ التحقق
         if (subjectData.includes('لم تختر')) {
             alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.');
             return;
@@ -1852,7 +1923,6 @@
             return;
         }
 
-        // ✅ بناء جدول الحصص
         const schedule = {};
         let totalSessionsCount = 0;
         const daysNamesArr = [];
@@ -1879,7 +1949,6 @@
             return;
         }
 
-        // ✅ استخراج الصف والمادة
         let gradeExtracted = '';
         const gradeMatch = subjectData.match(/الصف:\s*([^|\n]+)/);
         if (gradeMatch) gradeExtracted = gradeMatch[1].trim();
@@ -1888,24 +1957,20 @@
         const subjMatch = subjectData.match(/المواد:\s*([^|\n]+)/);
         if (subjMatch) firstSubject = subjMatch[1].split('-')[0].trim();
 
-        // ✅ نوع المكان
         let locationType = 'center';
         if (location === 'بيت المستر') locationType = 'teacher_home';
         else if (location === 'منزل الطالب') locationType = 'student_home';
 
-        // ✅ الجنس
         let genderValue = 'mixed';
         if (genderAllowed === 'أولاد فقط') genderValue = 'boys';
         else if (genderAllowed === 'بنات فقط') genderValue = 'girls';
 
-        // ✅ أول وقت
         let firstStartTime = '';
         const firstDaySessions = Object.values(schedule)[0];
         if (firstDaySessions && firstDaySessions.length > 0) {
             firstStartTime = firstDaySessions[0].start;
         }
 
-        // ✅ lat/lng
         let lat = null, lng = null;
         if (gpsLocation && gpsLocation.includes(',')) {
             const parts = gpsLocation.split(',');
@@ -1913,13 +1978,11 @@
             lng = parseFloat(parts[1]);
         }
 
-        // ✅ عنوان المعلم (مستر / مس)
         let teacherTitle = 'مستر';
         if (teacherName.startsWith('مس ') || teacherName.startsWith('مسة') || teacherName.includes('أ.مس')) {
             teacherTitle = 'مس';
         }
 
-        // ✅ بناء بيانات المجموعة
         const groupData = {
             subjectData,
             subject: firstSubject,
@@ -1956,7 +2019,6 @@
             updatedAt: serverTimestamp()
         };
 
-        // ✅ إظهار loading
         const submitBtn = document.getElementById('submit-btn-main');
         const originalText = submitBtn.innerHTML;
         const loadingOverlay = document.getElementById('loading-overlay');
@@ -1971,7 +2033,6 @@
             await waitForAuth();
 
             if (IS_EDIT_MODE && EDIT_FIREBASE_ID) {
-                // 🔄 وضع التعديل
                 const groupRef = doc(db, 'groups', EDIT_FIREBASE_ID);
                 const editData = JSON.parse(localStorage.getItem(EDIT_DATA_KEY) || '{}');
                 groupData.published = editData.published || false;
@@ -1984,7 +2045,6 @@
                 alert(`✅ تم تحديث المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً`);
 
             } else {
-                // ✨ إنشاء جديد
                 groupData.createdAt = serverTimestamp();
                 const docRef = await addDoc(collection(db, 'groups'), groupData);
                 console.log('✅ تم إنشاء المجموعة بـ ID:', docRef.id);
@@ -1992,22 +2052,17 @@
                 alert(`✅ تم إنشاء المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً\n\n🆔 ${docRef.id.substring(0, 8)}...`);
             }
 
-            // ✅ حفظ اسم المعلم
             localStorage.setItem(TEACHER_NAME_KEY, teacherName);
 
-            // ✅ مسح الحفظ التلقائي
             clearAutosave();
             localStorage.removeItem(EDIT_DATA_KEY);
             localStorage.removeItem('mester2_edit_index');
 
-            // ✅ إخفاء شاشة التحميل أولاً
             loadingOverlay.classList.remove('show');
             
-            // ✅ إعادة تفعيل الزر
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
             
-            // ✅ ثم التحويل
             loadingText.textContent = '✅ تم الحفظ! جاري التحويل...';
             setTimeout(() => {
                 window.location.href = 'mester3.html';
