@@ -10,7 +10,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { 
     getAuth, 
-    signInAnonymously, 
     onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -44,38 +43,29 @@ const authReadyPromise = new Promise(res => { authReadyResolve = res; });
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
     if (user) {
-        console.log('✅ Firebase Auth - User:', user.uid, user.email);
+        console.log('✅ Firebase Auth - User:', user.uid);
     } else {
         console.log('ℹ️ Firebase Auth - No user');
     }
-    // حل الوعد أول مرة فقط
     if (authReadyResolve) {
         authReadyResolve(user);
         authReadyResolve = null;
     }
 });
 
-// ✅ دالة مساعدة تنتظر جهوزية auth
 async function waitForAuth() {
     if (currentUser !== null) return currentUser;
     return authReadyPromise;
 }
 
-// ==========================================
-// 🎯 دوال مساعدة
-// ==========================================
-
-// ✅ الحصول على UID الحالي
 function getCurrentUid() {
     return currentUser ? currentUser.uid : null;
 }
 
-// ✅ التحقق إن المستخدم مسجل دخول
 function isLoggedIn() {
     return currentUser !== null;
 }
 
-// ✅ تسجيل خروج
 async function logoutUser() {
     try {
         await signOut(auth);
@@ -88,9 +78,6 @@ async function logoutUser() {
         return false;
     }
 }
-
-// ⚠️ ملاحظة: تم إزالة signInAnonymously لأننا نستخدم Email/Password
-// لو محتاجها في مكان، استخدمها بشكل صريح
 
 export { 
     db, auth, 
