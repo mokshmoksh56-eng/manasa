@@ -34,46 +34,28 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // ==========================================
-// 🎯 إدارة حالة المصادقة - نسخة محسّنة
+// 🎯 إدارة حالة المصادقة
 // ==========================================
 let currentUser = null;
-let authInitialized = false;
+let authReadyResolve;
+const authReadyPromise = new Promise(res => { authReadyResolve = res; });
 
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    authInitialized = true;
     if (user) {
         console.log('✅ Firebase Auth - User:', user.uid);
     } else {
         console.log('ℹ️ Firebase Auth - No user');
     }
+    if (authReadyResolve) {
+        authReadyResolve(user);
+        authReadyResolve = null;
+    }
 });
 
-// ✅ دالة آمنة لا تعلّق أبداً
-function waitForAuth() {
-    return new Promise((resolve) => {
-        // ✅ لو auth جاهز → ارجع فوراً
-        if (authInitialized) {
-            resolve(currentUser);
-            return;
-        }
-        
-        // ⏱️ انتظر أول إشارة فقط + Timeout 3 ثواني
-        let resolved = false;
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (resolved) return;
-            resolved = true;
-            unsubscribe();
-            resolve(user);
-        });
-
-        setTimeout(() => {
-            if (resolved) return;
-            resolved = true;
-            unsubscribe();
-            resolve(auth.currentUser);
-        }, 3000);
-    });
+async function waitForAuth() {
+    if (currentUser !== null) return currentUser;
+    return authReadyPromise;
 }
 
 function getCurrentUid() {
