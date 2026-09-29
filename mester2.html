@@ -588,19 +588,9 @@
     let EDIT_INDEX = -1;
     let EDIT_FIREBASE_ID = null;
 
-    // ==========================================
-    // ✅✅✅ مصدر الحقيقة الوحيد لبيانات الحصص ✅✅✅
-    // ==========================================
     let SAVED_SLOTS = {};
-
-    // ==========================================
-    // ✅✅✅ تتبع الأيام المفتوحة يدوياً فقط ✅✅✅
-    // ==========================================
     let MANUALLY_EXPANDED_DAYS = new Set();
 
-    // ==========================================
-    // ✅✅✅ حفظ تلقائي محلي (احتياطي) ✅✅✅
-    // ==========================================
     const AUTOSAVE_KEY = 'mester2_autosave';
     const EDIT_DATA_KEY = 'mester2_edit_data';
 
@@ -826,6 +816,20 @@
     // 🎯 تشغيل الصفحة
     // ==========================================
     window.onload = function() {
+        // ✅✅✅ إخفاء شاشة التحميل فوراً عند تحميل الصفحة ✅✅✅
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) loadingOverlay.classList.remove('show');
+
+        // ✅ إعادة زر الحفظ لحالته الطبيعية
+        const submitBtn = document.getElementById('submit-btn-main');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            const urlParamsCheck = new URLSearchParams(window.location.search);
+            if (!urlParamsCheck.get('mode')) {
+                submitBtn.innerHTML = '🚀 إنشاء ونشر المجموعة';
+            }
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode');
         const editIndex = urlParams.get('index');
@@ -833,13 +837,21 @@
         if (mode === 'edit' && editIndex !== null && editIndex !== undefined) {
             IS_EDIT_MODE = true;
             EDIT_INDEX = parseInt(editIndex);
+        } else {
+            IS_EDIT_MODE = false;
+            EDIT_INDEX = -1;
         }
 
         if (IS_EDIT_MODE) {
             loadEditData();
         } else {
+            // ✅ عند الرجوع من mester3، نستعيد الحفظ التلقائي
             const restored = restoreFormState();
-            if (restored) console.log('✅ تم استرجاع الحفظ التلقائي');
+            if (restored) {
+                console.log('✅ تم استرجاع الحفظ التلقائي');
+            } else {
+                console.log('📭 لا يوجد حفظ تلقائي');
+            }
         }
 
         if (!IS_EDIT_MODE) {
@@ -1956,7 +1968,6 @@
         loadingText.textContent = 'جاري الحفظ في السيرفر...';
 
         try {
-            // ✅ انتظر جهوزية Auth
             await waitForAuth();
 
             if (IS_EDIT_MODE && EDIT_FIREBASE_ID) {
@@ -1989,11 +2000,18 @@
             localStorage.removeItem(EDIT_DATA_KEY);
             localStorage.removeItem('mester2_edit_index');
 
-            // ✅ الانتقال
+            // ✅ إخفاء شاشة التحميل أولاً
+            loadingOverlay.classList.remove('show');
+            
+            // ✅ إعادة تفعيل الزر
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            
+            // ✅ ثم التحويل
             loadingText.textContent = '✅ تم الحفظ! جاري التحويل...';
             setTimeout(() => {
                 window.location.href = 'mester3.html';
-            }, 800);
+            }, 500);
 
         } catch (error) {
             console.error('❌ فشل الحفظ:', error);
