@@ -689,9 +689,37 @@
         }
 
         // =========================================
-        // ✅ اختيار الصف - مع حفظ تلقائي
+        // ✅ اختيار الصف - مع حفظ تلقائي واختيار مرحلة واحدة فقط
         // =========================================
         function selectGrade(gradeName, stageId, btn) {
+            // 1. تفريغ جميع المراحل الأخرى لضمان اختيار مرحلة واحدة فقط
+            for (const key in selections) {
+                if (key !== stageId && selections[key].grade !== '') {
+                    // تصفير البيانات
+                    selections[key] = { grade: '', subjects: [] };
+                    subjectsOpen[key] = false;
+
+                    // إغلاق القسم
+                    const stageItem = document.getElementById(`stage-${key}`);
+                    if (stageItem) stageItem.classList.remove('active');
+
+                    // إزالة التحديد من أزرار الصفوف
+                    const stageContent = document.querySelector(`#stage-${key} .grades-grid`);
+                    if (stageContent) {
+                        stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+                    }
+
+                    // إخفاء وحذف المواد
+                    const container = document.getElementById(`subjects-container-${key}`);
+                    if (container) container.innerHTML = '';
+
+                    // مسح الشارات (Badges)
+                    const badges = document.getElementById(`badges-${key}`);
+                    if (badges) badges.innerHTML = '';
+                }
+            }
+
+            // 2. استكمال منطق الاختيار للمرحلة الحالية
             const currentGrade = selections[stageId].grade;
             const container = document.getElementById(`subjects-container-${stageId}`);
 
@@ -712,6 +740,8 @@
 
             // لو صف مختلف
             selections[stageId].grade = gradeName;
+            // تصفير المواد عند تغيير الصف داخل نفس المرحلة
+            selections[stageId].subjects = []; 
 
             const parentGrid = btn.parentElement;
             parentGrid.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
