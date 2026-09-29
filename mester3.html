@@ -82,6 +82,28 @@
     }
 
     /* =========================================
+       حالة التحميل
+       ========================================= */
+    .loading-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .loading-state .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #e0e4e8;
+        border-top-color: #2b5c9e;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p { color: #64748b; font-weight: 800; font-size: 16px; }
+
+    /* =========================================
        كارت المجموعة
        ========================================= */
     .groups-grid {
@@ -1184,25 +1206,14 @@
     // ✅✅✅ إصلاح مشكلة الرجوع من mester3.html ✅✅✅
     // ==========================================
     (function() {
-        // ✅ عند الرجوع من BFCache، نضمن تحميل نظيف
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
-                console.log('✅ تم استرجاع mester3 من cache - تحميل نظيف');
-                
-                // ✅ إخفاء أي نافذة منبثقة عالقة
+                console.log('✅ تم استرجاع mester3 من cache');
                 const publishModal = document.getElementById('publish-modal');
                 const deleteModal = document.getElementById('delete-modal');
                 if (publishModal) publishModal.classList.remove('active');
                 if (deleteModal) deleteModal.classList.remove('active');
-                
-                // ✅ إعادة تفعيل scroll
                 document.body.style.overflow = '';
-                
-                // ✅ إزالة أي خرائط قديمة
-                if (window.publishMap) {
-                    try { window.publishMap.remove(); } catch(e) {}
-                    window.publishMap = null;
-                }
             }
         });
     })();
@@ -1230,8 +1241,14 @@
         <span class="count-badge" id="groups-count">0 مجموعة</span>
     </div>
 
+    <!-- 🎯 حالة التحميل -->
+    <div class="loading-state" id="loading-state">
+        <div class="spinner"></div>
+        <p>⏳ جاري تحميل المجموعات...</p>
+    </div>
+
     <!-- 🎯 شبكة المجموعات -->
-    <div class="groups-grid" id="groups-grid"></div>
+    <div class="groups-grid" id="groups-grid" style="display: none;"></div>
 
     <!-- 🎯 صفحة فارغة -->
     <div class="empty-state" id="empty-state" style="display: none;">
@@ -1367,13 +1384,12 @@
     import { 
         db, waitForAuth,
         collection, getDocs, doc, getDoc, deleteDoc, updateDoc,
-        query, where, orderBy, serverTimestamp
+        serverTimestamp
     } from './firebase-config.js';
 
     // ==========================================
     // 🎯 مفاتيح التخزين
     // ==========================================
-    const GROUPS_STORAGE_KEY = 'mester_groups_list';
     const TEACHER_NAME_KEY = 'mester_teacher_name';
 
     // ==========================================
@@ -1396,15 +1412,24 @@
         document.getElementById('teacher-display-name').textContent = teacherName;
     }
 
+    // ==========================================
     // ✅ جلب المجموعات من Firestore
+    // ==========================================
     async function getGroupsFromFirebase() {
         try {
+            // ✅✅✅ انتظر جهوزية Firebase Auth ✅✅✅
+            await waitForAuth();
+            console.log('✅ Auth جاهز - جاري جلب المجموعات...');
+            
             const groupsCollection = collection(db, 'groups');
             const querySnapshot = await getDocs(groupsCollection);
+            
+            console.log('📦 عدد المستندات في Firestore:', querySnapshot.size);
             
             const groups = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
+                console.log('📄 مجموعة:', doc.id, data.groupName);
                 groups.push({ 
                     id: doc.id,
                     firebaseId: doc.id,
@@ -1414,34 +1439,58 @@
             
             return groups;
         } catch (e) {
-            console.error('خطأ في قراءة المجموعات من Firestore:', e);
+            console.error('❌ خطأ في قراءة المجموعات من Firestore:', e);
+            alert('⚠️ فشل جلب المجموعات:\n' + e.message);
             return [];
         }
     }
 
+    // ==========================================
+    // ✅ تحميل وعرض المجموعات
+    // ==========================================
     async function loadAndRenderGroups() {
-        const groups = await getGroupsFromFirebase();
+        const loadingState = document.getElementById('loading-state');
         const grid = document.getElementById('groups-grid');
         const emptyState = document.getElementById('empty-state');
         const countBadge = document.getElementById('groups-count');
-
-        countBadge.textContent = groups.length + ' مجموعة';
-
-        if (groups.length === 0) {
-            grid.innerHTML = '';
-            grid.style.display = 'none';
-            emptyState.style.display = 'block';
-            return;
-        }
-
-        grid.style.display = 'grid';
+        
+        // ✅ إظهار حالة التحميل
+        loadingState.style.display = 'block';
+        grid.style.display = 'none';
         emptyState.style.display = 'none';
-        grid.innerHTML = groups.map((g, index) => renderGroupCard(g, index)).join('');
+
+        try {
+            console.log('🔄 جاري تحميل المجموعات...');
+            
+            const groups = await getGroupsFromFirebase();
+            console.log('✅ تم جلب', groups.length, 'مجموعة');
+            
+            // ✅ إخفاء حالة التحميل
+            loadingState.style.display = 'none';
+            countBadge.textContent = groups.length + ' مجموعة';
+
+            if (groups.length === 0) {
+                grid.innerHTML = '';
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            grid.innerHTML = groups.map((g, index) => renderGroupCard(g, index)).join('');
+            
+            console.log('✅ تم عرض', groups.length, 'كارت');
+        } catch (e) {
+            console.error('❌ فشل تحميل الكروت:', e);
+            loadingState.style.display = 'none';
+            alert('⚠️ فشل تحميل المجموعات:\n' + e.message);
+        }
     }
 
-    // =========================================
+    // ==========================================
     // ✅ بناء قسم مواعيد الحصص
-    // =========================================
+    // ==========================================
     function buildScheduleSection(group) {
         const schedule = group.schedule || {};
         const dayNames = Object.keys(schedule);
@@ -1502,9 +1551,9 @@
         return h * 60 + m;
     }
 
-    // =========================================
+    // ==========================================
     // 🎯 رسم كارت المجموعة
-    // =========================================
+    // ==========================================
     function renderGroupCard(group, index) {
         let totalSessions = 0;
         if (group.schedule) {
@@ -1615,6 +1664,7 @@
     // =========================================
     async function publishGroup(firebaseId) {
         try {
+            await waitForAuth();
             const groupRef = doc(db, 'groups', firebaseId);
             await updateDoc(groupRef, {
                 published: true,
@@ -1637,6 +1687,7 @@
     // =========================================
     async function openPublishModal(firebaseId) {
         try {
+            await waitForAuth();
             const groupRef = doc(db, 'groups', firebaseId);
             const groupSnap = await getDoc(groupRef);
             if (!groupSnap.exists()) {
@@ -1677,9 +1728,6 @@
         }
 
         currentPublishGroup = null;
-
-        // ✅ إعادة تحميل الكروت بعد إغلاق النافذة
-        setTimeout(loadAndRenderGroups, 100);
     }
 
     // =========================================
@@ -2034,6 +2082,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
     // =========================================
     async function editGroup(firebaseId) {
         try {
+            await waitForAuth();
             const groupRef = doc(db, 'groups', firebaseId);
             const groupSnap = await getDoc(groupRef);
             if (!groupSnap.exists()) {
@@ -2060,16 +2109,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
 
     function askDeleteGroup(firebaseId) {
         deleteTargetId = firebaseId;
-        const group = currentPublishGroup && currentPublishGroup.id === firebaseId 
-            ? currentPublishGroup 
-            : null;
-        
-        if (group) {
-            document.getElementById('delete-group-name').textContent = '«' + (group.groupName || 'بدون اسم') + '»';
-        } else {
-            document.getElementById('delete-group-name').textContent = 'هذه المجموعة';
-        }
-        
+        document.getElementById('delete-group-name').textContent = 'هذه المجموعة';
         document.getElementById('delete-modal').classList.add('active');
     }
 
@@ -2081,6 +2121,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
     async function confirmDeleteGroup() {
         if (!deleteTargetId) return;
         try {
+            await waitForAuth();
             const groupRef = doc(db, 'groups', deleteTargetId);
             await deleteDoc(groupRef);
             console.log('✅ تم حذف المجموعة:', deleteTargetId);
@@ -2107,34 +2148,16 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
     });
 
     // ==========================================
-    // ✅✅✅ الحفاظ على البيانات عند الرجوع ✅✅✅
+    // ✅✅✅ إعادة التحميل عند الرجوع (BFCache) ✅✅✅
     // ==========================================
-
-    // ✅ حفظ آخر تمرير للصفحة
-    window.addEventListener('beforeunload', function() {
-        sessionStorage.setItem('mester3_scroll', window.scrollY);
-    });
-
-    // ✅ استرجاع التمرير عند الرجوع
-    window.addEventListener('load', function() {
-        const scroll = sessionStorage.getItem('mester3_scroll');
-        if (scroll) {
-            setTimeout(() => {
-                window.scrollTo({ top: parseInt(scroll), behavior: 'instant' });
-            }, 100);
-        }
-    });
-
-    // ✅ إعادة تحميل الكروت عند الرجوع (BFCache)
     window.addEventListener('pageshow', function(e) {
         if (e.persisted) {
-            console.log('✅ تم استرجاع mester3 من cache');
+            console.log('✅ تم استرجاع mester3 من cache - إعادة التحميل');
             loadTeacherName();
             loadAndRenderGroups();
         }
     });
 
-    // ✅ إعادة تحميل الكروت عند العودة للتبويب
     document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible') {
             loadTeacherName();
