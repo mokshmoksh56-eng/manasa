@@ -332,7 +332,8 @@
             <div class="gate-card-image"></div>
         </a>
 
-        <a href="student.html" class="gate-card student-card">
+        <!-- ✅ تم التعديل هنا ليوجه إلى talep.html مباشرة -->
+        <a href="talep.html" class="gate-card student-card">
             <div class="gate-card-content">
                 <div class="gate-title">بوابة الطالب</div>
                 <div class="gate-desc">
@@ -352,16 +353,6 @@
     </footer>
 
     <script>
-        document.querySelectorAll('.gate-card').forEach(card => {
-            card.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href === 'student.html') {
-                    e.preventDefault();
-                    alert('🚧 بوابة الطالب قيد التطوير حالياً.\nسيتم إتاحتها قريباً إن شاء الله.');
-                }
-            });
-        });
-
         // ✅ تحسين تجربة الرجوع من الصفحات الأخرى
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
