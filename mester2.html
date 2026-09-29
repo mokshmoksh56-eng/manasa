@@ -358,9 +358,6 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { color: #1a3c6d; font-weight: 900; font-size: 15px; }
 
-    /* ============================================
-       📱 تحسينات الموبايل
-       ============================================ */
     @media (max-width: 700px) {
         .header-3d { padding: 25px 15px 40px; }
         .header-3d h1 { font-size: 20px; }
@@ -1024,12 +1021,22 @@
                     if (!dayObj) return;
                     const slots = editData.schedule[dayName];
                     if (!Array.isArray(slots)) return;
-                    SAVED_SLOTS[dayObj.id] = slots.map(s => ({
-                        start: s.start,
-                        end: s.end,
-                        rangeFrom: s.rangeFrom || '',
-                        rangeTo: s.rangeTo || ''
-                    }));
+
+                    // 🔑 منع التكرار عند تحميل بيانات التعديل
+                    const uniqueMap = new Map();
+                    slots.forEach(s => {
+                        if (!s || !s.start || !s.end) return;
+                        const key = `${s.start}__${s.end}__${s.rangeFrom || ''}__${s.rangeTo || ''}`;
+                        if (!uniqueMap.has(key)) {
+                            uniqueMap.set(key, {
+                                start: s.start,
+                                end: s.end,
+                                rangeFrom: s.rangeFrom || '',
+                                rangeTo: s.rangeTo || ''
+                            });
+                        }
+                    });
+                    SAVED_SLOTS[dayObj.id] = Array.from(uniqueMap.values());
                 });
             }
 
@@ -1215,6 +1222,9 @@
         return { hour: parseInt(hm[0]), minute: hm[1] || '00', period: parts[1] || 'م' };
     }
 
+    // ==========================================
+    // ✅✅✅ saveSlot مع منع التكرار نهائياً ✅✅✅
+    // ==========================================
     function saveSlot(slotId, dayId) {
         const slot = document.getElementById(slotId);
         if (!slot) return;
@@ -1263,8 +1273,20 @@
             rangeTo: slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : ''
         };
 
+        // 🔑 منع التكرار نهائياً
+        const duplicateIdx = SAVED_SLOTS[dayId].findIndex(
+            (s, i) => i !== currentIdx &&
+                     s.start === slotData.start && 
+                     s.end === slotData.end && 
+                     (s.rangeFrom || '') === (slotData.rangeFrom || '') &&
+                     (s.rangeTo || '') === (slotData.rangeTo || '')
+        );
+
         if (currentIdx >= 0 && currentIdx < SAVED_SLOTS[dayId].length) {
             SAVED_SLOTS[dayId][currentIdx] = slotData;
+        } else if (duplicateIdx >= 0) {
+            SAVED_SLOTS[dayId][duplicateIdx] = slotData;
+            slot.dataset.savedIndex = duplicateIdx;
         } else {
             SAVED_SLOTS[dayId].push(slotData);
             slot.dataset.savedIndex = SAVED_SLOTS[dayId].length - 1;
@@ -1837,7 +1859,12 @@
 
         let savedIndex = -1;
         if (SAVED_SLOTS[dayId]) {
-            savedIndex = SAVED_SLOTS[dayId].findIndex(s => s.start === slotData.start && s.end === slotData.end);
+            savedIndex = SAVED_SLOTS[dayId].findIndex(
+                s => s.start === slotData.start && 
+                     s.end === slotData.end && 
+                     (s.rangeFrom || '') === (slotData.rangeFrom || '') &&
+                     (s.rangeTo || '') === (slotData.rangeTo || '')
+            );
         }
 
         const slotHTML = `
@@ -1889,6 +1916,7 @@
 
     // ==========================================
     // 🚀 حفظ ونشر المجموعة في Firebase
+    // ✅✅✅ مع منع تكرار الحصص نهائياً ✅✅✅
     // ==========================================
     async function submitGroupData() {
         const subjectData = document.getElementById('fixed-subject').dataset.value;
@@ -1923,6 +1951,9 @@
             return;
         }
 
+        // ==========================================
+        // ✅ بناء schedule مع إزالة التكرار نهائياً
+        // ==========================================
         const schedule = {};
         let totalSessionsCount = 0;
         const daysNamesArr = [];
@@ -1932,15 +1963,29 @@
             if (!dayObj) return;
             const slots = SAVED_SLOTS[dayId];
             if (!slots || slots.length === 0) return;
-            schedule[dayObj.name] = slots.map(s => {
-                const obj = { start: s.start, end: s.end };
-                if (s.rangeFrom && s.rangeTo) {
-                    obj.rangeFrom = s.rangeFrom;
-                    obj.rangeTo = s.rangeTo;
+
+            // 🔑 استخدام Map لمنع التكرار داخل نفس اليوم
+            const uniqueMap = new Map();
+            slots.forEach(s => {
+                if (!s || !s.start || !s.end) return;
+                const key = `${s.start}__${s.end}__${s.rangeFrom || ''}__${s.rangeTo || ''}`;
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, {
+                        start: s.start,
+                        end: s.end,
+                        ...(s.rangeFrom && s.rangeTo ? {
+                            rangeFrom: s.rangeFrom,
+                            rangeTo: s.rangeTo
+                        } : {})
+                    });
                 }
-                return obj;
             });
-            totalSessionsCount += slots.length;
+
+            const uniqueSlots = Array.from(uniqueMap.values());
+            if (uniqueSlots.length === 0) return;
+
+            schedule[dayObj.name] = uniqueSlots;
+            totalSessionsCount += uniqueSlots.length;
             daysNamesArr.push(dayObj.name);
         });
 
@@ -2107,7 +2152,7 @@
     window.closeModal = closeModal;
     window.submitGroupData = submitGroupData;
 
-    console.log('✅ mester2.js loaded with Firebase');
+    console.log('✅ mester2.js loaded with Firebase - بدون تكرار');
 </script>
 
 </body>
