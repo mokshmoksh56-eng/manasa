@@ -2,38 +2,31 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>منصة احجزلي - إعداد المجموعة</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
+    /* ========================================== */
+    /* 🎨 تنسيقات mester2 الأصلية */
+    /* ========================================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
-    .last-save-bar {
-        position: fixed; bottom: 10px; right: 10px;
-        background: rgba(43, 92, 158, 0.95); color: white;
-        padding: 6px 12px; border-radius: 15px; font-size: 11px;
-        font-weight: bold; z-index: 9998;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        display: none; align-items: center; gap: 5px;
-    }
+    .last-save-bar { position: fixed; bottom: 10px; right: 10px; background: rgba(43, 92, 158, 0.95); color: white; padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: bold; z-index: 9998; box-shadow: 0 3px 10px rgba(0,0,0,0.2); display: none; align-items: center; gap: 5px; }
     .last-save-bar.show { display: flex; }
     .last-save-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; animation: pulseDot 1.5s infinite; }
     @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .header-3d {
-        width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat;
-        padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f;
-    }
+    .header-3d { width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat; padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f; }
     .header-3d h1 { font-size: 36px; font-weight: 900; color: #f1c40f; text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5); margin-bottom: 10px; }
     .stepper { display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; padding: 10px 20px; margin: 15px auto 0; width: fit-content; backdrop-filter: blur(5px); }
     .step { font-size: 14px; font-weight: bold; color: #fff; opacity: 0.6; }
     .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
     .step-divider { color: #fff; }
 
-    .container { width: 100%; max-width: 1100px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
+    .main-container { width: 100%; max-width: 1100px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
     .table-container { background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #2b5c9e; margin-bottom: 20px; }
     .data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .data-table td { padding: 15px; border: 1px solid #e0e4e8; vertical-align: top; width: 50%; }
@@ -50,360 +43,14 @@
     .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
 
-    .calendar-section { background: #fff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 4px solid #f1c40f; padding: 25px; margin-bottom: 20px; }
-    .section-header-custom { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: #1a3c6d; margin-bottom: 10px; }
-    .section-header-custom .circle-num { background: #2b5c9e; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .section-hint { background: #fff8e1; border-right: 4px solid #f1c40f; padding: 12px 15px; border-radius: 8px; font-size: 14px; color: #7a5c00; font-weight: bold; margin-bottom: 20px; }
-
-    .view-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f1f5f9; padding: 6px; border-radius: 12px; flex-wrap: wrap; }
-    .view-tab { flex: 1; min-width: 150px; padding: 12px; border: none; background: transparent; border-radius: 8px; font-weight: 900; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
-    .view-tab.active { background: #2b5c9e; color: white; box-shadow: 0 4px 12px rgba(43,92,158,0.3); }
-
-    .week-nav {
-        display: flex; align-items: center; justify-content: space-between; gap: 10px;
-        margin-bottom: 15px;
-        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        border-radius: 12px; padding: 12px 16px; color: white;
-        box-shadow: 0 6px 15px rgba(43,92,158,0.25);
-    }
-    .week-nav-btn {
-        background: rgba(255,255,255,0.15);
-        border: 2px solid rgba(255,255,255,0.25);
-        color: white; width: 45px; height: 45px;
-        border-radius: 50%; font-weight: 900; font-size: 22px;
-        cursor: pointer; transition: 0.2s;
-        display: flex; align-items: center; justify-content: center;
-        padding: 0; line-height: 1; flex-shrink: 0; font-family: inherit;
-    }
-    .week-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
-    .week-nav-btn:active { transform: scale(0.95); }
-    .week-nav-title { text-align: center; flex: 1; }
-    .week-nav-title .week-label { font-size: 12px; opacity: 0.85; display: block; margin-bottom: 3px; font-weight: bold; letter-spacing: 0.5px; }
-    .week-nav-title .week-range { font-size: 18px; font-weight: 900; color: #f1c40f; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; direction: ltr; }
-    .week-nav-title .week-range .week-num-badge { background: rgba(241,196,15,0.25); border: 1px solid rgba(241,196,15,0.5); color: #f1c40f; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; direction: rtl; }
-    .week-nav-title .week-status { font-size: 11px; margin-top: 3px; display: inline-block; padding: 2px 10px; border-radius: 8px; font-weight: 900; }
-    .week-nav-title .week-status.current { background: rgba(40,167,69,0.3); color: #2ecc71; }
-    .week-nav-title .week-status.past { background: rgba(148,163,184,0.3); color: #cbd5e1; }
-    .week-nav-title .week-status.future { background: rgba(241,196,15,0.3); color: #f1c40f; }
-
-    .week-today-wrapper { text-align: center; margin-bottom: 15px; }
-    .week-today-btn {
-        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-        color: #1a3c6d; border: none; padding: 10px 22px;
-        border-radius: 10px; font-weight: 900; font-size: 14px;
-        cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
-        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
-    }
-    .week-today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
-
-    .vertical-schedule-wrapper { position: relative; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
-    .vertical-schedule-wrapper:active { cursor: grabbing; }
-    .vertical-schedule-wrapper.swipe-left { animation: swipeLeft 0.35s ease; }
-    .vertical-schedule-wrapper.swipe-right { animation: swipeRight 0.35s ease; }
-
-    @keyframes swipeLeft {
-        0% { transform: translateX(0); opacity: 1; }
-        40% { transform: translateX(-30px); opacity: 0.6; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes swipeRight {
-        0% { transform: translateX(0); opacity: 1; }
-        40% { transform: translateX(30px); opacity: 0.6; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-
-    .vertical-schedule { display: flex; flex-direction: column; gap: 12px; }
-    .day-card { background: #fff; border: 2px solid #e0e4e8; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; }
-    .day-card.active { border-color: #2b5c9e; box-shadow: 0 4px 15px rgba(43,92,158,0.15); }
-    .day-card.past-day-card { opacity: 0.6; background: #f8fafc; }
-    .day-card.past-day-card .day-header { background: #f1f5f9; }
-    .day-card.past-day-card .day-title label { color: #94a3b8; }
-    .day-card.past-day-card .day-date { background: #e2e8f0; color: #94a3b8; border-color: #cbd5e1; }
-    .day-card.today-day-card { border-color: #f1c40f; box-shadow: 0 4px 20px rgba(241,196,15,0.25); }
-    .day-card.today-day-card .day-header { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%); }
-    .day-card.future-day-card { border-color: #b8d4f0; }
-
-    .day-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #f8fafc; transition: 0.3s; user-select: none; gap: 10px; flex-wrap: wrap; }
-    .day-card.expanded .day-header { background: #e3f2fd; }
-    .day-title { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 900; color: #1a3c6d; flex-shrink: 0; flex-wrap: wrap; }
-    .day-title label { cursor: pointer; }
-    .day-date { font-size: 12px; font-weight: bold; color: #2b5c9e; background: #e3f2fd; padding: 4px 10px; border-radius: 6px; border: 1px solid #b8d4f0; direction: ltr; display: inline-block; letter-spacing: 0.5px; font-family: 'Consolas', 'Courier New', monospace; }
-    .day-date.today-date { background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%); color: #1a3c6d; border-color: #d4a017; box-shadow: 0 2px 6px rgba(241,196,15,0.4); }
-    .day-header-left { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
-    .day-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 8px; background: #e0e4e8; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 5px; direction: rtl; flex-wrap: wrap; line-height: 1.5; max-width: 100%; justify-content: center; }
-    .session-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; }
-    .session-pill .session-num { background: #f1c40f; color: #1a3c6d; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; }
-    .expand-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 50%; color: #1a3c6d; font-size: 12px; transition: 0.3s; flex-shrink: 0; }
-    .day-card.expanded .expand-icon { transform: rotate(180deg); }
-    .day-body { display: none; padding: 15px 20px; border-top: 1px solid #e0e4e8; background: #fff; }
-    .day-card.expanded .day-body { display: block; animation: slideDown 0.3s ease; }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .slots-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-    .time-slot { display: flex; flex-direction: column; gap: 8px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e0e4e8; transition: 0.3s; }
-    .time-slot.locked { background: #e8f5e9; border-color: #28a745; position: relative; }
-    .time-slot.locked::before { content: '🔒'; position: absolute; top: 6px; left: 8px; font-size: 14px; }
-    .time-row { display: flex; align-items: center; gap: 5px; width: 100%; justify-content: space-between; flex-wrap: wrap; }
-    .time-label { font-weight: bold; color: #1a3c6d; font-size: 13px; min-width: 32px; flex-shrink: 0; text-align: center; }
-    .simple-select { flex: 1; min-width: 0; padding: 8px 4px; border: 2px solid #e0e4e8; border-radius: 6px; font-size: 14px; font-family: inherit; font-weight: bold; color: #1a3c6d; background: #fff; outline: none; transition: 0.2s; cursor: pointer; text-align: center; }
-    .simple-select:focus { border-color: #2b5c9e; box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.15); }
-    .time-slot.locked .simple-select { background: #f0f0f0; color: #555; cursor: not-allowed; pointer-events: none; border-color: #ccc; opacity: 0.85; }
-    .period-select { width: 60px; background: #e3f2fd; color: #1a3c6d; font-weight: 900; flex: 0 0 auto; }
-    .minute-select { width: 85px; flex: 0 0 auto; }
-    .hour-select { width: 85px; flex-shrink: 0; }
-    .slot-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; align-items: center; }
-
-    .slot-apply-note {
-        display: none; font-size: 11px; color: #166534;
-        background: #dcfce7; border: 1px dashed #28a745;
-        padding: 4px 10px; border-radius: 6px; font-weight: 700;
-        align-items: center; gap: 5px; line-height: 1.5;
-        max-width: 100%; text-align: right; flex: 1; min-width: 180px;
-    }
-    .slot-apply-note.show { display: inline-flex; }
-    .slot-apply-note .note-icon { font-size: 13px; flex-shrink: 0; }
-    .slot-apply-note b { color: #14532d; }
-    .time-slot.locked .slot-apply-note { display: inline-flex; background: #f0fdf4; border-color: #28a745; color: #14532d; }
-
-    .btn-save-slot { background: #2b5c9e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
-    .btn-save-slot:hover { background: #1a3c6d; }
-    .btn-save-slot.saved { background: #28a745; }
-    .btn-edit-slot { background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: none; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
-    .btn-edit-slot:hover { background: #e67e22; }
-    .time-slot.locked .btn-edit-slot { display: flex; }
-    .time-slot.locked .btn-save-slot { display: none; }
-    .btn-remove-slot { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: 0.2s; gap: 4px; font-family: inherit; }
-    .btn-remove-slot:hover { background: #c82333; }
-
-    .btn-add-slot {
-        background: linear-gradient(180deg, #2ecc71 0%, #27ae60 50%, #229954 100%);
-        color: white; border: none; width: 100%; padding: 14px 20px;
-        border-radius: 12px; font-weight: 900; font-size: 15px;
-        cursor: pointer; transition: all 0.15s ease;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-        box-shadow: 0 6px 0 #1e7e34, 0 8px 15px rgba(39, 174, 96, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2); letter-spacing: 0.5px;
-        position: relative; overflow: hidden; font-family: inherit;
-    }
-    .btn-add-slot::before {
-        content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-        transition: left 0.6s ease;
-    }
-    .btn-add-slot:hover {
-        background: linear-gradient(180deg, #3ddc84 0%, #2ecc71 50%, #27ae60 100%);
-        box-shadow: 0 6px 0 #1e7e34, 0 12px 22px rgba(39, 174, 96, 0.55), inset 0 1px 0 rgba(255,255,255,0.4);
-        transform: translateY(-1px);
-    }
-    .btn-add-slot:hover::before { left: 100%; }
-    .btn-add-slot:active {
-        transform: translateY(5px);
-        box-shadow: 0 1px 0 #1e7e34, 0 3px 8px rgba(39, 174, 96, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
-    }
-    .btn-add-slot .plus-icon { font-size: 18px; font-weight: 900; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-
-    .slot-range { background: linear-gradient(135deg, #fff8e1 0%, #fef3c7 100%); border: 2px dashed #f39c12; border-radius: 10px; padding: 10px 12px; margin-top: 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: center; }
-    .slot-range-label { font-size: 13px; font-weight: 900; color: #7a5c00; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-    .slot-range-arrow { color: #f39c12; font-size: 16px; font-weight: 900; }
-    .slot-range-select {
-        padding: 8px 12px; border: 2px solid #f39c12; border-radius: 8px;
-        font-size: 13px; font-weight: 700; color: #7a5c00; background: #ffffff;
-        cursor: pointer; outline: none; font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
-        min-width: 150px; text-align: center; letter-spacing: 0.3px; transition: 0.2s;
-        appearance: none; -webkit-appearance: none; -moz-appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat; background-position: left 8px center; background-size: 14px;
-        padding-left: 30px; padding-right: 12px;
-    }
-    .slot-range-select:hover { border-color: #e67e22; box-shadow: 0 2px 8px rgba(243,156,18,0.2); }
-    .slot-range-select:focus { border-color: #e67e22; box-shadow: 0 0 0 3px rgba(243,156,18,0.25); }
-    .time-slot.locked .slot-range { background: #f0fdf4; border-color: #28a745; border-style: solid; }
-    .time-slot.locked .slot-range-label { color: #166534; }
-    .time-slot.locked .slot-range-select { background: #f0f0f0; color: #555; cursor: not-allowed; pointer-events: none; border-color: #ccc; opacity: 0.85; background-image: none; padding-left: 12px; }
-
-    .monthly-calendar { display: none; }
-    .monthly-calendar.active { display: block; }
-
-    .month-nav {
-        display: flex; align-items: center; justify-content: space-between; gap: 10px;
-        margin-bottom: 15px; background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        border-radius: 12px; padding: 12px 16px; color: white;
-        box-shadow: 0 6px 15px rgba(43,92,158,0.25);
-    }
-    .month-nav-btn {
-        background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.25);
-        color: white; width: 45px; height: 45px; border-radius: 50%;
-        font-weight: 900; font-size: 22px; cursor: pointer; transition: 0.2s;
-        display: flex; align-items: center; justify-content: center;
-        padding: 0; line-height: 1; flex-shrink: 0; font-family: inherit;
-    }
-    .month-nav-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
-    .month-nav-btn:active { transform: scale(0.95); }
-    .month-nav-title { text-align: center; flex: 1; }
-    .month-nav-title .month-name { font-size: 22px; font-weight: 900; color: #f1c40f; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
-    .month-nav-title .month-name .month-num-badge { background: rgba(241,196,15,0.25); border: 1px solid rgba(241,196,15,0.5); color: #f1c40f; padding: 2px 10px; border-radius: 8px; font-size: 14px; font-weight: 900; letter-spacing: 1px; }
-    .month-nav-title .month-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; }
-
-    .today-btn-wrapper { text-align: center; margin-bottom: 15px; }
-    .today-btn {
-        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-        color: #1a3c6d; border: none; padding: 10px 22px;
-        border-radius: 10px; font-weight: 900; font-size: 14px;
-        cursor: pointer; box-shadow: 0 4px 12px rgba(241,196,15,0.4);
-        transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
-    }
-    .today-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(241,196,15,0.6); }
-
-    .monthly-grid-wrapper {
-        border-radius: 12px; border: 2px solid #e0e4e8; background: #fff;
-        overflow: hidden; position: relative; cursor: grab;
-        user-select: none; -webkit-user-select: none;
-        touch-action: pan-y; transition: transform 0.3s ease;
-    }
-    .monthly-grid-wrapper:active { cursor: grabbing; }
-    .monthly-grid-wrapper.swipe-left { animation: swipeLeft 0.35s ease; }
-    .monthly-grid-wrapper.swipe-right { animation: swipeRight 0.35s ease; }
-
-    .swipe-hint { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .swipe-hint .arrow { font-size: 16px; color: #2b5c9e; animation: pulseArrow 1.5s infinite; }
-    @keyframes pulseArrow {
-        0%, 100% { opacity: 0.4; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.15); }
-    }
-
-    .monthly-head { display: grid; grid-template-columns: repeat(7, 1fr); background: linear-gradient(180deg, #2b5c9e, #1a3c6d); }
-    .monthly-head-cell { padding: 10px 6px 8px; text-align: center; font-weight: 900; font-size: 13px; color: white; border-left: 1px solid rgba(255,255,255,0.15); }
-    .monthly-head-cell.friday { color: #f1c40f; }
-
-    .monthly-body { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e4e8; gap: 1px; grid-auto-rows: minmax(90px, auto); align-items: stretch; }
-
-    .monthly-day { background: #fff; min-height: 90px; padding: 6px; display: flex; flex-direction: column; gap: 3px; transition: 0.2s; position: relative; overflow: hidden; cursor: pointer; height: auto; }
-    .monthly-day:hover { background: #f8fafc; }
-    .monthly-day.other-month { background: #f8fafc; opacity: 0.55; cursor: default; }
-    .monthly-day.today { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%); box-shadow: inset 0 0 0 2px #f1c40f; }
-    .monthly-day.friday { background: #fef9f3; }
-    .monthly-day.other-month.friday { background: #f8fafc; }
-    .monthly-day.past-day { background: #f1f5f9 !important; opacity: 0.65; }
-    .monthly-day.past-day .day-num { color: #94a3b8; }
-    .monthly-day.past-day .day-session-chip { background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important; border-right-color: #64748b !important; opacity: 0.7; }
-    .monthly-day.past-day:hover { background: #e2e8f0 !important; opacity: 0.8; }
-    .monthly-day.other-month.past-day { background: #f8fafc !important; opacity: 0.4; }
-    .monthly-day.today { background: linear-gradient(135deg, #fffdf3 0%, #fff8e1 100%) !important; opacity: 1 !important; }
-    .monthly-day.today .day-num { color: #b38f00 !important; }
-
-    .day-num { font-size: 14px; font-weight: 900; color: #1a3c6d; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .monthly-day.today .day-num { color: #b38f00; }
-    .day-num .today-badge { background: #f1c40f; color: #1a3c6d; font-size: 9px; padding: 1px 6px; border-radius: 6px; font-weight: 900; }
-    .day-num .session-count-badge { background: #2b5c9e; color: white; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 900; }
-    .monthly-day.past-day .day-num .session-count-badge { background: #94a3b8; }
-
-    .day-sessions { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-
-    .day-session-chip {
-        background: linear-gradient(135deg, #2b5c9e 0%, #1a3c6d 100%);
-        color: white; font-size: 10px; font-weight: bold; padding: 4px 6px;
-        border-radius: 5px; border-right: 3px solid #f1c40f;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        direction: ltr; text-align: center; transition: 0.2s;
-        line-height: 1.4; min-height: 20px;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .day-session-chip.past { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); border-right-color: #475569; opacity: 0.75; }
-
-    .day-more { font-size: 10px; font-weight: 900; color: #2b5c9e; text-align: center; padding: 2px; background: #e3f2fd; border-radius: 4px; }
-    .monthly-day.past-day .day-more { background: #e2e8f0; color: #94a3b8; }
-
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
-    .modal-overlay.active { display: flex; }
-    .modal-box {
-        background: white; border-radius: 15px; padding: 25px; max-width: 420px;
-        width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        border-top: 5px solid #2b5c9e; animation: modalIn 0.3s ease;
-        max-height: 80vh; overflow-y: auto;
-    }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-    .modal-title { font-size: 17px; font-weight: 900; color: #1a3c6d; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-    .modal-session-item {
-        background: #f8fafc; border-right: 4px solid #f1c40f;
-        padding: 12px 15px; border-radius: 8px; margin-bottom: 8px;
-        font-weight: bold; color: #1a3c6d;
-        display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    }
-    .modal-session-item.past { background: #f1f5f9; border-right-color: #94a3b8; color: #64748b; }
-    .modal-session-item .time { color: #2b5c9e; direction: ltr; font-size: 14px; }
-    .modal-session-item.past .time { color: #64748b; }
-    .modal-session-item .sess-num { background: #f1c40f; color: #1a3c6d; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 900; }
-    .modal-session-item.past .sess-num { background: #cbd5e1; color: #475569; }
-    .modal-close-btn { width: 100%; padding: 12px; background: #2b5c9e; color: white; border: none; border-radius: 8px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; font-family: inherit; }
-    .modal-close-btn:hover { background: #1a3c6d; }
-
-    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 15px; transition: 0.2s; font-family: inherit; }
+    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; font-family: inherit; }
     .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* =========================================
-       زر مجموعاتي
-       ========================================= */
-    .my-groups-btn-wrapper { text-align: center; margin-bottom: 30px; }
-    .my-groups-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        background: linear-gradient(180deg, #f39c12 0%, #e67e22 50%, #d35400 100%);
-        color: white;
-        padding: 16px 40px;
-        border-radius: 12px;
-        font-size: 18px;
-        font-weight: 900;
-        text-decoration: none;
-        box-shadow: 0 6px 0 #a04000, 0 8px 20px rgba(230, 126, 34, 0.4);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.25);
-        transition: all 0.2s ease;
-        letter-spacing: 0.5px;
-        position: relative;
-        overflow: hidden;
-        font-family: inherit;
-        width: 100%;
-        max-width: 400px;
-        cursor: pointer;
-    }
-    .my-groups-btn::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-        transition: left 0.6s ease;
-    }
-    .my-groups-btn:hover {
-        background: linear-gradient(180deg, #ffb13b 0%, #f39c12 50%, #e67e22 100%);
-        box-shadow: 0 6px 0 #a04000, 0 12px 25px rgba(230, 126, 34, 0.55);
-        transform: translateY(-2px);
-    }
-    .my-groups-btn:hover::before { left: 100%; }
-    .my-groups-btn:active {
-        transform: translateY(4px);
-        box-shadow: 0 2px 0 #a04000, 0 4px 10px rgba(230, 126, 34, 0.4);
-    }
-    .my-groups-btn span:first-child {
-        font-size: 22px;
-    }
-
-    .loading-overlay {
-        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-        z-index: 9999; align-items: center; justify-content: center;
-        backdrop-filter: blur(3px);
-    }
+    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
     .loading-overlay.show { display: flex; }
-    .loading-box {
-        background: white; border-radius: 16px; padding: 30px 40px;
-        text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .loading-spinner {
-        width: 50px; height: 50px; border: 5px solid #e0e4e8;
-        border-top-color: #2b5c9e; border-radius: 50%;
-        margin: 0 auto 15px; animation: spin 1s linear infinite;
-    }
+    .loading-box { background: white; border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .loading-spinner { width: 50px; height: 50px; border: 5px solid #e0e4e8; border-top-color: #2b5c9e; border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { color: #1a3c6d; font-weight: 900; font-size: 15px; }
 
@@ -413,113 +60,183 @@
         .step { font-size: 12px; }
         .step.active { font-size: 13px; }
         .stepper { padding: 8px 14px; gap: 10px; }
-
-        .container { padding: 0 8px; margin-top: -25px; }
-        .calendar-section { padding: 15px 12px; }
-        .section-header-custom { font-size: 15px; }
-        .section-hint { font-size: 12px; padding: 10px 12px; }
-
+        .main-container { padding: 0 8px; margin-top: -25px; }
         .data-table td { padding: 10px; display: block; width: 100%; border: none; border-bottom: 1px solid #e0e4e8; }
         .data-table tr { display: block; }
         .data-table { border-collapse: separate; }
-
-        .view-tab { font-size: 12px; padding: 10px 6px; min-width: 0; }
-        .monthly-day { min-height: 75px; padding: 4px; }
-        .day-num { font-size: 12px; }
-        .day-session-chip { font-size: 9px; padding: 3px 4px; min-height: 18px; }
-        .month-nav-title .month-name { font-size: 17px; gap: 5px; }
-        .month-nav-title .month-name .month-num-badge { font-size: 12px; padding: 1px 8px; }
-        .month-nav-btn { width: 38px; height: 38px; font-size: 18px; }
-        .week-nav-btn { width: 38px; height: 38px; font-size: 18px; }
-        .week-nav-title .week-range { font-size: 14px; gap: 5px; }
-        .week-nav-title .week-range .week-num-badge { font-size: 10px; padding: 1px 6px; }
-        .week-nav-title .week-label { font-size: 11px; }
-        .monthly-head-cell { font-size: 10px; padding: 8px 3px 6px; }
-        .slot-range-select { min-width: 110px; font-size: 11px; padding: 6px 8px; padding-left: 24px; background-size: 12px; }
-        .slot-range-label { font-size: 11px; }
-        .day-title { flex-direction: column; align-items: flex-start; gap: 4px; }
-        .day-date { font-size: 11px; padding: 3px 8px; }
-        .swipe-hint { font-size: 11px; }
-        .monthly-body { grid-auto-rows: minmax(75px, auto); }
-        .slot-apply-note { font-size: 10px; min-width: 100%; margin-top: 5px; text-align: center; justify-content: center; }
-
-        .day-header { padding: 10px 12px; }
-        .day-status { font-size: 10px; padding: 4px 8px; }
-        .time-slot { padding: 10px 8px; }
         .submit-btn { font-size: 16px; padding: 16px; }
-
-        .my-groups-btn {
-            padding: 14px 30px;
-            font-size: 16px;
-            max-width: 100%;
-        }
-        .my-groups-btn span:first-child {
-            font-size: 20px;
-        }
     }
 
-    @media (max-width: 600px) {
-        .day-header { flex-wrap: wrap; }
-        .day-header-left { width: 100%; justify-content: space-between; margin-top: 5px; }
-
-        .time-row {
-            justify-content: center;
-            gap: 4px;
-        }
-        .time-label {
-            min-width: 30px;
-            font-size: 12px;
-            margin-left: 2px;
-        }
-
-        .period-select { width: 45px; font-size: 12px; padding: 6px 2px; flex: 0 0 auto; }
-        .minute-select { width: 65px; font-size: 12px; padding: 6px 2px; flex: 1; }
-        .hour-select { width: 65px; font-size: 12px; padding: 6px 2px; flex: 1; }
-
-        .slot-actions {
-            justify-content: center;
-            gap: 8px;
-        }
-        .slot-apply-note {
-            flex: 1 1 100%;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        .slot-range {
-            flex-direction: column;
-            gap: 5px;
-            padding: 8px;
-        }
-        .slot-range-label { width: 100%; justify-content: flex-start; }
-        .slot-range-select { width: 100%; min-width: 0; }
-        .slot-range-arrow { transform: rotate(90deg); margin: 2px 0; }
-
-        .monthly-head-cell { font-size: 9px; padding: 6px 2px; }
-        .day-num { font-size: 11px; }
-        .day-session-chip { font-size: 8px; padding: 2px 3px; }
-
-        .btn-add-slot { padding: 12px; font-size: 14px; }
+    /* ========================================== */
+    /* 📅 تنسيقات التقويم الجديد المدمج */
+    /* ========================================== */
+    .new-calendar-container {
+        display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 25px;
     }
 
-    @media (max-width: 380px) {
-        .header-3d h1 { font-size: 17px; }
-        .step { font-size: 10px; }
-        .step.active { font-size: 11px; }
+    .calendar-card {
+        background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        padding: 25px; width: 100%; max-width: 650px; border-top: 4px solid #f1c40f;
+    }
 
-        .minute-select { width: 55px; }
-        .hour-select { width: 55px; }
-        .period-select { width: 40px; }
-        .time-label { font-size: 11px; min-width: 25px; }
+    .add-dropdown-header {
+        background: #f8fbff; border: 2px dashed #4a90e2; border-radius: 10px;
+        padding: 14px 16px; margin-bottom: 20px; cursor: pointer; display: flex;
+        justify-content: space-between; align-items: center; transition: all 0.2s; user-select: none;
+    }
+    .add-dropdown-header:active { background: #eef4fc; }
+    .add-dropdown-header .label { font-weight: 700; color: #4a90e2; font-size: 15px; }
+    .add-dropdown-header .arrow { color: #4a90e2; font-size: 12px; transition: transform 0.3s; }
 
-        .day-title label { font-size: 14px; }
-        .day-date { font-size: 10px; padding: 2px 6px; }
+    .add-dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .add-dropdown-content.open { max-height: 400px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #eaeef3; }
 
-        .view-tab { font-size: 11px; padding: 8px 4px; }
+    .calendar-header {
+        position: relative; overflow: hidden; margin-bottom: 20px; padding-bottom: 15px;
+        border-bottom: 2px solid #eaeef3; min-height: 40px; display: flex; justify-content: center; align-items: center;
+    }
+    .title-track { display: flex; align-items: center; gap: 12px; will-change: transform, opacity; user-select: none; }
+    .month-name { color: #2c3e50; font-size: 24px; font-weight: 800; letter-spacing: 0.3px; }
+    .month-number {
+        display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+        border-radius: 50%; background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff;
+        font-size: 18px; font-weight: 800; box-shadow: 0 3px 10px rgba(74,144,226,0.4); flex-shrink: 0;
+    }
+    .year-text { color: #566573; font-size: 18px; font-weight: 700; }
+    .month-appt-badge {
+        display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 800;
+        box-shadow: 0 3px 10px rgba(231,76,60,0.35); flex-shrink: 0; margin-right: 4px;
+    }
+    .month-appt-badge .icon { font-size: 13px; }
+    .month-appt-badge.zero { background: linear-gradient(135deg, #95a5a6, #7f8c8d); box-shadow: 0 3px 10px rgba(149,165,166,0.3); }
 
-        .month-nav-btn, .week-nav-btn { width: 34px; height: 34px; font-size: 16px; }
-        .month-nav-title .month-name { font-size: 15px; }
+    .slide-out-left { animation: slideOutLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+    .slide-out-right { animation: slideOutRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+    .slide-in-right { animation: slideInRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+    .slide-in-left { animation: slideInLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+    @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-120%); opacity: 0; } }
+    @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+    @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideInLeft { from { transform: translateX(-120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .week-wrapper { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid #dfe6ec; }
+    .week-track { will-change: transform, opacity; user-select: none; }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: #1f427c; }
+    .weekdays div { text-align: center; font-weight: 700; color: #fff; padding: 12px 5px; font-size: 14px; border-left: 1px solid rgba(255, 255, 255, 0.15); }
+    .weekdays div:last-child { border-left: none; }
+    .weekdays div.friday { color: #f1c40f; }
+
+    .days-wrapper { position: relative; overflow: hidden; background: #dfe6ec; touch-action: pan-y; user-select: none; padding-top: 1px; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; will-change: transform, opacity; }
+    .days div.cell {
+        background: #fff; min-height: 95px; padding: 6px; display: flex; flex-direction: column;
+        align-items: flex-start; color: #2c3e50; font-size: 15px; font-weight: 700; cursor: pointer;
+        position: relative; transition: background 0.2s;
+    }
+    .days div.cell:hover { background: #f0f5fb !important; }
+    .days div.cell:active { transform: scale(0.98); }
+    .days div.cell:nth-child(7n) { background: #fffdf5; }
+    .days div.cell:nth-child(7n-1) { background: #fffdf5; }
+    .days div.cell.out-of-month { background: #f4f6f9 !important; color: #aeb6bf; }
+
+    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; }
+    .cell.today-cell .date-number { background: #4a90e2; color: #fff; }
+    .cell.selected-cell { box-shadow: inset 0 0 0 2px #4a90e2; }
+
+    .badge {
+        position: absolute; bottom: 8px; left: 8px; background: #e74c3c; color: #fff; font-size: 10px;
+        font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex;
+        align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .swipe-hint { text-align: center; font-size: 13px; color: #95a5a6; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eaeef3; user-select: none; }
+
+    .panel {
+        background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        padding: 25px; width: 100%; max-width: 400px; align-self: flex-start; border-top: 4px solid #2b5c9e;
+    }
+    .panel h3 { margin: 0 0 20px 0; color: #2c3e50; font-size: 18px; padding-bottom: 12px; border-bottom: 2px solid #eaeef3; }
+    .appointments-list-container { max-height: 450px; overflow-y: auto; margin-bottom: 15px; }
+
+    .form-group { margin-bottom: 15px; width: 100%;}
+    .form-group label { display: block; font-size: 14px; color: #566573; font-weight: 700; margin-bottom: 6px; }
+    .form-group select {
+        width: 100%; padding: 12px 14px; border: 2px solid #dfe6ec; border-radius: 8px;
+        font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s;
+        background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23566573' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center;
+        background-size: 16px; padding-left: 36px; cursor: pointer; -webkit-appearance: none; appearance: none;
+    }
+    .form-group select:focus { border-color: #4a90e2; }
+
+    .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .repeat-option {
+        background: #f9f5ff; border: 2px solid #e0d4f7; border-radius: 10px; padding: 14px;
+        display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s;
+        user-select: none; margin-bottom: 15px;
+    }
+    .repeat-option:active { background: #f3ebff; }
+    .repeat-option input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: #9b59b6; }
+    .repeat-option label { font-size: 14px; color: #6c3483; font-weight: 700; cursor: pointer; margin: 0; }
+
+    .duration-info {
+        background: #eaf4fd; border-right: 4px solid #4a90e2; color: #2c5f91; padding: 10px 14px;
+        border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: none;
+    }
+    .duration-info.show { display: block; }
+
+    .btn-add { width: 100%; background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff; border: none; border-radius: 10px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(74,144,226,0.3); }
+    .btn-add:active { transform: scale(0.98); }
+    .btn-cancel { width: 100%; background: #95a5a6; color: #fff; border: none; border-radius: 10px; padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 10px; }
+    .btn-cancel:active { transform: scale(0.98); background: #7f8c8d; }
+
+    .edit-form { background: #fff8e5; border: 2px solid #f0d78c; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: none; }
+    .edit-form.show { display: block; animation: slideDownCal 0.25s ease; }
+    @keyframes slideDownCal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .edit-form .edit-title { font-size: 14px; color: #b8860b; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+    .appointment {
+        display: flex; justify-content: space-between; align-items: center; background: #fff;
+        border-right: 4px solid #4a90e2; border-radius: 8px; padding: 14px; margin-bottom: 10px;
+        animation: slideInCal 0.25s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.05); gap: 10px;
+    }
+    .appointment.recurring { background: #f9f5ff; border-right-color: #9b59b6; }
+    .appointment.editing { background: #fff8e5; border-right-color: #f39c12; box-shadow: 0 0 0 2px #f0d78c; }
+    @keyframes slideInCal { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
+
+    .appointment .info { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+    .appointment .time { font-weight: 800; color: #2c3e50; font-size: 16px; }
+    .appointment .recurring-tag { display: inline-block; background: #9b59b6; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; }
+
+    .appt-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-edit, .btn-delete {
+        color: #fff; border: none; border-radius: 6px; width: 36px; height: 36px; cursor: pointer;
+        font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .btn-edit { background: #f39c12; }
+    .btn-edit:active { background: #d68910; transform: scale(0.92); }
+    .btn-delete { background: #e74c3c; }
+    .btn-delete:active { background: #c0392b; transform: scale(0.92); }
+
+    .error-msg {
+        background: #fdecea; color: #c0392b; border: 2px solid #f5b7b1; border-radius: 8px;
+        padding: 12px; font-size: 13px; margin-bottom: 15px; font-weight: 600; display: none;
+    }
+    .error-msg.show { display: block; animation: shake 0.3s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    @media (max-width: 800px) {
+        .calendar-card, .panel { padding: 15px; border-radius: 12px; max-width: 100%; min-height: auto; }
+        .month-name { font-size: 20px; }
+        .month-number { width: 32px; height: 32px; font-size: 15px; }
+        .year-text { font-size: 16px; }
+        .weekdays div { font-size: 11px; padding: 10px 0; }
+        .days div.cell { min-height: 65px; font-size: 13px; padding: 4px; }
+        .cell .date-number { width: 22px; height: 22px; }
+        .time-row-cal { grid-template-columns: 1fr 1fr; gap: 10px; } 
+        .badge { bottom: 4px; left: 4px; width: 15px; height: 15px; font-size: 8px; }
     }
 </style>
 </head>
@@ -534,7 +251,7 @@
     </div>
 </header>
 
-<div class="container">
+<div class="main-container">
     <div class="table-container">
         <table class="data-table">
             <tbody>
@@ -590,90 +307,104 @@
         </table>
     </div>
 
-    <div class="calendar-section">
-        <div class="section-header-custom"><span class="circle-num">5</span> حدد أيام ومواعيد الحصص <span style="color: #dc3545;">*</span></div>
-        <div class="section-hint">💡 اضغط على اسم اليوم لتفعيله، ثم اختر ص/م والدقائق والساعة، وحدد نطاق الشهور، واضغط حفظ 💾.</div>
+    <!-- 📅 بداية التقويم الجديد المدمج بدلا من القسم الخامس القديم -->
+    <div class="new-calendar-container">
+      <div class="calendar-card">
+        
+        <div class="add-dropdown-header" onclick="toggleAddDropdown()">
+          <span class="label">➕ إضافة موعد في اليوم المحدد</span>
+          <span class="arrow" id="addArrow">▼</span>
+        </div>
+        
+        <div class="add-dropdown-content" id="addDropdownContent">
+          <div class="time-row-cal">
+            <div class="form-group">
+              <label>🕐 من الساعة</label>
+              <select id="startTime" onchange="updateDuration()"></select>
+            </div>
+            <div class="form-group">
+              <label>🕐 إلى الساعة</label>
+              <select id="endTime" onchange="updateDuration()"></select>
+            </div>
+          </div>
 
-        <div class="view-tabs">
-            <button class="view-tab active" id="tab-list" onclick="switchView('list')">📋 قائمة الحجز</button>
-            <button class="view-tab" id="tab-month" onclick="switchView('month')">🗓️ التقويم الشهري</button>
+          <div class="duration-info" id="durationInfo"></div>
+
+          <div class="repeat-option">
+            <input type="checkbox" id="repeatWeekly">
+            <label for="repeatWeekly">
+              🔁 تكرار كل <span id="repeatDayName">...</span>
+            </label>
+          </div>
+
+          <button class="btn-add" onclick="addAppointment()">💾 حفظ الموعد</button>
+          <div class="error-msg" id="addErrorMsg" style="margin-top:10px;"></div>
+        </div>
+        
+        <div class="calendar-header">
+          <div class="title-track" id="titleTrack">
+            <span class="month-number" id="monthNumber">1</span>
+            <span class="month-name" id="monthName">يناير</span>
+            <span class="year-text" id="yearText">2026</span>
+            <span class="month-appt-badge" id="monthApptBadge">
+              <span class="icon">📋</span>
+              <span id="monthApptCount">0</span>
+            </span>
+          </div>
         </div>
 
-        <div id="vertical-schedule-view">
-            <div class="week-nav">
-                <button class="week-nav-btn" onclick="goToPrevWeekWithAnimation()" title="الأسبوع السابق">❯</button>
-                <div class="week-nav-title">
-                    <span class="week-label" id="week-label">الأسبوع الحالي</span>
-                    <span class="week-range" id="week-range">—</span>
-                    <span class="week-status current" id="week-status">اليوم</span>
-                </div>
-                <button class="week-nav-btn" onclick="goToNextWeekWithAnimation()" title="الأسبوع التالي">❮</button>
+        <div class="week-wrapper">
+          <div class="week-track" id="weekTrack">
+            <div class="weekdays">
+              <div>السبت</div>
+              <div>الأحد</div>
+              <div>الاثنين</div>
+              <div>الثلاثاء</div>
+              <div>الأربعاء</div>
+              <div>الخميس</div>
+              <div class="friday">الجمعة</div>
             </div>
 
-            <div class="week-today-wrapper">
-                <button class="week-today-btn" onclick="goToCurrentWeek()">📍 الأسبوع الحالي</button>
+            <div class="days-wrapper" id="daysWrapper">
+              <div class="days" id="days"></div>
             </div>
-
-            <div class="vertical-schedule-wrapper" id="vertical-schedule-wrapper">
-                <div class="vertical-schedule" id="vertical-schedule"></div>
-            </div>
-
-            <div class="swipe-hint">
-                <span class="arrow">❯</span>
-                <span>اسحب يمين أو شمال للتنقل بين الأسابيع</span>
-                <span class="arrow">❮</span>
-            </div>
+          </div>
         </div>
 
-        <div class="monthly-calendar" id="monthly-calendar">
-            <div class="month-nav">
-                <button class="month-nav-btn" onclick="goToPrevMonthWithAnimation()" title="الشهر السابق">❯</button>
-                <div class="month-nav-title">
-                    <span class="month-name" id="month-name">—</span>
-                    <span class="month-sub" id="month-sub">—</span>
-                </div>
-                <button class="month-nav-btn" onclick="goToNextMonthWithAnimation()" title="الشهر التالي">❮</button>
-            </div>
-            <div class="today-btn-wrapper">
-                <button class="today-btn" onclick="goToday()">📍 الشهر الحالي</button>
-            </div>
-            <div class="monthly-grid-wrapper">
-                <div class="monthly-head">
-                    <div class="monthly-head-cell">السبت</div>
-                    <div class="monthly-head-cell">الأحد</div>
-                    <div class="monthly-head-cell">الاثنين</div>
-                    <div class="monthly-head-cell">الثلاثاء</div>
-                    <div class="monthly-head-cell">الأربعاء</div>
-                    <div class="monthly-head-cell">الخميس</div>
-                    <div class="monthly-head-cell friday">الجمعة</div>
-                </div>
-                <div class="monthly-body" id="monthly-body"></div>
-            </div>
-            <div class="swipe-hint">
-                <span class="arrow">❯</span>
-                <span>اسحب يمين أو شمال للتنقل بين الشهور</span>
-                <span class="arrow">❮</span>
-            </div>
+        <div class="swipe-hint">
+          👈 اسحب بإصبعك لليمين أو اليسار لتغيير الشهر 👉
         </div>
+      </div>
+
+      <div class="panel" id="panel">
+        <h3 id="panelTitle">اختر يوماً لاستعراض المواعيد</h3>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <div class="edit-form" id="editForm">
+          <div class="edit-title">✏️ تعديل الموعد</div>
+          <div class="time-row-cal">
+            <div class="form-group">
+              <label>🕐 من</label>
+              <select id="editStart"></select>
+            </div>
+            <div class="form-group">
+              <label>🕐 إلى</label>
+              <select id="editEnd"></select>
+            </div>
+          </div>
+          <button class="btn-add" onclick="saveEdit()">💾 حفظ التعديل</button>
+          <button class="btn-cancel" onclick="cancelEdit()">✖ إلغاء</button>
+        </div>
+
+        <div class="appointments-list-container" id="appointmentsListContainer">
+          <div id="appointmentsList"></div>
+        </div>
+      </div>
     </div>
+    <!-- 📅 نهاية التقويم المدمج -->
 
     <button class="submit-btn" id="submit-btn-main" onclick="submitGroupData()">🚀 إنشاء ونشر المجموعة</button>
-
-    <!-- ✅ زر مجموعاتي -->
-    <div class="my-groups-btn-wrapper">
-        <a href="mester3.html" class="my-groups-btn">
-            <span>📚</span>
-            <span>مجموعاتي</span>
-        </a>
-    </div>
-</div>
-
-<div class="modal-overlay" id="day-modal" onclick="if(event.target===this) closeModal()">
-    <div class="modal-box">
-        <div class="modal-title">📅 <span id="modal-day-title"></span></div>
-        <div id="modal-sessions-list"></div>
-        <button class="modal-close-btn" onclick="closeModal()">إغلاق</button>
-    </div>
 </div>
 
 <div class="loading-overlay" id="loading-overlay">
@@ -688,986 +419,421 @@
     <span>تم الحفظ تلقائياً</span>
 </div>
 
+<!-- ========================================== -->
+<!-- ⚙️ سكربت التقويم الجديد (Global Scope) -->
+<!-- ========================================== -->
+<script>
+  const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+  function getDisplayIndex(jsDay) { return (jsDay + 1) % 7; }
+
+  let currentDate = new Date();
+  let selectedDateKey = null;
+  let editingAppt = null;
+  let isAnimating = false;
+
+  let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
+  let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
+
+  const TIME_SLOTS = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+      const period = h < 12 ? 'ص' : 'م';
+      const mm = String(m).padStart(2, '0');
+      const value = `${String(h).padStart(2, '0')}:${mm}`;
+      const label = `${hour12}:${mm} ${period}`;
+      TIME_SLOTS.push({ value, label });
+    }
+  }
+
+  function buildTimeOptions(selectEl) {
+    selectEl.innerHTML = '<option value="">-- اختر --</option>';
+    TIME_SLOTS.forEach(slot => { selectEl.innerHTML += `<option value="${slot.value}">${slot.label}</option>`; });
+  }
+
+  function populateTimeSelects() {
+    buildTimeOptions(document.getElementById('startTime'));
+    buildTimeOptions(document.getElementById('endTime'));
+    buildTimeOptions(document.getElementById('editStart'));
+    buildTimeOptions(document.getElementById('editEnd'));
+  }
+
+  function updateDuration() {
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    const info = document.getElementById('durationInfo');
+    if (!start || !end) { info.classList.remove('show'); return; }
+
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const diff = (eh * 60 + em) - (sh * 60 + sm);
+
+    if (diff <= 0) { info.classList.remove('show'); return; }
+
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    let txt = '⏱ المدة: ';
+    if (hours > 0) txt += `${hours} ساعة `;
+    if (mins > 0) txt += `${mins} دقيقة`;
+    info.textContent = txt;
+    info.classList.add('show');
+  }
+
+  function toggleAddDropdown() {
+    const content = document.getElementById('addDropdownContent');
+    const arrow = document.getElementById('addArrow');
+    content.classList.toggle('open');
+    if(content.classList.contains('open')) { arrow.style.transform = 'rotate(180deg)'; } 
+    else { arrow.style.transform = 'rotate(0deg)'; }
+  }
+
+  function saveAllAppts() {
+    localStorage.setItem('appointments', JSON.stringify(appointments));
+    localStorage.setItem('recurringAppointments', JSON.stringify(recurringAppointments));
+  }
+
+  function dateKey(year, month, day) {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  function getDayAppointments(year, month, day) {
+    const key = dateKey(year, month, day);
+    const dayOfWeek = new Date(year, month, day).getDay();
+    const normal = (appointments[key] || []).map(a => ({ ...a, type: 'normal' }));
+    const recurring = (recurringAppointments[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring' }));
+    return [...normal, ...recurring].sort((a, b) => a.start.localeCompare(b.start));
+  }
+
+  function getMonthAppointmentsCount(year, month) {
+    let total = 0;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const key = dateKey(year, month, day);
+      const dayOfWeek = new Date(year, month, day).getDay();
+      total += (appointments[key] || []).length;
+      total += (recurringAppointments[dayOfWeek] || []).length;
+    }
+    return total;
+  }
+
+  function updateTitle() {
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    document.getElementById('monthNumber').textContent = month + 1;
+    document.getElementById('monthName').textContent = monthNames[month];
+    document.getElementById('yearText').textContent = year;
+    const count = getMonthAppointmentsCount(year, month);
+    document.getElementById('monthApptCount').textContent = count;
+    const badge = document.getElementById('monthApptBadge');
+    if (count === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
+  }
+
+  function renderCalendar() {
+    updateTitle();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDayJs = new Date(year, month, 1).getDay();
+    const firstDayIndex = getDisplayIndex(firstDayJs);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const daysContainer = document.getElementById('days');
+    daysContainer.innerHTML = '';
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+
+    for (let i = 0; i < totalCells; i++) {
+      const dayEl = document.createElement('div');
+      dayEl.classList.add('cell');
+      let cellDate, cellYear = year, cellMonth = month;
+
+      if (i < firstDayIndex) {
+        cellDate = daysInPrevMonth - firstDayIndex + i + 1;
+        cellMonth = month - 1;
+        if (cellMonth < 0) { cellMonth = 11; cellYear--; }
+        dayEl.classList.add('out-of-month');
+      } else if (i >= firstDayIndex && i < firstDayIndex + daysInMonth) {
+        cellDate = i - firstDayIndex + 1;
+      } else {
+        cellDate = i - firstDayIndex - daysInMonth + 1;
+        cellMonth = month + 1;
+        if (cellMonth > 11) { cellMonth = 0; cellYear++; }
+        dayEl.classList.add('out-of-month');
+      }
+
+      const dateNumber = document.createElement('span');
+      dateNumber.classList.add('date-number');
+      dateNumber.textContent = cellDate;
+      dayEl.appendChild(dateNumber);
+
+      const thisDate = new Date(cellYear, cellMonth, cellDate);
+      thisDate.setHours(0, 0, 0, 0);
+
+      if (thisDate.getTime() === today.getTime()) dayEl.classList.add('today-cell');
+
+      const key = dateKey(cellYear, cellMonth, cellDate);
+      const dayOfWeek = thisDate.getDay();
+      const normalCount = (appointments[key] || []).length;
+      const recurringCount = (recurringAppointments[dayOfWeek] || []).length;
+      const totalCount = normalCount + recurringCount;
+
+      if (totalCount > 0) {
+        const badge = document.createElement('span');
+        badge.classList.add('badge');
+        badge.textContent = totalCount;
+        dayEl.appendChild(badge);
+      }
+
+      if (selectedDateKey === key) dayEl.classList.add('selected-cell');
+
+      dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
+      daysContainer.appendChild(dayEl);
+    }
+  }
+
+  function changeMonthDir(direction) {
+    if (isAnimating) return;
+    isAnimating = true;
+    const titleTrack = document.getElementById('titleTrack');
+    const weekTrack = document.getElementById('weekTrack');
+    const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+    const inClass  = direction > 0 ? 'slide-in-right' : 'slide-in-left';
+
+    titleTrack.classList.add(outClass); weekTrack.classList.add(outClass);
+
+    setTimeout(() => {
+      currentDate.setDate(1);
+      currentDate.setMonth(currentDate.getMonth() + direction);
+      renderCalendar();
+      titleTrack.classList.remove(outClass); weekTrack.classList.remove(outClass);
+      titleTrack.classList.add(inClass); weekTrack.classList.add(inClass);
+      setTimeout(() => {
+        titleTrack.classList.remove(inClass); weekTrack.classList.remove(inClass);
+        isAnimating = false;
+      }, 450);
+    }, 450);
+  }
+
+  function setupSwipeCal() {
+    const wrapper = document.getElementById('daysWrapper');
+    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+    let isSwiping = false, isHorizontalSwipe = false;
+    const minSwipeDistance = 50, maxVerticalTolerance = 80;
+
+    wrapper.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
+      isSwiping = true; isHorizontalSwipe = false;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
+      const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
+      if (!isHorizontalSwipe && diffX > 15 && diffX > diffY) isHorizontalSwipe = true;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
+      if (Math.abs(diffX) > minSwipeDistance) {
+        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
+      }
+    }, { passive: true });
+
+    let mouseStartX = 0, isMouseDown = false;
+    wrapper.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; isMouseDown = true; });
+    wrapper.addEventListener('mouseup', (e) => {
+      if (!isMouseDown) return;
+      isMouseDown = false;
+      const diffX = e.clientX - mouseStartX;
+      if (Math.abs(diffX) > minSwipeDistance) {
+        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
+      }
+    });
+  }
+
+  function selectDay(year, month, day) {
+    selectedDateKey = dateKey(year, month, day);
+    cancelEdit(); renderCalendar(); showPanel(year, month, day);
+    if (window.innerWidth <= 800) {
+      setTimeout(() => { document.getElementById('panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+    }
+  }
+
+  function showPanel(year, month, day) {
+    const dayOfWeek = new Date(year, month, day).getDay();
+    document.getElementById('panelTitle').textContent = `مواعيد ${dayNames[dayOfWeek]} ${day} ${monthNames[month]} ${year}`;
+    document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
+    document.getElementById('durationInfo').classList.remove('show');
+    document.getElementById('repeatWeekly').checked = false;
+    document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
+    hideAddError(); hideError(); renderAppointments();
+  }
+
+  function renderAppointments() {
+    const list = document.getElementById('appointmentsList'); list.innerHTML = '';
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayAppts = getDayAppointments(y, m - 1, d);
+
+    if (dayAppts.length === 0) {
+      list.innerHTML = '<div style="color: #95a5a6; text-align: center; padding: 40px 15px; font-size: 16px;">لا توجد مواعيد في هذا اليوم</div>'; return;
+    }
+
+    dayAppts.forEach((appt) => {
+      const el = document.createElement('div');
+      el.classList.add('appointment');
+      if (appt.type === 'recurring') el.classList.add('recurring');
+      const isEditing = editingAppt && editingAppt.start === appt.start && editingAppt.end === appt.end && editingAppt.type === appt.type;
+      if (isEditing) el.classList.add('editing');
+
+      const recurringTag = appt.type === 'recurring' ? '<span class="recurring-tag">🔁 تكرار أسبوعي</span>' : '';
+      el.innerHTML = `
+        <div class="info">
+          <div class="time">🕐 ${formatTime(appt.start)} - ${formatTime(appt.end)}</div>
+          ${recurringTag}
+        </div>
+        <div class="appt-actions">
+          <button class="btn-edit" title="تعديل">✏</button>
+          <button class="btn-delete" title="حذف">✕</button>
+        </div>
+      `;
+      el.querySelector('.btn-edit').onclick = (e) => { e.stopPropagation(); startEdit(appt); };
+      el.querySelector('.btn-delete').onclick = (e) => { e.stopPropagation(); deleteAppointment(appt); };
+      list.appendChild(el);
+    });
+  }
+
+  function formatTime(value) {
+    const [h, m] = value.split(':').map(Number);
+    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    const period = h < 12 ? 'ص' : 'م';
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+  }
+
+  function startEdit(appt) {
+    editingAppt = { ...appt };
+    document.getElementById('editStart').value = appt.start; document.getElementById('editEnd').value = appt.end;
+    document.getElementById('editForm').classList.add('show');
+    const addContent = document.getElementById('addDropdownContent');
+    if(addContent.classList.contains('open')) toggleAddDropdown();
+    hideError(); renderAppointments();
+    document.getElementById('editForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function cancelEdit() {
+    editingAppt = null; document.getElementById('editForm').classList.remove('show');
+    document.getElementById('editStart').value = ''; document.getElementById('editEnd').value = '';
+    hideError(); if (selectedDateKey) renderAppointments();
+  }
+
+  function saveEdit() {
+    if (!editingAppt) return;
+    const newStart = document.getElementById('editStart').value;
+    const newEnd = document.getElementById('editEnd').value;
+    if (!newStart || !newEnd) { showError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
+    if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
+
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayOfWeek = new Date(y, m - 1, d).getDay();
+    const existing = getDayAppointments(y, m - 1, d);
+    const conflict = existing.find(appt => {
+      if (appt.start === editingAppt.start && appt.end === editingAppt.end && appt.type === editingAppt.type) return false;
+      return newStart < appt.end && newEnd > appt.start;
+    });
+
+    if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+
+    if (editingAppt.type === 'recurring') {
+      const list = recurringAppointments[dayOfWeek] || [];
+      const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
+      if (idx > -1) { list[idx] = { start: newStart, end: newEnd }; recurringAppointments[dayOfWeek] = list; }
+    } else {
+      const list = appointments[selectedDateKey] || [];
+      const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
+      if (idx > -1) { list[idx] = { start: newStart, end: newEnd }; appointments[selectedDateKey] = list; }
+    }
+
+    saveAllAppts(); editingAppt = null; document.getElementById('editForm').classList.remove('show');
+    hideError(); renderAppointments(); renderCalendar();
+  }
+
+  function addAppointment() {
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    const isRecurring = document.getElementById('repeatWeekly').checked;
+
+    if (!start || !end) { showAddError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
+    if (start >= end) { showAddError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
+
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayOfWeek = new Date(y, m - 1, d).getDay();
+    const existing = getDayAppointments(y, m - 1, d);
+    const conflict = existing.find(appt => start < appt.end && end > appt.start);
+
+    if (conflict) { showAddError(`❌ تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+
+    if (isRecurring) {
+      if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
+      recurringAppointments[dayOfWeek].push({ start, end });
+    } else {
+      if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
+      appointments[selectedDateKey].push({ start, end });
+    }
+
+    saveAllAppts();
+    document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
+    document.getElementById('durationInfo').classList.remove('show'); document.getElementById('repeatWeekly').checked = false;
+    hideAddError(); toggleAddDropdown(); renderAppointments(); renderCalendar();
+  }
+
+  function deleteAppointment(appt) {
+    if (editingAppt && editingAppt.start === appt.start && editingAppt.end === appt.end && editingAppt.type === appt.type) cancelEdit();
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayOfWeek = new Date(y, m - 1, d).getDay();
+
+    if (appt.type === 'recurring') {
+      const list = recurringAppointments[dayOfWeek] || [];
+      const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
+      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete recurringAppointments[dayOfWeek]; else recurringAppointments[dayOfWeek] = list; }
+    } else {
+      const list = appointments[selectedDateKey] || [];
+      const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
+      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete appointments[selectedDateKey]; else appointments[selectedDateKey] = list; }
+    }
+    saveAllAppts(); renderAppointments(); renderCalendar();
+  }
+
+  function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
+  function hideError() { document.getElementById('errorMsg').classList.remove('show'); }
+  function showAddError(msg) { const el = document.getElementById('addErrorMsg'); el.textContent = msg; el.classList.add('show'); }
+  function hideAddError() { document.getElementById('addErrorMsg').classList.remove('show'); }
+
+  populateTimeSelects();
+  renderCalendar();
+  setupSwipeCal();
+  
+  const initDate = new Date();
+  selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
+</script>
+
+<!-- ========================================== -->
+<!-- 🚀 سكربت Firebase والإرسال -->
+<!-- ========================================== -->
 <script type="module">
-    // ==========================================
-    // 🔥 Firebase Imports
-    // ==========================================
     import { 
         db, waitForAuth,
         collection, addDoc, doc, updateDoc, 
         serverTimestamp
     } from './firebase-config.js';
 
-    // ==========================================
-    // 🎯 الثوابت والمتغيرات العامة
-    // ==========================================
-    const daysOfWeek = [
-        { id: 'sat', name: 'السبت', jsDay: 6 },
-        { id: 'sun', name: 'الأحد', jsDay: 0 },
-        { id: 'mon', name: 'الاثنين', jsDay: 1 },
-        { id: 'tue', name: 'الثلاثاء', jsDay: 2 },
-        { id: 'wed', name: 'الأربعاء', jsDay: 3 },
-        { id: 'thu', name: 'الخميس', jsDay: 4 },
-        { id: 'fri', name: 'الجمعة', jsDay: 5 }
-    ];
-
-    let currentYear = new Date().getFullYear();
-    let currentMonth = new Date().getMonth();
-    let currentWeekOffset = 0;
-
-    const MONTH_NAMES_AR = [
-        'يناير','فبراير','مارس','أبريل','مايو','يونيو',
-        'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
-    ];
-
-    const TEACHER_NAME_KEY = 'mester_teacher_name';
-
     let IS_EDIT_MODE = false;
-    let EDIT_INDEX = -1;
     let EDIT_FIREBASE_ID = null;
-
-    let SAVED_SLOTS = {};
-    let MANUALLY_EXPANDED_DAYS = new Set();
-
     const AUTOSAVE_KEY = 'mester2_autosave';
-    const EDIT_DATA_KEY = 'mester2_edit_data';
-
-    // ==========================================
-    // 🎯 رسالة توضيحية للميعاد
-    // ==========================================
-    function buildApplyNote(dayId, fromVal, toVal) {
-        const dayObj = daysOfWeek.find(d => d.id === dayId);
-        const dayName = dayObj ? dayObj.name : 'اليوم';
-        let rangeText = 'مدى الحياة';
-        if (fromVal && toVal) {
-            const [fy, fm] = fromVal.split('-').map(Number);
-            const [ty, tm] = toVal.split('-').map(Number);
-            rangeText = `من <b>${MONTH_NAMES_AR[fm]} ${fy}</b> إلى <b>${MONTH_NAMES_AR[tm]} ${ty}</b>`;
-        }
-        return `<span class="note-icon">📌</span> <span>سيُطبَّق الميعاد في جميع أيام <b>${dayName}</b> ${rangeText}</span>`;
-    }
-
-    // ==========================================
-    // 🎯 خيارات القوائم
-    // ==========================================
-    function hourOptions() {
-        let html = '<option value="">ساعة</option>';
-        for (let i = 1; i <= 12; i++) html += `<option value="${i}">${i}</option>`;
-        return html;
-    }
-
-    function minuteOptions() {
-        let html = '<option value="">دقيقة</option>';
-        for (let i = 0; i < 60; i += 5) {
-            const v = i.toString().padStart(2, '0');
-            html += `<option value="${v}">${v}</option>`;
-        }
-        return html;
-    }
-
-    function buildMonthRangeOptions(selectedValue) {
-        const now = new Date();
-        const currentY = now.getFullYear();
-        const currentM = now.getMonth();
-        const startTotalM = currentY * 12 + currentM - 3;
-        const totalMonths = 24;
-        let html = '';
-        for (let i = 0; i < totalMonths; i++) {
-            const totalM = startTotalM + i;
-            const y = Math.floor(totalM / 12);
-            const m = ((totalM % 12) + 12) % 12;
-            const label = `${MONTH_NAMES_AR[m]} ${y}`;
-            const value = `${y}-${m}`;
-            const selected = (value === selectedValue) ? 'selected' : '';
-            html += `<option value="${value}" ${selected}>${label}</option>`;
-        }
-        return html;
-    }
-
-    function getDefaultRangeValues() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        const fromVal = `${y}-${m}`;
-        const toM = m + 10;
-        const toY = y + Math.floor(toM / 12);
-        const toMonth = ((toM % 12) + 12) % 12;
-        const toVal = `${toY}-${toMonth}`;
-        return { fromVal, toVal };
-    }
-
-    // ==========================================
-    // 🎯 أدوات التاريخ
-    // ==========================================
-    function getWeekStartSaturday(offset = 0) {
-        const today = new Date();
-        const todayJs = today.getDay();
-        const daysToSaturday = (todayJs + 1) % 7;
-        const saturday = new Date(today);
-        saturday.setDate(today.getDate() - daysToSaturday + (offset * 7));
-        saturday.setHours(0, 0, 0, 0);
-        return saturday;
-    }
-
-    function formatDateShort(date) {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        return `${day}/${month}`;
-    }
-
-    function formatDateFull(date) {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-
-    function getDateForDayInCurrentWeek(targetJsDay) {
-        const weekStart = getWeekStartSaturday(currentWeekOffset);
-        let offset;
-        if (targetJsDay === 6) offset = 0;
-        else offset = targetJsDay + 1;
-        const target = new Date(weekStart);
-        target.setDate(weekStart.getDate() + offset);
-        return target;
-    }
-
-    function getDayStatus(targetDate) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const target = new Date(targetDate);
-        target.setHours(0, 0, 0, 0);
-        if (target.getTime() === today.getTime()) return 'today';
-        if (target < today) return 'past';
-        return 'future';
-    }
-
-    function getNextDateForDay(targetJsDay) {
-        const targetDate = getDateForDayInCurrentWeek(targetJsDay);
-        const status = getDayStatus(targetDate);
-        const dateStr = formatDateFull(targetDate);
-        if (status === 'today') {
-            return `<span class="day-date today-date">📅 ${dateStr} • اليوم</span>`;
-        }
-        return `<span class="day-date">📅 ${dateStr}</span>`;
-    }
-
-    // ==========================================
-    // ✅✅✅ الحفظ التلقائي المحلي ✅✅✅
-    // ==========================================
-    function saveFormState() {
-        if (IS_EDIT_MODE) return;
-        try {
-            const state = {
-                groupName: document.getElementById('group-name')?.value || '',
-                teacherName: document.getElementById('teacher-name')?.value || '',
-                studentsCount: document.getElementById('students-count')?.value || '',
-                gender: document.querySelector('input[name="gender"]:checked')?.value || 'مختلط',
-                location: document.querySelector('input[name="location"]:checked')?.value || 'السنتر',
-                gpsCoords: document.getElementById('gps-coords')?.value || '',
-                locationText: document.getElementById('location-text')?.textContent || '',
-                subjectData: document.getElementById('fixed-subject')?.dataset.value || '',
-                subjectText: document.getElementById('fixed-subject')?.textContent || '',
-                SAVED_SLOTS: SAVED_SLOTS,
-                MANUALLY_EXPANDED_DAYS: Array.from(MANUALLY_EXPANDED_DAYS),
-                currentWeekOffset: currentWeekOffset,
-                savedAt: Date.now()
-            };
-            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
-        } catch (e) {
-            console.error('خطأ في الحفظ التلقائي:', e);
-        }
-    }
-
-    function restoreFormState() {
-        try {
-            const raw = localStorage.getItem(AUTOSAVE_KEY);
-            if (!raw) return false;
-            const state = JSON.parse(raw);
-
-            if (Date.now() - state.savedAt > 24 * 60 * 60 * 1000) {
-                localStorage.removeItem(AUTOSAVE_KEY);
-                return false;
-            }
-
-            if (state.groupName) document.getElementById('group-name').value = state.groupName;
-            if (state.teacherName) document.getElementById('teacher-name').value = state.teacherName;
-            if (state.studentsCount) document.getElementById('students-count').value = state.studentsCount;
-
-            if (state.gender) {
-                const r = document.querySelector(`input[name="gender"][value="${state.gender}"]`);
-                if (r) r.checked = true;
-            }
-            if (state.location) {
-                const r = document.querySelector(`input[name="location"][value="${state.location}"]`);
-                if (r) r.checked = true;
-            }
-            if (state.gpsCoords) {
-                document.getElementById('gps-coords').value = state.gpsCoords;
-                if (state.locationText) document.getElementById('location-text').textContent = state.locationText;
-                const btn = document.querySelector('.btn-gps');
-                if (btn && state.gpsCoords) {
-                    btn.innerHTML = '✅ تم التحديد';
-                    btn.style.backgroundColor = '#1a3c6d';
-                }
-            }
-            if (state.subjectData) {
-                const el = document.getElementById('fixed-subject');
-                el.dataset.value = state.subjectData;
-                if (state.subjectText) el.textContent = state.subjectText;
-            }
-
-            if (state.SAVED_SLOTS) SAVED_SLOTS = state.SAVED_SLOTS;
-            if (state.MANUALLY_EXPANDED_DAYS) MANUALLY_EXPANDED_DAYS = new Set(state.MANUALLY_EXPANDED_DAYS);
-            if (typeof state.currentWeekOffset === 'number') currentWeekOffset = state.currentWeekOffset;
-
-            return true;
-        } catch (e) {
-            console.error('خطأ في استرجاع الحفظ:', e);
-            return false;
-        }
-    }
-
-    function clearAutosave() {
-        localStorage.removeItem(AUTOSAVE_KEY);
-    }
-
-    function setupAutosave() {
-        const fields = ['group-name', 'teacher-name', 'students-count'];
-        fields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', saveFormState);
-                el.addEventListener('change', saveFormState);
-            }
-        });
-
-        document.querySelectorAll('input[name="gender"], input[name="location"]').forEach(r => {
-            r.addEventListener('change', saveFormState);
-        });
-
-        window.addEventListener('beforeunload', saveFormState);
-        window.addEventListener('pagehide', saveFormState);
-    }
-
-    // ==========================================
-    // 🎯 تشغيل الصفحة
-    // ==========================================
-    window.onload = function() {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        if (loadingOverlay) loadingOverlay.classList.remove('show');
-
-        const submitBtn = document.getElementById('submit-btn-main');
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            const urlParamsCheck = new URLSearchParams(window.location.search);
-            if (!urlParamsCheck.get('mode')) {
-                submitBtn.innerHTML = '🚀 إنشاء ونشر المجموعة';
-            }
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-        const editIndex = urlParams.get('index');
-
-        if (mode === 'edit' && editIndex !== null && editIndex !== undefined) {
-            IS_EDIT_MODE = true;
-            EDIT_INDEX = parseInt(editIndex);
-        } else {
-            IS_EDIT_MODE = false;
-            EDIT_INDEX = -1;
-        }
-
-        if (IS_EDIT_MODE) {
-            loadEditData();
-        } else {
-            const restored = restoreFormState();
-            if (restored) {
-                console.log('✅ تم استرجاع الحفظ التلقائي');
-            } else {
-                console.log('📭 لا يوجد حفظ تلقائي');
-            }
-        }
-
-        if (!IS_EDIT_MODE) {
-            const subjectDisplay = document.getElementById('fixed-subject');
-            const savedDataString = localStorage.getItem('teacherSelections');
-            let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
-
-            const stageNames = {
-                kg: '🧸 رياض الأطفال',
-                primary: '📗 المرحلة الابتدائية',
-                prep: '📘 المرحلة الإعدادية',
-                secondary: '📙 المرحلة الثانوية'
-            };
-
-            if (savedDataString) {
-                try {
-                    const savedData = JSON.parse(savedDataString);
-                    let summaryParts = [];
-
-                    for (const stageId in savedData) {
-                        const { grade, subjects } = savedData[stageId];
-                        if (subjects && subjects.length > 0) {
-                            const parts = [];
-                            if (grade) parts.push(`الصف: ${grade}`);
-                            parts.push(`المواد: ${subjects.join(' - ')}`);
-                            summaryParts.push(`${stageNames[stageId]}: ${parts.join(' | ')}`);
-                        }
-                    }
-
-                    if (summaryParts.length > 0) {
-                        selectedSubjectsText = summaryParts.join('\n');
-                    }
-                } catch(e) {
-                    console.error('خطأ في قراءة بيانات المواد:', e);
-                }
-            }
-
-            subjectDisplay.textContent = selectedSubjectsText;
-            subjectDisplay.dataset.value = selectedSubjectsText;
-        }
-
-        renderVerticalSchedule();
-        renderMonthlyCalendar();
-        updateWeekNavBar();
-        setupSwipeNavigation();
-        setupAutosave();
-
-        console.log('🚀 mester2 loaded');
-    };
-
-    // ==========================================
-    // 🎯 تحميل بيانات التعديل
-    // ==========================================
-    function loadEditData() {
-        try {
-            const raw = localStorage.getItem(EDIT_DATA_KEY);
-            if (!raw) {
-                alert('⚠️ لم يتم العثور على بيانات المجموعة للتعديل. الرجاء العودة للصفحة السابقة.');
-                window.location.href = 'mester3.html';
-                return;
-            }
-            const editData = JSON.parse(raw);
-            EDIT_FIREBASE_ID = editData.firebaseId || editData.id || null;
-
-            if (editData.groupName) document.getElementById('group-name').value = editData.groupName;
-            if (editData.teacherName) document.getElementById('teacher-name').value = editData.teacherName;
-            if (editData.studentsCount) document.getElementById('students-count').value = editData.studentsCount;
-
-            if (editData.genderAllowed) {
-                const genderRadio = document.querySelector(`input[name="gender"][value="${editData.genderAllowed}"]`);
-                if (genderRadio) genderRadio.checked = true;
-            }
-            if (editData.location) {
-                const locationRadio = document.querySelector(`input[name="location"][value="${editData.location}"]`);
-                if (locationRadio) locationRadio.checked = true;
-            }
-            if (editData.gpsLocation) {
-                document.getElementById('gps-coords').value = editData.gpsLocation;
-                const btn = document.querySelector('.btn-gps');
-                if (btn) {
-                    btn.innerHTML = '✅ تم التحديد';
-                    btn.style.backgroundColor = '#1a3c6d';
-                }
-                document.getElementById('location-text').textContent =
-                    `الإحداثيات: ${editData.gpsLocation}`;
-            }
-
-            if (editData.subjectData) {
-                const subjectEl = document.getElementById('fixed-subject');
-                subjectEl.textContent = editData.subjectData;
-                subjectEl.dataset.value = editData.subjectData;
-            }
-
-            if (editData.schedule) {
-                SAVED_SLOTS = {};
-                Object.keys(editData.schedule).forEach(dayName => {
-                    const dayObj = daysOfWeek.find(d => d.name === dayName);
-                    if (!dayObj) return;
-                    const slots = editData.schedule[dayName];
-                    if (!Array.isArray(slots)) return;
-
-                    // 🔑 منع التكرار عند تحميل بيانات التعديل
-                    const uniqueMap = new Map();
-                    slots.forEach(s => {
-                        if (!s || !s.start || !s.end) return;
-                        const key = `${s.start}__${s.end}__${s.rangeFrom || ''}__${s.rangeTo || ''}`;
-                        if (!uniqueMap.has(key)) {
-                            uniqueMap.set(key, {
-                                start: s.start,
-                                end: s.end,
-                                rangeFrom: s.rangeFrom || '',
-                                rangeTo: s.rangeTo || ''
-                            });
-                        }
-                    });
-                    SAVED_SLOTS[dayObj.id] = Array.from(uniqueMap.values());
-                });
-            }
-
-            const submitBtn = document.getElementById('submit-btn-main');
-            if (submitBtn) submitBtn.innerHTML = '💾 حفظ التعديلات';
-
-            const headerTitle = document.getElementById('page-header-title');
-            if (headerTitle) headerTitle.textContent = 'تعديل المجموعة';
-
-        } catch (e) {
-            console.error('خطأ في تحميل وضع التعديل:', e);
-        }
-    }
-
-    // ==========================================
-    // 🎯 رسم الجدول الأسبوعي
-    // ==========================================
-    function renderVerticalSchedule() {
-        const container = document.getElementById('vertical-schedule');
-        if (!container) return;
-        container.innerHTML = '';
-
-        daysOfWeek.forEach(day => {
-            const dateInfo = getNextDateForDay(day.jsDay);
-            const targetDate = getDateForDayInCurrentWeek(day.jsDay);
-            const status = getDayStatus(targetDate);
-
-            let statusClass = '';
-            if (status === 'today') statusClass = 'today-day-card';
-            else if (status === 'past') statusClass = 'past-day-card';
-            else statusClass = 'future-day-card';
-
-            container.innerHTML += `
-                <div class="day-card ${statusClass}" id="card-${day.id}" data-day="${day.name}">
-                    <div class="day-header" onclick="toggleDayExpand('${day.id}')">
-                        <div class="day-title">
-                            <label>${day.name}</label>
-                            ${dateInfo}
-                        </div>
-                        <div class="day-header-left">
-                            <span class="day-status" id="status-${day.id}">0 حصة</span>
-                            <span class="expand-icon">▼</span>
-                        </div>
-                    </div>
-                    <div class="day-body" id="body-${day.id}" onclick="event.stopPropagation()">
-                        <div class="slots-container" id="slots-${day.id}"></div>
-                        <button class="btn-add-slot" onclick="addSlot('${day.id}')">
-                            <span class="plus-icon">➕</span>
-                            <span>إضافة موعد جديد</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-
-        Object.keys(SAVED_SLOTS).forEach(dayId => {
-            if (!SAVED_SLOTS[dayId] || SAVED_SLOTS[dayId].length === 0) return;
-            SAVED_SLOTS[dayId].forEach(slotData => {
-                rebuildSlotFromEdit(dayId, slotData);
-            });
-            const card = document.getElementById(`card-${dayId}`);
-            if (card) {
-                card.classList.add('active');
-                if (MANUALLY_EXPANDED_DAYS.has(dayId)) {
-                    card.classList.add('expanded');
-                }
-            }
-            updateDayStatusDisplay(dayId);
-        });
-    }
-
-    function toggleDayExpand(dayId) {
-        const card = document.getElementById(`card-${dayId}`);
-        const isExpanded = card.classList.contains('expanded');
-        if (!isExpanded) {
-            const slotsContainer = document.getElementById(`slots-${dayId}`);
-            if (slotsContainer.children.length === 0) { addSlot(dayId); }
-            MANUALLY_EXPANDED_DAYS.add(dayId);
-        } else {
-            MANUALLY_EXPANDED_DAYS.delete(dayId);
-        }
-        card.classList.toggle('expanded');
-        updateDayStatusDisplay(dayId);
-        saveFormState();
-    }
-
-    function checkDayActive(dayId) {
-        const card = document.getElementById(`card-${dayId}`);
-        if (!card) return;
-        const hasSaved = SAVED_SLOTS[dayId] && SAVED_SLOTS[dayId].length > 0;
-        if (hasSaved) { card.classList.add('active'); } else { card.classList.remove('active'); }
-    }
-
-    function addSlot(dayId) {
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        const existingEmptySlot = Array.from(slotsContainer.querySelectorAll('.time-slot')).find(slot => {
-            const hour = slot.querySelector('.start-hour').value;
-            const minute = slot.querySelector('.start-minute').value;
-            const saveBtn = slot.querySelector('.btn-save-slot');
-            return !hour && !minute && !saveBtn.classList.contains('saved');
-        });
-        if (existingEmptySlot) { alert("⚠️ يوجد موعد فارغ بالفعل. يرجى ملؤه أو حذفه قبل إضافة موعد جديد."); return; }
-
-        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const hOpts = hourOptions();
-        const mOpts = minuteOptions();
-
-        const { fromVal, toVal } = getDefaultRangeValues();
-        const fromOptions = buildMonthRangeOptions(fromVal);
-        const toOptions = buildMonthRangeOptions(toVal);
-
-        const slotHTML = `
-            <div class="time-slot" id="${slotId}">
-                <div class="time-row">
-                    <span class="time-label">من:</span>
-                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option><option value="م" selected>م</option>
-                    </select>
-                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                </div>
-                <div class="time-row">
-                    <span class="time-label">إلى:</span>
-                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option><option value="م" selected>م</option>
-                    </select>
-                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                </div>
-                <div class="slot-range">
-                    <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
-                    <span class="slot-range-arrow">←</span>
-                    <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
-                </div>
-                <div class="slot-actions">
-                    <span class="slot-apply-note">${buildApplyNote(dayId, fromVal, toVal)}</span>
-                    <button class="btn-save-slot" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
-                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
-                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
-                </div>
-            </div>
-        `;
-        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
-        updateDayStatusDisplay(dayId);
-    }
-
-    function markUnsaved(slotId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        slot.querySelector('.btn-save-slot').classList.remove('saved');
-        const noteEl = slot.querySelector('.slot-apply-note');
-        if (noteEl) {
-            const dayCard = slot.closest('.day-card');
-            const dayId = dayCard ? dayCard.id.replace('card-', '') : '';
-            const fromVal = slot.querySelector('.slot-range-from').value;
-            const toVal = slot.querySelector('.slot-range-to').value;
-            noteEl.innerHTML = buildApplyNote(dayId, fromVal, toVal);
-            noteEl.classList.remove('show');
-        }
-    }
-
-    function readTime(slot, prefix) {
-        const hour = slot.querySelector(`.${prefix}-hour`).value;
-        const minute = slot.querySelector(`.${prefix}-minute`).value;
-        const period = slot.querySelector(`.${prefix}-period`).value;
-        if (!hour || !minute) return null;
-        return { hour: parseInt(hour), minute: minute, period: period, display: `${hour}:${minute} ${period}` };
-    }
-
-    function timeToMinutes(hour, minute, period) {
-        let h = hour;
-        if (period === 'م' && h !== 12) h += 12;
-        if (period === 'ص' && h === 12) h = 0;
-        return h * 60 + parseInt(minute);
-    }
-
-    function readTimeFromString(str) {
-        if (!str) return { hour: 0, minute: '00', period: 'م' };
-        const parts = str.split(' ');
-        const hm = parts[0].split(':');
-        return { hour: parseInt(hm[0]), minute: hm[1] || '00', period: parts[1] || 'م' };
-    }
-
-    // ==========================================
-    // ✅✅✅ saveSlot مع منع التكرار نهائياً ✅✅✅
-    // ==========================================
-    function saveSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        const startTime = readTime(slot, 'start');
-        const endTime = readTime(slot, 'end');
-        if (!startTime || !endTime) { alert("⚠️ يرجى اختيار الساعة والدقائق للبداية والنهاية."); return; }
-
-        const rangeFromVal = slot.querySelector('.slot-range-from').value;
-        const rangeToVal = slot.querySelector('.slot-range-to').value;
-
-        let slotRangeFrom = null, slotRangeTo = null;
-        if (rangeFromVal && rangeToVal) {
-            const [fy, fm] = rangeFromVal.split('-').map(Number);
-            const [ty, tm] = rangeToVal.split('-').map(Number);
-            const fromT = fy * 12 + fm;
-            const toT = ty * 12 + tm;
-            if (fromT > toT) {
-                alert("⚠️ 'من شهر' يجب أن يكون قبل أو يساوي 'إلى شهر'.");
-                return;
-            }
-            slotRangeFrom = { year: fy, month: fm };
-            slotRangeTo = { year: ty, month: tm };
-        }
-
-        const startMin = timeToMinutes(startTime.hour, startTime.minute, startTime.period);
-        const endMin = timeToMinutes(endTime.hour, endTime.minute, endTime.period);
-        if (startMin >= endMin) { alert("⚠️ وقت النهاية يجب أن يكون بعد وقت البداية!"); return; }
-
-        const existing = SAVED_SLOTS[dayId] || [];
-        const currentIdx = parseInt(slot.dataset.savedIndex !== undefined ? slot.dataset.savedIndex : -1);
-        for (let i = 0; i < existing.length; i++) {
-            if (i === currentIdx) continue;
-            const other = existing[i];
-            const oStart = readTimeFromString(other.start);
-            const oEnd = readTimeFromString(other.end);
-            const oStartMin = timeToMinutes(oStart.hour, oStart.minute, oStart.period);
-            const oEndMin = timeToMinutes(oEnd.hour, oEnd.minute, oEnd.period);
-            if (startMin < oEndMin && endMin > oStartMin) { alert("⚠️ هذا الموعد يتعارض مع موعد آخر محفوظ في نفس اليوم!"); return; }
-        }
-
-        if (!SAVED_SLOTS[dayId]) SAVED_SLOTS[dayId] = [];
-        const slotData = {
-            start: startTime.display,
-            end: endTime.display,
-            rangeFrom: slotRangeFrom ? `${slotRangeFrom.year}-${slotRangeFrom.month}` : '',
-            rangeTo: slotRangeTo ? `${slotRangeTo.year}-${slotRangeTo.month}` : ''
-        };
-
-        // 🔑 منع التكرار نهائياً
-        const duplicateIdx = SAVED_SLOTS[dayId].findIndex(
-            (s, i) => i !== currentIdx &&
-                     s.start === slotData.start && 
-                     s.end === slotData.end && 
-                     (s.rangeFrom || '') === (slotData.rangeFrom || '') &&
-                     (s.rangeTo || '') === (slotData.rangeTo || '')
-        );
-
-        if (currentIdx >= 0 && currentIdx < SAVED_SLOTS[dayId].length) {
-            SAVED_SLOTS[dayId][currentIdx] = slotData;
-        } else if (duplicateIdx >= 0) {
-            SAVED_SLOTS[dayId][duplicateIdx] = slotData;
-            slot.dataset.savedIndex = duplicateIdx;
-        } else {
-            SAVED_SLOTS[dayId].push(slotData);
-            slot.dataset.savedIndex = SAVED_SLOTS[dayId].length - 1;
-        }
-
-        slot.dataset.rangeFrom = slotData.rangeFrom;
-        slot.dataset.rangeTo = slotData.rangeTo;
-
-        slot.querySelector('.btn-save-slot').classList.add('saved');
-        slot.classList.add('locked');
-        document.getElementById(`card-${dayId}`).classList.add('active');
-        updateDayStatusDisplay(dayId);
-        renderMonthlyCalendar();
-
-        const noteEl = slot.querySelector('.slot-apply-note');
-        if (noteEl) {
-            noteEl.innerHTML = buildApplyNote(dayId, slot.dataset.rangeFrom, slot.dataset.rangeTo);
-            noteEl.classList.add('show');
-        }
-
-        saveFormState();
-
-        let rangeMsg = '';
-        if (slotRangeFrom && slotRangeTo) {
-            rangeMsg = `\n📆 النطاق: من ${MONTH_NAMES_AR[slotRangeFrom.month]} ${slotRangeFrom.year} إلى ${MONTH_NAMES_AR[slotRangeTo.month]} ${slotRangeTo.year}`;
-        } else {
-            rangeMsg = `\n📆 بدون نطاق: الحصة هتتكرر مدى الحياة`;
-        }
-        alert("✅ تم حفظ الموعد وتم قفل التعديل. اضغط على زر تعديل ✏️ للتغيير." + rangeMsg);
-    }
-
-    function editSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        slot.classList.remove('locked');
-        slot.querySelector('.btn-save-slot').classList.remove('saved');
-        checkDayActive(dayId);
-        updateDayStatusDisplay(dayId);
-    }
-
-    function removeSlot(slotId, dayId) {
-        const slot = document.getElementById(slotId);
-        if (!slot) return;
-        const startTime = readTime(slot, 'start');
-        const endTime = readTime(slot, 'end');
-        const isSaved = slot.querySelector('.btn-save-slot').classList.contains('saved');
-
-        let confirmMessage = '⚠️ هل أنت متأكد من إلغاء هذا الموعد؟';
-        if (isSaved && startTime && endTime) {
-            confirmMessage = `⚠️ هل أنت متأكد من إلغاء هذه الحصة؟\n\n🕐 من: ${startTime.display}\n🕐 إلى: ${endTime.display}\n\nسيتم حذف الحصة نهائيًا.`;
-        } else if (startTime || endTime) {
-            confirmMessage = `⚠️ هذا الموعد لم يتم حفظه بعد.\n\nهل أنت متأكد من إلغائه؟`;
-        }
-
-        if (confirm(confirmMessage)) {
-            const idx = parseInt(slot.dataset.savedIndex !== undefined ? slot.dataset.savedIndex : -1);
-            if (idx >= 0 && SAVED_SLOTS[dayId] && SAVED_SLOTS[dayId][idx]) {
-                SAVED_SLOTS[dayId].splice(idx, 1);
-                const remainingSlots = document.getElementById(`slots-${dayId}`).querySelectorAll('.time-slot');
-                remainingSlots.forEach((el, i) => {
-                    if (el.dataset.savedIndex !== undefined) el.dataset.savedIndex = i;
-                });
-                if (SAVED_SLOTS[dayId].length === 0) delete SAVED_SLOTS[dayId];
-            }
-            slot.remove();
-            checkDayActive(dayId);
-            updateDayStatusDisplay(dayId);
-            renderMonthlyCalendar();
-            saveFormState();
-        }
-    }
-
-    function updateDayStatusDisplay(dayId) {
-        const statusText = document.getElementById(`status-${dayId}`);
-        if (!statusText) return;
-        const sessions = (SAVED_SLOTS[dayId] || []).map(s => {
-            const st = readTimeFromString(s.start);
-            const en = readTimeFromString(s.end);
-            return { start: s.start, end: s.end, startMin: timeToMinutes(st.hour, st.minute, st.period) };
-        }).sort((a, b) => a.startMin - b.startMin);
-
-        if (sessions.length > 0) {
-            statusText.style.background = "#28a745";
-            statusText.style.color = "white";
-            statusText.style.boxShadow = "0 2px 8px rgba(40,167,69,0.3)";
-            statusText.innerHTML = sessions.map((s, i) => 
-                `<span class="session-pill"><span class="session-num">${i + 1}</span><span dir="ltr">${s.start} - ${s.end}</span></span>`
-            ).join('');
-        } else {
-            statusText.style.background = "#e0e4e8";
-            statusText.style.color = "#666";
-            statusText.style.boxShadow = "none";
-            statusText.innerHTML = `0 حصة`;
-        }
-    }
-
-    // ==========================================
-    // 🎯 التنقل بين الأسابيع
-    // ==========================================
-    function updateWeekNavBar() {
-        const weekStart = getWeekStartSaturday(currentWeekOffset);
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-
-        const rangeEl = document.getElementById('week-range');
-        const labelEl = document.getElementById('week-label');
-        const statusEl = document.getElementById('week-status');
-
-        rangeEl.innerHTML = `
-            <span>${formatDateShort(weekStart)}</span>
-            <span class="week-num-badge">7 أيام</span>
-            <span>${formatDateShort(weekEnd)}</span>
-        `;
-
-        if (currentWeekOffset === 0) {
-            labelEl.textContent = 'الأسبوع الحالي';
-            statusEl.textContent = '📍 النهاردة';
-            statusEl.className = 'week-status current';
-        } else if (currentWeekOffset < 0) {
-            const weeksAgo = Math.abs(currentWeekOffset);
-            labelEl.textContent = weeksAgo === 1 ? 'الأسبوع اللي فات' : `قبل ${weeksAgo} أسابيع`;
-            statusEl.textContent = '⏪ ماضي';
-            statusEl.className = 'week-status past';
-        } else {
-            labelEl.textContent = currentWeekOffset === 1 ? 'الأسبوع الجاي' : `بعد ${currentWeekOffset} أسابيع`;
-            statusEl.textContent = '⏩ قادم';
-            statusEl.className = 'week-status future';
-        }
-    }
-
-    function goToPrevWeekWithAnimation() {
-        const wrapper = document.getElementById('vertical-schedule-wrapper');
-        if (wrapper) {
-            wrapper.classList.remove('swipe-left', 'swipe-right');
-            void wrapper.offsetWidth;
-            wrapper.classList.add('swipe-right');
-        }
-        currentWeekOffset--;
-        renderVerticalSchedule();
-        updateWeekNavBar();
-        saveFormState();
-    }
-
-    function goToNextWeekWithAnimation() {
-        const wrapper = document.getElementById('vertical-schedule-wrapper');
-        if (wrapper) {
-            wrapper.classList.remove('swipe-left', 'swipe-right');
-            void wrapper.offsetWidth;
-            wrapper.classList.add('swipe-left');
-        }
-        currentWeekOffset++;
-        renderVerticalSchedule();
-        updateWeekNavBar();
-        saveFormState();
-    }
-
-    function goToCurrentWeek() {
-        currentWeekOffset = 0;
-        renderVerticalSchedule();
-        updateWeekNavBar();
-        saveFormState();
-    }
-
-    function setupSwipeNavigation() {
-        setupWeekSwipe();
-        setupMonthSwipe();
-    }
-
-    function setupWeekSwipe() {
-        const wrapper = document.getElementById('vertical-schedule-wrapper');
-        if (!wrapper) return;
-
-        let touchStartX = 0, touchStartY = 0, isDragging = false, isHorizontalSwipe = false;
-        const MIN_SWIPE_DISTANCE = 60;
-
-        wrapper.addEventListener('touchstart', (e) => {
-            const t = e.changedTouches[0];
-            touchStartX = t.clientX; touchStartY = t.clientY;
-            isDragging = true; isHorizontalSwipe = false;
-        }, { passive: true });
-
-        wrapper.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            const t = e.changedTouches[0];
-            const diffX = Math.abs(t.clientX - touchStartX);
-            const diffY = Math.abs(t.clientY - touchStartY);
-            if (diffX > diffY && diffX > 10) isHorizontalSwipe = true;
-        }, { passive: true });
-
-        wrapper.addEventListener('touchend', (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            if (!isHorizontalSwipe) return;
-            const t = e.changedTouches[0];
-            const diffX = t.clientX - touchStartX;
-            const diffY = t.clientY - touchStartY;
-            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
-            if (diffX > 0) goToPrevWeekWithAnimation();
-            else goToNextWeekWithAnimation();
-        }, { passive: true });
-
-        let mouseStartX = 0, mouseDragging = false, mouseHorizontal = false;
-        wrapper.addEventListener('mousedown', (e) => {
-            if (e.target.closest('button, a, select, input')) return;
-            mouseStartX = e.clientX;
-            mouseDragging = true; mouseHorizontal = false;
-            e.preventDefault();
-        });
-        document.addEventListener('mousemove', (e) => {
-            if (!mouseDragging) return;
-            const diffX = Math.abs(e.clientX - mouseStartX);
-            if (diffX > 10) mouseHorizontal = true;
-        });
-        document.addEventListener('mouseup', (e) => {
-            if (!mouseDragging) return;
-            mouseDragging = false;
-            if (!mouseHorizontal) return;
-            const diffX = e.clientX - mouseStartX;
-            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (diffX > 0) goToPrevWeekWithAnimation();
-            else goToNextWeekWithAnimation();
-        });
-        wrapper.addEventListener('dragstart', (e) => e.preventDefault());
-    }
-
-    function setupMonthSwipe() {
-        const wrapper = document.querySelector('.monthly-grid-wrapper');
-        if (!wrapper) return;
-
-        let touchStartX = 0, touchStartY = 0, isDragging = false, isHorizontalSwipe = false;
-        const MIN_SWIPE_DISTANCE = 60;
-
-        wrapper.addEventListener('touchstart', (e) => {
-            const t = e.changedTouches[0];
-            touchStartX = t.clientX; touchStartY = t.clientY;
-            isDragging = true; isHorizontalSwipe = false;
-        }, { passive: true });
-        wrapper.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            const t = e.changedTouches[0];
-            const diffX = Math.abs(t.clientX - touchStartX);
-            const diffY = Math.abs(t.clientY - touchStartY);
-            if (diffX > diffY && diffX > 10) isHorizontalSwipe = true;
-        }, { passive: true });
-        wrapper.addEventListener('touchend', (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            if (!isHorizontalSwipe) return;
-            const t = e.changedTouches[0];
-            const diffX = t.clientX - touchStartX;
-            const diffY = t.clientY - touchStartY;
-            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (Math.abs(diffX) < Math.abs(diffY) * 1.5) return;
-            if (diffX > 0) goToPrevMonthWithAnimation();
-            else goToNextMonthWithAnimation();
-        }, { passive: true });
-
-        let mouseStartX = 0, mouseDragging = false, mouseHorizontal = false;
-        wrapper.addEventListener('mousedown', (e) => {
-            if (e.target.closest('button, a, select, input')) return;
-            mouseStartX = e.clientX;
-            mouseDragging = true; mouseHorizontal = false;
-            e.preventDefault();
-        });
-        document.addEventListener('mousemove', (e) => {
-            if (!mouseDragging) return;
-            const diffX = Math.abs(e.clientX - mouseStartX);
-            if (diffX > 10) mouseHorizontal = true;
-        });
-        document.addEventListener('mouseup', (e) => {
-            if (!mouseDragging) return;
-            mouseDragging = false;
-            if (!mouseHorizontal) return;
-            const diffX = e.clientX - mouseStartX;
-            if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) return;
-            if (diffX > 0) goToPrevMonthWithAnimation();
-            else goToNextMonthWithAnimation();
-        });
-        wrapper.addEventListener('dragstart', (e) => e.preventDefault());
-    }
-
-    function goToPrevMonthWithAnimation() {
-        const wrapper = document.querySelector('.monthly-grid-wrapper');
-        if (wrapper) {
-            wrapper.classList.remove('swipe-left', 'swipe-right');
-            void wrapper.offsetWidth;
-            wrapper.classList.add('swipe-right');
-        }
-        changeMonth(-1);
-    }
-
-    function goToNextMonthWithAnimation() {
-        const wrapper = document.querySelector('.monthly-grid-wrapper');
-        if (wrapper) {
-            wrapper.classList.remove('swipe-left', 'swipe-right');
-            void wrapper.offsetWidth;
-            wrapper.classList.add('swipe-left');
-        }
-        changeMonth(1);
-    }
-
-    function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-        renderMonthlyCalendar();
-    }
-
-    function goToday() {
-        const now = new Date();
-        currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        renderMonthlyCalendar();
-    }
 
     function getLocation(e) {
         e.preventDefault();
@@ -1679,406 +845,19 @@
             navigator.geolocation.getCurrentPosition(
                 position => {
                     hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                    btn.innerHTML = '✅ تم التحديد';
-                    btn.style.backgroundColor = '#1a3c6d';
+                    btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
                     textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-                    saveFormState();
                 },
                 error => {
-                    btn.innerHTML = '❌ فشل';
-                    btn.style.backgroundColor = '#dc3545';
+                    btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
                     textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
                 }
             );
         }
     }
 
-    function switchView(view) {
-        const tabList = document.getElementById('tab-list');
-        const tabMonth = document.getElementById('tab-month');
-        const vScheduleView = document.getElementById('vertical-schedule-view');
-        const mCalendar = document.getElementById('monthly-calendar');
-
-        [tabList, tabMonth].forEach(t => t.classList.remove('active'));
-        vScheduleView.style.display = 'none';
-        mCalendar.classList.remove('active');
-
-        if (view === 'month') {
-            tabMonth.classList.add('active');
-            mCalendar.classList.add('active');
-            renderMonthlyCalendar();
-        } else {
-            tabList.classList.add('active');
-            vScheduleView.style.display = 'block';
-        }
-    }
-
-    function getAllWeeklySessions() {
-        const sessions = [];
-        daysOfWeek.forEach(day => {
-            const slots = SAVED_SLOTS[day.id];
-            if (!slots || slots.length === 0) return;
-            slots.forEach(slotData => {
-                const start = readTimeFromString(slotData.start);
-                const end = readTimeFromString(slotData.end);
-                let rangeFrom = null, rangeTo = null;
-                if (slotData.rangeFrom) {
-                    const [fy, fm] = slotData.rangeFrom.split('-').map(Number);
-                    rangeFrom = { year: fy, month: fm };
-                }
-                if (slotData.rangeTo) {
-                    const [ty, tm] = slotData.rangeTo.split('-').map(Number);
-                    rangeTo = { year: ty, month: tm };
-                }
-                sessions.push({
-                    dayId: day.id,
-                    dayName: day.name,
-                    dayJs: day.jsDay,
-                    start: slotData.start,
-                    end: slotData.end,
-                    startMin: timeToMinutes(start.hour, start.minute, start.period),
-                    endMin: timeToMinutes(end.hour, end.minute, end.period),
-                    rangeFrom: rangeFrom,
-                    rangeTo: rangeTo
-                });
-            });
-        });
-        return sessions;
-    }
-
-    function jsDayToCol(jsDay) {
-        return (jsDay + 1) % 7;
-    }
-
-    function countMonthSessions(year, month, weeklySessions) {
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        let count = 0;
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dt = new Date(year, month, d);
-            const jsD = dt.getDay();
-            const matching = weeklySessions.filter(s => {
-                if (s.dayJs !== jsD) return false;
-                if (s.rangeFrom && s.rangeTo) {
-                    const t = year * 12 + month;
-                    const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
-                    const toT = s.rangeTo.year * 12 + s.rangeTo.month;
-                    if (t < fromT || t > toT) return false;
-                }
-                return true;
-            });
-            count += matching.length;
-        }
-        return count;
-    }
-
-    function renderMonthlyCalendar() {
-        const nameEl = document.getElementById('month-name');
-        const subEl = document.getElementById('month-sub');
-        const bodyEl = document.getElementById('monthly-body');
-
-        const weeklySessions = getAllWeeklySessions();
-        const monthNum = (currentMonth + 1).toString().padStart(2, '0');
-        nameEl.innerHTML = `
-            <span>${MONTH_NAMES_AR[currentMonth]}</span>
-            <span class="month-num-badge">${monthNum}</span>
-            <span>${currentYear}</span>
-        `;
-
-        const actualMonthSessions = countMonthSessions(currentYear, currentMonth, weeklySessions);
-        subEl.textContent = `📊 ${actualMonthSessions} حصة هذا الشهر • ${weeklySessions.length} حصة أسبوعياً`;
-
-        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-        const firstDayCol = jsDayToCol(firstDayOfMonth.getDay());
-        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-        const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
-        const totalCells = Math.ceil((firstDayCol + daysInMonth) / 7) * 7;
-
-        const today = new Date();
-        const todayYear = today.getFullYear();
-        const todayMonth = today.getMonth();
-        const todayDate = today.getDate();
-        const todayDateOnly = new Date(todayYear, todayMonth, todayDate);
-        const isCurrentMonthView = (currentYear === todayYear && currentMonth === todayMonth);
-
-        let html = '';
-
-        for (let i = 0; i < totalCells; i++) {
-            const dayIndexInMonth = i - firstDayCol + 1;
-            let dayNum, isOtherMonth = false, actualDateObj;
-
-            if (dayIndexInMonth < 1) {
-                dayNum = daysInPrevMonth + dayIndexInMonth;
-                isOtherMonth = true;
-                actualDateObj = new Date(currentYear, currentMonth - 1, dayNum);
-            } else if (dayIndexInMonth > daysInMonth) {
-                dayNum = dayIndexInMonth - daysInMonth;
-                isOtherMonth = true;
-                actualDateObj = new Date(currentYear, currentMonth + 1, dayNum);
-            } else {
-                dayNum = dayIndexInMonth;
-                actualDateObj = new Date(currentYear, currentMonth, dayNum);
-            }
-
-            const cellJsDay = actualDateObj.getDay();
-            const matchingSessions = weeklySessions.filter(s => {
-                if (s.dayJs !== cellJsDay) return false;
-                if (s.rangeFrom && s.rangeTo) {
-                    const t = actualDateObj.getFullYear() * 12 + actualDateObj.getMonth();
-                    const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
-                    const toT = s.rangeTo.year * 12 + s.rangeTo.month;
-                    if (t < fromT || t > toT) return false;
-                }
-                return true;
-            }).sort((a,b) => a.startMin - b.startMin);
-
-            const isFriday = cellJsDay === 5;
-            const isTodayCell = isCurrentMonthView && actualDateObj.getDate() === todayDate && !isOtherMonth;
-            const cellDateOnly = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate());
-            const isPastDay = cellDateOnly < todayDateOnly && !isOtherMonth;
-
-            html += `<div class="monthly-day ${isOtherMonth ? 'other-month' : ''} ${isTodayCell ? 'today' : ''} ${isFriday ? 'friday' : ''} ${isPastDay ? 'past-day' : ''}" 
-                        onclick="${isOtherMonth ? '' : `showDayDetails(${actualDateObj.getFullYear()}, ${actualDateObj.getMonth()},${dayNum})`}">`;
-
-            html += `<div class="day-num">
-                <span>${dayNum}</span>
-                ${isTodayCell ? '<span class="today-badge">اليوم</span>' : (matchingSessions.length > 0 && !isOtherMonth ? `<span class="session-count-badge">${matchingSessions.length}</span>` : '')}
-            </div>`;
-
-            html += `<div class="day-sessions">`;
-            if (matchingSessions.length > 0 && !isOtherMonth) {
-                const now = new Date();
-                matchingSessions.forEach(sess => {
-                    const sessDateTime = new Date(actualDateObj.getFullYear(), actualDateObj.getMonth(), actualDateObj.getDate(), Math.floor(sess.startMin / 60), sess.startMin % 60);
-                    const isPast = sessDateTime < now;
-                    html += `<div class="day-session-chip ${isPast ? 'past' : ''}" dir="ltr">${sess.start}</div>`;
-                });
-            }
-            html += `</div>`;
-            html += `</div>`;
-        }
-
-        bodyEl.innerHTML = html;
-    }
-
-    function showDayDetails(year, month, dayNum) {
-        const modal = document.getElementById('day-modal');
-        const titleEl = document.getElementById('modal-day-title');
-        const listEl = document.getElementById('modal-sessions-list');
-
-        const dateObj = new Date(year, month, dayNum);
-        const jsDay = dateObj.getDay();
-        const dayObj = daysOfWeek.find(d => d.jsDay === jsDay);
-        const dayName = dayObj ? dayObj.name : '';
-
-        titleEl.textContent = `${dayName} ${dayNum} ${MONTH_NAMES_AR[month]} ${year}`;
-
-        const weeklySessions = getAllWeeklySessions();
-        const sessions = weeklySessions.filter(s => {
-            if (s.dayJs !== jsDay) return false;
-            if (s.rangeFrom && s.rangeTo) {
-                const t = year * 12 + month;
-                const fromT = s.rangeFrom.year * 12 + s.rangeFrom.month;
-                const toT = s.rangeTo.year * 12 + s.rangeTo.month;
-                if (t < fromT || t > toT) return false;
-            }
-            return true;
-        }).sort((a,b) => a.startMin - b.startMin);
-
-        if (sessions.length === 0) {
-            listEl.innerHTML = `<div style="text-align:center;padding:20px;color:#94a3b8;font-weight:bold;">لا توجد حصص في هذا اليوم</div>`;
-        } else {
-            const now = new Date();
-            listEl.innerHTML = sessions.map((s, i) => {
-                const sessDateTime = new Date(year, month, dayNum, Math.floor(s.startMin / 60), s.startMin % 60);
-                const isPast = sessDateTime < now;
-                return `
-                    <div class="modal-session-item ${isPast ? 'past' : ''}">
-                        <div>
-                            <span class="sess-num">حصة ${i+1}</span>
-                            <span class="time" style="margin-right:8px;">${s.start} → ${s.end}</span>
-                        </div>
-                        <span>${isPast ? '✅ انتهت' : '⏰'}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        modal.classList.add('active');
-    }
-
-    function closeModal() {
-        document.getElementById('day-modal').classList.remove('active');
-    }
-
-    function rebuildSlotFromEdit(dayId, slotData) {
-        const slotsContainer = document.getElementById(`slots-${dayId}`);
-        if (!slotsContainer) return;
-
-        const slotId = 'slot_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const hOpts = hourOptions();
-        const mOpts = minuteOptions();
-        const fromOptions = buildMonthRangeOptions(slotData.rangeFrom || '');
-        const toOptions = buildMonthRangeOptions(slotData.rangeTo || '');
-
-        const startP = readTimeFromString(slotData.start);
-        const endP = readTimeFromString(slotData.end);
-
-        let savedIndex = -1;
-        if (SAVED_SLOTS[dayId]) {
-            savedIndex = SAVED_SLOTS[dayId].findIndex(
-                s => s.start === slotData.start && 
-                     s.end === slotData.end && 
-                     (s.rangeFrom || '') === (slotData.rangeFrom || '') &&
-                     (s.rangeTo || '') === (slotData.rangeTo || '')
-            );
-        }
-
-        const slotHTML = `
-            <div class="time-slot locked" id="${slotId}"
-                 data-range-from="${slotData.rangeFrom || ''}"
-                 data-range-to="${slotData.rangeTo || ''}"
-                 data-saved-index="${savedIndex}">
-                <div class="time-row">
-                    <span class="time-label">من:</span>
-                    <select class="simple-select period-select start-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option><option value="م">م</option>
-                    </select>
-                    <select class="simple-select minute-select start-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select start-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                </div>
-                <div class="time-row">
-                    <span class="time-label">إلى:</span>
-                    <select class="simple-select period-select end-period" onchange="markUnsaved('${slotId}')">
-                        <option value="ص">ص</option><option value="م">م</option>
-                    </select>
-                    <select class="simple-select minute-select end-minute" onchange="markUnsaved('${slotId}')">${mOpts}</select>
-                    <select class="simple-select hour-select end-hour" onchange="markUnsaved('${slotId}')">${hOpts}</select>
-                </div>
-                <div class="slot-range">
-                    <span class="slot-range-label">📆 من:</span>
-                    <select class="slot-range-select slot-range-from" onchange="markUnsaved('${slotId}')">${fromOptions}</select>
-                    <span class="slot-range-arrow">←</span>
-                    <span class="slot-range-label">إلى:</span>
-                    <select class="slot-range-select slot-range-to" onchange="markUnsaved('${slotId}')">${toOptions}</select>
-                </div>
-                <div class="slot-actions">
-                    <span class="slot-apply-note show">${buildApplyNote(dayId, slotData.rangeFrom, slotData.rangeTo)}</span>
-                    <button class="btn-save-slot saved" onclick="saveSlot('${slotId}', '${dayId}')">💾 حفظ</button>
-                    <button class="btn-edit-slot" onclick="editSlot('${slotId}', '${dayId}')">✏️ تعديل</button>
-                    <button class="btn-remove-slot" onclick="removeSlot('${slotId}', '${dayId}')">✖ إلغاء</button>
-                </div>
-            </div>
-        `;
-        slotsContainer.insertAdjacentHTML('beforeend', slotHTML);
-
-        const slot = document.getElementById(slotId);
-        slot.querySelector('.start-period').value = startP.period;
-        slot.querySelector('.start-minute').value = startP.minute;
-        slot.querySelector('.start-hour').value = startP.hour;
-        slot.querySelector('.end-period').value = endP.period;
-        slot.querySelector('.end-minute').value = endP.minute;
-        slot.querySelector('.end-hour').value = endP.hour;
-    }
-
     // ==========================================
-    // 🔄 دالة إعادة تعيين الصفحة لمجموعة جديدة فاضية
-    // ==========================================
-    function resetFormForNewGroup() {
-        console.log('🔄 جاري إعادة تعيين الصفحة لمجموعة جديدة...');
-
-        SAVED_SLOTS = {};
-        MANUALLY_EXPANDED_DAYS = new Set();
-        currentWeekOffset = 0;
-        currentYear = new Date().getFullYear();
-        currentMonth = new Date().getMonth();
-
-        clearAutosave();
-
-        const groupNameEl = document.getElementById('group-name');
-        const teacherNameEl = document.getElementById('teacher-name');
-        const studentsCountEl = document.getElementById('students-count');
-
-        if (groupNameEl) groupNameEl.value = '';
-        if (studentsCountEl) studentsCountEl.value = '';
-
-        const savedTeacherName = localStorage.getItem(TEACHER_NAME_KEY) || '';
-        if (teacherNameEl) teacherNameEl.value = savedTeacherName;
-
-        const genderMixed = document.getElementById('gender-mixed');
-        const locCenter = document.getElementById('loc-center');
-        if (genderMixed) genderMixed.checked = true;
-        if (locCenter) locCenter.checked = true;
-
-        const gpsEl = document.getElementById('gps-coords');
-        const locTextEl = document.getElementById('location-text');
-        const gpsBtn = document.querySelector('.btn-gps');
-
-        if (gpsEl) gpsEl.value = '';
-        if (locTextEl) locTextEl.textContent = 'لم يتم التحديد';
-        if (gpsBtn) {
-            gpsBtn.innerHTML = '📍 تحديد موقعي الحالي';
-            gpsBtn.style.backgroundColor = '#28a745';
-        }
-
-        const subjectDisplay = document.getElementById('fixed-subject');
-        const savedDataString = localStorage.getItem('teacherSelections');
-        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
-
-        const stageNames = {
-            kg: '🧸 رياض الأطفال',
-            primary: '📗 المرحلة الابتدائية',
-            prep: '📘 المرحلة الإعدادية',
-            secondary: '📙 المرحلة الثانوية'
-        };
-
-        if (savedDataString) {
-            try {
-                const savedData = JSON.parse(savedDataString);
-                let summaryParts = [];
-
-                for (const stageId in savedData) {
-                    const { grade, subjects } = savedData[stageId];
-                    if (subjects && subjects.length > 0) {
-                        const parts = [];
-                        if (grade) parts.push(`الصف: ${grade}`);
-                        parts.push(`المواد: ${subjects.join(' - ')}`);
-                        summaryParts.push(`${stageNames[stageId]}: ${parts.join(' | ')}`);
-                    }
-                }
-
-                if (summaryParts.length > 0) {
-                    selectedSubjectsText = summaryParts.join('\n');
-                }
-            } catch(e) {
-                console.error('خطأ في قراءة بيانات المواد:', e);
-            }
-        }
-
-        subjectDisplay.textContent = selectedSubjectsText;
-        subjectDisplay.dataset.value = selectedSubjectsText;
-
-        renderVerticalSchedule();
-        renderMonthlyCalendar();
-        updateWeekNavBar();
-
-        const weekStatusEl = document.getElementById('week-status');
-        const weekLabelEl = document.getElementById('week-label');
-        if (weekStatusEl) {
-            weekStatusEl.textContent = '📍 النهاردة';
-            weekStatusEl.className = 'week-status current';
-        }
-        if (weekLabelEl) {
-            weekLabelEl.textContent = 'الأسبوع الحالي';
-        }
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        console.log('✅ تم إعادة تعيين الصفحة بنجاح');
-    }
-
-    // ==========================================
-    // 🚀 حفظ ونشر المجموعة في Firebase
-    // ✅✅✅ مع منع تكرار الحصص + إعادة تعيين الصفحة بعد الحفظ ✅✅✅
+    // 🌐 إرسال البيانات وربطها بالتقويم الجديد
     // ==========================================
     async function submitGroupData() {
         const subjectData = document.getElementById('fixed-subject').dataset.value;
@@ -2089,75 +868,24 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
-        if (subjectData.includes('لم تختر')) {
-            alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.');
-            return;
-        }
-        if (!groupName || !teacherName || !studentsCount) {
-            alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر، عدد الطلاب).');
-            return;
-        }
+        if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return; }
+        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر، عدد الطلاب).'); return; }
 
-        let hasUnsavedSlot = false;
-        document.querySelectorAll('.time-slot').forEach(slotEl => {
-            const saveBtn = slotEl.querySelector('.btn-save-slot');
-            if (!saveBtn) return;
-            const startTime = readTime(slotEl, 'start');
-            const endTime = readTime(slotEl, 'end');
-            if ((startTime || endTime) && !saveBtn.classList.contains('saved')) {
-                hasUnsavedSlot = true;
-            }
-        });
-        if (hasUnsavedSlot) {
-            alert('⚠️ يوجد مواعيد لم يتم حفظها بعد. يرجى الضغط على زر حفظ 💾 لكل موعد.');
-            return;
-        }
+        // استخراج المواعيد من التقويم الجديد
+        const normalAppts = JSON.parse(localStorage.getItem('appointments') || '{}');
+        const recurringAppts = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
 
-        const schedule = {};
-        let totalSessionsCount = 0;
-        const daysNamesArr = [];
-
-        Object.keys(SAVED_SLOTS).forEach(dayId => {
-            const dayObj = daysOfWeek.find(d => d.id === dayId);
-            if (!dayObj) return;
-            const slots = SAVED_SLOTS[dayId];
-            if (!slots || slots.length === 0) return;
-
-            const uniqueMap = new Map();
-            slots.forEach(s => {
-                if (!s || !s.start || !s.end) return;
-                const key = `${s.start}__${s.end}__${s.rangeFrom || ''}__${s.rangeTo || ''}`;
-                if (!uniqueMap.has(key)) {
-                    uniqueMap.set(key, {
-                        start: s.start,
-                        end: s.end,
-                        ...(s.rangeFrom && s.rangeTo ? {
-                            rangeFrom: s.rangeFrom,
-                            rangeTo: s.rangeTo
-                        } : {})
-                    });
-                }
-            });
-
-            const uniqueSlots = Array.from(uniqueMap.values());
-            if (uniqueSlots.length === 0) return;
-
-            schedule[dayObj.name] = uniqueSlots;
-            totalSessionsCount += uniqueSlots.length;
-            daysNamesArr.push(dayObj.name);
-        });
-
-        if (totalSessionsCount === 0) {
-            alert('⚠️ يرجى تفعيل يوم واحد على الأقل وتحديد موعد الحصة وحفظها.');
+        if (Object.keys(normalAppts).length === 0 && Object.keys(recurringAppts).length === 0) {
+            alert('⚠️ يرجى إضافة موعد واحد على الأقل في التقويم لإنشاء المجموعة.');
             return;
         }
 
         let gradeExtracted = '';
-        const gradeMatch = subjectData.match(/الصف:\s*([^|\n]+)/);
+        const gradeMatch = subjectData ? subjectData.match(/الصف:\s*([^|\n]+)/) : null;
         if (gradeMatch) gradeExtracted = gradeMatch[1].trim();
 
-        let firstSubject = subjectData;
-        const subjMatch = subjectData.match(/المواد:\s*([^|\n]+)/);
+        let firstSubject = subjectData || '';
+        const subjMatch = subjectData ? subjectData.match(/المواد:\s*([^|\n]+)/) : null;
         if (subjMatch) firstSubject = subjMatch[1].split('-')[0].trim();
 
         let locationType = 'center';
@@ -2168,57 +896,27 @@
         if (genderAllowed === 'أولاد فقط') genderValue = 'boys';
         else if (genderAllowed === 'بنات فقط') genderValue = 'girls';
 
-        let firstStartTime = '';
-        const firstDaySessions = Object.values(schedule)[0];
-        if (firstDaySessions && firstDaySessions.length > 0) {
-            firstStartTime = firstDaySessions[0].start;
-        }
-
         let lat = null, lng = null;
         if (gpsLocation && gpsLocation.includes(',')) {
             const parts = gpsLocation.split(',');
-            lat = parseFloat(parts[0]);
-            lng = parseFloat(parts[1]);
+            lat = parseFloat(parts[0]); lng = parseFloat(parts[1]);
         }
 
         let teacherTitle = 'مستر';
-        if (teacherName.startsWith('مس ') || teacherName.startsWith('مسة') || teacherName.includes('أ.مس')) {
-            teacherTitle = 'مس';
-        }
+        if (teacherName.startsWith('مس ') || teacherName.startsWith('مسة') || teacherName.includes('أ.مس')) teacherTitle = 'مس';
 
+        // تجميع هيكل البيانات للإرسال
         const groupData = {
-            subjectData,
-            subject: firstSubject,
-            groupName,
-            teacherName,
-            teacherTitle,
-            grade: gradeExtracted,
+            subjectData, subject: firstSubject, groupName, teacherName, teacherTitle, grade: gradeExtracted,
+            studentsCount: parseInt(studentsCount), maxCapacity: parseInt(studentsCount),
+            genderAllowed, gender: genderValue, location, type: locationType, address: location,
+            gpsLocation: gpsLocation || '', lat: lat, lng: lng, radius: 3000,
             
-            studentsCount: parseInt(studentsCount),
-            maxCapacity: parseInt(studentsCount),
-            genderAllowed,
-            gender: genderValue,
-            location,
-            type: locationType,
-            address: location,
+            // بيانات التقويم الجديد
+            schedule: { normal: normalAppts, recurring: recurringAppts },
+            totalWeeklySessions: Object.values(recurringAppts).flat().length, 
             
-            gpsLocation: gpsLocation || '',
-            lat: lat,
-            lng: lng,
-            radius: 3000,
-            
-            schedule,
-            daysNames: daysNamesArr,
-            startTime: firstStartTime,
-            totalWeeklySessions: totalSessionsCount,
-            
-            bookedBoys: 0,
-            bookedGirls: 0,
-            
-            isActive: true,
-            published: false,
-            phone: '',
-            
+            bookedBoys: 0, bookedGirls: 0, isActive: true, published: false, phone: '',
             updatedAt: serverTimestamp()
         };
 
@@ -2227,98 +925,64 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         const loadingText = document.getElementById('loading-text');
         
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '⏳ جاري الحفظ...';
-        loadingOverlay.classList.add('show');
-        loadingText.textContent = 'جاري الحفظ في السيرفر...';
+        submitBtn.disabled = true; submitBtn.innerHTML = '⏳ جاري الحفظ...';
+        loadingOverlay.classList.add('show'); loadingText.textContent = 'جاري الحفظ في السيرفر...';
 
         try {
             await waitForAuth();
-
             if (IS_EDIT_MODE && EDIT_FIREBASE_ID) {
                 const groupRef = doc(db, 'groups', EDIT_FIREBASE_ID);
-                const editData = JSON.parse(localStorage.getItem(EDIT_DATA_KEY) || '{}');
-                groupData.published = editData.published || false;
-                groupData.publishedAt = editData.publishedAt || null;
-                groupData.createdAt = editData.createdAt || serverTimestamp();
-                
                 await updateDoc(groupRef, groupData);
-                console.log('✅ تم تحديث المجموعة في Firestore:', EDIT_FIREBASE_ID);
-
-                loadingText.textContent = '✅ تم التحديث! جاري العودة...';
-                
-                localStorage.setItem(TEACHER_NAME_KEY, teacherName);
-                localStorage.removeItem(EDIT_DATA_KEY);
-                localStorage.removeItem('mester2_edit_index');
-                clearAutosave();
-                
-                setTimeout(() => {
-                    alert(`✅ تم تحديث المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً`);
-                    window.location.href = 'mester3.html';
-                }, 300);
-
             } else {
                 groupData.createdAt = serverTimestamp();
-                const docRef = await addDoc(collection(db, 'groups'), groupData);
-                console.log('✅ تم إنشاء المجموعة بـ ID:', docRef.id);
-
-                loadingText.textContent = '✅ تم الحفظ! جاري تجهيز مجموعة جديدة...';
-                
-                localStorage.setItem(TEACHER_NAME_KEY, teacherName);
-                clearAutosave();
-
-                setTimeout(() => {
-                    alert(`✅ تم إنشاء المجموعة بنجاح!\n\n📚 ${subjectData}\n🏷️ ${groupName}\n📊 ${totalSessionsCount} حصة أسبوعياً\n\n🔄 جاري تجهيز مجموعة جديدة...`);
-                    
-                    loadingOverlay.classList.remove('show');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                    
-                    resetFormForNewGroup();
-                }, 300);
+                await addDoc(collection(db, 'groups'), groupData);
             }
+
+            // مسح بيانات التقويم والحفظ التلقائي بعد النجاح
+            localStorage.removeItem('appointments');
+            localStorage.removeItem('recurringAppointments');
+            localStorage.removeItem(AUTOSAVE_KEY);
+
+            loadingOverlay.classList.remove('show');
+            loadingText.textContent = '✅ تم الحفظ! جاري التحويل...';
+            setTimeout(() => { window.location.href = 'mester3.html'; }, 500);
 
         } catch (error) {
             console.error('❌ فشل الحفظ:', error);
-            
             loadingOverlay.classList.remove('show');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-            
-            let errorMsg = '❌ فشل الحفظ في السيرفر:\n\n' + error.message + '\n\n';
-            errorMsg += 'تأكد من:\n';
-            errorMsg += '1. تفعيل Firestore ✅\n';
-            errorMsg += '2. تفعيل Anonymous Auth ✅\n';
-            errorMsg += '3. قواعد الأمان صحيحة ✅\n';
-            errorMsg += '4. الاتصال بالإنترنت ✅';
-            
-            alert(errorMsg);
+            submitBtn.disabled = false; submitBtn.innerHTML = originalText;
+            alert('❌ فشل الحفظ في السيرفر:\n\n' + error.message);
         }
     }
 
-    // ==========================================
-    // 🌐 تصدير الدوال للاستخدام من HTML
-    // ==========================================
-    window.toggleDayExpand = toggleDayExpand;
-    window.addSlot = addSlot;
-    window.markUnsaved = markUnsaved;
-    window.saveSlot = saveSlot;
-    window.editSlot = editSlot;
-    window.removeSlot = removeSlot;
-    window.switchView = switchView;
-    window.goToPrevWeekWithAnimation = goToPrevWeekWithAnimation;
-    window.goToNextWeekWithAnimation = goToNextWeekWithAnimation;
-    window.goToCurrentWeek = goToCurrentWeek;
-    window.goToPrevMonthWithAnimation = goToPrevMonthWithAnimation;
-    window.goToNextMonthWithAnimation = goToNextMonthWithAnimation;
-    window.goToday = goToday;
+    // تجهيز الوظائف للعمل من واجهة الـ HTML
     window.getLocation = getLocation;
-    window.showDayDetails = showDayDetails;
-    window.closeModal = closeModal;
     window.submitGroupData = submitGroupData;
-    window.resetFormForNewGroup = resetFormForNewGroup;
 
-    console.log('✅ mester2.js loaded with Firebase - بدون تكرار + reset بعد الحفظ + زر مجموعاتي');
+    window.onload = function() {
+        if (!IS_EDIT_MODE) {
+            const subjectDisplay = document.getElementById('fixed-subject');
+            const savedDataString = localStorage.getItem('teacherSelections');
+            let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+            if (savedDataString) {
+                try {
+                    const savedData = JSON.parse(savedDataString);
+                    let summaryParts = [];
+                    for (const stageId in savedData) {
+                        const { grade, subjects } = savedData[stageId];
+                        if (subjects && subjects.length > 0) {
+                            summaryParts.push(`${grade ? `الصف: ${grade} | ` : ''}المواد: ${subjects.join(' - ')}`);
+                        }
+                    }
+                    if (summaryParts.length > 0) selectedSubjectsText = summaryParts.join('\n');
+                } catch(e) { console.error(e); }
+            }
+            if(subjectDisplay) {
+                subjectDisplay.textContent = selectedSubjectsText;
+                subjectDisplay.dataset.value = selectedSubjectsText;
+            }
+        }
+    };
 </script>
 
 </body>
