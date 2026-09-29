@@ -9,8 +9,13 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- ✅ خط Cairo Bold -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
     /* =========================================
@@ -31,7 +36,7 @@
         text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5);
         margin-bottom: 10px;
     }
-    .header-3d p { font-size: 15px; color: #d0d9e8; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+    .header-3d p { font-size: 15px; color: #d0d9e8; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 
     /* =========================================
        الحاوية
@@ -130,7 +135,6 @@
         border-color: #2b5c9e;
     }
 
-    /* ✅ شارة "منشور" */
     .published-badge {
         position: absolute;
         top: 12px;
@@ -202,7 +206,6 @@
         overflow-wrap: break-word;
     }
 
-    /* شارات صغيرة */
     .chip {
         display: inline-block;
         background: #e3f2fd;
@@ -316,7 +319,7 @@
     }
 
     /* =========================================
-       أزرار الكارت (تعديل / حذف / نشر)
+       أزرار الكارت
        ========================================= */
     .group-card-actions {
         display: flex;
@@ -327,7 +330,6 @@
         flex-wrap: wrap;
     }
 
-    /* ✅ زر النشر - بارز */
     .btn-publish {
         flex: 1 1 100%;
         padding: 12px 14px;
@@ -348,6 +350,7 @@
         letter-spacing: 0.5px;
         position: relative;
         overflow: hidden;
+        font-family: inherit;
     }
     .btn-publish::before {
         content: '';
@@ -368,7 +371,6 @@
         box-shadow: 0 1px 0 #1e7e34, 0 3px 8px rgba(39,174,96,0.4);
     }
 
-    /* ✅ زر "منشور" بعد النشر */
     .btn-published {
         background: linear-gradient(180deg, #95a5a6 0%, #7f8c8d 100%) !important;
         box-shadow: 0 5px 0 #5d6d6e, 0 6px 15px rgba(127,140,141,0.3) !important;
@@ -389,6 +391,7 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
+        font-family: inherit;
     }
     .btn-edit {
         background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
@@ -478,7 +481,7 @@
     .publish-modal-header .title-text .sub-title {
         font-size: 13px;
         color: #d0d9e8;
-        font-weight: 600;
+        font-weight: 700;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -499,6 +502,7 @@
         justify-content: center;
         flex-shrink: 0;
         line-height: 1;
+        font-family: inherit;
     }
     .publish-modal-close:hover {
         background: rgba(255,255,255,0.3);
@@ -580,6 +584,7 @@
         align-items: center;
         gap: 4px;
         transition: 0.2s;
+        font-family: inherit;
     }
     .map-header .map-btn:hover {
         background: rgba(255,255,255,0.3);
@@ -739,6 +744,7 @@
         gap: 6px;
         text-decoration: none;
         color: white;
+        font-family: inherit;
     }
     .share-btn.whatsapp {
         background: linear-gradient(180deg, #25d366 0%, #128c7e 100%);
@@ -782,6 +788,7 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
+        font-family: inherit;
     }
     .publish-modal-footer .btn-close-footer:hover {
         background: linear-gradient(180deg, #3d7ebf 0%, #2b5c9e 100%);
@@ -818,7 +825,7 @@
     }
     .empty-state .empty-icon { font-size: 70px; margin-bottom: 15px; opacity: 0.6; }
     .empty-state h2 { color: #1a3c6d; font-size: 22px; font-weight: 900; margin-bottom: 10px; }
-    .empty-state p { color: #64748b; font-size: 15px; font-weight: 600; margin-bottom: 20px; }
+    .empty-state p { color: #64748b; font-size: 15px; font-weight: 700; margin-bottom: 20px; }
 
     .btn-create-new {
         display: inline-flex;
@@ -833,6 +840,7 @@
         text-decoration: none;
         box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0,0,0,0.2);
         transition: all 0.2s ease;
+        font-family: inherit;
     }
     .btn-create-new:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #0d2342, 0 12px 22px rgba(0,0,0,0.3); }
     .btn-create-new:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d2342; }
@@ -855,6 +863,7 @@
         border: 2px solid #2b5c9e;
         box-shadow: 0 4px 10px rgba(43,92,158,0.15);
         transition: all 0.2s ease;
+        font-family: inherit;
     }
     .back-btn:hover { background: #e3f2fd; transform: translateY(-2px); }
 
@@ -886,7 +895,7 @@
     @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     .modal-box .modal-icon { font-size: 50px; margin-bottom: 10px; }
     .modal-box h3 { color: #1a3c6d; font-size: 20px; font-weight: 900; margin-bottom: 10px; }
-    .modal-box p { color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .modal-box p { color: #64748b; font-size: 14px; font-weight: 700; margin-bottom: 20px; line-height: 1.6; }
     .modal-box .group-name-confirm { color: #1a3c6d; font-weight: 900; }
     .modal-actions { display: flex; gap: 10px; }
     .modal-actions button {
@@ -898,6 +907,7 @@
         font-weight: 900;
         cursor: pointer;
         transition: 0.2s;
+        font-family: inherit;
     }
     .btn-cancel {
         background: #e0e4e8;
@@ -912,7 +922,9 @@
     .btn-confirm-delete:hover { background: linear-gradient(180deg, #ff6b5b 0%, #e74c3c 100%); }
     .btn-confirm-delete:active { transform: translateY(4px); box-shadow: 0 0 0 #8b2418; }
 
-    /* ✅ Toast للنسخ */
+    /* =========================================
+       Toast للنسخ
+       ========================================= */
     .toast {
         position: fixed;
         bottom: 30px;
@@ -1417,7 +1429,6 @@
     // ==========================================
     async function getGroupsFromFirebase() {
         try {
-            // ✅✅✅ انتظر جهوزية Firebase Auth ✅✅✅
             await waitForAuth();
             console.log('✅ Auth جاهز - جاري جلب المجموعات...');
             
@@ -1454,7 +1465,6 @@
         const emptyState = document.getElementById('empty-state');
         const countBadge = document.getElementById('groups-count');
         
-        // ✅ إظهار حالة التحميل
         loadingState.style.display = 'block';
         grid.style.display = 'none';
         emptyState.style.display = 'none';
@@ -1465,7 +1475,6 @@
             const groups = await getGroupsFromFirebase();
             console.log('✅ تم جلب', groups.length, 'مجموعة');
             
-            // ✅ إخفاء حالة التحميل
             loadingState.style.display = 'none';
             countBadge.textContent = groups.length + ' مجموعة';
 
@@ -1889,7 +1898,7 @@
         const popupContent = `
             <div style="
                 text-align: right;
-                font-family: 'Segoe UI', Tahoma, sans-serif;
+                font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
                 min-width: 180px;
                 direction: rtl;
             ">
