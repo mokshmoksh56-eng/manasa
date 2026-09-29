@@ -135,7 +135,6 @@
         text-align: left;
     }
 
-    /* ✅ حقل الرقم السري */
     .pin-wrapper {
         position: relative;
     }
@@ -318,13 +317,11 @@
 
     <div class="login-body">
 
-        <!-- ✅ ترحيب -->
         <div class="welcome-text">
             <span class="icon">👋</span>
             أهلاً بك يا بطل! سجّل بياناتك عشان نعرضلك المجموعات اللي تناسبك.
         </div>
 
-        <!-- ✅ رسائل -->
         <div class="error-msg" id="errorMsg">
             <span>⚠️</span>
             <span id="errorText"></span>
@@ -334,7 +331,6 @@
             <span id="successText"></span>
         </div>
 
-        <!-- 🎯 الفورم -->
         <form onsubmit="handleStudentLogin(event)">
             <div class="form-group">
                 <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
@@ -370,12 +366,11 @@
             </button>
         </form>
 
-        <!-- ✅ ملاحظة -->
         <div class="info-box">
             <span class="icon">💡</span>
             <div>
-                <strong>أول مرة تدخل؟</strong> هيتم إنشاء حسابك تلقائياً برقم التليفون والرقم السري اللي هتدخلهم.<br>
-                <strong>زائر قبل كده؟</strong> دخل نفس الرقم والرقم السري.
+                <strong>أول مرة تدخل؟</strong> هيتم إنشاء حسابك تلقائياً برقم التليفون والرقم السري.<br>
+                <strong>دخلت قبل كده؟</strong> دخل نفس الرقم والرقم السري.
             </div>
         </div>
 
@@ -384,7 +379,6 @@
     <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
 </div>
 
-<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -398,6 +392,24 @@
         signInWithEmailAndPassword, createUserWithEmailAndPassword,
         doc, getDoc, setDoc, serverTimestamp
     } from './firebase-config.js';
+
+    // ==========================================
+    // 🔐 تحويل PIN (4 أرقام) → كلمة سر Firebase
+    // ملاحظة: Suffix مختلف عن المعلم عشان ما يحصلش تعارض
+    // ==========================================
+    const PIN_PREFIX = 'Agz@';
+    const PIN_SUFFIX = '#S26';
+    
+    function pinToPassword(pin) {
+        return `${PIN_PREFIX}${pin}${PIN_SUFFIX}`;
+    }
+
+    // ==========================================
+    // 🎯 تحويل رقم التليفون لإيميل وهمي (طالب)
+    // ==========================================
+    function phoneToEmail(phone) {
+        return `${phone}@student.ahgazly.app`;
+    }
 
     // ==========================================
     // 🎯 إظهار/إخفاء الرقم السري
@@ -435,14 +447,7 @@
     }
 
     // ==========================================
-    // 🎯 تحويل رقم التليفون لإيميل وهمي (طالب)
-    // ==========================================
-    function phoneToEmail(phone) {
-        return `${phone}@student.ahgazly.app`;
-    }
-
-    // ==========================================
-    // 🎯 التحقق من صحة البيانات
+    // 🎯 التحقق
     // ==========================================
     function validatePhone(phone) {
         if (!/^01[0125][0-9]{8}$/.test(phone)) {
@@ -453,7 +458,7 @@
 
     function validatePin(pin) {
         if (!/^[0-9]{4}$/.test(pin)) {
-            return 'الرقم السري يجب أن يكون 4 أرقام فقط.';
+            return 'الرقم السري يجب أن يكون 4 أرقام.';
         }
         return null;
     }
@@ -480,7 +485,6 @@
         const phone = document.getElementById('studentPhone').value.trim();
         const pin = document.getElementById('studentPin').value.trim();
 
-        // ✅ التحقق
         const phoneErr = validatePhone(phone);
         if (phoneErr) { showError(phoneErr); return; }
 
@@ -494,22 +498,23 @@
         showLoading('جاري التحقق من بياناتك...');
 
         const email = phoneToEmail(phone);
+        const password = pinToPassword(pin);
 
         try {
-            // ✅ 1. محاولة تسجيل الدخول
             let userCredential;
             let isNewUser = false;
 
             try {
-                userCredential = await signInWithEmailAndPassword(auth, email, pin);
-                console.log('✅ تم تسجيل الدخول بنجاح');
+                // ✅ محاولة تسجيل دخول أولاً
+                userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ تم تسجيل الدخول');
             } catch (loginError) {
-                // ✅ 2. لو الحساب غير موجود → إنشاء حساب جديد
+                // ✅ لو الحساب غير موجود → إنشاء جديد
                 if (loginError.code === 'auth/user-not-found' || 
                     loginError.code === 'auth/invalid-credential') {
-                    console.log('🆕 حساب جديد، جاري الإنشاء...');
+                    console.log('🆕 حساب جديد');
                     isNewUser = true;
-                    userCredential = await createUserWithEmailAndPassword(auth, email, pin);
+                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 } else {
                     throw loginError;
                 }
@@ -517,17 +522,15 @@
 
             const user = userCredential.user;
 
-            // ✅ 3. جلب/حفظ بيانات الطالب في Firestore
+            // ✅ جلب/إنشاء بيانات الطالب
             const studentDocRef = doc(db, 'students', user.uid);
             const studentDoc = await getDoc(studentDocRef);
 
             let studentData;
             if (studentDoc.exists()) {
-                // ✅ مستخدم قديم → نجلب بياناته
                 studentData = studentDoc.data();
-                console.log('📂 بيانات الطالب موجودة:', studentData);
+                console.log('📂 بيانات موجودة');
             } else {
-                // ✅ مستخدم جديد → ننشئ بياناته
                 studentData = {
                     phone: phone,
                     email: email,
@@ -540,10 +543,9 @@
                     updatedAt: serverTimestamp()
                 };
                 await setDoc(studentDocRef, studentData);
-                console.log('✅ تم إنشاء بيانات الطالب في Firestore');
+                console.log('✅ تم إنشاء البيانات');
             }
 
-            // ✅ 4. حفظ البيانات في localStorage
             localStorage.setItem('current_student_profile', JSON.stringify({
                 id: user.uid,
                 phone: phone,
@@ -553,11 +555,10 @@
                 gender: studentData.gender || 'boy'
             }));
 
-            // ✅ 5. رسالة نجاح
             if (isNewUser) {
-                showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
+                showSuccess('🎉 تم إنشاء حسابك بنجاح!');
             } else {
-                showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
+                showSuccess('✅ تم تسجيل الدخول بنجاح!');
             }
 
             setTimeout(() => {
@@ -571,14 +572,12 @@
             btn.innerHTML = originalText;
 
             let errorMsg = 'فشل تسجيل الدخول. ';
-            if (error.code === 'auth/wrong-password') {
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                 errorMsg = 'الرقم السري غير صحيح.';
             } else if (error.code === 'auth/too-many-requests') {
-                errorMsg = 'محاولات كثيرة خاطئة. جرب تاني بعد شوية.';
+                errorMsg = 'محاولات كثيرة خاطئة. جرب بعد شوية.';
             } else if (error.code === 'auth/network-request-failed') {
-                errorMsg = 'فشل الاتصال بالإنترنت. تأكد من اتصالك.';
-            } else if (error.code === 'auth/weak-password') {
-                errorMsg = 'الرقم السري ضعيف جداً. جرب 4 أرقام أقوى.';
+                errorMsg = 'فشل الاتصال بالإنترنت.';
             } else {
                 errorMsg += error.message;
             }
@@ -593,20 +592,19 @@
     window.handleStudentLogin = handleStudentLogin;
 
     // ==========================================
-    // 🎯 تحقق من الجلسة الحالية عند فتح الصفحة
+    // 🎯 فحص الجلسة
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
         const user = await waitForAuth();
         if (user) {
-            console.log('✅ المستخدم مسجل دخول بالفعل:', user.uid);
-            // لو مسجل، حوّله على talep
+            console.log('✅ مسجل دخول:', user.uid);
             setTimeout(() => {
                 window.location.href = 'talep.html';
             }, 500);
         }
     });
 
-    console.log('✅ student-login.js loaded');
+    console.log('✅ student-login loaded');
 </script>
 
 </body>
