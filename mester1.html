@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة احجزلي - بوابة المعلم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* =========================================
            إعدادات عامة
@@ -12,7 +15,8 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700;
         }
 
         body {
@@ -49,7 +53,7 @@
         .header-3d p {
             font-size: 16px;
             color: #d0d9e8;
-            font-weight: 600;
+            font-weight: 700;
             text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
@@ -94,7 +98,7 @@
         .page-title {
             text-align: center;
             font-size: 24px;
-            font-weight: 800;
+            font-weight: 900;
             color: #1a3c6d;
             margin: 15px 0 5px;
         }
@@ -162,7 +166,7 @@
             align-items: center;
             cursor: pointer;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 900;
             color: #333;
             user-select: none;
             gap: 10px;
@@ -263,7 +267,7 @@
             border-radius: 10px;
             padding: 12px 20px;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             color: #444;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -271,6 +275,7 @@
             align-items: center;
             gap: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-family: inherit;
         }
 
         .grade-btn:hover {
@@ -342,6 +347,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 0 #ccc;
+            font-family: inherit;
         }
 
         .subject-btn:hover {
@@ -379,10 +385,11 @@
             border: none;
             border-radius: 12px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 900;
             cursor: pointer;
             box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         .save-btn:active {
@@ -410,17 +417,51 @@
         /* =========================================
            استجابة الموبايل
            ========================================= */
-        @media (max-width: 600px) {
-            .header-3d h1 { font-size: 30px; }
+        @media (max-width: 700px) {
+            .header-3d { padding: 25px 15px 40px; }
+            .header-3d h1 { font-size: 28px; letter-spacing: 1px; }
             .header-3d p { font-size: 13px; }
-            .page-title { font-size: 18px; }
-            .stage-header { font-size: 15px; padding: 12px 15px; }
-            .grade-btn { font-size: 13px; padding: 10px 14px; }
+            .stepper { padding: 8px 16px; gap: 8px; }
+            .step { font-size: 13px; }
+
+            .container { padding: 20px 12px; gap: 12px; }
+            .page-title { font-size: 19px; margin: 10px 0 5px; }
+
+            .stage-header { font-size: 15px; padding: 12px 14px; gap: 8px; }
+            .stage-title { font-size: 15px; }
+            .stage-badges { gap: 4px; }
+
+            .grades-grid { gap: 8px; }
+            .grade-btn { font-size: 13px; padding: 9px 14px; }
             .subject-btn { font-size: 12px; padding: 8px 12px; }
-            .badge { font-size: 11px; padding: 4px 10px; }
-            .badge-grade { font-size: 11px; padding: 5px 10px; }
-            .save-btn { font-size: 16px; padding: 15px; }
-            .summary-box { font-size: 12px; padding: 12px 15px; }
+            .subjects-title { font-size: 12px; }
+
+            .badge { font-size: 10px; padding: 3px 9px; }
+            .badge-grade { font-size: 10px; padding: 4px 10px; }
+
+            .save-btn { font-size: 15px; padding: 14px; }
+            .summary-box { font-size: 12px; padding: 12px 14px; line-height: 1.7; }
+        }
+
+        @media (max-width: 400px) {
+            .header-3d h1 { font-size: 22px; }
+            .header-3d p { font-size: 11px; }
+            .step { font-size: 11px; }
+
+            .container { padding: 15px 8px; }
+            .page-title { font-size: 16px; }
+
+            .stage-header { font-size: 13px; padding: 10px 10px; }
+            .stage-title { font-size: 13px; }
+
+            .grade-btn { font-size: 11px; padding: 7px 10px; border-radius: 8px; }
+            .subject-btn { font-size: 11px; padding: 6px 10px; border-radius: 8px; }
+
+            .badge { font-size: 9px; padding: 2px 7px; }
+            .badge-grade { font-size: 9px; padding: 3px 8px; }
+
+            .save-btn { font-size: 13px; padding: 12px; }
+            .summary-box { font-size: 11px; padding: 10px 12px; }
         }
 
     </style>
@@ -741,7 +782,7 @@
             // لو صف مختلف
             selections[stageId].grade = gradeName;
             // تصفير المواد عند تغيير الصف داخل نفس المرحلة
-            selections[stageId].subjects = []; 
+            selections[stageId].subjects = [];
 
             const parentGrid = btn.parentElement;
             parentGrid.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
