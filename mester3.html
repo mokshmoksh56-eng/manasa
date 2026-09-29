@@ -1412,6 +1412,47 @@
     let currentPublishGroup = null;
 
     // ==========================================
+    // ✅✅✅ دالة مساعدة: إزالة تكرار الحصص ✅✅✅
+    // ==========================================
+    function dedupeSlots(slots) {
+        if (!Array.isArray(slots)) return [];
+        const uniqueMap = new Map();
+        slots.forEach(s => {
+            if (!s || !s.start || !s.end) return;
+            const key = `${s.start}__${s.end}__${s.rangeFrom || ''}__${s.rangeTo || ''}`;
+            if (!uniqueMap.has(key)) uniqueMap.set(key, s);
+        });
+        return Array.from(uniqueMap.values());
+    }
+
+    // ==========================================
+    // ✅✅✅ دالة مساعدة: حساب عدد الحصص الفريد ✅✅✅
+    // ==========================================
+    function countUniqueSessions(schedule) {
+        if (!schedule) return 0;
+        let total = 0;
+        Object.values(schedule).forEach(dayArr => {
+            if (Array.isArray(dayArr)) {
+                total += dedupeSlots(dayArr).length;
+            }
+        });
+        return total;
+    }
+
+    // ==========================================
+    // ✅✅✅ دالة مساعدة: تنظيف schedule من التكرار ✅✅✅
+    // ==========================================
+    function cleanSchedule(schedule) {
+        if (!schedule) return {};
+        const clean = {};
+        Object.keys(schedule).forEach(dayName => {
+            const slots = dedupeSlots(schedule[dayName]);
+            if (slots.length > 0) clean[dayName] = slots;
+        });
+        return clean;
+    }
+
+    // ==========================================
     // 🎯 تحميل وعرض البيانات
     // ==========================================
     window.onload = function() {
@@ -1440,7 +1481,10 @@
             const groups = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                console.log('📄 مجموعة:', doc.id, data.groupName);
+                // ✅ تنظيف schedule من التكرار عند الجلب
+                if (data.schedule) {
+                    data.schedule = cleanSchedule(data.schedule);
+                }
                 groups.push({ 
                     id: doc.id,
                     firebaseId: doc.id,
@@ -1498,7 +1542,7 @@
     }
 
     // ==========================================
-    // ✅ بناء قسم مواعيد الحصص
+    // ✅ بناء قسم مواعيد الحصص (مع إزالة التكرار)
     // ==========================================
     function buildScheduleSection(group) {
         const schedule = group.schedule || {};
@@ -1520,7 +1564,11 @@
             const daySlots = schedule[dayName];
             if (!Array.isArray(daySlots) || daySlots.length === 0) return;
 
-            const sortedSlots = [...daySlots].sort((a, b) => {
+            // 🔑 إزالة التكرار من الحصص المعروضة
+            const uniqueSlots = dedupeSlots(daySlots);
+            if (uniqueSlots.length === 0) return;
+
+            const sortedSlots = uniqueSlots.sort((a, b) => {
                 return parseTimeToMin(a.start) - parseTimeToMin(b.start);
             });
 
@@ -1564,12 +1612,8 @@
     // 🎯 رسم كارت المجموعة
     // ==========================================
     function renderGroupCard(group, index) {
-        let totalSessions = 0;
-        if (group.schedule) {
-            Object.values(group.schedule).forEach(dayArr => {
-                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
-            });
-        }
+        // 🔑 حساب الحصص الفريدة فقط
+        const totalSessions = countUniqueSessions(group.schedule);
 
         const scheduleHtml = buildScheduleSection(group);
 
@@ -1705,6 +1749,10 @@
             }
             
             const group = { id: groupSnap.id, ...groupSnap.data() };
+            // ✅ تنظيف schedule من التكرار
+            if (group.schedule) {
+                group.schedule = cleanSchedule(group.schedule);
+            }
             currentPublishGroup = group;
 
             document.getElementById('publish-group-name').textContent =
@@ -1745,13 +1793,8 @@
     function renderLessonSpecs(group) {
         const specsGrid = document.getElementById('specs-grid');
 
-        let totalSessions = 0;
-        if (group.schedule) {
-            Object.values(group.schedule).forEach(dayArr => {
-                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
-            });
-        }
-
+        // 🔑 حساب الحصص الفريدة فقط
+        const totalSessions = countUniqueSessions(group.schedule);
         const daysCount = group.schedule ? Object.keys(group.schedule).length : 0;
         const subject = group.subjectData || '—';
         const gender = group.genderAllowed || 'مختلط';
@@ -1966,8 +2009,8 @@
                 return weekOrder.indexOf(a) - weekOrder.indexOf(b);
             });
             sortedDays.forEach(dayName => {
-                const slots = g.schedule[dayName];
-                if (!Array.isArray(slots) || slots.length === 0) return;
+                const slots = dedupeSlots(g.schedule[dayName]);
+                if (slots.length === 0) return;
                 const sorted = [...slots].sort((a, b) => parseTimeToMin(a.start) - parseTimeToMin(b.start));
                 scheduleText += `\n📅 ${dayName}:\n`;
                 sorted.forEach((s, i) => {
@@ -1976,12 +2019,7 @@
             });
         }
 
-        let totalSessions = 0;
-        if (g.schedule) {
-            Object.values(g.schedule).forEach(dayArr => {
-                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
-            });
-        }
+        const totalSessions = countUniqueSessions(g.schedule);
 
         const text = `
 🎓 مجموعة جديدة متاحة للحجز!
@@ -2029,8 +2067,8 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
                 return weekOrder.indexOf(a) - weekOrder.indexOf(b);
             });
             sortedDays.forEach(dayName => {
-                const slots = g.schedule[dayName];
-                if (!Array.isArray(slots) || slots.length === 0) return;
+                const slots = dedupeSlots(g.schedule[dayName]);
+                if (slots.length === 0) return;
                 const sorted = [...slots].sort((a, b) => parseTimeToMin(a.start) - parseTimeToMin(b.start));
                 scheduleText += `\n📅 ${dayName}:\n`;
                 sorted.forEach((s, i) => {
@@ -2039,12 +2077,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
             });
         }
 
-        let totalSessions = 0;
-        if (g.schedule) {
-            Object.values(g.schedule).forEach(dayArr => {
-                if (Array.isArray(dayArr)) totalSessions += dayArr.length;
-            });
-        }
+        const totalSessions = countUniqueSessions(g.schedule);
 
         const text = `
 🎓 مجموعة جديدة متاحة للحجز!
@@ -2100,6 +2133,10 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
             }
             
             const group = { id: groupSnap.id, ...groupSnap.data() };
+            // ✅ تنظيف schedule من التكرار قبل التعديل
+            if (group.schedule) {
+                group.schedule = cleanSchedule(group.schedule);
+            }
             
             localStorage.setItem('mester2_edit_index', group.id);
             localStorage.setItem('mester2_edit_data', JSON.stringify(group));
@@ -2188,7 +2225,7 @@ ${g.gpsLocation ? `\n🗺️ الموقع: https://www.google.com/maps?q=${g.gps
     window.shareWhatsApp = shareWhatsApp;
     window.printGroup = printGroup;
 
-    console.log('✅ mester3 loaded with Firebase');
+    console.log('✅ mester3 loaded with Firebase - بدون تكرار');
 </script>
 
 </body>
