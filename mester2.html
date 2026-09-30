@@ -402,7 +402,7 @@
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>🎉 تم حفظ ونشر الموعد بنجاح في Firebase</h2>
+      <h2>🎉 تم حفظ ونشر الموعد بنجاح أونلاين</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
     <div class="publish-modal-content" id="publishModalContent"></div>
@@ -416,12 +416,12 @@
 <div class="loading-overlay" id="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loading-text">جاري الاتصال بالسيرفر أونلاين...</div>
+        <div class="loading-text" id="loading-text">جاري النشر والمزامنة السحابية...</div>
     </div>
 </div>
 
 <!-- ========================================== -->
-<!-- ⚙️ السكريبت الأساسي والتقويم -->
+<!-- ⚙️ السكريبت الأساسي والمحلي -->
 <!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -527,11 +527,11 @@
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
 
     const map = new Map();
-    // نضع الأونلاين أولاً
+    // نضع الأونلاين أولاً لتفادي تكرار المواعيد المنشورة
     [...normalOnline, ...recurringOnline].forEach(item => {
         map.set(item.firebaseId, item);
     });
-    // نضع المحلي فقط إذا لم يكن متطابقاً مع الأونلاين (لتجنب التكرار)
+    // نضع المحلي فقط إذا لم يطابق المواعيد الأونلاين
     [...normalLocal, ...recurringLocal].forEach(item => {
         const alreadyOnline = Array.from(map.values()).some(onlineAppt => 
             onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
@@ -789,7 +789,7 @@
     const newEnd = document.getElementById('editEnd').value;
     const isRecurring = document.getElementById('editRepeatWeekly').checked;
 
-    if (!newStart || !newEnd) { showError('⚠️️ يجب اختيار وقت البداية والنهاية'); return; }
+    if (!newStart || !newEnd) { showError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
     if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
@@ -803,11 +803,11 @@
 
     if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
-    // تعديل أونلاين إذا كان الموعد منشور
+    // تعديل أونلاين إذا كان الموعد منشوراً مسبقاً
     if (editingAppt.isOnline && editingAppt.firebaseId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.firebaseId, newStart, newEnd, isRecurring);
     } else {
-        // تعديل محلي
+        // التعديل المحلي
         removeLocalAppt(editingAppt);
         if (isRecurring) {
           if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
@@ -869,10 +869,10 @@
 </script>
 
 <!-- ========================================== -->
-<!-- 🔥 سكربت Firebase Compat للموبايل والأونلاين -->
+<!-- 🔥 المزامنة السحابية Firebase (Compat) -->
 <!-- ========================================== -->
 <script>
-    // ✅ إعدادات مشروعك الحقيقية
+    // ✅ إعدادات مشروعك في Firebase (من الصورة)
     const firebaseConfig = {
       apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
       authDomain: "tagroba-fbe9b.firebaseapp.com",
@@ -884,12 +884,12 @@
       measurementId: "G-CRVE7VMZMS"
     };
 
-    // تهيئة Firebase بالطريقة الكلاسيكية لتعمل على الهواتف مباشرة
+    // تهيئة السيرفر السحابي
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // التحقق من المصادقة وتفعيل الدخول المجهول (Anonymous)
+    // التحقق من تفعيل الدخول كمجهول للاتصال بالقاعدة
     function waitForAuth() {
         return new Promise((resolve, reject) => {
             const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -904,7 +904,7 @@
                         })
                         .catch((err) => {
                             console.error("Auth Error:", err);
-                            alert("❌ فشل الاتصال. يرجى تفعيل (Anonymous Auth) من Firebase.");
+                            alert("❌ فشل الاتصال بالسيرفر، تأكد من تفعيل Anonymous Auth في Firebase.");
                             reject(err);
                         });
                 }
@@ -912,11 +912,12 @@
         });
     }
 
-    // 1. الاستماع الحي للمواعيد من السيرفر وعرضها على كل التليفونات في نفس اللحظة
+    // 1. الاستماع الحي للمواعيد المنشورة (Real-time listener)
     async function listenToOnlineSlots() {
         try {
             await waitForAuth();
             
+            // onSnapshot يجلب التحديثات فوراً بدون عمل ريفريش
             db.collection('published_slots').onSnapshot((snapshot) => {
                 window.onlineAppointments = {};
                 window.onlineRecurring = {};
@@ -935,12 +936,13 @@
                     }
                 });
 
+                // إعادة رسم المواعيد
                 renderCalendar();
                 if (selectedDateKey) {
                     const [y, m, d] = selectedDateKey.split('-').map(Number);
                     showPanel(y, m - 1, d);
                 }
-                console.log("📡 تم تحديث المواعيد أونلاين.");
+                console.log("📡 تمت المزامنة بنجاح من السيرفر.");
             }, (error) => {
                 console.error("خطأ المزامنة:", error);
             });
@@ -949,7 +951,7 @@
         }
     }
 
-    // 2. نشر الموعد (إرسال للسيرفر وحذفه محلياً ليعتمد على السيرفر)
+    // 2. نشر الموعد المحلي أونلاين
     window.publishSingleApptOnline = async function(appt) {
         const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
@@ -960,7 +962,7 @@
         const gpsLocation = document.getElementById('gps-coords').value;
 
         if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
-        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (الاسم، المستر، العدد).'); return; }
+        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة بيانات المجموعة (الاسم، المستر، العدد) أعلى الصفحة.'); return; }
 
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.classList.add('show');
@@ -980,7 +982,7 @@
 
             const docRef = await db.collection('published_slots').add(docPayload);
             
-            // إزالة الموعد المحلي لأنه أصبح أونلاين الآن
+            // إزالة الموعد المحلي ليعتمد تماما على السحابي
             removeLocalAppt(appt);
             
             loadingOverlay.classList.remove('show');
@@ -991,7 +993,7 @@
 
             document.getElementById('publishModalContent').innerHTML = `
                 <div class="publish-data-item">
-                    <span class="publish-data-label">🆔 كود النشر (Firebase ID):</span>
+                    <span class="publish-data-label">🆔 كود النشر السحابي:</span>
                     <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${docRef.id}</span>
                 </div>
                 <div class="publish-data-item">
@@ -1015,7 +1017,7 @@
         }
     }
 
-    // 3. تحديث الموعد المنشور أونلاين
+    // 3. تعديل الموعد السحابي
     window.updateAppointmentOnline = async function(firebaseId, newStart, newEnd, isRecurring) {
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.classList.add('show');
@@ -1038,18 +1040,18 @@
         }
     }
 
-    // 4. الحذف الإجباري من السيرفر لجميع الأجهزة
+    // 4. الحذف من السيرفر
     window.deleteAppointmentOnline = async function(appt) {
-        if (!confirm(appt.firebaseId ? '⚠️ تحذير: سيتم حذف هذا الموعد نهائياً من السيرفر ومن جميع الأجهزة. هل أنت متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
+        if (!confirm(appt.isOnline ? '⚠️ تحذير: سيتم مسح هذا الموعد نهائياً من السيرفر لجميع الطلاب والمعلمين. متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
 
-        if (appt.firebaseId) {
+        if (appt.isOnline && appt.firebaseId) {
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.add('show');
             try {
                 await db.collection('published_slots').doc(appt.firebaseId).delete();
-                // السيرفر سيتولى عملية مسحه من الواجهة تلقائياً بفضل onSnapshot
+                // المزامنة التلقائية (onSnapshot) ستقوم بمسحه من الشاشة فوراً
             } catch (err) {
-                alert('❌ تعذر الحذف من السيرفر: ' + err.message);
+                alert('❌ تعذر الحذف السحابي: ' + err.message);
             } finally {
                 loadingOverlay.classList.remove('show');
             }
@@ -1086,14 +1088,15 @@
             document.getElementById('publishModalOverlay').classList.remove('active');
         }
     }
+    
     window.getLocation = getLocation;
     window.closePublishModal = closePublishModal;
 
-    // استدعاء البيانات من الصفحة السابقة وبدء المزامنة
+    // تهيئة الصفحة
     window.onload = function() {
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
-        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+        let selectedSubjectsText = "⚠️️ لم تختر أي مادة.";
         if (savedDataString) {
             try {
                 const savedData = JSON.parse(savedDataString);
@@ -1112,7 +1115,7 @@
             subjectDisplay.dataset.value = selectedSubjectsText;
         }
 
-        // تفعيل المزامنة المباشرة
+        // تشغيل مراقب السيرفر السحابي
         listenToOnlineSlots();
     };
 </script>
