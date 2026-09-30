@@ -7,10 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<!-- ✅ استدعاء مكتبات Firebase بطريقة تدعم جميع الهواتف المحلية -->
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 
 <style>
     /* ========================================== */
@@ -287,7 +283,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <span class="cell-title">🗺️ الموقع (GPS)</span>
+                        <span class="cell-title">🗺️️ الموقع (GPS)</span>
                         <div class="gps-wrapper">
                             <button class="btn-gps" onclick="getLocation(event)">📍 تحديد موقعي الحالي</button>
                             <span id="location-text" style="color: #666; font-size: 14px; font-weight: bold;">لم يتم التحديد</span>
@@ -402,7 +398,7 @@
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>🎉 تم حفظ ونشر الموعد بنجاح أونلاين</h2>
+      <h2>🎉 تم حفظ ونشر الموعد بنجاح في المنصة</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
     <div class="publish-modal-content" id="publishModalContent"></div>
@@ -416,12 +412,12 @@
 <div class="loading-overlay" id="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loading-text">جاري النشر والمزامنة السحابية...</div>
+        <div class="loading-text" id="loading-text">جاري الاتصال والمزامنة...</div>
     </div>
 </div>
 
 <!-- ========================================== -->
-<!-- ⚙️ السكريبت الأساسي والمحلي -->
+<!-- ⚙️ السكريبت الأساسي والتقويم -->
 <!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -432,12 +428,14 @@
   let currentDate = new Date();
   let selectedDateKey = null;
   let editingAppt = null;
+  let isAnimating = false;
 
   let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
   let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
 
   window.onlineAppointments = {};
   window.onlineRecurring = {};
+  window.getSelectedDateKey = () => selectedDateKey;
 
   const TIME_SLOTS = [];
   for (let h = 0; h < 24; h++) {
@@ -511,6 +509,7 @@
     }
     saveAllAppts();
   }
+  window.removeLocalAppt = removeLocalAppt;
 
   function dateKey(year, month, day) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -527,11 +526,9 @@
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
 
     const map = new Map();
-    // نضع الأونلاين أولاً لتفادي تكرار المواعيد المنشورة
     [...normalOnline, ...recurringOnline].forEach(item => {
         map.set(item.firebaseId, item);
     });
-    // نضع المحلي فقط إذا لم يطابق المواعيد الأونلاين
     [...normalLocal, ...recurringLocal].forEach(item => {
         const alreadyOnline = Array.from(map.values()).some(onlineAppt => 
             onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
@@ -625,6 +622,7 @@
       daysContainer.appendChild(dayEl);
     }
   }
+  window.renderCalendar = renderCalendar;
 
   function changeMonthDir(direction) {
     if (isAnimating) return;
@@ -677,17 +675,6 @@
         if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
       }
     }, { passive: true });
-
-    let mouseStartX = 0, isMouseDown = false;
-    wrapper.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; isMouseDown = true; });
-    wrapper.addEventListener('mouseup', (e) => {
-      if (!isMouseDown) return;
-      isMouseDown = false;
-      const diffX = e.clientX - mouseStartX;
-      if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
-      }
-    });
   }
 
   function selectDay(year, month, day) {
@@ -707,6 +694,7 @@
     document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
     hideAddError(); hideError(); renderAppointments();
   }
+  window.showPanel = showPanel;
 
   function renderAppointments() {
     const list = document.getElementById('appointmentsList'); list.innerHTML = '';
@@ -725,11 +713,11 @@
       if (isEditing) el.classList.add('editing');
 
       const recurringTag = appt.type === 'recurring' ? '<span class="recurring-tag">🔁 تكرار أسبوعي</span>' : '';
-      const onlineTag = appt.isOnline ? '<span class="online-tag">🌐 منشور</span>' : '';
+      const onlineTag = appt.isOnline ? '<span class="online-tag">🌐 منشور أونلاين</span>' : '';
       
       const publishBtnHtml = appt.isOnline 
         ? `<button class="btn-action btn-published" disabled>✅ تم النشر</button>`
-        : `<button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر</button>`;
+        : `<button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر للطلاب</button>`;
 
       el.innerHTML = `
         <div class="info">
@@ -754,6 +742,7 @@
       list.appendChild(el);
     });
   }
+  window.renderAppointments = renderAppointments;
 
   function formatTime(value) {
     if(!value) return '';
@@ -789,7 +778,7 @@
     const newEnd = document.getElementById('editEnd').value;
     const isRecurring = document.getElementById('editRepeatWeekly').checked;
 
-    if (!newStart || !newEnd) { showError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
+    if (!newStart || !newEnd) { showError('⚠ يجب اختيار وقت البداية والنهاية'); return; }
     if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
@@ -803,11 +792,9 @@
 
     if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
-    // تعديل أونلاين إذا كان الموعد منشوراً مسبقاً
     if (editingAppt.isOnline && editingAppt.firebaseId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.firebaseId, newStart, newEnd, isRecurring);
     } else {
-        // التعديل المحلي
         removeLocalAppt(editingAppt);
         if (isRecurring) {
           if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
@@ -821,9 +808,7 @@
 
     editingAppt = null; 
     document.getElementById('editForm').classList.remove('show');
-    hideError(); 
-    renderAppointments(); 
-    renderCalendar();
+    hideError(); renderAppointments(); renderCalendar();
   }
 
   function addAppointment() {
@@ -866,59 +851,57 @@
   
   const initDate = new Date();
   selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
+
+  function getLocation(e) {
+      e.preventDefault();
+      const btn = e.target;
+      const textDisplay = document.getElementById('location-text');
+      const hiddenInput = document.getElementById('gps-coords');
+      btn.innerHTML = '⏳ جاري...';
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+              position => {
+                  hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
+                  btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
+                  textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+              },
+              error => {
+                  btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
+                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
+              }
+          );
+      }
+  }
+
+  function closePublishModal(e, force = false) {
+      if (force || e.target.id === 'publishModalOverlay') {
+          document.getElementById('publishModalOverlay').classList.remove('active');
+      }
+  }
+  
+  window.getLocation = getLocation;
+  window.closePublishModal = closePublishModal;
+  window.toggleAddDropdown = toggleAddDropdown;
+  window.updateDuration = updateDuration;
+  window.addAppointment = addAppointment;
+  window.saveEdit = saveEdit;
+  window.cancelEdit = cancelEdit;
 </script>
 
 <!-- ========================================== -->
-<!-- 🔥 المزامنة السحابية Firebase (Compat) -->
+<!-- 🔥 سكربت المزامنة اللحظية مع Firebase -->
 <!-- ========================================== -->
-<script>
-    // ✅ إعدادات مشروعك في Firebase (من الصورة)
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
-      authDomain: "tagroba-fbe9b.firebaseapp.com",
-      databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
-      projectId: "tagroba-fbe9b",
-      storageBucket: "tagroba-fbe9b.firebasestorage.app",
-      messagingSenderId: "238106301728",
-      appId: "1:238106301728:web:549602e55f7fe8a7b0b345",
-      measurementId: "G-CRVE7VMZMS"
-    };
+<script type="module">
+    import { db, waitForAuth, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from './firebase-config.js';
 
-    // تهيئة السيرفر السحابي
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    // التحقق من تفعيل الدخول كمجهول للاتصال بالقاعدة
-    function waitForAuth() {
-        return new Promise((resolve, reject) => {
-            const unsubscribe = auth.onAuthStateChanged((user) => {
-                if (user) {
-                    unsubscribe();
-                    resolve(user);
-                } else {
-                    auth.signInAnonymously()
-                        .then((cred) => {
-                            unsubscribe();
-                            resolve(cred.user);
-                        })
-                        .catch((err) => {
-                            console.error("Auth Error:", err);
-                            alert("❌ فشل الاتصال بالسيرفر، تأكد من تفعيل Anonymous Auth في Firebase.");
-                            reject(err);
-                        });
-                }
-            });
-        });
-    }
-
-    // 1. الاستماع الحي للمواعيد المنشورة (Real-time listener)
+    // 1. الاستماع اللحظي للمواعيد من السيرفر وعرضها
     async function listenToOnlineSlots() {
         try {
-            await waitForAuth();
+            const user = await waitForAuth();
+            if(!user) { alert("⚠️️ يرجي تسجيل الدخول كمعلم أولاً"); return; }
             
-            // onSnapshot يجلب التحديثات فوراً بدون عمل ريفريش
-            db.collection('published_slots').onSnapshot((snapshot) => {
+            // onSnapshot تستمع لأي تغيير وتحدث الجدول فوراً
+            onSnapshot(collection(db, 'published_slots'), (snapshot) => {
                 window.onlineAppointments = {};
                 window.onlineRecurring = {};
 
@@ -926,6 +909,7 @@
                     const data = docSnap.data();
                     const appt = { ...data.appointment, firebaseId: docSnap.id };
 
+                    // إذا كان الموعد يخص هذا المعلم فقط يمكننا فلترته، لكن حالياً نجلب كل ما نُشر
                     if (appt.type === 'recurring') {
                         const day = appt.dayOfWeek;
                         if (!window.onlineRecurring[day]) window.onlineRecurring[day] = [];
@@ -936,13 +920,13 @@
                     }
                 });
 
-                // إعادة رسم المواعيد
-                renderCalendar();
+                window.renderCalendar();
+                const selectedDateKey = window.getSelectedDateKey();
                 if (selectedDateKey) {
                     const [y, m, d] = selectedDateKey.split('-').map(Number);
-                    showPanel(y, m - 1, d);
+                    window.showPanel(y, m - 1, d);
                 }
-                console.log("📡 تمت المزامنة بنجاح من السيرفر.");
+                console.log("📡 تمت مزامنة المواعيد بنجاح.");
             }, (error) => {
                 console.error("خطأ المزامنة:", error);
             });
@@ -951,7 +935,7 @@
         }
     }
 
-    // 2. نشر الموعد المحلي أونلاين
+    // 2. نشر الموعد (إرسال للسيرفر لحظياً)
     window.publishSingleApptOnline = async function(appt) {
         const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
@@ -961,39 +945,47 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
+        // نجلب بيانات المعلم من التخزين المحلي لاستخراج الهاتف
+        const teacherProfileRaw = localStorage.getItem('current_teacher_profile');
+        let teacherPhone = "0";
+        if (teacherProfileRaw) {
+            try { teacherPhone = JSON.parse(teacherProfileRaw).phone; } catch(e){}
+        }
+
         if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
-        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة بيانات المجموعة (الاسم، المستر، العدد) أعلى الصفحة.'); return; }
+        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (الاسم، المستر، العدد).'); return; }
 
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.classList.add('show');
 
         try {
             await waitForAuth();
+            const selectedDateKey = window.getSelectedDateKey();
             const [y, m, d] = selectedDateKey.split('-').map(Number);
             const dayOfWeek = new Date(y, m - 1, d).getDay();
 
             const docPayload = {
-                subjectData, groupName, teacherName, studentsCount: parseInt(studentsCount),
+                subjectData, groupName, teacherName, phone: teacherPhone, studentsCount: parseInt(studentsCount),
                 genderAllowed, location, gpsLocation: gpsLocation || '',
-                appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: selectedDateKey },
+                appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: window.dayNames[dayOfWeek], date: selectedDateKey },
                 status: 'published',
-                publishedAt: firebase.firestore.FieldValue.serverTimestamp()
+                publishedAt: serverTimestamp()
             };
 
-            const docRef = await db.collection('published_slots').add(docPayload);
+            const docRef = await addDoc(collection(db, 'published_slots'), docPayload);
             
-            // إزالة الموعد المحلي ليعتمد تماما على السحابي
-            removeLocalAppt(appt);
+            // إزالة الموعد المحلي لأنه أصبح أونلاين الآن ومربوط بـ onSnapshot
+            window.removeLocalAppt(appt);
             
             loadingOverlay.classList.remove('show');
 
             let apptDetailsHtml = appt.type === 'recurring'
-                ? `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
-                : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
+                ? `<strong>🔁 تكرار أسبوعي كل يوم ${window.dayNames[dayOfWeek]}:</strong><br>▪ من ${appt.start} إلى ${appt.end}`
+                : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${appt.start} إلى ${appt.end}`;
 
             document.getElementById('publishModalContent').innerHTML = `
                 <div class="publish-data-item">
-                    <span class="publish-data-label">🆔 كود النشر السحابي:</span>
+                    <span class="publish-data-label">🆔 كود النشر (Firebase ID):</span>
                     <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${docRef.id}</span>
                 </div>
                 <div class="publish-data-item">
@@ -1017,21 +1009,24 @@
         }
     }
 
-    // 3. تعديل الموعد السحابي
+    // 3. تحديث الموعد المنشور أونلاين لحظياً
     window.updateAppointmentOnline = async function(firebaseId, newStart, newEnd, isRecurring) {
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.classList.add('show');
         try {
+            const selectedDateKey = window.getSelectedDateKey();
             const [y, m, d] = selectedDateKey.split('-').map(Number);
             const dayOfWeek = new Date(y, m - 1, d).getDay();
-            await db.collection('published_slots').doc(firebaseId).update({
+            
+            const slotDoc = doc(db, 'published_slots', firebaseId);
+            await updateDoc(slotDoc, {
                 "appointment.start": newStart,
                 "appointment.end": newEnd,
                 "appointment.type": isRecurring ? 'recurring' : 'normal',
                 "appointment.dayOfWeek": dayOfWeek,
-                "appointment.dayName": dayNames[dayOfWeek],
+                "appointment.dayName": window.dayNames[dayOfWeek],
                 "appointment.date": selectedDateKey,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                updatedAt: serverTimestamp()
             });
         } catch(e) {
             alert('❌ خطأ في تحديث السيرفر: ' + e.message);
@@ -1040,63 +1035,33 @@
         }
     }
 
-    // 4. الحذف من السيرفر
+    // 4. الحذف اللحظي من السيرفر لجميع الأجهزة (الطالب والمعلم)
     window.deleteAppointmentOnline = async function(appt) {
-        if (!confirm(appt.isOnline ? '⚠️ تحذير: سيتم مسح هذا الموعد نهائياً من السيرفر لجميع الطلاب والمعلمين. متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
+        if (!confirm(appt.firebaseId ? '⚠️ تحذير: سيتم حذف هذا الموعد نهائياً من المنصة ومن أمام الطلاب. هل أنت متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
 
-        if (appt.isOnline && appt.firebaseId) {
+        if (appt.firebaseId) {
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.add('show');
             try {
-                await db.collection('published_slots').doc(appt.firebaseId).delete();
-                // المزامنة التلقائية (onSnapshot) ستقوم بمسحه من الشاشة فوراً
+                await deleteDoc(doc(db, 'published_slots', appt.firebaseId));
+                // السيرفر سيتولى عملية مسحه من الواجهة تلقائياً بفضل onSnapshot
             } catch (err) {
-                alert('❌ تعذر الحذف السحابي: ' + err.message);
+                alert('❌ تعذر الحذف من السيرفر: ' + err.message);
             } finally {
                 loadingOverlay.classList.remove('show');
             }
         } else {
-            removeLocalAppt(appt);
-            renderAppointments();
-            renderCalendar();
+            window.removeLocalAppt(appt);
+            window.renderAppointments();
+            window.renderCalendar();
         }
     }
 
-    function getLocation(e) {
-        e.preventDefault();
-        const btn = e.target;
-        const textDisplay = document.getElementById('location-text');
-        const hiddenInput = document.getElementById('gps-coords');
-        btn.innerHTML = '⏳ جاري...';
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                    btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
-                    textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-                },
-                error => {
-                    btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
-                    textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
-                }
-            );
-        }
-    }
-
-    function closePublishModal(e, force = false) {
-        if (force || e.target.id === 'publishModalOverlay') {
-            document.getElementById('publishModalOverlay').classList.remove('active');
-        }
-    }
-    
-    window.getLocation = getLocation;
-    window.closePublishModal = closePublishModal;
-
-    // تهيئة الصفحة
-    window.onload = function() {
+    window.addEventListener('DOMContentLoaded', function() {
+        // استدعاء البيانات من الصفحة الأولى للمعلم
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
-        let selectedSubjectsText = "⚠️️ لم تختر أي مادة.";
+        let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
         if (savedDataString) {
             try {
                 const savedData = JSON.parse(savedDataString);
@@ -1115,9 +1080,9 @@
             subjectDisplay.dataset.value = selectedSubjectsText;
         }
 
-        // تشغيل مراقب السيرفر السحابي
+        // تفعيل المزامنة المباشرة
         listenToOnlineSlots();
-    };
+    });
 </script>
 
 </body>
