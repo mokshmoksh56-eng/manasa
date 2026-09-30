@@ -261,7 +261,7 @@
         }
 
         /* =========================================
-           أزرار الصفوف (تصغير ومرونة)
+           أزرار الصفوف
            ========================================= */
         .grades-grid {
             display: grid;
@@ -301,7 +301,7 @@
         }
 
         /* =========================================
-           قسم وشبكة المواد (ضمان ظهور كافة المواد)
+           قسم وشبكة المواد
            ========================================= */
         .subjects-section {
             background: #f8fafc;
@@ -370,6 +370,37 @@
             content: '✓ ';
             font-weight: bold;
             margin-left: 2px;
+        }
+
+        /* زر الحفظ الصغير تحت المواد */
+        .btn-save-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: fit-content;
+            min-width: 140px;
+            margin: 10px auto 0;
+            padding: 6px 14px;
+            background: var(--dark-teal);
+            color: var(--white);
+            border: 1.5px solid var(--primary-teal);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 105, 92, 0.2);
+            font-family: inherit;
+        }
+
+        .btn-save-inline:hover {
+            background: var(--primary-teal);
+            transform: translateY(-1px);
+        }
+
+        .btn-save-inline:active {
+            transform: scale(0.96);
         }
 
         /* =========================================
@@ -729,11 +760,34 @@
 
             html += `
                     </div>
+                    <!-- زر حفظ صغير تحت المواد -->
+                    <button class="btn-save-inline" onclick="confirmStageSelection('${stageId}')">
+                        <span>💾</span>
+                        <span>تم واعتمد المواد</span>
+                    </button>
                 </div>
             `;
 
             container.innerHTML = html;
             subjectsOpen[stageId] = open;
+        }
+
+        function confirmStageSelection(stageId) {
+            if (selections[stageId].subjects.length === 0) {
+                alert('⚠️ يرجى اختيار مادة واحدة على الأقل أولاً.');
+                return;
+            }
+            // إغلاق قائمة المواد تلقائياً بعد الاعتماد
+            const container = document.getElementById(`subjects-container-${stageId}`);
+            if (container) {
+                const section = container.querySelector('.subjects-section');
+                if (section) {
+                    section.classList.remove('open');
+                    subjectsOpen[stageId] = false;
+                }
+            }
+            autoSaveMester1();
+            showAutosaveBar();
         }
 
         function toggleSubject(btn, subjectName, stageId, gradeName) {
