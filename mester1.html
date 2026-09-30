@@ -9,16 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-           متغيرات الألوان (فيروزي صريح وقوي)
+           متغيرات الألوان (تم ضبط التباين وتغميق الألوان لضمان وضوح النصوص)
            ========================================= */
         :root {
             --primary-teal: #009688;
             --dark-teal: #00695c;
-            --border-teal: #00796b;
             --bg-color: #f7f9fa;
-            --text-dark: #2c3e50;
+            --text-dark: #1e293b; /* تم تغميق لون النص الأساسي ليكون واضحاً جداً */
             --text-gray: #64748b;
             --white: #ffffff;
+            
+            /* ألوان المراحل (تم تغميقها قليلاً لتكون البادجات مقروءة مع النص الأبيض) */
+            --kg-color: #d81b60; /* وردي غامق */
+            --primary-color: #2e7d32; /* أخضر غامق */
+            --prep-color: #1565c0; /* أزرق غامق */
+            --secondary-color: #e65100; /* برتقالي غامق / مائل للبني */
         }
 
         * {
@@ -168,21 +173,31 @@
         }
 
         /* =========================================
-           عنصر المرحلة (Accordion)
+           عنصر المرحلة (Accordion) وتلوينها
            ========================================= */
         .stage-item {
             background-color: var(--white);
-            border: 1.5px solid #e2e8f0;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.25s ease;
             box-shadow: 0 3px 8px rgba(0,0,0,0.02);
+            border-right-width: 6px; 
         }
 
-        .stage-item.active {
-            border-color: var(--primary-teal);
-            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.12);
-        }
+        /* ألوان المرحلة المحددة (الحدود فقط لترك النص داكناً وواضحاً) */
+        #stage-kg { border-right-color: var(--kg-color); }
+        #stage-kg.active { border-color: var(--kg-color); box-shadow: 0 4px 12px rgba(216, 27, 96, 0.15); }
+
+        #stage-primary { border-right-color: var(--primary-color); }
+        #stage-primary.active { border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(46, 125, 50, 0.15); }
+
+        #stage-prep { border-right-color: var(--prep-color); }
+        #stage-prep.active { border-color: var(--prep-color); box-shadow: 0 4px 12px rgba(21, 101, 192, 0.15); }
+
+        #stage-secondary { border-right-color: var(--secondary-color); }
+        #stage-secondary.active { border-color: var(--secondary-color); box-shadow: 0 4px 12px rgba(230, 81, 0, 0.15); }
+
 
         .stage-header {
             padding: 10px 14px;
@@ -190,9 +205,9 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 900;
-            color: var(--text-dark);
+            color: var(--text-dark); /* تثبيت لون النص ليكون داكن دائماً */
             user-select: none;
             gap: 6px;
             background: var(--white);
@@ -200,7 +215,7 @@
         }
 
         .stage-header:hover {
-            background: #f8fafc;
+            background: #f1f5f9;
         }
 
         .stage-title {
@@ -218,9 +233,21 @@
             gap: 4px;
         }
 
-        .badge-grade {
-            background: var(--primary-teal);
-            color: var(--white);
+        /* ألوان البادجات لكل مرحلة */
+        .stage-item#stage-kg .badge-grade { background: var(--kg-color); }
+        .stage-item#stage-kg .badge { background: #ad1457; } 
+
+        .stage-item#stage-primary .badge-grade { background: var(--primary-color); }
+        .stage-item#stage-primary .badge { background: #1b5e20; }
+
+        .stage-item#stage-prep .badge-grade { background: var(--prep-color); }
+        .stage-item#stage-prep .badge { background: #0d47a1; }
+
+        .stage-item#stage-secondary .badge-grade { background: var(--secondary-color); }
+        .stage-item#stage-secondary .badge { background: #bf360c; }
+
+        .badge-grade, .badge {
+            color: var(--white) !important; /* ضمان بياض النص داخل البادجات */
             font-size: 11px;
             font-weight: 800;
             padding: 2px 8px;
@@ -231,14 +258,8 @@
         }
 
         .badge {
-            background: var(--dark-teal);
-            color: var(--white);
             font-size: 10.5px;
-            font-weight: 800;
             padding: 2px 7px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
         }
 
         .arrow {
@@ -253,8 +274,12 @@
 
         .stage-item.active .arrow {
             transform: rotate(180deg);
-            border-top-color: var(--primary-teal);
         }
+        
+        #stage-kg.active .arrow { border-top-color: var(--kg-color); }
+        #stage-primary.active .arrow { border-top-color: var(--primary-color); }
+        #stage-prep.active .arrow { border-top-color: var(--prep-color); }
+        #stage-secondary.active .arrow { border-top-color: var(--secondary-color); }
 
         .stage-content {
             display: none;
@@ -293,17 +318,18 @@
             font-family: inherit;
         }
 
-        .grade-btn:hover {
-            border-color: var(--primary-teal);
-            color: var(--primary-teal);
-        }
+        /* تأثيرات التحويم لأزرار الصفوف حسب المرحلة */
+        #stage-kg .grade-btn:hover { border-color: var(--kg-color); color: var(--kg-color); }
+        #stage-primary .grade-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        #stage-prep .grade-btn:hover { border-color: var(--prep-color); color: var(--prep-color); }
+        #stage-secondary .grade-btn:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
 
-        .grade-btn.selected {
-            background: var(--primary-teal);
-            color: var(--white);
-            border-color: var(--dark-teal);
-            box-shadow: 0 2px 6px rgba(0, 150, 136, 0.25);
-        }
+        /* الأزرار المحددة حسب المرحلة */
+        #stage-kg .grade-btn.selected { background: var(--kg-color); border-color: #ad1457; color: white; box-shadow: 0 2px 6px rgba(216, 27, 96, 0.25); }
+        #stage-primary .grade-btn.selected { background: var(--primary-color); border-color: #1b5e20; color: white; box-shadow: 0 2px 6px rgba(46, 125, 50, 0.25); }
+        #stage-prep .grade-btn.selected { background: var(--prep-color); border-color: #0d47a1; color: white; box-shadow: 0 2px 6px rgba(21, 101, 192, 0.25); }
+        #stage-secondary .grade-btn.selected { background: var(--secondary-color); border-color: #bf360c; color: white; box-shadow: 0 2px 6px rgba(230, 81, 0, 0.25); }
+
 
         /* =========================================
            قسم وشبكة المواد
@@ -316,6 +342,11 @@
             margin-top: 6px;
             display: none;
         }
+        
+        #stage-kg .subjects-section { border-color: var(--kg-color); }
+        #stage-primary .subjects-section { border-color: var(--primary-color); }
+        #stage-prep .subjects-section { border-color: var(--prep-color); }
+        #stage-secondary .subjects-section { border-color: var(--secondary-color); }
 
         .subjects-section.open {
             display: block;
@@ -325,11 +356,16 @@
             text-align: center;
             font-size: 12px;
             font-weight: 800;
-            color: var(--dark-teal);
             margin-bottom: 8px;
             padding-bottom: 5px;
             border-bottom: 1px dashed #cbd5e1;
         }
+
+        #stage-kg .subjects-title { color: var(--kg-color); border-bottom-color: var(--kg-color); }
+        #stage-primary .subjects-title { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        #stage-prep .subjects-title { color: var(--prep-color); border-bottom-color: var(--prep-color); }
+        #stage-secondary .subjects-title { color: var(--secondary-color); border-bottom-color: var(--secondary-color); }
+
 
         .subjects-grid {
             display: grid;
@@ -355,21 +391,22 @@
             word-break: keep-all;
         }
 
-        .subject-btn:hover {
-            border-color: var(--primary-teal);
-            color: var(--primary-teal);
-        }
-
         .subject-btn:active {
             transform: scale(0.96);
         }
 
-        .subject-btn.selected {
-            border-color: var(--dark-teal);
-            background-color: var(--primary-teal);
-            color: var(--white);
-            box-shadow: 0 2px 5px rgba(0, 150, 136, 0.2);
-        }
+        /* ألوان أزرار المواد لكل مرحلة */
+        #stage-kg .subject-btn:hover { border-color: var(--kg-color); color: var(--kg-color); }
+        #stage-kg .subject-btn.selected { background: var(--kg-color); border-color: #ad1457; color: white; }
+
+        #stage-primary .subject-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        #stage-primary .subject-btn.selected { background: var(--primary-color); border-color: #1b5e20; color: white; }
+
+        #stage-prep .subject-btn:hover { border-color: var(--prep-color); color: var(--prep-color); }
+        #stage-prep .subject-btn.selected { background: var(--prep-color); border-color: #0d47a1; color: white; }
+
+        #stage-secondary .subject-btn:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
+        #stage-secondary .subject-btn.selected { background: var(--secondary-color); border-color: #bf360c; color: white; }
 
         .subject-btn.selected::before {
             content: '✓ ';
@@ -387,20 +424,29 @@
             min-width: 140px;
             margin: 10px auto 0;
             padding: 6px 14px;
-            background: var(--dark-teal);
             color: var(--white);
-            border: 1.5px solid var(--primary-teal);
             border-radius: 20px;
             font-size: 12px;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0, 105, 92, 0.2);
             font-family: inherit;
+            border: none;
         }
 
+        #stage-kg .btn-save-inline { background: var(--kg-color); box-shadow: 0 2px 6px rgba(216, 27, 96, 0.2); }
+        #stage-kg .btn-save-inline:hover { background: #ad1457; }
+
+        #stage-primary .btn-save-inline { background: var(--primary-color); box-shadow: 0 2px 6px rgba(46, 125, 50, 0.2); }
+        #stage-primary .btn-save-inline:hover { background: #1b5e20; }
+
+        #stage-prep .btn-save-inline { background: var(--prep-color); box-shadow: 0 2px 6px rgba(21, 101, 192, 0.2); }
+        #stage-prep .btn-save-inline:hover { background: #0d47a1; }
+
+        #stage-secondary .btn-save-inline { background: var(--secondary-color); box-shadow: 0 2px 6px rgba(230, 81, 0, 0.2); }
+        #stage-secondary .btn-save-inline:hover { background: #bf360c; }
+
         .btn-save-inline:hover {
-            background: var(--primary-teal);
             transform: translateY(-1px);
         }
 
@@ -441,17 +487,25 @@
             border-radius: 10px;
             padding: 10px 14px;
             margin-top: 6px;
-            font-size: 12px;
-            color: var(--dark-teal);
+            font-size: 13px;
+            color: var(--text-dark); /* النص الأساسي للملخص داكن */
             font-weight: 800;
             line-height: 1.6;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
-        .summary-box strong {
+        .summary-box > strong {
             color: var(--primary-teal);
-            font-size: 12.5px;
+            font-size: 13.5px;
+            display: block;
+            margin-bottom: 4px;
         }
+        
+        /* تلوين اسم المرحلة فقط داخل الملخص ليبقى الباقي مقروءاً */
+        .summary-item-kg strong { color: var(--kg-color); }
+        .summary-item-primary strong { color: var(--primary-color); }
+        .summary-item-prep strong { color: var(--prep-color); }
+        .summary-item-secondary strong { color: var(--secondary-color); }
 
         @media (max-width: 380px) {
             .grades-grid {
@@ -862,7 +916,7 @@
                     const parts = [];
                     if (grade) parts.push(`الصف: ${grade}`);
                     parts.push(`المواد: ${subjects.join(' - ')}`);
-                    html += `<div>• <strong>${stageNames[stageId]}:</strong> ${parts.join(' | ')}</div>`;
+                    html += `<div class="summary-item-${stageId}">• <strong>${stageNames[stageId]}:</strong> ${parts.join(' | ')}</div>`;
                     total += subjects.length;
                 }
             }
