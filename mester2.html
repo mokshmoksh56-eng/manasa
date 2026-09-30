@@ -95,7 +95,7 @@
     
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    /* 🗺️️ خريطة Leaflet */
+    /* 🗺 خريطة Leaflet */
     #map-container { width: 100%; height: 280px; border-radius: 10px; overflow: hidden; border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; }
     #map { width: 100%; height: 100%; }
 
@@ -1073,7 +1073,7 @@
         let visibilityBadge = '';
         if (item.isOnline) {
             visibilityBadge = item.isVisible 
-                ? '<span class="badge-status visible-student" title="يمكن للطلاب حجز هذه المجموعة">👁️️ ظاهر للطلبة</span>' 
+                ? '<span class="badge-status visible-student" title="يمكن للطلاب حجز هذه المجموعة">👁 ظاهر للطلبة</span>' 
                 : '<span class="badge-status hidden-student" title="مخفي من تطبيق الطالب">🙈 مخفي عن الطلبة</span>';
         }
 
@@ -1157,7 +1157,7 @@
   }
 
   /* ======================================================== */
-  /* ✏️️ التعديل عبر النافذة المنبثقة */
+  /* ✏ التعديل عبر النافذة المنبثقة */
   /* ======================================================== */
   function startEdit(appt) {
     editingAppt = { ...appt };
@@ -1236,6 +1236,9 @@
     renderAllCardsSummary();
   }
 
+  /* ======================================================== */
+  /* ➕ دالة إضافة الموعد والحفظ (مع التحقق الشامل من الخطوات) */
+  /* ======================================================== */
   function addAppointment() {
     const groupName = document.getElementById('group-name').value.trim();
     const teacherName = document.getElementById('teacher-name').value.trim();
@@ -1245,22 +1248,36 @@
     const end = document.getElementById('endTime').value;
     const isRecurring = document.getElementById('repeatWeekly').checked;
 
+    // 1. التحقق من الخطوة 1
     if (!groupName) {
         showAddError('يرجى تعبئة "اسم المجموعة" في الخطوة رقم 1');
         document.getElementById('group-name').focus();
         return;
     }
+    
+    // 2. التحقق من الخطوة 2
     if (!teacherName) {
         showAddError('يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2');
         document.getElementById('teacher-name').focus();
         return;
     }
+    
+    // 3. التحقق من الخطوة 3
     if (!studentsCount || studentsCount < 1) {
         showAddError('يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم 3');
         document.getElementById('students-count').focus();
         return;
     }
 
+    // 4. التحقق من الخطوة 6 (تأكيد الموقع الجغرافي)
+    const gpsLocation = document.getElementById('gps-coords').value;
+    if (!gpsLocation) {
+        showAddError('يرجى تحديد وتأكيد الموقع من الخريطة في الخطوة رقم 6 أولاً');
+        document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // 5. التحقق من الخطوة 7 (توقيت الحصة)
     if (!start || !end) { 
         showAddError('يجب اختيار وقت البداية والنهاية في الخطوة رقم 7'); 
         return; 
@@ -1270,6 +1287,7 @@
         return; 
     }
 
+    // 6. التحقق من الخطوة 8 (تحديد اليوم من التقويم)
     if (!selectedDateKey) {
         showAddError('يرجى تحديد يوم من التقويم في الخطوة رقم 8');
         return;
