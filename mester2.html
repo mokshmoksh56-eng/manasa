@@ -1079,7 +1079,7 @@
       let locationDisplay = data.address || data.street || data.gpsLocation || 'غير محدد على الخريطة';
 
       let visibilityHtml = isVisible 
-          ? `<span style="color:#0284c7; font-weight:900;">👁️️ ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
+          ? `<span style="color:#0284c7; font-weight:900;">👁 ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
           : `<span style="color:#b91c1c; font-weight:900;">🙈 مخفي عن الطلبة (مخفي من تطبيق الطلاب)</span>`;
 
       document.getElementById('publishModalContent').innerHTML = `
@@ -1426,6 +1426,16 @@
   /* ➕ دالة إضافة الموعد والحفظ (مع التحقق الشامل من الخطوات) */
   /* ======================================================== */
   function addAppointment() {
+    // 1. إضافة شرط التحقق من اختيار المادة
+    const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
+    const savedSelections = localStorage.getItem('teacherSelections');
+    
+    if (currentSubject.includes("لم تختر") || !savedSelections || savedSelections === '{}') {
+        showAddError("لم تختر اى مادة، ارجع للخلف لتسجيل التخصص");
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        return; 
+    }
+
     const groupName = document.getElementById('group-name').value.trim();
     const teacherName = document.getElementById('teacher-name').value.trim();
     const studentsCount = document.getElementById('students-count').value;
