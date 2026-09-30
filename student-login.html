@@ -26,18 +26,31 @@
     }
 
     .login-header {
-        /* تم تعديل موضع الصورة إلى top center لتجنب قصها من الأعلى */
-        background: url('teacher.png') top center/cover no-repeat;
-        /* تم زيادة الارتفاع والمساحات الداخلية لتظهر الصورة بالكامل تقريباً */
-        min-height: 240px;
+        background-color: #e8f0fa; /* لون خلفية ناعم يملأ الفراغات إن وجدت */
+        background-image: url('teacher.png');
+        background-position: center top; /* محاذاة الصورة للأعلى لمنع قص الرأس */
+        background-size: contain; /* السر هنا: عرض الصورة بالكامل دون قص */
+        background-repeat: no-repeat;
+        min-height: 270px; /* ارتفاع مناسب لعرض الصورة */
         padding: 40px 25px 30px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* لدفع النص للأسفل وترك الصورة واضحة */
+        justify-content: flex-end;
         text-align: center;
         position: relative;
-        border-bottom: 4px solid #f1c40f;
         transition: background-image 0.4s ease-in-out;
+    }
+
+    /* طبقة تظليل ذكية أسفل الصورة لتوضيح النصوص */
+    .login-header::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(26, 60, 109, 0.85), transparent);
+        z-index: 1;
     }
 
     .login-header::after {
@@ -48,6 +61,7 @@
         right: 0;
         height: 4px;
         background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
+        z-index: 3;
     }
 
     .login-header h1 {
@@ -55,14 +69,18 @@
         font-weight: 900;
         color: #f1c40f;
         margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.8);
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     .login-header p {
         font-size: 13px;
         color: #ffffff;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     .tabs {
@@ -435,18 +453,15 @@
 </div>
 
 <script>
-    // دالة لتحديث الصورة بناءً على اللقب
     function updateHeaderImage(title) {
         const header = document.getElementById('headerSection');
         if (title === 'مس') {
-            // تم إضافة top center لضمان عدم قص الصورة في تغيير اللقب أيضاً
-            header.style.background = "url('miss.png') top center/cover no-repeat";
+            header.style.backgroundImage = "url('miss.png')";
         } else {
-            header.style.background = "url('teacher.png') top center/cover no-repeat";
+            header.style.backgroundImage = "url('teacher.png')";
         }
     }
 
-    // دالة للتحقق من رقم الهاتف في شاشة الدخول وتغيير الصورة تلقائياً
     function checkLoginPhone(phone) {
         if (phone.length === 11) {
             const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
