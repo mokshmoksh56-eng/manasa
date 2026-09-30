@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-           متغيرات الألوان (تم ضبط التباين وتغميق الألوان لضمان وضوح النصوص)
+           متغيرات الألوان 
            ========================================= */
         :root {
             --primary-teal: #009688;
@@ -70,7 +70,9 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* تعديلات شريط الخطوات (Stepper) ليكون تفاعلياً */
+        /* =========================================
+           شريط الخطوات (Stepper)
+           ========================================= */
         .stepper {
             display: flex;
             justify-content: center;
@@ -93,18 +95,25 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            text-decoration: none; /* إزالة خط الرابط */
             transition: all 0.2s ease;
         }
 
+        /* تنسيق خاص للزر الثاني لضمان عمله باللمس */
         .step.clickable {
             cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            user-select: none;
         }
 
-        .step.clickable:hover {
+        .step.clickable:hover, .step.clickable:active {
             color: #00E5FF;
             opacity: 1;
             transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #00E5FF;
         }
 
         .step.active {
@@ -413,8 +422,10 @@
         <div class="stepper">
             <div class="step active">1. التخصص</div>
             <div class="step-divider">❯</div>
-            <!-- تم تغيير هذا العنصر ليكون قابلاً للنقر مع استدعاء نفس دالة الحفظ -->
-            <a class="step clickable" onclick="saveSelection()" title="اضغط للانتقال لصفحة المواعيد والمجموعات">2. المواعيد والمجموعات</a>
+            <!-- تم التعديل ليصبح div لتفادي مشاكل الروابط في تطبيقات تعديل الأكواد -->
+            <div class="step clickable" onclick="goToMester2Bypass()" title="تخطي والانتقال للمواعيد والمجموعات">
+                2. المواعيد والمجموعات
+            </div>
         </div>
     </header>
 
@@ -813,6 +824,27 @@
                 summaryContent.textContent = 'لم تختر أي مادة بعد.';
             } else {
                 summaryContent.innerHTML = html;
+            }
+        }
+
+        /* 
+           الدالة الآمنة: تنقلك مباشرة للصفحة الثانية بغض النظر عن اختيارك لأي مادة.
+        */
+        function goToMester2Bypass() {
+            try {
+                const finalData = {};
+                for (const stageId in selections) {
+                    const { grade, subjects } = selections[stageId];
+                    if (subjects.length > 0) {
+                        finalData[stageId] = { grade, subjects };
+                    }
+                }
+                localStorage.setItem('teacherSelections', JSON.stringify(finalData));
+                localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                window.location.href = "mester2.html";
+            } catch (err) {
+                console.error("حدث خطأ، لكن سيتم الانتقال:", err);
+                window.location.href = "mester2.html";
             }
         }
 
