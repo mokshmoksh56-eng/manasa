@@ -26,8 +26,8 @@
     }
 
     .login-header {
-        background: linear-gradient(180deg, rgba(43, 92, 158, 0.95) 0%, rgba(26, 60, 109, 0.98) 100%),
-                    url('teacher.png') center/cover no-repeat;
+        /* تم إزالة اللون الأزرق هنا والاكتفاء بالصورة */
+        background: url('teacher.png') center/cover no-repeat;
         padding: 30px 25px 35px;
         text-align: center;
         position: relative;
@@ -63,13 +63,14 @@
         font-weight: 900;
         color: #f1c40f;
         margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.8); /* تم زيادة الظل ليكون النص مقروءاً على الصورة */
     }
 
     .login-header p {
         font-size: 13px;
-        color: #d0d9e8;
+        color: #ffffff;
         font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* تم إضافة ظل لتوضيح النص */
     }
 
     .tabs {
@@ -324,7 +325,7 @@
                                required
                                dir="ltr"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                        <button type="button" class="pin-toggle" onclick="togglePin('loginPin', this)">👁️️</button>
+                        <button type="button" class="pin-toggle" onclick="togglePin('loginPin', this)">👁</button>
                     </div>
                 </div>
 
