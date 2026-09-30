@@ -7,58 +7,463 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
     <style>
         /* =========================================
            إعدادات عامة
            ========================================= */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
-        body { background-color: #f4f6f9; padding-bottom: 40px; }
-        .header-3d { width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat; padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f; }
-        .header-3d h1 { font-size: 42px; font-weight: 900; color: #f1c40f; letter-spacing: 2px; margin-bottom: 8px; text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5); }
-        .header-3d p { font-size: 16px; color: #d0d9e8; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-        .stepper { display: flex; justify-content: center; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 12px 25px; margin: 20px auto 0; width: fit-content; position: relative; top: 10px; backdrop-filter: blur(5px); }
-        .step { display: flex; align-items: center; gap: 6px; font-size: 15px; color: #f1c40f; font-weight: 700; }
-        .container { width: 100%; max-width: 700px; margin: 0 auto; padding: 30px 20px; display: flex; flex-direction: column; gap: 15px; }
-        .page-title { text-align: center; font-size: 24px; font-weight: 900; color: #1a3c6d; margin: 15px 0 5px; }
-        .autosave-bar { position: fixed; bottom: 15px; right: 15px; background: rgba(40, 167, 69, 0.95); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 9998; box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: none; align-items: center; gap: 6px; }
-        .autosave-bar.show { display: flex; animation: slideIn 0.3s ease; }
-        .autosave-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: pulseDot 1.5s infinite; }
-        @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .stage-item { background-color: white; border: 2px solid #e0e4e8; border-radius: 15px; overflow: hidden; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
-        .stage-item.active { border-color: #28a745; background-color: #e8f5e9; }
-        .stage-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 18px; font-weight: 900; color: #333; user-select: none; gap: 10px; flex-wrap: wrap; }
-        .stage-title { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
-        .stage-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1; justify-content: flex-start; }
-        .badge-grade { background: linear-gradient(180deg, #8e44ad 0%, #6c3483 100%); color: #f1c40f; font-size: 13px; font-weight: 800; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 3px 0 #4a235a, 0 0 12px rgba(142, 68, 173, 0.5); animation: popIn 0.3s ease; }
-        .badge { background: linear-gradient(180deg, #28a745 0%, #1e7e34 100%); color: white; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: inline-flex; align-items: center; box-shadow: 0 2px 0 #155724; animation: popIn 0.3s ease; }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
-        .arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #888; transition: transform 0.3s ease; flex-shrink: 0; }
-        .stage-item.active .arrow { transform: rotate(180deg); border-top-color: #28a745; }
-        .stage-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; padding: 0 15px; }
-        .stage-item.active .stage-content { max-height: 2000px; padding-bottom: 20px; }
-        .grades-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px; }
-        .grade-btn { background-color: white; border: 1px solid #ccc; border-radius: 10px; padding: 12px 20px; font-size: 15px; font-weight: 700; color: #444; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit; }
-        .grade-btn:hover { background-color: #f0f0f0; transform: translateY(-2px); border-color: #2b5c9e; color: #1a3c6d; }
-        .grade-btn.selected { background: linear-gradient(180deg, #8e44ad 0%, #6c3483 100%); color: #f1c40f; border-color: #6c3483; box-shadow: 0 4px 0 #4a235a, 0 0 15px rgba(142, 68, 173, 0.5); }
-        .grade-btn.selected::before { content: '👑 '; }
-        .subjects-section { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 15px; margin-top: 10px; max-height: 0; overflow: hidden; padding-top: 0; padding-bottom: 0; opacity: 0; transition: all 0.3s ease; }
-        .subjects-section.open { max-height: 1000px; padding: 15px; opacity: 1; }
-        .subjects-title { text-align: center; font-size: 14px; font-weight: 700; color: #1a3c6d; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e0e4e8; }
-        .subjects-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .subject-btn { background-color: white; border: 2px solid #ccc; border-radius: 12px; padding: 10px 16px; font-size: 14px; font-weight: 700; color: #444; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 0 #ccc; font-family: inherit; }
-        .subject-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #ccc; }
-        .subject-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #ccc; }
-        .subject-btn.selected { border-color: #28a745; background-color: #d4edda; color: #155724; box-shadow: 0 4px 0 #1e7e34; }
-        .subject-btn.selected::before { content: '✓ '; font-weight: bold; color: #28a745; }
-        .save-btn { margin-top: 10px; width: 100%; padding: 18px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; font-family: inherit; }
-        .save-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342, 0 2px 5px rgba(0, 0, 0, 0.2); }
-        .summary-box { background: #e3f2fd; border: 2px dashed #2b5c9e; border-radius: 12px; padding: 15px 20px; margin-top: 10px; font-size: 14px; color: #1a3c6d; font-weight: 600; line-height: 1.8; }
-        .summary-box strong { color: #28a745; }
-        @media (max-width: 700px) { .header-3d { padding: 25px 15px 40px; } .header-3d h1 { font-size: 28px; letter-spacing: 1px; } .header-3d p { font-size: 13px; } .stepper { padding: 8px 16px; gap: 8px; } .step { font-size: 13px; } .container { padding: 20px 12px; gap: 12px; } .page-title { font-size: 19px; margin: 10px 0 5px; } .stage-header { font-size: 15px; padding: 12px 14px; gap: 8px; } .stage-title { font-size: 15px; } .stage-badges { gap: 4px; } .grades-grid { gap: 8px; } .grade-btn { font-size: 13px; padding: 9px 14px; } .subject-btn { font-size: 12px; padding: 8px 12px; } .subjects-title { font-size: 12px; } .badge { font-size: 10px; padding: 3px 9px; } .badge-grade { font-size: 10px; padding: 4px 10px; } .save-btn { font-size: 15px; padding: 14px; } .summary-box { font-size: 12px; padding: 12px 14px; line-height: 1.7; } }
-        @media (max-width: 400px) { .header-3d h1 { font-size: 22px; } .header-3d p { font-size: 11px; } .step { font-size: 11px; } .container { padding: 15px 8px; } .page-title { font-size: 16px; } .stage-header { font-size: 13px; padding: 10px 10px; } .stage-title { font-size: 13px; } .grade-btn { font-size: 11px; padding: 7px 10px; border-radius: 8px; } .subject-btn { font-size: 11px; padding: 6px 10px; border-radius: 8px; } .badge { font-size: 9px; padding: 2px 7px; } .badge-grade { font-size: 9px; padding: 3px 8px; } .save-btn { font-size: 13px; padding: 12px; } .summary-box { font-size: 11px; padding: 10px 12px; } }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            padding-bottom: 40px;
+        }
+
+        /* =========================================
+           الهيدر ثلاثي الأبعاد
+           ========================================= */
+        .header-3d {
+            width: 100%;
+            background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%),
+                        url('teacher2.png') center/cover no-repeat;
+            padding: 35px 20px 50px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid #f1c40f;
+        }
+
+        .header-3d h1 {
+            font-size: 42px;
+            font-weight: 900;
+            color: #f1c40f;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow:
+                0 2px 0 #b38f00,
+                0 4px 0 #8a6d00,
+                0 6px 10px rgba(0,0,0,0.5);
+        }
+
+        .header-3d p {
+            font-size: 16px;
+            color: #d0d9e8;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 12px 25px;
+            margin: 20px auto 0;
+            width: fit-content;
+            position: relative;
+            top: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 15px;
+            color: #f1c40f;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           الحاوية الرئيسية
+           ========================================= */
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #1a3c6d;
+            margin: 15px 0 5px;
+        }
+
+        /* =========================================
+           شريط "الحفظ التلقائي"
+           ========================================= */
+        .autosave-bar {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 9998;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+        .autosave-bar.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+        .autosave-bar .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* =========================================
+           عنصر المرحلة (Accordion)
+           ========================================= */
+        .stage-item {
+            background-color: white;
+            border: 2px solid #e0e4e8;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .stage-item.active {
+            border-color: #28a745;
+            background-color: #e8f5e9;
+        }
+
+        .stage-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 900;
+            color: #333;
+            user-select: none;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stage-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .stage-badges {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        .badge-grade {
+            background: linear-gradient(180deg, #8e44ad 0%, #6c3483 100%);
+            color: #f1c40f;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 3px 0 #4a235a, 0 0 12px rgba(142, 68, 173, 0.5);
+            animation: popIn 0.3s ease;
+        }
+
+        .badge {
+            background: linear-gradient(180deg, #28a745 0%, #1e7e34 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 2px 0 #155724;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #888;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .stage-item.active .arrow {
+            transform: rotate(180deg);
+            border-top-color: #28a745;
+        }
+
+        .stage-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            padding: 0 15px;
+        }
+
+        .stage-item.active .stage-content {
+            max-height: 2000px;
+            padding-bottom: 20px;
+        }
+
+        /* =========================================
+           أزرار الصفوف
+           ========================================= */
+        .grades-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .grade-btn {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-family: inherit;
+        }
+
+        .grade-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+            border-color: #2b5c9e;
+            color: #1a3c6d;
+        }
+
+        .grade-btn.selected {
+            background: linear-gradient(180deg, #8e44ad 0%, #6c3483 100%);
+            color: #f1c40f;
+            border-color: #6c3483;
+            box-shadow: 0 4px 0 #4a235a, 0 0 15px rgba(142, 68, 173, 0.5);
+        }
+
+        .grade-btn.selected::before {
+            content: '👑 ';
+        }
+
+        /* =========================================
+           قسم المواد
+           ========================================= */
+        .subjects-section {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .subjects-section.open {
+            max-height: 1000px;
+            padding: 15px;
+            opacity: 1;
+        }
+
+        .subjects-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a3c6d;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e4e8;
+        }
+
+        .subjects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .subject-btn {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 #ccc;
+            font-family: inherit;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #ccc;
+        }
+
+        .subject-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #ccc;
+        }
+
+        .subject-btn.selected {
+            border-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+            box-shadow: 0 4px 0 #1e7e34;
+        }
+
+        .subject-btn.selected::before {
+            content: '✓ ';
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        /* =========================================
+           زر الحفظ
+           ========================================= */
+        .save-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .save-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #0d2342, 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ملخص الاختيارات */
+        .summary-box {
+            background: #e3f2fd;
+            border: 2px dashed #2b5c9e;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #1a3c6d;
+            font-weight: 600;
+            line-height: 1.8;
+        }
+
+        .summary-box strong {
+            color: #28a745;
+        }
+
+        /* =========================================
+           استجابة الموبايل
+           ========================================= */
+        @media (max-width: 700px) {
+            .header-3d { padding: 25px 15px 40px; }
+            .header-3d h1 { font-size: 28px; letter-spacing: 1px; }
+            .header-3d p { font-size: 13px; }
+            .stepper { padding: 8px 16px; gap: 8px; }
+            .step { font-size: 13px; }
+
+            .container { padding: 20px 12px; gap: 12px; }
+            .page-title { font-size: 19px; margin: 10px 0 5px; }
+
+            .stage-header { font-size: 15px; padding: 12px 14px; gap: 8px; }
+            .stage-title { font-size: 15px; }
+            .stage-badges { gap: 4px; }
+
+            .grades-grid { gap: 8px; }
+            .grade-btn { font-size: 13px; padding: 9px 14px; }
+            .subject-btn { font-size: 12px; padding: 8px 12px; }
+            .subjects-title { font-size: 12px; }
+
+            .badge { font-size: 10px; padding: 3px 9px; }
+            .badge-grade { font-size: 10px; padding: 4px 10px; }
+
+            .save-btn { font-size: 15px; padding: 14px; }
+            .summary-box { font-size: 12px; padding: 12px 14px; line-height: 1.7; }
+        }
+
+        @media (max-width: 400px) {
+            .header-3d h1 { font-size: 22px; }
+            .header-3d p { font-size: 11px; }
+            .step { font-size: 11px; }
+
+            .container { padding: 15px 8px; }
+            .page-title { font-size: 16px; }
+
+            .stage-header { font-size: 13px; padding: 10px 10px; }
+            .stage-title { font-size: 13px; }
+
+            .grade-btn { font-size: 11px; padding: 7px 10px; border-radius: 8px; }
+            .subject-btn { font-size: 11px; padding: 6px 10px; border-radius: 8px; }
+
+            .badge { font-size: 9px; padding: 2px 7px; }
+            .badge-grade { font-size: 9px; padding: 3px 8px; }
+
+            .save-btn { font-size: 13px; padding: 12px; }
+            .summary-box { font-size: 11px; padding: 10px 12px; }
+        }
+
     </style>
 </head>
 <body>
@@ -66,15 +471,26 @@
     <header class="header-3d">
         <h1>منصة احجزلي</h1>
         <p>بوابة المعلم - إدارة المجموعات والدروس</p>
-        <div class="stepper"><div class="step"><span>✓</span><span>1. التخصص</span></div></div>
+
+        <div class="stepper">
+            <div class="step">
+                <span>✓</span>
+                <span>1. التخصص</span>
+            </div>
+        </div>
     </header>
 
     <div class="container">
+
         <h2 class="page-title">ما هي المادة التي تدرسها؟ 📚</h2>
+
         <!-- رياض الأطفال -->
         <div class="stage-item" id="stage-kg">
             <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title"><span>🧸 رياض الأطفال</span><div class="stage-badges" id="badges-kg"></div></div>
+                <div class="stage-title">
+                    <span>🧸 رياض الأطفال</span>
+                    <div class="stage-badges" id="badges-kg"></div>
+                </div>
                 <div class="arrow"></div>
             </div>
             <div class="stage-content">
@@ -89,7 +505,10 @@
         <!-- الابتدائي -->
         <div class="stage-item" id="stage-primary">
             <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title"><span>📗 المرحلة الابتدائية</span><div class="stage-badges" id="badges-primary"></div></div>
+                <div class="stage-title">
+                    <span>📗 المرحلة الابتدائية</span>
+                    <div class="stage-badges" id="badges-primary"></div>
+                </div>
                 <div class="arrow"></div>
             </div>
             <div class="stage-content">
@@ -108,7 +527,10 @@
         <!-- الإعدادي -->
         <div class="stage-item" id="stage-prep">
             <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title"><span>📘 المرحلة الإعدادية</span><div class="stage-badges" id="badges-prep"></div></div>
+                <div class="stage-title">
+                    <span>📘 المرحلة الإعدادية</span>
+                    <div class="stage-badges" id="badges-prep"></div>
+                </div>
                 <div class="arrow"></div>
             </div>
             <div class="stage-content">
@@ -124,7 +546,10 @@
         <!-- الثانوي -->
         <div class="stage-item" id="stage-secondary">
             <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title"><span>📙 المرحلة الثانوية</span><div class="stage-badges" id="badges-secondary"></div></div>
+                <div class="stage-title">
+                    <span>📙 المرحلة الثانوية</span>
+                    <div class="stage-badges" id="badges-secondary"></div>
+                </div>
                 <div class="arrow"></div>
             </div>
             <div class="stage-content">
@@ -137,213 +562,434 @@
             </div>
         </div>
 
+        <!-- ملخص الاختيارات -->
         <div class="summary-box" id="summary">
             <strong>ملخص اختياراتك:</strong>
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
         <button class="save-btn" onclick="saveSelection()">💾 الانتقال للخطوة التالية</button>
+
     </div>
 
-    <div class="autosave-bar" id="autosave-bar"><span class="dot"></span><span>تم الحفظ تلقائياً</span></div>
+    <!-- ✅ شريط الحفظ التلقائي -->
+    <div class="autosave-bar" id="autosave-bar">
+        <span class="dot"></span>
+        <span>تم الحفظ تلقائياً</span>
+    </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
-            authDomain: "tagroba-fbe9b.firebaseapp.com",
-            databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
-            projectId: "tagroba-fbe9b",
-            storageBucket: "tagroba-fbe9b.firebasestorage.app",
-            messagingSenderId: "238106301728",
-            appId: "1:238106301728:web:549602e55f7fe8a7b0b345"
-        };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.firestore();
-
+        // =========================================
+        // قاعدة بيانات المواد
+        // =========================================
         const subjectsData = {
             'KG1': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
             'KG2': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
+
             'الأول الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
             'الثاني الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
             'الثالث الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية'],
             'الرابع الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الخامس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'السادس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+
             'الأول الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الثاني الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
             'الثالث الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+
             'الأول الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'فلسفة ومنطق'],
             'الثاني الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا'],
             'الثالث الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا', 'إحصاء']
         };
 
-        const selections = { kg: { grade: '', subjects: [] }, primary: { grade: '', subjects: [] }, prep: { grade: '', subjects: [] }, secondary: { grade: '', subjects: [] } };
-        const subjectsOpen = { kg: false, primary: false, prep: false, secondary: false };
+        // =========================================
+        // كائن الاختيارات
+        // =========================================
+        const selections = {
+            kg: { grade: '', subjects: [] },
+            primary: { grade: '', subjects: [] },
+            prep: { grade: '', subjects: [] },
+            secondary: { grade: '', subjects: [] }
+        };
+
+        // حالة فتح/قفل قائمة المواد
+        const subjectsOpen = {
+            kg: false,
+            primary: false,
+            prep: false,
+            secondary: false
+        };
+
+        // =========================================
+        // ✅✅✅ مفتاح التخزين ✅✅✅
+        // =========================================
         const MESTER1_SAVE_KEY = 'mester1_selections';
         let autosaveTimer = null;
 
+        // =========================================
+        // ✅✅✅ دوال الحفظ التلقائي ✅✅✅
+        // =========================================
         function showAutosaveBar() {
             const bar = document.getElementById('autosave-bar');
             if (!bar) return;
             bar.classList.add('show');
             clearTimeout(autosaveTimer);
-            autosaveTimer = setTimeout(() => { bar.classList.remove('show'); }, 1500);
+            autosaveTimer = setTimeout(() => {
+                bar.classList.remove('show');
+            }, 1500);
         }
 
         function autoSaveMester1() {
-            const finalData = {};
-            for (const stageId in selections) {
-                const { grade, subjects } = selections[stageId];
-                if (subjects.length > 0) finalData[stageId] = { grade, subjects: [...subjects] };
+            try {
+                const finalData = {};
+                for (const stageId in selections) {
+                    const { grade, subjects } = selections[stageId];
+                    if (subjects.length > 0) {
+                        finalData[stageId] = { grade, subjects: [...subjects] };
+                    }
+                }
+                localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                console.log('💾 تم الحفظ:', finalData);
+                showAutosaveBar();
+            } catch(e) {
+                console.error('خطأ في الحفظ التلقائي:', e);
             }
-            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
-            showAutosaveBar();
         }
 
         function restoreMester1() {
-            const raw = localStorage.getItem(MESTER1_SAVE_KEY);
-            if (!raw) return false;
-            const saved = JSON.parse(raw);
-            let hasAny = false;
-            Object.keys(saved).forEach(stageId => {
-                if (!selections[stageId]) return;
-                const { grade, subjects } = saved[stageId];
-                if (!grade || !subjects || subjects.length === 0) return;
-                hasAny = true;
-                selections[stageId].grade = grade;
-                selections[stageId].subjects = [...subjects];
-                const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`)).find(b => b.textContent.trim() === grade);
-                if (gradeBtn) gradeBtn.classList.add('selected');
-                document.getElementById(`stage-${stageId}`).classList.add('active');
-                renderSubjects(grade, stageId, false);
-                setTimeout(() => {
-                    document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
-                        const subjName = btn.textContent.replace('✓', '').trim();
-                        if (subjects.includes(subjName)) btn.classList.add('selected');
-                    });
-                }, 100);
-                renderBadges(stageId);
-            });
-            if (hasAny) updateSummary();
-            return hasAny;
+            try {
+                const raw = localStorage.getItem(MESTER1_SAVE_KEY);
+                if (!raw) {
+                    console.log('📭 لا يوجد حفظ سابق');
+                    return false;
+                }
+                const saved = JSON.parse(raw);
+                console.log('📂 الحفظ الموجود:', saved);
+
+                let hasAny = false;
+
+                Object.keys(saved).forEach(stageId => {
+                    if (!selections[stageId]) return;
+                    const { grade, subjects } = saved[stageId];
+                    if (!grade || !subjects || subjects.length === 0) return;
+
+                    hasAny = true;
+
+                    // استرجاع الاختيارات
+                    selections[stageId].grade = grade;
+                    selections[stageId].subjects = [...subjects];
+
+                    // تفعيل زر الصف
+                    const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
+                        .find(b => b.textContent.trim() === grade);
+                    if (gradeBtn) gradeBtn.classList.add('selected');
+
+                    // فتح المرحلة
+                    const stageItem = document.getElementById(`stage-${stageId}`);
+                    if (stageItem) stageItem.classList.add('active');
+
+                    // رسم المواد (بدون فتح تلقائي)
+                    renderSubjects(grade, stageId, false);
+
+                    // تفعيل المواد المختارة بعد الرسم
+                    setTimeout(() => {
+                        document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
+                            // استخراج اسم المادة بدون علامة ✓
+                            const subjName = btn.textContent.replace('✓', '').trim();
+                            if (subjects.includes(subjName)) {
+                                btn.classList.add('selected');
+                            }
+                        });
+                    }, 100);
+
+                    // رسم الشارات
+                    renderBadges(stageId);
+                });
+
+                if (hasAny) {
+                    updateSummary();
+                    console.log('✅ تم استرجاع الاختيارات');
+                }
+                return hasAny;
+            } catch(e) {
+                console.error('خطأ في استرجاع الحفظ:', e);
+                return false;
+            }
         }
 
-        function toggleStage(event, header) { header.parentElement.classList.toggle('active'); }
+        function clearMester1Autosave() {
+            localStorage.removeItem(MESTER1_SAVE_KEY);
+        }
 
+        // =========================================
+        // فتح وإغلاق المراحل
+        // =========================================
+        function toggleStage(event, header) {
+            const stageItem = header.parentElement;
+            stageItem.classList.toggle('active');
+        }
+
+        // =========================================
+        // ✅ اختيار الصف - مع حفظ تلقائي واختيار مرحلة واحدة فقط
+        // =========================================
         function selectGrade(gradeName, stageId, btn) {
+            // 1. تفريغ جميع المراحل الأخرى لضمان اختيار مرحلة واحدة فقط
             for (const key in selections) {
                 if (key !== stageId && selections[key].grade !== '') {
+                    // تصفير البيانات
                     selections[key] = { grade: '', subjects: [] };
                     subjectsOpen[key] = false;
-                    document.getElementById(`stage-${key}`).classList.remove('active');
-                    document.querySelector(`#stage-${key} .grades-grid`).querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
-                    document.getElementById(`subjects-container-${key}`).innerHTML = '';
-                    document.getElementById(`badges-${key}`).innerHTML = '';
+
+                    // إغلاق القسم
+                    const stageItem = document.getElementById(`stage-${key}`);
+                    if (stageItem) stageItem.classList.remove('active');
+
+                    // إزالة التحديد من أزرار الصفوف
+                    const stageContent = document.querySelector(`#stage-${key} .grades-grid`);
+                    if (stageContent) {
+                        stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+                    }
+
+                    // إخفاء وحذف المواد
+                    const container = document.getElementById(`subjects-container-${key}`);
+                    if (container) container.innerHTML = '';
+
+                    // مسح الشارات (Badges)
+                    const badges = document.getElementById(`badges-${key}`);
+                    if (badges) badges.innerHTML = '';
                 }
             }
+
+            // 2. استكمال منطق الاختيار للمرحلة الحالية
             const currentGrade = selections[stageId].grade;
             const container = document.getElementById(`subjects-container-${stageId}`);
+
+            // لو نفس الصف مختار - Toggle للقائمة
             if (currentGrade === gradeName) {
                 const section = container.querySelector('.subjects-section');
                 if (section) {
-                    if (subjectsOpen[stageId]) { section.classList.remove('open'); subjectsOpen[stageId] = false; } 
-                    else { section.classList.add('open'); subjectsOpen[stageId] = true; }
+                    if (subjectsOpen[stageId]) {
+                        section.classList.remove('open');
+                        subjectsOpen[stageId] = false;
+                    } else {
+                        section.classList.add('open');
+                        subjectsOpen[stageId] = true;
+                    }
                 }
                 return;
             }
+
+            // لو صف مختلف
             selections[stageId].grade = gradeName;
+            // تصفير المواد عند تغيير الصف داخل نفس المرحلة
             selections[stageId].subjects = [];
-            btn.parentElement.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+
+            const parentGrid = btn.parentElement;
+            parentGrid.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
+
             renderSubjects(gradeName, stageId, true);
             renderBadges(stageId);
             updateSummary();
+
+            // ✅ حفظ تلقائي
             autoSaveMester1();
         }
 
+        // =========================================
+        // عرض المواد
+        // =========================================
         function renderSubjects(gradeName, stageId, open = false) {
             const container = document.getElementById(`subjects-container-${stageId}`);
             const subjects = subjectsData[gradeName] || [];
-            let html = `<div class="subjects-section ${open ? 'open' : ''}"><div class="subjects-title">📖 اختر المواد التي تدرسها في ${gradeName}</div><div class="subjects-grid">`;
+
+            let html = `
+                <div class="subjects-section ${open ? 'open' : ''}">
+                    <div class="subjects-title">📖 اختر المواد التي تدرسها في ${gradeName}</div>
+                    <div class="subjects-grid">
+            `;
+
             subjects.forEach(subject => {
                 const isSelected = selections[stageId].subjects.includes(subject);
-                html += `<button class="subject-btn ${isSelected ? 'selected' : ''}" onclick="toggleSubject(this, '${subject}', '${stageId}', '${gradeName}')">${subject}</button>`;
+                html += `
+                    <button class="subject-btn ${isSelected ? 'selected' : ''}" onclick="toggleSubject(this, '${subject}', '${stageId}', '${gradeName}')">
+                        ${subject}
+                    </button>
+                `;
             });
-            html += `</div></div>`;
+
+            html += `
+                    </div>
+                </div>
+            `;
+
             container.innerHTML = html;
             subjectsOpen[stageId] = open;
         }
 
+        // =========================================
+        // ✅ اختيار / إلغاء مادة - مع حفظ تلقائي
+        // =========================================
         function toggleSubject(btn, subjectName, stageId, gradeName) {
             const isSelected = selections[stageId].subjects.includes(subjectName);
+
             if (isSelected) {
+                // شيل المادة
                 selections[stageId].subjects = selections[stageId].subjects.filter(s => s !== subjectName);
                 btn.classList.remove('selected');
             } else {
+                // ضيف المادة
                 selections[stageId].subjects.push(subjectName);
                 btn.classList.add('selected');
             }
+
+            // لو مفيش مواد مختارة، نشيل الصف كمان
             if (selections[stageId].subjects.length === 0) {
                 selections[stageId].grade = '';
-                document.querySelector(`#stage-${stageId} .grades-grid`).querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
-                document.getElementById(`subjects-container-${stageId}`).querySelector('.subjects-section').classList.remove('open');
-                subjectsOpen[stageId] = false;
+                const stageContent = document.querySelector(`#stage-${stageId} .grades-grid`);
+                if (stageContent) {
+                    stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+                }
+                const container = document.getElementById(`subjects-container-${stageId}`);
+                const section = container.querySelector('.subjects-section');
+                if (section) {
+                    section.classList.remove('open');
+                    subjectsOpen[stageId] = false;
+                }
             }
+
             renderBadges(stageId);
             updateSummary();
+
+            // ✅ حفظ تلقائي
             autoSaveMester1();
         }
 
+        // =========================================
+        // رسم الشارات
+        // =========================================
         function renderBadges(stageId) {
             const container = document.getElementById(`badges-${stageId}`);
+            if (!container) return;
+
             container.innerHTML = '';
+
             if (selections[stageId].grade && selections[stageId].subjects.length > 0) {
-                const gradeBadge = document.createElement('span'); gradeBadge.className = 'badge-grade'; gradeBadge.innerHTML = `👑 ${selections[stageId].grade}`; container.appendChild(gradeBadge);
+                const gradeBadge = document.createElement('span');
+                gradeBadge.className = 'badge-grade';
+                gradeBadge.innerHTML = `👑 ${selections[stageId].grade}`;
+                container.appendChild(gradeBadge);
             }
+
             selections[stageId].subjects.forEach(subject => {
-                const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = subject; container.appendChild(badge);
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = subject;
+                container.appendChild(badge);
             });
         }
 
+        // =========================================
+        // ملخص الاختيارات
+        // =========================================
         function updateSummary() {
             const summaryContent = document.getElementById('summary-content');
-            let html = ''; let total = 0;
-            const stageNames = { kg: '🧸 رياض الأطفال', primary: '📗 المرحلة الابتدائية', prep: '📘 المرحلة الإعدادية', secondary: '📙 المرحلة الثانوية' };
+            let html = '';
+            let total = 0;
+
+            const stageNames = {
+                kg: '🧸 رياض الأطفال',
+                primary: '📗 المرحلة الابتدائية',
+                prep: '📘 المرحلة الإعدادية',
+                secondary: '📙 المرحلة الثانوية'
+            };
+
             for (const stageId in selections) {
                 const { grade, subjects } = selections[stageId];
                 if (subjects.length > 0) {
-                    html += `<div>• <strong>${stageNames[stageId]}:</strong> الصف: ${grade} | المواد: ${subjects.join(' - ')}</div>`;
+                    const parts = [];
+                    if (grade) parts.push(`الصف: ${grade}`);
+                    parts.push(`المواد: ${subjects.join(' - ')}`);
+                    html += `<div>• <strong>${stageNames[stageId]}:</strong> ${parts.join(' | ')}</div>`;
                     total += subjects.length;
                 }
             }
-            summaryContent.innerHTML = total === 0 ? 'لم تختر أي مادة بعد.' : html;
+
+            if (total === 0) {
+                summaryContent.textContent = 'لم تختر أي مادة بعد.';
+            } else {
+                summaryContent.innerHTML = html;
+            }
         }
 
-        async function saveSelection() {
+        // =========================================
+        // الحفظ والانتقال للصفحة الثانية
+        // =========================================
+        function saveSelection() {
             let total = 0;
-            for (const stageId in selections) { total += selections[stageId].subjects.length; }
-            if (total === 0) { alert('⚠️ من فضلك اختر مادة واحدة على الأقل.'); return; }
+            for (const stageId in selections) {
+                total += selections[stageId].subjects.length;
+            }
+
+            if (total === 0) {
+                alert('⚠️ من فضلك اختر مادة واحدة على الأقل قبل الانتقال للخطوة التالية.');
+                return;
+            }
+
+            // نبني البيانات النهائية - بس الصفوف اللي فيها مواد
             const finalData = {};
             for (const stageId in selections) {
                 const { grade, subjects } = selections[stageId];
-                if (subjects.length > 0) finalData[stageId] = { grade, subjects };
-            }
-            localStorage.setItem('teacherSelections', JSON.stringify(finalData));
-            
-            try {
-                // حفظ نسخة سحابية
-                await db.collection('teacher_drafts').add({
-                    selections: finalData,
-                    savedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch (e) {
-                console.warn('تعذر الحفظ السحابي المؤقت:', e);
+                if (subjects.length > 0) {
+                    finalData[stageId] = { grade, subjects };
+                }
             }
 
+            // 1. حفظ البيانات في المتصفح لتقرأها الصفحة الثانية (mester2.html)
+            localStorage.setItem('teacherSelections', JSON.stringify(finalData));
+
+            // 2. حفظ نسخة احتياطية للحفظ التلقائي
+            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+
+            // 3. الانتقال فوراً للصفحة الجديدة
             window.location.href = "mester2.html";
         }
 
-        window.addEventListener('DOMContentLoaded', function() { restoreMester1(); });
+        // =========================================
+        // ✅✅✅ تشغيل عند تحميل الصفحة ✅✅✅
+        // =========================================
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 mester1 تحميل');
+
+            // ✅ استرجاع الاختيارات المحفوظة
+            const restored = restoreMester1();
+            if (restored) {
+                console.log('✅ تم استرجاع اختيارات mester1');
+            }
+
+            // ✅ الحفظ عند مغادرة الصفحة
+            window.addEventListener('beforeunload', function() {
+                try {
+                    const finalData = {};
+                    for (const stageId in selections) {
+                        const { grade, subjects } = selections[stageId];
+                        if (subjects.length > 0) {
+                            finalData[stageId] = { grade, subjects };
+                        }
+                    }
+                    localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                } catch(e) {}
+            });
+
+            // ✅ استرجاع عند الرجوع (BFCache)
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    console.log('🔄 الرجوع من cache');
+                    restoreMester1();
+                }
+            });
+        });
     </script>
+
 </body>
 </html>
