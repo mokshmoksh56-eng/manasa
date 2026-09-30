@@ -978,28 +978,55 @@
   }
 
   function addAppointment() {
+    const groupName = document.getElementById('group-name').value.trim();
+    const teacherName = document.getElementById('teacher-name').value.trim();
+    const studentsCount = document.getElementById('students-count').value;
+    
     const start = document.getElementById('startTime').value;
     const end = document.getElementById('endTime').value;
     const isRecurring = document.getElementById('repeatWeekly').checked;
 
-    if (!selectedDateKey) {
-        showAddError('يرجى تحديد يوم من التقويم أولاً في الخطوة رقم 8');
+    // ✅ التأكد من تعبئة كافة الحقول في الخطوات السابقة
+    if (!groupName) {
+        showAddError('يرجى تعبئة "اسم المجموعة" في الخطوة رقم 1');
+        document.getElementById('group-name').focus();
+        return;
+    }
+    if (!teacherName) {
+        showAddError('يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2');
+        document.getElementById('teacher-name').focus();
+        return;
+    }
+    if (!studentsCount || studentsCount < 1) {
+        showAddError('يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم 3');
+        document.getElementById('students-count').focus();
         return;
     }
 
-    if (!start || !end) { showAddError('يجب اختيار وقت البداية والنهاية'); return; }
-    if (start >= end) { showAddError('وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
+    if (!start || !end) { 
+        showAddError('يجب اختيار وقت البداية والنهاية في الخطوة رقم 7'); 
+        return; 
+    }
+    if (start >= end) { 
+        showAddError('وقت النهاية يجب أن يكون بعد وقت البداية في الخطوة رقم 7'); 
+        return; 
+    }
+
+    if (!selectedDateKey) {
+        showAddError('يرجى تحديد يوم من التقويم في الخطوة رقم 8');
+        return;
+    }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
     const conflict = existing.find(appt => start < appt.end && end > appt.start);
 
-    if (conflict) { showAddError(`تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+    if (conflict) { 
+        showAddError(`يوجد تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); 
+        return; 
+    }
 
-    const groupName = document.getElementById('group-name').value.trim() || 'مجموعة دراسية';
-    const teacherName = document.getElementById('teacher-name').value.trim() || 'المعلم';
-    const studentsCount = document.getElementById('students-count').value || 20;
     const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
     const location = document.querySelector('input[name="location"]:checked').value;
     const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
@@ -1027,6 +1054,8 @@
     }
 
     saveAllAppts();
+    
+    // تصفير فقط حقول الوقت لإتاحة إضافة مواعيد أخرى لنفس المجموعة بسهولة
     document.getElementById('startTime').value = ''; 
     document.getElementById('endTime').value = '';
     document.getElementById('durationInfo').classList.remove('show'); 
@@ -1042,8 +1071,14 @@
     }, 150);
   }
 
-  function showAddError(msg) { const el = document.getElementById('addErrorMsg'); el.textContent = msg; el.classList.add('show'); }
-  function hideAddError() { document.getElementById('addErrorMsg').classList.remove('show'); }
+  function showAddError(msg) { 
+      const el = document.getElementById('addErrorMsg'); 
+      el.innerHTML = `⚠️ ${msg}`; 
+      el.classList.add('show'); 
+  }
+  function hideAddError() { 
+      document.getElementById('addErrorMsg').classList.remove('show'); 
+  }
 
   // ==========================================
   // 💾 المزامنة والنشر
@@ -1071,9 +1106,9 @@
 
   window.publishSingleApptOnline = function(appt) {
       const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
-      const groupName = appt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة التفوق';
-      const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم';
-      const studentsCount = appt.studentsCount || document.getElementById('students-count').value || 20;
+      const groupName = appt.groupName || document.getElementById('group-name').value.trim();
+      const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
+      const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
       const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
       const location = appt.location || document.querySelector('input[name="location"]:checked').value;
       const gpsLocation = document.getElementById('gps-coords').value;
