@@ -7,7 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<!-- ❌ تم حذف روابط الـ Compat القديمة -->
+<!-- ✅ استدعاء مكتبات Firebase بطريقة تدعم جميع الهواتف المحلية -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 
 <style>
     /* ========================================== */
@@ -269,7 +272,7 @@
                         <span class="cell-title">👫 الفئات المسموحة</span>
                         <div class="cards-grid">
                             <div class="radio-card"><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
-                            <div class="radio-card"><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍‍🎓</i> أولاد</label></div>
+                            <div class="radio-card"><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
                             <div class="radio-card"><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
                         </div>
                     </td>
@@ -421,15 +424,14 @@
 <!-- ⚙️ السكريبت الأساسي والتقويم -->
 <!-- ========================================== -->
 <script>
-  window.monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-  window.dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
   function getDisplayIndex(jsDay) { return (jsDay + 1) % 7; }
 
   let currentDate = new Date();
-  window.selectedDateKey = null;
+  let selectedDateKey = null;
   let editingAppt = null;
-  let isAnimating = false;
 
   let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
   let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
@@ -495,16 +497,15 @@
     localStorage.setItem('recurringAppointments', JSON.stringify(recurringAppointments));
   }
 
-  window.removeLocalAppt = function(appt) {
-    if(!window.selectedDateKey) return;
-    const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+  function removeLocalAppt(appt) {
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     if (appt.type === 'recurring') {
         const list = recurringAppointments[dayOfWeek] || [];
         const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
         if (idx > -1) list.splice(idx, 1);
     } else {
-        const list = appointments[window.selectedDateKey] || [];
+        const list = appointments[selectedDateKey] || [];
         const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
         if (idx > -1) list.splice(idx, 1);
     }
@@ -526,9 +527,11 @@
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
 
     const map = new Map();
+    // نضع الأونلاين أولاً
     [...normalOnline, ...recurringOnline].forEach(item => {
         map.set(item.firebaseId, item);
     });
+    // نضع المحلي فقط إذا لم يكن متطابقاً مع الأونلاين (لتجنب التكرار)
     [...normalLocal, ...recurringLocal].forEach(item => {
         const alreadyOnline = Array.from(map.values()).some(onlineAppt => 
             onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
@@ -554,7 +557,7 @@
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
     document.getElementById('monthNumber').textContent = month + 1;
-    document.getElementById('monthName').textContent = window.monthNames[month];
+    document.getElementById('monthName').textContent = monthNames[month];
     document.getElementById('yearText').textContent = year;
     const count = getMonthAppointmentsCount(year, month);
     document.getElementById('monthApptCount').textContent = count;
@@ -562,7 +565,7 @@
     if (count === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
   }
 
-  window.renderCalendar = function() {
+  function renderCalendar() {
     updateTitle();
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -616,7 +619,7 @@
         dayEl.appendChild(badge);
       }
 
-      if (window.selectedDateKey === key) dayEl.classList.add('selected-cell');
+      if (selectedDateKey === key) dayEl.classList.add('selected-cell');
 
       dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
       daysContainer.appendChild(dayEl);
@@ -636,7 +639,7 @@
     setTimeout(() => {
       currentDate.setDate(1);
       currentDate.setMonth(currentDate.getMonth() + direction);
-      window.renderCalendar();
+      renderCalendar();
       titleTrack.classList.remove(outClass); weekTrack.classList.remove(outClass);
       titleTrack.classList.add(inClass); weekTrack.classList.add(inClass);
       setTimeout(() => {
@@ -688,27 +691,26 @@
   }
 
   function selectDay(year, month, day) {
-    window.selectedDateKey = dateKey(year, month, day);
-    cancelEdit(); window.renderCalendar(); window.showPanel(year, month, day);
+    selectedDateKey = dateKey(year, month, day);
+    cancelEdit(); renderCalendar(); showPanel(year, month, day);
     if (window.innerWidth <= 800) {
       setTimeout(() => { document.getElementById('panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
     }
   }
 
-  window.showPanel = function(year, month, day) {
+  function showPanel(year, month, day) {
     const dayOfWeek = new Date(year, month, day).getDay();
-    document.getElementById('panelTitle').textContent = `مواعيد ${window.dayNames[dayOfWeek]} ${day} ${window.monthNames[month]} ${year}`;
+    document.getElementById('panelTitle').textContent = `مواعيد ${dayNames[dayOfWeek]} ${day} ${monthNames[month]} ${year}`;
     document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
     document.getElementById('durationInfo').classList.remove('show');
     document.getElementById('repeatWeekly').checked = false;
-    document.getElementById('repeatDayName').textContent = window.dayNames[dayOfWeek];
-    hideAddError(); hideError(); window.renderAppointments();
+    document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
+    hideAddError(); hideError(); renderAppointments();
   }
 
-  window.renderAppointments = function() {
+  function renderAppointments() {
     const list = document.getElementById('appointmentsList'); list.innerHTML = '';
-    if(!window.selectedDateKey) return;
-    const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayAppts = getDayAppointments(y, m - 1, d);
 
     if (dayAppts.length === 0) {
@@ -731,12 +733,12 @@
 
       el.innerHTML = `
         <div class="info">
-          <div class="time">🕐 ${window.formatTime(appt.start)} - ${window.formatTime(appt.end)}</div>
+          <div class="time">🕐 ${formatTime(appt.start)} - ${formatTime(appt.end)}</div>
           <div style="display:flex; gap:5px; margin-top:4px;">${recurringTag}${onlineTag}</div>
         </div>
         <div class="appt-actions">
           <div class="appt-actions-group">
-            <button class="btn-action btn-edit" title="تعديل الموعد">✏️️ تعديل</button>
+            <button class="btn-action btn-edit" title="تعديل الموعد">✏️ تعديل</button>
             <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️ إلغاء</button>
           </div>
           ${publishBtnHtml}
@@ -753,7 +755,7 @@
     });
   }
 
-  window.formatTime = function(value) {
+  function formatTime(value) {
     if(!value) return '';
     const [h, m] = value.split(':').map(Number);
     const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
@@ -771,14 +773,14 @@
     const addContent = document.getElementById('addDropdownContent');
     if(addContent.classList.contains('open')) toggleAddDropdown();
     
-    hideError(); window.renderAppointments();
+    hideError(); renderAppointments();
     document.getElementById('editForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function cancelEdit() {
     editingAppt = null; document.getElementById('editForm').classList.remove('show');
     document.getElementById('editStart').value = ''; document.getElementById('editEnd').value = '';
-    hideError(); if (window.selectedDateKey) window.renderAppointments();
+    hideError(); if (selectedDateKey) renderAppointments();
   }
 
   function saveEdit() {
@@ -787,10 +789,10 @@
     const newEnd = document.getElementById('editEnd').value;
     const isRecurring = document.getElementById('editRepeatWeekly').checked;
 
-    if (!newStart || !newEnd) { showError('⚠ يجب اختيار وقت البداية والنهاية'); return; }
+    if (!newStart || !newEnd) { showError('⚠️️ يجب اختيار وقت البداية والنهاية'); return; }
     if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
-    const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
     
@@ -799,20 +801,20 @@
       return newStart < appt.end && newEnd > appt.start;
     });
 
-    if (conflict) { showError(`❌ تعارض مع موعد من ${window.formatTime(conflict.start)} إلى ${window.formatTime(conflict.end)}`); return; }
+    if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
     // تعديل أونلاين إذا كان الموعد منشور
     if (editingAppt.isOnline && editingAppt.firebaseId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.firebaseId, newStart, newEnd, isRecurring);
     } else {
         // تعديل محلي
-        window.removeLocalAppt(editingAppt);
+        removeLocalAppt(editingAppt);
         if (isRecurring) {
           if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
           recurringAppointments[dayOfWeek].push({ start: newStart, end: newEnd });
         } else {
-          if (!appointments[window.selectedDateKey]) appointments[window.selectedDateKey] = [];
-          appointments[window.selectedDateKey].push({ start: newStart, end: newEnd });
+          if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
+          appointments[selectedDateKey].push({ start: newStart, end: newEnd });
         }
         saveAllAppts(); 
     }
@@ -820,8 +822,8 @@
     editingAppt = null; 
     document.getElementById('editForm').classList.remove('show');
     hideError(); 
-    window.renderAppointments(); 
-    window.renderCalendar();
+    renderAppointments(); 
+    renderCalendar();
   }
 
   function addAppointment() {
@@ -832,25 +834,25 @@
     if (!start || !end) { showAddError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
     if (start >= end) { showAddError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
-    const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
     const conflict = existing.find(appt => start < appt.end && end > appt.start);
 
-    if (conflict) { showAddError(`❌ تعارض مع موعد مسجل من ${window.formatTime(conflict.start)} إلى ${window.formatTime(conflict.end)}`); return; }
+    if (conflict) { showAddError(`❌ تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
     if (isRecurring) {
       if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
       recurringAppointments[dayOfWeek].push({ start, end });
     } else {
-      if (!appointments[window.selectedDateKey]) appointments[window.selectedDateKey] = [];
-      appointments[window.selectedDateKey].push({ start, end });
+      if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
+      appointments[selectedDateKey].push({ start, end });
     }
 
     saveAllAppts();
     document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
     document.getElementById('durationInfo').classList.remove('show'); document.getElementById('repeatWeekly').checked = false;
-    hideAddError(); toggleAddDropdown(); window.renderAppointments(); window.renderCalendar();
+    hideAddError(); toggleAddDropdown(); renderAppointments(); renderCalendar();
   }
 
   function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
@@ -859,63 +861,43 @@
   function hideAddError() { document.getElementById('addErrorMsg').classList.remove('show'); }
 
   populateTimeSelects();
+  renderCalendar();
+  setupSwipeCal();
   
   const initDate = new Date();
   selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
-  setupSwipeCal();
-
-  function getLocation(e) {
-      e.preventDefault();
-      const btn = e.target;
-      const textDisplay = document.getElementById('location-text');
-      const hiddenInput = document.getElementById('gps-coords');
-      btn.innerHTML = '⏳ جاري...';
-      if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-              position => {
-                  hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                  btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
-                  textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-              },
-              error => {
-                  btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
-                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
-              }
-          );
-      }
-  }
-
-  function closePublishModal(e, force = false) {
-      if (force || e.target.id === 'publishModalOverlay') {
-          document.getElementById('publishModalOverlay').classList.remove('active');
-      }
-  }
-  
-  // تصدير الدوال للاستخدام المباشر في الـ HTML
-  window.getLocation = getLocation;
-  window.closePublishModal = closePublishModal;
-  window.addAppointment = addAppointment;
-  window.saveEdit = saveEdit;
-  window.cancelEdit = cancelEdit;
-  window.updateDuration = updateDuration;
-  window.toggleAddDropdown = toggleAddDropdown;
 </script>
 
 <!-- ========================================== -->
-<!-- 🔥 سكربت Firebase الموديولار (v12.19.0) -->
+<!-- 🔥 سكربت Firebase Compat للموبايل والأونلاين -->
 <!-- ========================================== -->
-<script type="module">
-    import { db, auth, waitForAuth, signInAnonymously, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from './firebase-config.js';
+<script>
+    // ✅ إعدادات مشروعك الحقيقية
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
+      authDomain: "tagroba-fbe9b.firebaseapp.com",
+      databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
+      projectId: "tagroba-fbe9b",
+      storageBucket: "tagroba-fbe9b.firebasestorage.app",
+      messagingSenderId: "238106301728",
+      appId: "1:238106301728:web:549602e55f7fe8a7b0b345",
+      measurementId: "G-CRVE7VMZMS"
+    };
+
+    // تهيئة Firebase بالطريقة الكلاسيكية لتعمل على الهواتف مباشرة
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
     // التحقق من المصادقة وتفعيل الدخول المجهول (Anonymous)
-    async function ensureAuth() {
+    function waitForAuth() {
         return new Promise((resolve, reject) => {
             const unsubscribe = auth.onAuthStateChanged((user) => {
                 if (user) {
                     unsubscribe();
                     resolve(user);
                 } else {
-                    signInAnonymously(auth)
+                    auth.signInAnonymously()
                         .then((cred) => {
                             unsubscribe();
                             resolve(cred.user);
@@ -930,12 +912,12 @@
         });
     }
 
-    // 1. الاستماع الحي للمواعيد من السيرفر
+    // 1. الاستماع الحي للمواعيد من السيرفر وعرضها على كل التليفونات في نفس اللحظة
     async function listenToOnlineSlots() {
         try {
-            await ensureAuth();
+            await waitForAuth();
             
-            onSnapshot(collection(db, 'published_slots'), (snapshot) => {
+            db.collection('published_slots').onSnapshot((snapshot) => {
                 window.onlineAppointments = {};
                 window.onlineRecurring = {};
 
@@ -953,10 +935,10 @@
                     }
                 });
 
-                if(window.renderCalendar) window.renderCalendar();
-                if (window.selectedDateKey && window.showPanel) {
-                    const [y, m, d] = window.selectedDateKey.split('-').map(Number);
-                    window.showPanel(y, m - 1, d);
+                renderCalendar();
+                if (selectedDateKey) {
+                    const [y, m, d] = selectedDateKey.split('-').map(Number);
+                    showPanel(y, m - 1, d);
                 }
                 console.log("📡 تم تحديث المواعيد أونلاين.");
             }, (error) => {
@@ -967,7 +949,7 @@
         }
     }
 
-    // 2. نشر الموعد
+    // 2. نشر الموعد (إرسال للسيرفر وحذفه محلياً ليعتمد على السيرفر)
     window.publishSingleApptOnline = async function(appt) {
         const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
@@ -984,28 +966,28 @@
         loadingOverlay.classList.add('show');
 
         try {
-            await ensureAuth();
-            const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+            await waitForAuth();
+            const [y, m, d] = selectedDateKey.split('-').map(Number);
             const dayOfWeek = new Date(y, m - 1, d).getDay();
 
             const docPayload = {
                 subjectData, groupName, teacherName, studentsCount: parseInt(studentsCount),
                 genderAllowed, location, gpsLocation: gpsLocation || '',
-                appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: window.dayNames[dayOfWeek], date: window.selectedDateKey },
+                appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: selectedDateKey },
                 status: 'published',
-                publishedAt: serverTimestamp()
+                publishedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            const docRef = await addDoc(collection(db, 'published_slots'), docPayload);
+            const docRef = await db.collection('published_slots').add(docPayload);
             
-            // إزالة الموعد المحلي
-            if(window.removeLocalAppt) window.removeLocalAppt(appt);
+            // إزالة الموعد المحلي لأنه أصبح أونلاين الآن
+            removeLocalAppt(appt);
             
             loadingOverlay.classList.remove('show');
 
             let apptDetailsHtml = appt.type === 'recurring'
-                ? `<strong>🔁 تكرار أسبوعي كل يوم ${window.dayNames[dayOfWeek]}:</strong><br>▪ من ${window.formatTime(appt.start)} إلى ${window.formatTime(appt.end)}`
-                : `<strong>📅 يوم ${window.selectedDateKey}:</strong><br>▪ من ${window.formatTime(appt.start)} إلى ${window.formatTime(appt.end)}`;
+                ? `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
+                : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
 
             document.getElementById('publishModalContent').innerHTML = `
                 <div class="publish-data-item">
@@ -1038,16 +1020,16 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.classList.add('show');
         try {
-            const [y, m, d] = window.selectedDateKey.split('-').map(Number);
+            const [y, m, d] = selectedDateKey.split('-').map(Number);
             const dayOfWeek = new Date(y, m - 1, d).getDay();
-            await updateDoc(doc(db, 'published_slots', firebaseId), {
+            await db.collection('published_slots').doc(firebaseId).update({
                 "appointment.start": newStart,
                 "appointment.end": newEnd,
                 "appointment.type": isRecurring ? 'recurring' : 'normal',
                 "appointment.dayOfWeek": dayOfWeek,
-                "appointment.dayName": window.dayNames[dayOfWeek],
-                "appointment.date": window.selectedDateKey,
-                updatedAt: serverTimestamp()
+                "appointment.dayName": dayNames[dayOfWeek],
+                "appointment.date": selectedDateKey,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         } catch(e) {
             alert('❌ خطأ في تحديث السيرفر: ' + e.message);
@@ -1056,7 +1038,7 @@
         }
     }
 
-    // 4. الحذف الإجباري من السيرفر
+    // 4. الحذف الإجباري من السيرفر لجميع الأجهزة
     window.deleteAppointmentOnline = async function(appt) {
         if (!confirm(appt.firebaseId ? '⚠️ تحذير: سيتم حذف هذا الموعد نهائياً من السيرفر ومن جميع الأجهزة. هل أنت متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
 
@@ -1064,21 +1046,51 @@
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.add('show');
             try {
-                await deleteDoc(doc(db, 'published_slots', appt.firebaseId));
+                await db.collection('published_slots').doc(appt.firebaseId).delete();
+                // السيرفر سيتولى عملية مسحه من الواجهة تلقائياً بفضل onSnapshot
             } catch (err) {
                 alert('❌ تعذر الحذف من السيرفر: ' + err.message);
             } finally {
                 loadingOverlay.classList.remove('show');
             }
         } else {
-            if(window.removeLocalAppt) window.removeLocalAppt(appt);
-            if(window.renderAppointments) window.renderAppointments();
-            if(window.renderCalendar) window.renderCalendar();
+            removeLocalAppt(appt);
+            renderAppointments();
+            renderCalendar();
         }
     }
 
+    function getLocation(e) {
+        e.preventDefault();
+        const btn = e.target;
+        const textDisplay = document.getElementById('location-text');
+        const hiddenInput = document.getElementById('gps-coords');
+        btn.innerHTML = '⏳ جاري...';
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
+                    btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
+                    textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+                },
+                error => {
+                    btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
+                    textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
+                }
+            );
+        }
+    }
+
+    function closePublishModal(e, force = false) {
+        if (force || e.target.id === 'publishModalOverlay') {
+            document.getElementById('publishModalOverlay').classList.remove('active');
+        }
+    }
+    window.getLocation = getLocation;
+    window.closePublishModal = closePublishModal;
+
     // استدعاء البيانات من الصفحة السابقة وبدء المزامنة
-    window.addEventListener('load', function() {
+    window.onload = function() {
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
         let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
@@ -1102,7 +1114,7 @@
 
         // تفعيل المزامنة المباشرة
         listenToOnlineSlots();
-    });
+    };
 </script>
 
 </body>
