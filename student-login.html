@@ -26,12 +26,12 @@
     }
 
     .login-header {
-        background-color: #e8f0fa; /* لون خلفية ناعم يملأ الفراغات إن وجدت */
+        background-color: #e8f0fa;
         background-image: url('teacher.png');
-        background-position: center top; /* محاذاة الصورة للأعلى لمنع قص الرأس */
-        background-size: contain; /* السر هنا: عرض الصورة بالكامل دون قص */
+        background-position: center top;
+        background-size: contain;
         background-repeat: no-repeat;
-        min-height: 270px; /* ارتفاع مناسب لعرض الصورة */
+        min-height: 270px;
         padding: 40px 25px 30px;
         display: flex;
         flex-direction: column;
@@ -41,7 +41,6 @@
         transition: background-image 0.4s ease-in-out;
     }
 
-    /* طبقة تظليل ذكية أسفل الصورة لتوضيح النصوص */
     .login-header::before {
         content: '';
         position: absolute;
@@ -377,10 +376,13 @@
                     
                     <div class="form-group">
                         <label class="form-label">🎂 العمر <span class="required">*</span></label>
-                        <input type="number" id="regAge" class="form-input" 
+                        <!-- تم التعديل هنا ليتم قبول الأرقام فقط بحد أقصى رقمين -->
+                        <input type="text" id="regAge" class="form-input" 
                                placeholder="مثال: 30" 
-                               min="18" max="100" 
-                               required>
+                               inputmode="numeric"
+                               required
+                               dir="ltr"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2)">
                     </div>
                 </div>
 
@@ -527,6 +529,16 @@
         const phone = document.getElementById('loginPhone').value.trim();
         const pin = document.getElementById('loginPin').value.trim();
 
+        // --- قواعد التحقق الجديدة في تسجيل الدخول ---
+        if (phone.length !== 11) {
+            showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
+            return;
+        }
+        if (pin.length !== 4) {
+            showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
+            return;
+        }
+
         const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
         const user = teachers[phone];
 
@@ -555,8 +567,24 @@
         const pin = document.getElementById('regPin').value.trim();
         const pinConfirm = document.getElementById('regPinConfirm').value.trim();
 
+        // --- قواعد التحقق الجديدة في الحساب الجديد ---
+        if (age.length !== 2) {
+            showError('عفواً، العمر يجب أن يتكون من رقمين فقط.');
+            return;
+        }
+
         if (name.length < 3) {
             showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
+            return;
+        }
+
+        if (phone.length !== 11) {
+            showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
+            return;
+        }
+
+        if (pin.length !== 4) {
+            showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
             return;
         }
 
