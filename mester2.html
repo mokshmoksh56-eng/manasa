@@ -68,7 +68,7 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* مؤشر التحميل */
+    /* شاشة التحميل */
     .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
     .loading-overlay.show { display: flex; }
     .loading-box { background: white; border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
@@ -232,7 +232,7 @@
     <div class="stepper">
         <div class="step">✓ 1. التخصص</div>
         <div class="step-divider">❯</div>
-        <div class="step active">✏️️ 2. بيانات المجموعة</div>
+        <div class="step active">✏️ 2. بيانات المجموعة</div>
     </div>
 </header>
 
@@ -419,7 +419,7 @@
 </div>
 
 <!-- ========================================== -->
-<!-- ⚙️ سكربت التقويم الأساسي -->
+<!-- ⚙️️ سكربت التقويم الأساسي -->
 <!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -644,7 +644,7 @@
         <div class="appt-actions">
           <div class="appt-actions-group">
             <button class="btn-action btn-edit" title="تعديل الموعد">✏️ تعديل</button>
-            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️ إلغاء</button>
+            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️️ إلغاء</button>
           </div>
           <button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر</button>
         </div>
@@ -786,7 +786,7 @@
         onSnapshot, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-    // ✅ بيانات مشروعك الفعلية المدمجة مباشرة
+    // ✅ بيانات مشروعك الفعلية المدمجة مباشرة من الصورة
     const firebaseConfig = {
       apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
       authDomain: "tagroba-fbe9b.firebaseapp.com",
@@ -798,7 +798,7 @@
       measurementId: "G-CRVE7VMZMS"
     };
 
-    // تهيئة التطبيق
+    // تهيئة التطبيق وقاعدة البيانات
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
