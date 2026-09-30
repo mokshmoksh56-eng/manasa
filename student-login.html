@@ -4,306 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>دخول الطالب - منصة احجزلي</title>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-    body {
-        min-height: 100vh;
-        background: linear-gradient(180deg, #e8f5ec 0%, #d4ecdc 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .login-card {
-        background: white;
-        border-radius: 24px;
-        box-shadow: 0 20px 60px rgba(30, 126, 52, 0.15);
-        max-width: 440px;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    .login-header {
-        background: linear-gradient(180deg, rgba(46, 204, 113, 0.95) 0%, rgba(30, 126, 52, 0.98) 100%),
-                    url('teacher2.png') center/cover no-repeat;
-        padding: 30px 25px 35px;
-        text-align: center;
-        position: relative;
-        border-bottom: 4px solid #f1c40f;
-    }
-
-    .login-header::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
-    }
-
-    .login-icon {
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 15px;
-        font-size: 40px;
-        backdrop-filter: blur(5px);
-        animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
-    }
-
-    .login-header h1 {
-        font-size: 26px;
-        font-weight: 900;
-        color: #f1c40f;
-        margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    .login-header p {
-        font-size: 13px;
-        color: #e0f2e7;
-        font-weight: 600;
-    }
-
+    body { min-height: 100vh; background: linear-gradient(180deg, #e8f5ec 0%, #d4ecdc 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-card { background: white; border-radius: 24px; box-shadow: 0 20px 60px rgba(30, 126, 52, 0.15); max-width: 440px; width: 100%; overflow: hidden; }
+    .login-header { background: linear-gradient(180deg, rgba(46, 204, 113, 0.95) 0%, rgba(30, 126, 52, 0.98) 100%), url('teacher2.png') center/cover no-repeat; padding: 30px 25px 35px; text-align: center; position: relative; border-bottom: 4px solid #f1c40f; }
+    .login-header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%); }
+    .login-icon { width: 80px; height: 80px; background: rgba(255, 255, 255, 0.15); border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 40px; backdrop-filter: blur(5px); animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .login-header h1 { font-size: 26px; font-weight: 900; color: #f1c40f; margin-bottom: 5px; text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.3); }
+    .login-header p { font-size: 13px; color: #e0f2e7; font-weight: 600; }
     .login-body { padding: 30px 25px; }
-
-    .welcome-text {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        border: 2px dashed #86efac;
-        border-radius: 12px;
-        padding: 14px 16px;
-        margin-bottom: 22px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #166534;
-        text-align: center;
-        line-height: 1.6;
-    }
-
+    .welcome-text { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px dashed #86efac; border-radius: 12px; padding: 14px 16px; margin-bottom: 22px; font-size: 13px; font-weight: 700; color: #166534; text-align: center; line-height: 1.6; }
     .welcome-text .icon { font-size: 18px; margin-left: 5px; }
-
     .form-group { margin-bottom: 18px; }
-
-    .form-label {
-        display: block;
-        font-size: 13px;
-        font-weight: 900;
-        color: #166534;
-        margin-bottom: 8px;
-    }
-
+    .form-label { display: block; font-size: 13px; font-weight: 900; color: #166534; margin-bottom: 8px; }
     .form-label .required { color: #dc3545; }
-
-    .form-input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 2px solid #e0e4e8;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 700;
-        color: #166534;
-        background: #fff;
-        transition: all 0.2s ease;
-        font-family: inherit;
-    }
-
-    .form-input:focus {
-        border-color: #2ecc71;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15);
-    }
-
-    .form-input::placeholder {
-        color: #94a3b8;
-        font-weight: 500;
-    }
-
-    .form-input[dir="ltr"] {
-        text-align: left;
-    }
-
-    .pin-wrapper {
-        position: relative;
-    }
-
-    .pin-input {
-        letter-spacing: 12px;
-        font-size: 22px;
-        text-align: center;
-        font-weight: 900;
-        padding-left: 50px;
-        padding-right: 16px;
-    }
-
-    .pin-toggle {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: #f0fdf4;
-        border: none;
-        border-radius: 8px;
-        width: 36px;
-        height: 36px;
-        cursor: pointer;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.2s;
-    }
-
+    .form-input { width: 100%; padding: 14px 16px; border: 2px solid #e0e4e8; border-radius: 12px; font-size: 16px; font-weight: 700; color: #166534; background: #fff; transition: all 0.2s ease; font-family: inherit; }
+    .form-input:focus { border-color: #2ecc71; outline: none; box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15); }
+    .form-input::placeholder { color: #94a3b8; font-weight: 500; }
+    .form-input[dir="ltr"] { text-align: left; }
+    .pin-wrapper { position: relative; }
+    .pin-input { letter-spacing: 12px; font-size: 22px; text-align: center; font-weight: 900; padding-left: 50px; padding-right: 16px; }
+    .pin-toggle { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: #f0fdf4; border: none; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
     .pin-toggle:hover { background: #dcfce7; }
-
-    .submit-btn {
-        width: 100%;
-        padding: 16px;
-        background: linear-gradient(180deg, #2ecc71 0%, #1e7e34 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 17px;
-        font-weight: 900;
-        cursor: pointer;
-        box-shadow: 0 6px 0 #155724, 0 8px 15px rgba(0, 0, 0, 0.15);
-        transition: 0.2s;
-        margin-top: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .submit-btn:active {
-        transform: translateY(6px);
-        box-shadow: 0 0 0 #155724;
-    }
-
-    .submit-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .error-msg {
-        background: #fef2f2;
-        border: 2px solid #fecaca;
-        color: #991b1b;
-        padding: 12px 15px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 15px;
-        display: none;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .error-msg.show { display: flex; }
-
-    .success-msg {
-        background: #f0fdf4;
-        border: 2px solid #bbf7d0;
-        color: #166534;
-        padding: 12px 15px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 15px;
-        display: none;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .success-msg.show { display: flex; }
-
-    .loading-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.6);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(3px);
-    }
-
+    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #2ecc71 0%, #1e7e34 100%); color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #155724, 0 8px 15px rgba(0, 0, 0, 0.15); transition: 0.2s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #155724; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .error-msg, .success-msg { padding: 12px 15px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-bottom: 15px; display: none; align-items: center; gap: 8px; }
+    .error-msg { background: #fef2f2; border: 2px solid #fecaca; color: #991b1b; }
+    .success-msg { background: #f0fdf4; border: 2px solid #bbf7d0; color: #166534; }
+    .error-msg.show, .success-msg.show { display: flex; }
+    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
     .loading-overlay.show { display: flex; }
-
-    .loading-box {
-        background: white;
-        border-radius: 16px;
-        padding: 30px 40px;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-
-    .loading-spinner {
-        width: 45px;
-        height: 45px;
-        border: 5px solid #e0e4e8;
-        border-top-color: #2ecc71;
-        border-radius: 50%;
-        margin: 0 auto 15px;
-        animation: spin 1s linear infinite;
-    }
-
+    .loading-box { background: white; border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .loading-spinner { width: 45px; height: 45px; border: 5px solid #e0e4e8; border-top-color: #2ecc71; border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-text {
-        color: #166534;
-        font-weight: 900;
-        font-size: 14px;
-    }
-
-    .back-home {
-        display: block;
-        text-align: center;
-        margin: 0 25px 25px;
-        color: #64748b;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
+    .loading-text { color: #166534; font-weight: 900; font-size: 14px; }
+    .back-home { display: block; text-align: center; margin: 0 25px 25px; color: #64748b; text-decoration: none; font-size: 13px; font-weight: 700; }
     .back-home:hover { color: #2ecc71; }
-
-    .info-box {
-        background: #fffbeb;
-        border: 2px solid #fde68a;
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-top: 16px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #92400e;
-        line-height: 1.7;
-        display: flex;
-        gap: 8px;
-        align-items: flex-start;
-    }
-
-    .info-box .icon { font-size: 16px; flex-shrink: 0; }
-
-    @media (max-width: 500px) {
-        .login-card { border-radius: 18px; }
-        .login-header { padding: 25px 20px 30px; }
-        .login-icon { width: 65px; height: 65px; font-size: 32px; }
-        .login-header h1 { font-size: 22px; }
-        .login-body { padding: 22px 20px; }
-    }
+    .info-box { background: #fffbeb; border: 2px solid #fde68a; border-radius: 10px; padding: 12px 14px; margin-top: 16px; font-size: 12px; font-weight: 700; color: #92400e; line-height: 1.7; display: flex; gap: 8px; align-items: flex-start; }
+    @media (max-width: 500px) { .login-card { border-radius: 18px; } .login-header { padding: 25px 20px 30px; } .login-icon { width: 65px; height: 65px; font-size: 32px; } .login-header h1 { font-size: 22px; } .login-body { padding: 22px 20px; } }
 </style>
 </head>
 <body>
@@ -314,298 +58,112 @@
         <h1>بوابة الطالب</h1>
         <p>منصة احجزلي - دخول الطلاب</p>
     </div>
-
     <div class="login-body">
-
-        <div class="welcome-text">
-            <span class="icon">👋</span>
-            أهلاً بك يا بطل! سجّل بياناتك عشان نعرضلك المجموعات اللي تناسبك.
-        </div>
-
-        <div class="error-msg" id="errorMsg">
-            <span>⚠️</span>
-            <span id="errorText"></span>
-        </div>
-        <div class="success-msg" id="successMsg">
-            <span>✅</span>
-            <span id="successText"></span>
-        </div>
+        <div class="welcome-text"><span class="icon">👋</span> أهلاً بك يا بطل! سجّل بياناتك عشان نعرضلك المجموعات اللي تناسبك.</div>
+        <div class="error-msg" id="errorMsg"><span>⚠️</span><span id="errorText"></span></div>
+        <div class="success-msg" id="successMsg"><span>✅</span><span id="successText"></span></div>
 
         <form onsubmit="handleStudentLogin(event)">
             <div class="form-group">
                 <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
-                <input type="tel" id="studentPhone" class="form-input" 
-                       placeholder="01xxxxxxxxx" 
-                       pattern="01[0125][0-9]{8}" 
-                       maxlength="11" 
-                       required 
-                       dir="ltr"
-                       autocomplete="tel"
-                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                <input type="tel" id="studentPhone" class="form-input" placeholder="01xxxxxxxxx" pattern="01[0125][0-9]{8}" maxlength="11" required dir="ltr" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
-
             <div class="form-group">
                 <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
                 <div class="pin-wrapper">
-                    <input type="password" id="studentPin" class="form-input pin-input" 
-                           placeholder="••••" 
-                           maxlength="4" 
-                           pattern="[0-9]{4}"
-                           inputmode="numeric"
-                           required
-                           dir="ltr"
-                           autocomplete="new-password"
-                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <input type="password" id="studentPin" class="form-input pin-input" placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                     <button type="button" class="pin-toggle" onclick="togglePin('studentPin', this)">👁️</button>
                 </div>
             </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span>🚀</span>
-                <span>دخول / إنشاء حساب</span>
-            </button>
+            <button type="submit" class="submit-btn" id="submitBtn"><span>🚀</span><span>دخول / إنشاء حساب</span></button>
         </form>
 
         <div class="info-box">
             <span class="icon">💡</span>
-            <div>
-                <strong>أول مرة تدخل؟</strong> هيتم إنشاء حسابك تلقائياً برقم التليفون والرقم السري.<br>
-                <strong>دخلت قبل كده؟</strong> دخل نفس الرقم والرقم السري.
-            </div>
+            <div><strong>أول مرة تدخل؟</strong> هيتم إنشاء حسابك تلقائياً برقم التليفون والرقم السري.<br><strong>دخلت قبل كده؟</strong> دخل نفس الرقم والرقم السري.</div>
         </div>
-
     </div>
-
     <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
 </div>
 
 <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-box">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">جاري التحقق...</div>
-    </div>
+    <div class="loading-box"><div class="loading-spinner"></div><div class="loading-text" id="loadingText">جاري التحقق...</div></div>
 </div>
 
-<script type="module">
-    import { 
-        auth, db, waitForAuth,
-        signInWithEmailAndPassword, createUserWithEmailAndPassword,
-        doc, getDoc, setDoc, serverTimestamp
-    } from './firebase-config.js';
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
+      authDomain: "tagroba-fbe9b.firebaseapp.com",
+      databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
+      projectId: "tagroba-fbe9b",
+      storageBucket: "tagroba-fbe9b.firebasestorage.app",
+      messagingSenderId: "238106301728",
+      appId: "1:238106301728:web:549602e55f7fe8a7b0b345",
+      measurementId: "G-CRVE7VMZMS"
+    };
 
-    // ==========================================
-    // 🔐 تحويل PIN (4 أرقام) → كلمة سر Firebase
-    // ملاحظة: Suffix مختلف عن المعلم عشان ما يحصلش تعارض
-    // ==========================================
-    const PIN_PREFIX = 'Agz@';
-    const PIN_SUFFIX = '#S26';
-    
-    function pinToPassword(pin) {
-        return `${PIN_PREFIX}${pin}${PIN_SUFFIX}`;
-    }
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // ==========================================
-    // 🎯 تحويل رقم التليفون لإيميل وهمي (طالب)
-    // ==========================================
-    function phoneToEmail(phone) {
-        return `${phone}@student.ahgazly.app`;
-    }
+    const PIN_PREFIX = 'Agz@'; const PIN_SUFFIX = '#S26';
+    function pinToPassword(pin) { return `${PIN_PREFIX}${pin}${PIN_SUFFIX}`; }
+    function phoneToEmail(phone) { return `${phone}@student.ahgazly.app`; }
 
-    // ==========================================
-    // 🎯 إظهار/إخفاء الرقم السري
-    // ==========================================
     function togglePin(inputId, btn) {
         const input = document.getElementById(inputId);
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            btn.textContent = '👁️';
-        }
+        if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; } 
+        else { input.type = 'password'; btn.textContent = '👁️'; }
     }
 
-    // ==========================================
-    // 🎯 الرسائل
-    // ==========================================
-    function showError(msg) {
-        document.getElementById('errorText').textContent = msg;
-        document.getElementById('errorMsg').classList.add('show');
-        document.getElementById('successMsg').classList.remove('show');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    function showError(msg) { document.getElementById('errorText').textContent = msg; document.getElementById('errorMsg').classList.add('show'); document.getElementById('successMsg').classList.remove('show'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function showSuccess(msg) { document.getElementById('successText').textContent = msg; document.getElementById('successMsg').classList.add('show'); document.getElementById('errorMsg').classList.remove('show'); }
+    function hideMessages() { document.getElementById('errorMsg').classList.remove('show'); document.getElementById('successMsg').classList.remove('show'); }
+    function showLoading(text = 'جاري التحقق...') { document.getElementById('loadingText').textContent = text; document.getElementById('loadingOverlay').classList.add('show'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 
-    function showSuccess(msg) {
-        document.getElementById('successText').textContent = msg;
-        document.getElementById('successMsg').classList.add('show');
-        document.getElementById('errorMsg').classList.remove('show');
-    }
-
-    function hideMessages() {
-        document.getElementById('errorMsg').classList.remove('show');
-        document.getElementById('successMsg').classList.remove('show');
-    }
-
-    // ==========================================
-    // 🎯 التحقق
-    // ==========================================
-    function validatePhone(phone) {
-        if (!/^01[0125][0-9]{8}$/.test(phone)) {
-            return 'رقم التليفون غير صحيح. يجب أن يبدأ بـ 010/011/012/015 ويكون 11 رقم.';
-        }
-        return null;
-    }
-
-    function validatePin(pin) {
-        if (!/^[0-9]{4}$/.test(pin)) {
-            return 'الرقم السري يجب أن يكون 4 أرقام.';
-        }
-        return null;
-    }
-
-    // ==========================================
-    // 🎯 شاشة التحميل
-    // ==========================================
-    function showLoading(text = 'جاري التحقق...') {
-        document.getElementById('loadingText').textContent = text;
-        document.getElementById('loadingOverlay').classList.add('show');
-    }
-
-    function hideLoading() {
-        document.getElementById('loadingOverlay').classList.remove('show');
-    }
-
-    // ==========================================
-    // 🚀 معالج الدخول / التسجيل
-    // ==========================================
     async function handleStudentLogin(e) {
-        e.preventDefault();
-        hideMessages();
-
+        e.preventDefault(); hideMessages();
         const phone = document.getElementById('studentPhone').value.trim();
         const pin = document.getElementById('studentPin').value.trim();
 
-        const phoneErr = validatePhone(phone);
-        if (phoneErr) { showError(phoneErr); return; }
-
-        const pinErr = validatePin(pin);
-        if (pinErr) { showError(pinErr); return; }
-
         const btn = document.getElementById('submitBtn');
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳</span><span>جاري التحقق...</span>';
+        const originalText = btn.innerHTML; btn.disabled = true;
         showLoading('جاري التحقق من بياناتك...');
 
         const email = phoneToEmail(phone);
         const password = pinToPassword(pin);
 
         try {
-            let userCredential;
-            let isNewUser = false;
-
+            let userCredential; let isNewUser = false;
             try {
-                // ✅ محاولة تسجيل دخول أولاً
-                userCredential = await signInWithEmailAndPassword(auth, email, password);
-                console.log('✅ تم تسجيل الدخول');
+                userCredential = await auth.signInWithEmailAndPassword(email, password);
             } catch (loginError) {
-                // ✅ لو الحساب غير موجود → إنشاء جديد
-                if (loginError.code === 'auth/user-not-found' || 
-                    loginError.code === 'auth/invalid-credential') {
-                    console.log('🆕 حساب جديد');
+                if (loginError.code === 'auth/user-not-found' || loginError.code === 'auth/invalid-credential') {
                     isNewUser = true;
-                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                } else {
-                    throw loginError;
-                }
+                    userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                } else { throw loginError; }
             }
 
-            const user = userCredential.user;
-
-            // ✅ جلب/إنشاء بيانات الطالب
-            const studentDocRef = doc(db, 'students', user.uid);
-            const studentDoc = await getDoc(studentDocRef);
+            const studentDocRef = db.collection('students').doc(userCredential.user.uid);
+            const studentDoc = await studentDocRef.get();
 
             let studentData;
-            if (studentDoc.exists()) {
+            if (studentDoc.exists) {
                 studentData = studentDoc.data();
-                console.log('📂 بيانات موجودة');
             } else {
-                studentData = {
-                    phone: phone,
-                    email: email,
-                    role: 'student',
-                    name: '',
-                    grade: '',
-                    stage: '',
-                    gender: 'boy',
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                };
-                await setDoc(studentDocRef, studentData);
-                console.log('✅ تم إنشاء البيانات');
+                studentData = { phone: phone, email: email, role: 'student', name: '', grade: '', stage: '', gender: 'boy', createdAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+                await studentDocRef.set(studentData);
             }
 
-            localStorage.setItem('current_student_profile', JSON.stringify({
-                id: user.uid,
-                phone: phone,
-                name: studentData.name || '',
-                grade: studentData.grade || '',
-                stage: studentData.stage || '',
-                gender: studentData.gender || 'boy'
-            }));
-
-            if (isNewUser) {
-                showSuccess('🎉 تم إنشاء حسابك بنجاح!');
-            } else {
-                showSuccess('✅ تم تسجيل الدخول بنجاح!');
-            }
-
-            setTimeout(() => {
-                window.location.href = 'talep.html';
-            }, 900);
-
+            localStorage.setItem('current_student_profile', JSON.stringify({ id: userCredential.user.uid, phone: phone, name: studentData.name || '', grade: studentData.grade || '', stage: studentData.stage || '', gender: studentData.gender || 'boy' }));
+            showSuccess(isNewUser ? '🎉 تم إنشاء حسابك بنجاح!' : '✅ تم تسجيل الدخول بنجاح!');
+            setTimeout(() => { window.location.href = 'talep.html'; }, 900);
         } catch (error) {
-            console.error('❌ فشل:', error);
-            hideLoading();
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-
-            let errorMsg = 'فشل تسجيل الدخول. ';
-            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                errorMsg = 'الرقم السري غير صحيح.';
-            } else if (error.code === 'auth/too-many-requests') {
-                errorMsg = 'محاولات كثيرة خاطئة. جرب بعد شوية.';
-            } else if (error.code === 'auth/network-request-failed') {
-                errorMsg = 'فشل الاتصال بالإنترنت.';
-            } else {
-                errorMsg += error.message;
-            }
-            showError(errorMsg);
+            hideLoading(); btn.disabled = false; btn.innerHTML = originalText;
+            showError('الرقم السري غير صحيح أو فشل الاتصال.');
         }
     }
-
-    // ==========================================
-    // 🎯 التصدير
-    // ==========================================
-    window.togglePin = togglePin;
-    window.handleStudentLogin = handleStudentLogin;
-
-    // ==========================================
-    // 🎯 فحص الجلسة
-    // ==========================================
-    window.addEventListener('DOMContentLoaded', async () => {
-        const user = await waitForAuth();
-        if (user) {
-            console.log('✅ مسجل دخول:', user.uid);
-            setTimeout(() => {
-                window.location.href = 'talep.html';
-            }, 500);
-        }
-    });
-
-    console.log('✅ student-login loaded');
 </script>
-
 </body>
 </html>
