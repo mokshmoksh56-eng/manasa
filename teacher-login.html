@@ -26,12 +26,30 @@
     }
 
     .login-header {
-        background: url('teacher.png') center/cover no-repeat;
-        padding: 30px 25px 35px;
+        background-color: #e8f0fa;
+        background-image: url('teacher.png');
+        background-position: center top;
+        background-size: contain;
+        background-repeat: no-repeat;
+        min-height: 270px;
+        padding: 40px 25px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
         text-align: center;
         position: relative;
-        border-bottom: 4px solid #f1c40f;
-        transition: background-image 0.4s ease-in-out; /* إضافة تأثير ناعم عند تبديل الصورة */
+        transition: background-image 0.4s ease-in-out;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(26, 60, 109, 0.85), transparent);
+        z-index: 1;
     }
 
     .login-header::after {
@@ -42,6 +60,7 @@
         right: 0;
         height: 4px;
         background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
+        z-index: 3;
     }
 
     .login-header h1 {
@@ -49,14 +68,18 @@
         font-weight: 900;
         color: #f1c40f;
         margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.8);
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     .login-header p {
         font-size: 13px;
         color: #ffffff;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     .tabs {
@@ -353,10 +376,13 @@
                     
                     <div class="form-group">
                         <label class="form-label">🎂 العمر <span class="required">*</span></label>
-                        <input type="number" id="regAge" class="form-input" 
+                        <!-- تم التعديل هنا ليتم قبول الأرقام فقط بحد أقصى رقمين -->
+                        <input type="text" id="regAge" class="form-input" 
                                placeholder="مثال: 30" 
-                               min="18" max="100" 
-                               required>
+                               inputmode="numeric"
+                               required
+                               dir="ltr"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2)">
                     </div>
                 </div>
 
@@ -429,7 +455,6 @@
 </div>
 
 <script>
-    // دالة لتحديث الصورة بناءً على اللقب
     function updateHeaderImage(title) {
         const header = document.getElementById('headerSection');
         if (title === 'مس') {
@@ -439,7 +464,6 @@
         }
     }
 
-    // دالة للتحقق من رقم الهاتف في شاشة الدخول وتغيير الصورة تلقائياً
     function checkLoginPhone(phone) {
         if (phone.length === 11) {
             const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
@@ -473,12 +497,10 @@
         if (tab === 'login') {
             document.getElementById('tabLogin').classList.add('active');
             document.getElementById('loginView').classList.add('active');
-            // التأكد من عرض الصورة الصحيحة عند العودة لشاشة الدخول
             checkLoginPhone(document.getElementById('loginPhone').value);
         } else {
             document.getElementById('tabRegister').classList.add('active');
             document.getElementById('registerView').classList.add('active');
-            // التأكد من عرض الصورة الصحيحة عند الانتقال لإنشاء حساب
             updateHeaderImage(document.getElementById('regTitle').value || 'مستر');
         }
     }
@@ -506,6 +528,16 @@
 
         const phone = document.getElementById('loginPhone').value.trim();
         const pin = document.getElementById('loginPin').value.trim();
+
+        // --- قواعد التحقق الجديدة في تسجيل الدخول ---
+        if (phone.length !== 11) {
+            showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
+            return;
+        }
+        if (pin.length !== 4) {
+            showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
+            return;
+        }
 
         const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
         const user = teachers[phone];
@@ -535,8 +567,24 @@
         const pin = document.getElementById('regPin').value.trim();
         const pinConfirm = document.getElementById('regPinConfirm').value.trim();
 
+        // --- قواعد التحقق الجديدة في الحساب الجديد ---
+        if (age.length !== 2) {
+            showError('عفواً، العمر يجب أن يتكون من رقمين فقط.');
+            return;
+        }
+
         if (name.length < 3) {
             showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
+            return;
+        }
+
+        if (phone.length !== 11) {
+            showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
+            return;
+        }
+
+        if (pin.length !== 4) {
+            showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
             return;
         }
 
