@@ -37,7 +37,7 @@
         }
 
         /* =========================================
-           الهيدر وخلفيته 
+           الهيدر وخلفيته
            ========================================= */
         .header-3d {
             width: 100%;
@@ -101,18 +101,18 @@
         }
 
         /* =========================================
-           الحاوية الرئيسية
+           الحاوية الرئيسية والعنوان البارز
            ========================================= */
         .container {
             width: 100%;
             max-width: 650px;
-            margin: -20px auto 0;
-            padding: 0 10px;
+            margin: 15px auto 0;
+            padding: 0 12px;
             position: relative;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .page-title {
@@ -120,7 +120,12 @@
             font-size: 16px;
             font-weight: 900;
             color: var(--dark-teal);
-            margin: 8px 0 2px;
+            background: var(--white);
+            border: 2px solid var(--primary-teal);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 0;
+            box-shadow: 0 3px 8px rgba(0, 150, 136, 0.15);
         }
 
         /* =========================================
@@ -760,7 +765,6 @@
 
             html += `
                     </div>
-                    <!-- زر حفظ صغير تحت المواد -->
                     <button class="btn-save-inline" onclick="confirmStageSelection('${stageId}')">
                         <span>💾</span>
                         <span>تم واعتمد المواد</span>
@@ -777,7 +781,6 @@
                 alert('⚠️ يرجى اختيار مادة واحدة على الأقل أولاً.');
                 return;
             }
-            // إغلاق قائمة المواد تلقائياً بعد الاعتماد
             const container = document.getElementById(`subjects-container-${stageId}`);
             if (container) {
                 const section = container.querySelector('.subjects-section');
