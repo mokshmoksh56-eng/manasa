@@ -8,9 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- 🗺️ مكتبات Mapbox -->
-<script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
-<link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+<!-- 🗺️ مكتبة Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&language=ar&region=EG&callback=initGoogleMap" async defer></script>
 
 <style>
     /* ========================================== */
@@ -75,7 +74,7 @@
     .cards-grid input[type="radio"]:checked + label::after { content: "✔"; position: absolute; top: -6px; left: -6px; width: 18px; height: 18px; background: #1d4ed8; color: #fff; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(29,78,216,0.4); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    /* 🗺️ خريطة Mapbox */
+    /* 🗺️ خريطة Google Maps */
     #map-container { width: 100%; height: 280px; border-radius: 10px; overflow: hidden; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; margin-bottom: 8px; }
     #map { width: 100%; height: 100%; }
 
@@ -208,10 +207,8 @@
 </header>
 
 <div class="main-container">
-    <!-- كارت إعداد المجموعة والمواعيد (تسلسل منطقي بالترتيب 1 إلى 8) -->
     <div class="booking-card">
         
-        <!-- عنوان توضيحي للمادة (غير مرقم) -->
         <div class="form-group" style="margin-bottom: 25px;">
           <label style="color: #64748b; font-size: 13px; justify-content: center;">المادة والصف المحددان مسبقاً</label>
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
@@ -245,7 +242,7 @@
           </div>
         </div>
 
-        <!-- Row 3: المكان & الموقع (Mapbox) -->
+        <!-- Row 3: المكان & الموقع (Google Maps) -->
         <div class="form-grid-row">
           <div class="form-group full-width">
             <label><span class="step-num">5</span> مكان الدرس</label>
@@ -258,13 +255,12 @@
           
           <div class="form-group full-width">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <!-- 🗺️️ خريطة Mapbox هنا -->
+            <!-- 🗺️ خريطة Google Maps هنا -->
             <div id="map-container">
               <div id="map"></div>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px;">
-                <!-- زر الـ GPS المخصص مع العداد التنازلي -->
                 <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد موقعي بدقة الآن</button>
                 <input type="hidden" id="gps-coords" value="">
             </div>
@@ -294,14 +290,13 @@
           <label for="repeatWeekly">تكرار أسبوعي كل <span id="repeatDayName">...</span></label>
         </div>
 
-        <!-- Section 8: جدول التقويم (مباشرة تحت توقيت الحصة) -->
+        <!-- Section 8: جدول التقويم -->
         <div class="calendar-container-block">
             <div class="selected-day-banner">
               <span class="title"><span class="step-num-lg">8</span> تحديد اليوم من التقويم</span>
               <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
             </div>
 
-            <!-- رأس التقويم -->
             <div class="calendar-header">
               <div class="title-track" id="titleTrack">
                 <span class="month-number" id="monthNumber">1</span>
@@ -313,7 +308,6 @@
               </div>
             </div>
 
-            <!-- شبكة الأيام -->
             <div class="week-wrapper">
               <div class="week-track" id="weekTrack">
                 <div class="weekdays">
@@ -334,7 +328,6 @@
             <div class="swipe-hint">اسحب يميناً أو يساراً لتغيير الشهر</div>
         </div>
 
-        <!-- زر الحفظ وإنشاء الكارت -->
         <button class="btn-add" onclick="addAppointment()">حفظ الموعد وإنشاء الكارت</button>
         <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
     </div>
@@ -397,56 +390,50 @@
 
 <script>
   // ==========================================
-  // 🗺️ تهيئة خريطة Mapbox
+  // 🗺️ تهيئة خريطة Google Maps
   // ==========================================
-  mapboxgl.accessToken = 'pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
-  mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
+  let gMap = null;
+  let gMarker = null;
 
-  const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [30.8025, 26.8206], // 📍 مركز مصر المبدئي
-      zoom: 5.5 // زووم بعيد لعرض مصر
-  });
+  function initGoogleMap() {
+      // 📍 البداية من مركز مصر
+      const initialPos = { lat: 26.8206, lng: 30.8025 };
 
-  map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+      gMap = new google.maps.Map(document.getElementById('map'), {
+          center: initialPos,
+          zoom: 6,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true
+      });
 
-  const geolocate = new mapboxgl.GeolocateControl({
-      positionOptions: { enableHighAccuracy: true },
-      trackUserLocation: true,
-      showUserHeading: true
-  });
-  map.addControl(geolocate, 'top-right');
+      gMarker = new google.maps.Marker({
+          position: initialPos,
+          map: gMap,
+          draggable: true,
+          title: "موقع الدرس"
+      });
 
-  // يتم وضع الدبوس مبدئياً في مركز مصر
-  const marker = new mapboxgl.Marker({ draggable: true })
-      .setLngLat([30.8025, 26.8206])
-      .addTo(map);
+      // النقر على الخريطة لتغيير مكان الدبوس
+      gMap.addListener('click', (e) => {
+          const latLng = e.latLng;
+          gMarker.setPosition(latLng);
+          updateGoogleLocationInput(latLng.lat(), latLng.lng());
+      });
 
-  function updateLocationInput() {
-      const lngLat = marker.getLngLat();
-      document.getElementById('gps-coords').value = `${lngLat.lat.toFixed(6)},${lngLat.lng.toFixed(6)}`;
-      
-      const txt = document.getElementById('location-text');
-      txt.textContent = `موقعك الحالي: ${lngLat.lat.toFixed(5)}, ${lngLat.lng.toFixed(5)}`;
-      txt.style.color = '#15803d';
+      // سحب الدبوس
+      gMarker.addListener('dragend', () => {
+          const pos = gMarker.getPosition();
+          updateGoogleLocationInput(pos.lat(), pos.lng());
+      });
   }
 
-  marker.on('dragend', updateLocationInput);
-
-  map.on('click', (e) => {
-      marker.setLngLat(e.lngLat);
-      updateLocationInput();
-  });
-
-  geolocate.on('geolocate', function(e) {
-      marker.setLngLat([e.coords.longitude, e.coords.latitude]);
-      updateLocationInput();
-  });
-
-  map.on('load', () => {
-      map.resize();
-  });
+  function updateGoogleLocationInput(lat, lng) {
+      document.getElementById('gps-coords').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+      const txt = document.getElementById('location-text');
+      txt.textContent = `موقعك الفعلي: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      txt.style.color = '#15803d';
+  }
 
   // ==========================================
   // ⏱ دالة جلب الموقع بدقة متناهية مع العداد التنازلي
@@ -478,6 +465,7 @@
                       clearInterval(countdownInterval);
                       const lat = position.coords.latitude;
                       const lng = position.coords.longitude;
+                      const newLatLng = new google.maps.LatLng(lat, lng);
                       
                       hiddenInput.value = `${lat},${lng}`;
                       btn.innerHTML = '✅ تم التحديد بدقة عالية'; 
@@ -487,9 +475,12 @@
                       textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                       textDisplay.style.color = '#15803d';
 
-                      // 📍 تحريك الخريطة فوراً למكان المستر الفعلي
-                      marker.setLngLat([lng, lat]);
-                      map.flyTo({ center: [lng, lat], zoom: 16.5, essential: true });
+                      // تحريك الخريطة وعمل Zoom عالي
+                      if (gMap && gMarker) {
+                          gMarker.setPosition(newLatLng);
+                          gMap.setCenter(newLatLng);
+                          gMap.setZoom(17);
+                      }
                   }, Math.max(0, (counter + 1) * 1000));
               },
               error => {
@@ -777,10 +768,10 @@
                 const dayWk = new Date(y, m - 1, d).getDay();
                 allItems.push({
                     id: `local_norm_${dKey}_${localAppt.start}`,
-                    groupName: localAppt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة دراسية',
-                    teacherName: localAppt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localAppt.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
+                    groupName: localAppt.groupName || 'مجموعة دراسية',
+                    teacherName: localAppt.teacherName || 'المعلم',
+                    subjectData: localAppt.subjectData || 'المادة المحددة',
+                    studentsCount: localAppt.studentsCount || 20,
                     genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
                     location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
                     start: localAppt.start,
@@ -801,10 +792,10 @@
             if (!isAlreadyOnline) {
                 allItems.push({
                     id: `local_rec_${dWk}_${localRec.start}`,
-                    groupName: localRec.groupName || document.getElementById('group-name').value.trim() || 'مجموعة أسبوعية',
-                    teacherName: localRec.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localRec.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
+                    groupName: localRec.groupName || 'مجموعة أسبوعية',
+                    teacherName: localRec.teacherName || 'المعلم',
+                    subjectData: localRec.subjectData || 'المادة المحددة',
+                    studentsCount: localRec.studentsCount || 20,
                     genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
                     location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
                     start: localRec.start,
