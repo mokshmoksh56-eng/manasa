@@ -7,6 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<!-- ✅ استدعاء مكتبات Firebase بطريقة تدعم جميع الهواتف المحلية -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
 <style>
     /* ========================================== */
     /* 🎨 تنسيقات الصفحة الأساسية */
@@ -68,7 +73,7 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* شاشة التحميل */
+    /* مؤشر التحميل */
     .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
     .loading-overlay.show { display: flex; }
     .loading-box { background: white; border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
@@ -184,6 +189,7 @@
     .appointment .info { display: flex; flex-direction: column; gap: 6px; width: 100%; }
     .appointment .time { font-weight: 800; color: #2c3e50; font-size: 16px; }
     .appointment .recurring-tag { display: inline-block; background: #9b59b6; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; }
+    .appointment .online-tag { display: inline-block; background: #28a745; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; margin-right: 5px;}
 
     .appt-actions { 
         display: flex; width: 100%; justify-content: space-between; align-items: center;
@@ -204,6 +210,7 @@
     
     .btn-publish { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
     .btn-publish:hover { background: linear-gradient(135deg, #27ae60, #229954); transform: translateY(-2px); }
+    .btn-published { background: #95a5a6; color: #fff; cursor: default; }
 
     .error-msg { background: #fdecea; color: #c0392b; border: 2px solid #f5b7b1; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 15px; font-weight: 600; display: none; }
     .error-msg.show { display: block; }
@@ -221,7 +228,7 @@
         .appt-actions { flex-direction: column; align-items: flex-start; }
         .appt-actions-group { width: 100%; }
         .appt-actions-group .btn-action { flex: 1; }
-        .btn-publish { width: 100%; margin-top: 4px; }
+        .btn-publish, .btn-published { width: 100%; margin-top: 4px; }
     }
 </style>
 </head>
@@ -409,17 +416,12 @@
 <div class="loading-overlay" id="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loading-text">جاري النشر في السيرفر أونلاين...</div>
+        <div class="loading-text" id="loading-text">جاري الاتصال بالسيرفر أونلاين...</div>
     </div>
 </div>
 
-<div class="last-save-bar" id="autosave-bar">
-    <span class="dot"></span>
-    <span>تم الحفظ تلقائياً</span>
-</div>
-
 <!-- ========================================== -->
-<!-- ⚙️️ سكربت التقويم الأساسي -->
+<!-- ⚙️ السكريبت الأساسي والتقويم -->
 <!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -495,6 +497,21 @@
     localStorage.setItem('recurringAppointments', JSON.stringify(recurringAppointments));
   }
 
+  function removeLocalAppt(appt) {
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayOfWeek = new Date(y, m - 1, d).getDay();
+    if (appt.type === 'recurring') {
+        const list = recurringAppointments[dayOfWeek] || [];
+        const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
+        if (idx > -1) list.splice(idx, 1);
+    } else {
+        const list = appointments[selectedDateKey] || [];
+        const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
+        if (idx > -1) list.splice(idx, 1);
+    }
+    saveAllAppts();
+  }
+
   function dateKey(year, month, day) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
@@ -506,13 +523,22 @@
     const normalLocal = (appointments[key] || []).map(a => ({ ...a, type: 'normal' }));
     const recurringLocal = (recurringAppointments[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring' }));
 
-    const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ ...a, type: 'normal' }));
-    const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring' }));
+    const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ ...a, type: 'normal', isOnline: true }));
+    const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
 
     const map = new Map();
-    [...normalLocal, ...recurringLocal, ...normalOnline, ...recurringOnline].forEach(item => {
-        const idKey = item.firebaseId || `${item.start}_${item.end}_${item.type}`;
-        map.set(idKey, item);
+    // نضع الأونلاين أولاً
+    [...normalOnline, ...recurringOnline].forEach(item => {
+        map.set(item.firebaseId, item);
+    });
+    // نضع المحلي فقط إذا لم يكن متطابقاً مع الأونلاين (لتجنب التكرار)
+    [...normalLocal, ...recurringLocal].forEach(item => {
+        const alreadyOnline = Array.from(map.values()).some(onlineAppt => 
+            onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
+        );
+        if (!alreadyOnline) {
+            map.set(`local_${item.start}_${item.end}_${item.type}`, item);
+        }
     });
 
     return Array.from(map.values()).sort((a, b) => a.start.localeCompare(b.start));
@@ -600,6 +626,70 @@
     }
   }
 
+  function changeMonthDir(direction) {
+    if (isAnimating) return;
+    isAnimating = true;
+    const titleTrack = document.getElementById('titleTrack');
+    const weekTrack = document.getElementById('weekTrack');
+    const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+    const inClass  = direction > 0 ? 'slide-in-right' : 'slide-in-left';
+
+    titleTrack.classList.add(outClass); weekTrack.classList.add(outClass);
+
+    setTimeout(() => {
+      currentDate.setDate(1);
+      currentDate.setMonth(currentDate.getMonth() + direction);
+      renderCalendar();
+      titleTrack.classList.remove(outClass); weekTrack.classList.remove(outClass);
+      titleTrack.classList.add(inClass); weekTrack.classList.add(inClass);
+      setTimeout(() => {
+        titleTrack.classList.remove(inClass); weekTrack.classList.remove(inClass);
+        isAnimating = false;
+      }, 450);
+    }, 450);
+  }
+
+  function setupSwipeCal() {
+    const wrapper = document.getElementById('daysWrapper');
+    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+    let isSwiping = false, isHorizontalSwipe = false;
+    const minSwipeDistance = 50, maxVerticalTolerance = 80;
+
+    wrapper.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
+      isSwiping = true; isHorizontalSwipe = false;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
+      const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
+      if (!isHorizontalSwipe && diffX > 15 && diffX > diffY) isHorizontalSwipe = true;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
+      if (Math.abs(diffX) > minSwipeDistance) {
+        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
+      }
+    }, { passive: true });
+
+    let mouseStartX = 0, isMouseDown = false;
+    wrapper.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; isMouseDown = true; });
+    wrapper.addEventListener('mouseup', (e) => {
+      if (!isMouseDown) return;
+      isMouseDown = false;
+      const diffX = e.clientX - mouseStartX;
+      if (Math.abs(diffX) > minSwipeDistance) {
+        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
+      }
+    });
+  }
+
   function selectDay(year, month, day) {
     selectedDateKey = dateKey(year, month, day);
     cancelEdit(); renderCalendar(); showPanel(year, month, day);
@@ -635,23 +725,32 @@
       if (isEditing) el.classList.add('editing');
 
       const recurringTag = appt.type === 'recurring' ? '<span class="recurring-tag">🔁 تكرار أسبوعي</span>' : '';
+      const onlineTag = appt.isOnline ? '<span class="online-tag">🌐 منشور</span>' : '';
       
+      const publishBtnHtml = appt.isOnline 
+        ? `<button class="btn-action btn-published" disabled>✅ تم النشر</button>`
+        : `<button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر</button>`;
+
       el.innerHTML = `
         <div class="info">
           <div class="time">🕐 ${formatTime(appt.start)} - ${formatTime(appt.end)}</div>
-          ${recurringTag}
+          <div style="display:flex; gap:5px; margin-top:4px;">${recurringTag}${onlineTag}</div>
         </div>
         <div class="appt-actions">
           <div class="appt-actions-group">
             <button class="btn-action btn-edit" title="تعديل الموعد">✏️ تعديل</button>
-            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️️ إلغاء</button>
+            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️ إلغاء</button>
           </div>
-          <button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر</button>
+          ${publishBtnHtml}
         </div>
       `;
-      el.querySelector('.btn-publish').onclick = (e) => { e.stopPropagation(); window.publishSingleApptOnline(appt); };
+
+      if (!appt.isOnline) {
+          el.querySelector('.btn-publish').onclick = (e) => { e.stopPropagation(); window.publishSingleApptOnline(appt); };
+      }
       el.querySelector('.btn-edit').onclick = (e) => { e.stopPropagation(); startEdit(appt); };
       el.querySelector('.btn-delete').onclick = (e) => { e.stopPropagation(); window.deleteAppointmentOnline(appt); };
+      
       list.appendChild(el);
     });
   }
@@ -690,7 +789,7 @@
     const newEnd = document.getElementById('editEnd').value;
     const isRecurring = document.getElementById('editRepeatWeekly').checked;
 
-    if (!newStart || !newEnd) { showError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
+    if (!newStart || !newEnd) { showError('⚠️️ يجب اختيار وقت البداية والنهاية'); return; }
     if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
@@ -704,29 +803,22 @@
 
     if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
-    if (editingAppt.firebaseId && window.updateAppointmentOnline) {
+    // تعديل أونلاين إذا كان الموعد منشور
+    if (editingAppt.isOnline && editingAppt.firebaseId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.firebaseId, newStart, newEnd, isRecurring);
-    }
-
-    if (editingAppt.type === 'recurring') {
-      const list = recurringAppointments[dayOfWeek] || [];
-      const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
-      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete recurringAppointments[dayOfWeek]; else recurringAppointments[dayOfWeek] = list; }
     } else {
-      const list = appointments[selectedDateKey] || [];
-      const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
-      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete appointments[selectedDateKey]; else appointments[selectedDateKey] = list; }
+        // تعديل محلي
+        removeLocalAppt(editingAppt);
+        if (isRecurring) {
+          if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
+          recurringAppointments[dayOfWeek].push({ start: newStart, end: newEnd });
+        } else {
+          if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
+          appointments[selectedDateKey].push({ start: newStart, end: newEnd });
+        }
+        saveAllAppts(); 
     }
 
-    if (isRecurring) {
-      if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
-      recurringAppointments[dayOfWeek].push({ start: newStart, end: newEnd });
-    } else {
-      if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
-      appointments[selectedDateKey].push({ start: newStart, end: newEnd });
-    }
-
-    saveAllAppts(); 
     editingAppt = null; 
     document.getElementById('editForm').classList.remove('show');
     hideError(); 
@@ -770,23 +862,17 @@
 
   populateTimeSelects();
   renderCalendar();
+  setupSwipeCal();
   
   const initDate = new Date();
   selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
 </script>
 
 <!-- ========================================== -->
-<!-- 🔥 تضمين مكتبات Firebase وبيانات مشروعك الحقيقية -->
+<!-- 🔥 سكربت Firebase Compat للموبايل والأونلاين -->
 <!-- ========================================== -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-    import { 
-        getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, 
-        onSnapshot, serverTimestamp 
-    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
-    // ✅ بيانات مشروعك الفعلية المدمجة مباشرة من الصورة
+<script>
+    // ✅ إعدادات مشروعك الحقيقية
     const firebaseConfig = {
       apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
       authDomain: "tagroba-fbe9b.firebaseapp.com",
@@ -798,27 +884,180 @@
       measurementId: "G-CRVE7VMZMS"
     };
 
-    // تهيئة التطبيق وقاعدة البيانات
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // تهيئة Firebase بالطريقة الكلاسيكية لتعمل على الهواتف مباشرة
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
+    // التحقق من المصادقة وتفعيل الدخول المجهول (Anonymous)
     function waitForAuth() {
         return new Promise((resolve, reject) => {
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
+            const unsubscribe = auth.onAuthStateChanged((user) => {
                 if (user) {
                     unsubscribe();
                     resolve(user);
                 } else {
-                    signInAnonymously(auth)
+                    auth.signInAnonymously()
                         .then((cred) => {
                             unsubscribe();
                             resolve(cred.user);
                         })
-                        .catch((err) => reject(err));
+                        .catch((err) => {
+                            console.error("Auth Error:", err);
+                            alert("❌ فشل الاتصال. يرجى تفعيل (Anonymous Auth) من Firebase.");
+                            reject(err);
+                        });
                 }
-            }, reject);
+            });
         });
+    }
+
+    // 1. الاستماع الحي للمواعيد من السيرفر وعرضها على كل التليفونات في نفس اللحظة
+    async function listenToOnlineSlots() {
+        try {
+            await waitForAuth();
+            
+            db.collection('published_slots').onSnapshot((snapshot) => {
+                window.onlineAppointments = {};
+                window.onlineRecurring = {};
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const appt = { ...data.appointment, firebaseId: docSnap.id };
+
+                    if (appt.type === 'recurring') {
+                        const day = appt.dayOfWeek;
+                        if (!window.onlineRecurring[day]) window.onlineRecurring[day] = [];
+                        window.onlineRecurring[day].push(appt);
+                    } else if (appt.date) {
+                        if (!window.onlineAppointments[appt.date]) window.onlineAppointments[appt.date] = [];
+                        window.onlineAppointments[appt.date].push(appt);
+                    }
+                });
+
+                renderCalendar();
+                if (selectedDateKey) {
+                    const [y, m, d] = selectedDateKey.split('-').map(Number);
+                    showPanel(y, m - 1, d);
+                }
+                console.log("📡 تم تحديث المواعيد أونلاين.");
+            }, (error) => {
+                console.error("خطأ المزامنة:", error);
+            });
+        } catch (e) {
+            console.error("فشل الاتصال بـ Firebase:", e);
+        }
+    }
+
+    // 2. نشر الموعد (إرسال للسيرفر وحذفه محلياً ليعتمد على السيرفر)
+    window.publishSingleApptOnline = async function(appt) {
+        const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
+        const groupName = document.getElementById('group-name').value.trim();
+        const teacherName = document.getElementById('teacher-name').value.trim();
+        const studentsCount = document.getElementById('students-count').value;
+        const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
+        const location = document.querySelector('input[name="location"]:checked').value;
+        const gpsLocation = document.getElementById('gps-coords').value;
+
+        if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
+        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (الاسم، المستر، العدد).'); return; }
+
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.classList.add('show');
+
+        try {
+            await waitForAuth();
+            const [y, m, d] = selectedDateKey.split('-').map(Number);
+            const dayOfWeek = new Date(y, m - 1, d).getDay();
+
+            const docPayload = {
+                subjectData, groupName, teacherName, studentsCount: parseInt(studentsCount),
+                genderAllowed, location, gpsLocation: gpsLocation || '',
+                appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: selectedDateKey },
+                status: 'published',
+                publishedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const docRef = await db.collection('published_slots').add(docPayload);
+            
+            // إزالة الموعد المحلي لأنه أصبح أونلاين الآن
+            removeLocalAppt(appt);
+            
+            loadingOverlay.classList.remove('show');
+
+            let apptDetailsHtml = appt.type === 'recurring'
+                ? `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
+                : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
+
+            document.getElementById('publishModalContent').innerHTML = `
+                <div class="publish-data-item">
+                    <span class="publish-data-label">🆔 كود النشر (Firebase ID):</span>
+                    <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${docRef.id}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">📚 المادة:</span>
+                    <span class="publish-data-value">${subjectData}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">🏷️ المجموعة:</span>
+                    <span class="publish-data-value">${groupName}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">📅 الموعد المنشور أونلاين:</span>
+                    <div class="publish-data-value appts">${apptDetailsHtml}</div>
+                </div>
+            `;
+            document.getElementById('publishModalOverlay').classList.add('active');
+
+        } catch (error) {
+            loadingOverlay.classList.remove('show');
+            alert('❌ فشل النشر: ' + error.message);
+        }
+    }
+
+    // 3. تحديث الموعد المنشور أونلاين
+    window.updateAppointmentOnline = async function(firebaseId, newStart, newEnd, isRecurring) {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.classList.add('show');
+        try {
+            const [y, m, d] = selectedDateKey.split('-').map(Number);
+            const dayOfWeek = new Date(y, m - 1, d).getDay();
+            await db.collection('published_slots').doc(firebaseId).update({
+                "appointment.start": newStart,
+                "appointment.end": newEnd,
+                "appointment.type": isRecurring ? 'recurring' : 'normal',
+                "appointment.dayOfWeek": dayOfWeek,
+                "appointment.dayName": dayNames[dayOfWeek],
+                "appointment.date": selectedDateKey,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch(e) {
+            alert('❌ خطأ في تحديث السيرفر: ' + e.message);
+        } finally {
+            loadingOverlay.classList.remove('show');
+        }
+    }
+
+    // 4. الحذف الإجباري من السيرفر لجميع الأجهزة
+    window.deleteAppointmentOnline = async function(appt) {
+        if (!confirm(appt.firebaseId ? '⚠️ تحذير: سيتم حذف هذا الموعد نهائياً من السيرفر ومن جميع الأجهزة. هل أنت متأكد؟' : 'هل أنت متأكد من إلغاء الموعد محلياً؟')) return;
+
+        if (appt.firebaseId) {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.add('show');
+            try {
+                await db.collection('published_slots').doc(appt.firebaseId).delete();
+                // السيرفر سيتولى عملية مسحه من الواجهة تلقائياً بفضل onSnapshot
+            } catch (err) {
+                alert('❌ تعذر الحذف من السيرفر: ' + err.message);
+            } finally {
+                loadingOverlay.classList.remove('show');
+            }
+        } else {
+            removeLocalAppt(appt);
+            renderAppointments();
+            renderCalendar();
+        }
     }
 
     function getLocation(e) {
@@ -847,185 +1086,10 @@
             document.getElementById('publishModalOverlay').classList.remove('active');
         }
     }
-
-    // 1. الاستماع الحي للسيرفر لمزامنة التليفونات الأخرى أونلاين
-    async function listenToOnlineSlots() {
-        try {
-            await waitForAuth();
-            const slotsCol = collection(db, 'published_slots');
-
-            onSnapshot(slotsCol, (snapshot) => {
-                window.onlineAppointments = {};
-                window.onlineRecurring = {};
-
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const appt = { ...data.appointment, firebaseId: docSnap.id };
-
-                    if (appt.type === 'recurring') {
-                        const day = appt.dayOfWeek;
-                        if (!window.onlineRecurring[day]) window.onlineRecurring[day] = [];
-                        window.onlineRecurring[day].push(appt);
-                    } else if (appt.date) {
-                        if (!window.onlineAppointments[appt.date]) window.onlineAppointments[appt.date] = [];
-                        window.onlineAppointments[appt.date].push(appt);
-                    }
-                });
-
-                renderCalendar();
-                if (selectedDateKey) {
-                    const [y, m, d] = selectedDateKey.split('-').map(Number);
-                    showPanel(y, m - 1, d);
-                }
-                console.log("📡 تم تحديث المواعيد أونلاين من السيرفر.");
-            }, (error) => {
-                console.error("خطأ في المزامنة الحية:", error);
-            });
-        } catch (e) {
-            console.error("فشل الاتصال بـ Firebase:", e);
-        }
-    }
-
-    // 2. نشر الموعد في Firebase أونلاين
-    async function publishSingleApptOnline(appt) {
-        const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
-        const groupName = document.getElementById('group-name').value.trim();
-        const teacherName = document.getElementById('teacher-name').value.trim();
-        const studentsCount = document.getElementById('students-count').value;
-        const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
-        const location = document.querySelector('input[name="location"]:checked').value;
-        const gpsLocation = document.getElementById('gps-coords').value;
-
-        if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
-        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى ملء اسم المجموعة، المستر، وعدد الطلاب أولاً.'); return; }
-
-        const loadingOverlay = document.getElementById('loading-overlay');
-        loadingOverlay.classList.add('show');
-
-        try {
-            await waitForAuth();
-
-            const [y, m, d] = selectedDateKey.split('-').map(Number);
-            const dayOfWeek = new Date(y, m - 1, d).getDay();
-
-            const docPayload = {
-                subjectData,
-                groupName,
-                teacherName,
-                studentsCount: parseInt(studentsCount),
-                genderAllowed,
-                location,
-                gpsLocation: gpsLocation || '',
-                appointment: {
-                    start: appt.start,
-                    end: appt.end,
-                    type: appt.type,
-                    dayOfWeek: dayOfWeek,
-                    dayName: dayNames[dayOfWeek],
-                    date: selectedDateKey
-                },
-                status: 'published',
-                publishedAt: serverTimestamp()
-            };
-
-            const docRef = await addDoc(collection(db, 'published_slots'), docPayload);
-            loadingOverlay.classList.remove('show');
-
-            let apptDetailsHtml = appt.type === 'recurring'
-                ? `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
-                : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
-
-            document.getElementById('publishModalContent').innerHTML = `
-                <div class="publish-data-item">
-                    <span class="publish-data-label">🆔 كود النشر (Firebase ID):</span>
-                    <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${docRef.id}</span>
-                </div>
-                <div class="publish-data-item">
-                    <span class="publish-data-label">📚 المادة والصف:</span>
-                    <span class="publish-data-value">${subjectData}</span>
-                </div>
-                <div class="publish-data-item">
-                    <span class="publish-data-label">🏷️ اسم المجموعة:</span>
-                    <span class="publish-data-value">${groupName}</span>
-                </div>
-                <div class="publish-data-item">
-                    <span class="publish-data-label">👨‍🏫 المستر:</span>
-                    <span class="publish-data-value">${teacherName}</span>
-                </div>
-                <div class="publish-data-item">
-                    <span class="publish-data-label">👥 العدد المطلوب:</span>
-                    <span class="publish-data-value">${studentsCount} طلاب</span>
-                </div>
-                <div class="publish-data-item">
-                    <span class="publish-data-label">📅 الموعد المنشور أونلاين:</span>
-                    <div class="publish-data-value appts">${apptDetailsHtml}</div>
-                </div>
-            `;
-            document.getElementById('publishModalOverlay').classList.add('active');
-
-        } catch (error) {
-            loadingOverlay.classList.remove('show');
-            console.error('❌ خطأ في نشر الموعد:', error);
-            alert('❌ فشل النشر في Firebase:\n' + error.message);
-        }
-    }
-
-    // 3. حذف الموعد أونلاين من السيرفر
-    async function deleteAppointmentOnline(appt) {
-        if (!confirm('هل أنت متأكد من إلغاء وحذف هذا الموعد من جميع الأجهزة؟')) return;
-
-        if (appt.firebaseId) {
-            try {
-                await deleteDoc(doc(db, 'published_slots', appt.firebaseId));
-                alert('✅ تم حذف الموعد من السيرفر بنجاح.');
-            } catch (err) {
-                alert('❌ تعذر الحذف: ' + err.message);
-            }
-        } else {
-            const [y, m, d] = selectedDateKey.split('-').map(Number);
-            const dayOfWeek = new Date(y, m - 1, d).getDay();
-            if (appt.type === 'recurring') {
-                const list = recurringAppointments[dayOfWeek] || [];
-                const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
-                if (idx > -1) list.splice(idx, 1);
-            } else {
-                const list = appointments[selectedDateKey] || [];
-                const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
-                if (idx > -1) list.splice(idx, 1);
-            }
-            saveAllAppts();
-            renderAppointments();
-            renderCalendar();
-        }
-    }
-
-    // 4. تحديث موعد على السيرفر
-    async function updateAppointmentOnline(firebaseId, newStart, newEnd, isRecurring) {
-        try {
-            const [y, m, d] = selectedDateKey.split('-').map(Number);
-            const dayOfWeek = new Date(y, m - 1, d).getDay();
-            const docRef = doc(db, 'published_slots', firebaseId);
-            await updateDoc(docRef, {
-                "appointment.start": newStart,
-                "appointment.end": newEnd,
-                "appointment.type": isRecurring ? 'recurring' : 'normal',
-                "appointment.dayOfWeek": dayOfWeek,
-                "appointment.dayName": dayNames[dayOfWeek],
-                "appointment.date": selectedDateKey,
-                updatedAt: serverTimestamp()
-            });
-            console.log('✅ تم تحديث الموعد أونلاين');
-        } catch(e) {
-            console.error('خطأ في تحديث السيرفر:', e);
-        }
-    }
-
     window.getLocation = getLocation;
     window.closePublishModal = closePublishModal;
-    window.publishSingleApptOnline = publishSingleApptOnline;
-    window.deleteAppointmentOnline = deleteAppointmentOnline;
-    window.updateAppointmentOnline = updateAppointmentOnline;
 
+    // استدعاء البيانات من الصفحة السابقة وبدء المزامنة
     window.onload = function() {
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
@@ -1048,6 +1112,7 @@
             subjectDisplay.dataset.value = selectedSubjectsText;
         }
 
+        // تفعيل المزامنة المباشرة
         listenToOnlineSlots();
     };
 </script>
