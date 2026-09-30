@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
+<!-- 🗺️ مكتبات Mapbox -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+
 <style>
     /* ========================================== */
     /* 🎨 تنسيقات الصفحة الأساسية والخلفية */
@@ -15,7 +19,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
     
     body { 
-        /* إضافة الصورة كخلفية للصفحة مع طبقة شفافة لضمان وضوح الكروت */
         background: linear-gradient(rgba(244, 246, 249, 0.85), rgba(226, 232, 240, 0.95)), url('teacher2.png') center/cover fixed no-repeat; 
         padding-bottom: 50px; 
         color: #333; 
@@ -31,155 +34,66 @@
     .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
     /* ========================================== */
-    /* 🔢 الترقيم الذكي (عبقرية التسلسل) */
+    /* 🔢 الترقيم الذكي */
     /* ========================================== */
     .step-num {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-        color: #fff;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 900;
-        margin-left: 8px;
-        box-shadow: 0 2px 6px rgba(29, 78, 216, 0.3);
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff;
+        border-radius: 6px; font-size: 14px; font-weight: 900; margin-left: 8px; box-shadow: 0 2px 6px rgba(29, 78, 216, 0.3);
     }
     .step-num-lg {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-        color: #fff;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 900;
-        margin-left: 10px;
-        box-shadow: 0 3px 8px rgba(29, 78, 216, 0.3);
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff;
+        border-radius: 8px; font-size: 16px; font-weight: 900; margin-left: 10px; box-shadow: 0 3px 8px rgba(29, 78, 216, 0.3);
     }
 
     /* ========================================== */
     /* 📋 كارت نموذج التسجيل والتقويم المدمج */
     /* ========================================== */
     .booking-card { 
-        background: #fff; 
-        border-radius: 16px; 
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-        padding: 24px; 
-        width: 100%; 
-        border-top: 4px solid #f1c40f; 
-        margin-bottom: 25px;
+        background: #fff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+        padding: 24px; width: 100%; border-top: 4px solid #f1c40f; margin-bottom: 25px;
     }
 
     .form-section-title { font-size: 16px; font-weight: 900; color: #1a3c6d; margin: 20px 0 12px; display: flex; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 8px; }
     .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-    
     .form-group { margin-bottom: 15px; width: 100%; }
+    .form-group.full-width { grid-column: 1 / -1; } /* لجعل الخريطة بعرض كامل */
+    
     .form-group label { display: flex; align-items: center; font-size: 14px; color: #1e3a8a; font-weight: 900; margin-bottom: 8px; }
     
     .form-control { width: 100%; padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 14.5px; transition: all 0.2s; background: #fff; font-family: inherit; font-weight: 800; color: #0f172a; }
     .form-control:focus { border-color: #1d4ed8; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
     
-    .fixed-subject-box { 
-        background: #1d4ed8; 
-        color: #ffffff; 
-        padding: 12px 15px; 
-        border-radius: 8px; 
-        font-weight: 900; 
-        font-size: 15px; 
-        text-align: center; 
-        box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
-        border: none;
-    }
+    .fixed-subject-box { background: #1d4ed8; color: #ffffff; padding: 12px 15px; border-radius: 8px; font-weight: 900; font-size: 15px; text-align: center; box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3); border: none; }
 
-    /* ========================================== */
-    /* ✔️ تنسيقات كروت الاختيار (بدون أيقونات) */
-    /* ========================================== */
+    /* ✔️ تنسيقات كروت الاختيار */
     .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .cards-grid input[type="radio"] { display: none; }
-    .cards-grid label { 
-        position: relative; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        padding: 12px 5px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; 
-        cursor: pointer; transition: all 0.2s; text-align: center; 
-        font-weight: 900; 
-        color: #0f172a; 
-        font-size: 13px; 
-    }
-    
-    /* عند التحديد */
-    .cards-grid input[type="radio"]:checked + label { 
-        background: #eff6ff; border-color: #1d4ed8; color: #1d4ed8; 
-        transform: translateY(-2px); box-shadow: 0 4px 10px rgba(29, 78, 216, 0.2); 
-    }
-    
-    /* تصميم علامة الصح */
-    .cards-grid input[type="radio"]:checked + label::after {
-        content: "✔";
-        position: absolute;
-        top: -6px;
-        left: -6px;
-        width: 18px;
-        height: 18px;
-        background: #1d4ed8;
-        color: #fff;
-        border-radius: 50%;
-        font-size: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 5px rgba(29,78,216,0.4);
-        animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
+    .cards-grid label { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 900; color: #0f172a; font-size: 13px; }
+    .cards-grid input[type="radio"]:checked + label { background: #eff6ff; border-color: #1d4ed8; color: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(29, 78, 216, 0.2); }
+    .cards-grid input[type="radio"]:checked + label::after { content: "✔"; position: absolute; top: -6px; left: -6px; width: 18px; height: 18px; background: #1d4ed8; color: #fff; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(29,78,216,0.4); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    @keyframes popIn {
-        0% { transform: scale(0); }
-        100% { transform: scale(1); }
-    }
-
-    .gps-wrapper { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 2px solid #cbd5e1; }
-    .btn-gps { background: #16a34a; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; width: 100%; }
+    /* 🗺️ خريطة Mapbox */
+    #map-container { width: 100%; height: 260px; border-radius: 10px; overflow: hidden; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; }
+    #map { width: 100%; height: 100%; }
 
     .form-group select { width: 100%; padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 14.5px; font-family: inherit; outline: none; background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e3a8a' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center; background-size: 14px; padding-left: 32px; cursor: pointer; appearance: none; font-weight: 800; color: #0f172a; }
     .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-
     .repeat-option { background: #fdf4ff; border: 2px solid #f0abfc; border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 15px 0; }
     .repeat-option input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #9333ea; }
     .repeat-option label { font-size: 14px; color: #7e22ce; font-weight: 900; cursor: pointer; margin: 0; display: inline-block; }
-
     .duration-info { background: #e0f2fe; border-right: 4px solid #0284c7; color: #0369a1; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; }
     .duration-info.show { display: block; }
 
     /* ========================================== */
-    /* 📅 جدول التقويم (الخطوة 8) */
+    /* 📅 جدول التقويم */
     /* ========================================== */
-    .calendar-container-block {
-        background: #f8fafc;
-        border: 2px solid #cbd5e1;
-        border-radius: 12px;
-        padding: 16px;
-        margin: 20px 0;
-    }
-
-    .selected-day-banner {
-        background: #eff6ff;
-        border: 2px solid #bfdbfe;
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
+    .calendar-container-block { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 16px; margin: 20px 0; }
+    .selected-day-banner { background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
     .selected-day-banner .title { color: #1e3a8a; font-size: 15px; font-weight: 900; display: flex; align-items: center; }
     .selected-day-banner .day-badge { color: #b45309; background: #fef3c7; padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 900; border: 2px solid #fde68a; }
-
     .calendar-header { position: relative; overflow: hidden; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; min-height: 38px; display: flex; justify-content: center; align-items: center; }
     .title-track { display: flex; align-items: center; gap: 10px; }
     .month-name { color: #0f172a; font-size: 20px; font-weight: 900; }
@@ -187,13 +101,11 @@
     .year-text { color: #475569; font-size: 17px; font-weight: 800; }
     .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 900; }
     .month-appt-badge.zero { background: #94a3b8; }
-
     .week-wrapper { position: relative; overflow: hidden; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; }
     .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: #1e3a8a; }
     .weekdays div { text-align: center; font-weight: 900; color: #fff; padding: 9px 3px; font-size: 13px; border-left: 1px solid rgba(255, 255, 255, 0.15); }
     .weekdays div:last-child { border-left: none; }
     .weekdays div.friday { color: #fde047; }
-
     .days-wrapper { position: relative; overflow: hidden; background: #cbd5e1; padding-top: 1px; }
     .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
     .days div.cell { background: #fff; min-height: 75px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; color: #0f172a; font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
@@ -210,81 +122,43 @@
     .btn-add { width: 100%; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff; border: none; border-radius: 10px; padding: 15px; font-size: 17px; font-weight: 900; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3); margin-top: 10px; }
     .btn-add:active { transform: scale(0.98); }
     .btn-cancel { width: 100%; background: #64748b; color: #fff; border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 8px; }
-
     .error-msg { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 12px; font-weight: 900; display: none; }
     .error-msg.show { display: block; }
 
     /* ========================================== */
     /* 🃏 قسم جدول وملخص المواعيد بنظام الكروت */
     /* ========================================== */
-    .summary-section {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        padding: 24px;
-        border-top: 4px solid #1e3a8a;
-        width: 100%;
-        backdrop-filter: blur(10px);
-    }
-    .summary-section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid #f1f5f9;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+    .summary-section { background: rgba(255, 255, 255, 0.95); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 24px; border-top: 4px solid #1e3a8a; width: 100%; backdrop-filter: blur(10px); }
+    .summary-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; flex-wrap: wrap; gap: 10px; }
     .summary-section-title { color: #1e3a8a; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .summary-total-badge { background: #eff6ff; color: #1d4ed8; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 2px solid #bfdbfe; }
-    
     .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
-    
-    .summary-card {
-        background: #ffffff;
-        border: 2px solid #cbd5e1;
-        border-radius: 14px;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 12px;
-        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    }
+    .summary-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
     .summary-card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(30, 58, 138, 0.1); border-color: #1d4ed8; }
     .summary-card.recurring-border { border-top: 5px solid #9333ea; }
     .summary-card.normal-border { border-top: 5px solid #1d4ed8; }
-
     .sc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
     .sc-group-name { font-size: 17px; font-weight: 900; color: #0f172a; }
     .sc-teacher { font-size: 14px; color: #475569; font-weight: 800; margin-top: 2px; }
     .sc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    
     .badge-status { font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; }
     .badge-status.online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .badge-status.draft { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
     .badge-status.recurring { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
-
     .sc-time-banner { background: linear-gradient(135deg, #f0f7ff, #e0f2fe); border-radius: 10px; padding: 10px 12px; border: 1px solid #bae6fd; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 900; }
     .sc-time-banner .time-text { color: #0369a1; }
     .sc-time-banner .duration-pill { background: #ffffff; color: #0284c7; padding: 2px 8px; border-radius: 6px; font-size: 12px; border: 1px solid #7dd3fc; }
-
     .sc-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: #f8fafc; border-radius: 10px; padding: 12px; font-size: 13px; border: 1px solid #e2e8f0; }
     .sc-detail-item { display: flex; align-items: center; gap: 6px; color: #475569; font-weight: 800; }
     .sc-detail-item.full { grid-column: span 2; }
     .sc-detail-item .val { font-weight: 900; color: #0f172a; }
-
     .sc-footer-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 2px dashed #e2e8f0; padding-top: 12px; }
     .sc-actions-sub { display: flex; gap: 6px; }
-
     .btn-action { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 900; padding: 7px 12px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .btn-edit { background: #fef3c7; color: #b45309; }
     .btn-delete { background: #fee2e2; color: #b91c1c; }
     .btn-publish { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 3px 8px rgba(16,185,129,0.25); }
     .btn-published { background: #94a3b8; color: #fff; cursor: default; }
-
     .empty-cards-state { text-align: center; padding: 40px 20px; color: #64748b; font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
 
     /* ========================================== */
@@ -362,7 +236,7 @@
           </div>
         </div>
 
-        <!-- Row 3: المكان & الموقع -->
+        <!-- Row 3: المكان & الموقع (Mapbox) -->
         <div class="form-grid-row">
           <div class="form-group">
             <label><span class="step-num">5</span> مكان الدرس</label>
@@ -372,18 +246,22 @@
               <div><input type="radio" name="location" id="loc-student" value="منزل الطالب"><label for="loc-student">منزل الطالب</label></div>
             </div>
           </div>
+          
           <div class="form-group">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <div class="gps-wrapper" style="height: 60px;">
-              <button class="btn-gps" type="button" onclick="getLocation(event)">تحديد موقعي الآن</button>
-              <span id="location-text" style="color: #475569; font-size: 13px; font-weight: 900; width: 100%; text-align: center; margin-top: -5px;">لم يتم التحديد</span>
-              <input type="hidden" id="gps-coords" value="">
+            <!-- 🗺️ خريطة Mapbox هنا -->
+            <div id="map-container">
+              <div id="map"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                <span id="location-text" style="color: #475569; font-size: 13px; font-weight: 900;">حدد الموقع على الخريطة</span>
+                <input type="hidden" id="gps-coords" value="">
             </div>
           </div>
         </div>
 
         <!-- Section 7: توقيت الحصة -->
-        <div class="form-section-title" style="margin-top: 25px;">
+        <div class="form-section-title" style="margin-top: 15px;">
             <span class="step-num-lg">7</span> توقيت الحصة
         </div>
         <div class="time-row-cal">
@@ -506,6 +384,61 @@
 </div>
 
 <script>
+  // ==========================================
+  // 🗺️ تهيئة خريطة Mapbox
+  // ==========================================
+  mapboxgl.accessToken = 'Pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
+  // ضبط دعم النصوص العربية
+  mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
+
+  const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [31.3917, 31.0534], // مبدئياً على المنصورة / طلخا
+      zoom: 12
+  });
+
+  // إضافة أدوات التحكم بالخريطة (زوم وتوجيه)
+  map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+  // إضافة زر تحديد الموقع التلقائي (GPS)
+  const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      showUserHeading: true
+  });
+  map.addControl(geolocate, 'top-right');
+
+  // الدبوس القابل للتحريك
+  const marker = new mapboxgl.Marker({ draggable: true })
+      .setLngLat([31.3917, 31.0534])
+      .addTo(map);
+
+  function updateLocationInput() {
+      const lngLat = marker.getLngLat();
+      document.getElementById('gps-coords').value = `${lngLat.lat.toFixed(6)},${lngLat.lng.toFixed(6)}`;
+      document.getElementById('location-text').textContent = `تم التحديد: ${lngLat.lat.toFixed(4)}, ${lngLat.lng.toFixed(4)}`;
+      document.getElementById('location-text').style.color = '#15803d'; // لون أخضر عند التحديد
+  }
+
+  // تحديث القيم عند سحب الدبوس
+  marker.on('dragend', updateLocationInput);
+
+  // تحريك الدبوس عند النقر على الخريطة
+  map.on('click', (e) => {
+      marker.setLngLat(e.lngLat);
+      updateLocationInput();
+  });
+
+  // ربط الدبوس مع موقع الـ GPS
+  geolocate.on('geolocate', function(e) {
+      marker.setLngLat([e.coords.longitude, e.coords.latitude]);
+      updateLocationInput();
+  });
+
+  // ==========================================
+  // 📅 إعداد التقويم والوظائف الأساسية
+  // ==========================================
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
@@ -743,7 +676,6 @@
     const publishedSlots = JSON.parse(localStorage.getItem('published_slots') || '[]');
     let allItems = [];
 
-    // 1. المواعيد المنشورة أونلاين
     publishedSlots.forEach(slot => {
         allItems.push({
             id: slot.id,
@@ -764,7 +696,6 @@
         });
     });
 
-    // 2. المواعيد المحلية العادية
     for (const dKey in appointments) {
         (appointments[dKey] || []).forEach(localAppt => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.date === dKey && item.start === localAppt.start && item.end === localAppt.end && item.type === 'normal');
@@ -773,12 +704,12 @@
                 const dayWk = new Date(y, m - 1, d).getDay();
                 allItems.push({
                     id: `local_norm_${dKey}_${localAppt.start}`,
-                    groupName: localAppt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة دراسية',
-                    teacherName: localAppt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localAppt.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
-                    genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
-                    location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    groupName: localAppt.groupName || 'مجموعة دراسية',
+                    teacherName: localAppt.teacherName || 'المعلم',
+                    subjectData: localAppt.subjectData || 'المادة المحددة',
+                    studentsCount: localAppt.studentsCount || 20,
+                    genderAllowed: localAppt.genderAllowed || 'مختلط',
+                    location: localAppt.location || 'السنتر',
                     start: localAppt.start,
                     end: localAppt.end,
                     type: 'normal',
@@ -791,19 +722,18 @@
         });
     }
 
-    // 3. المواعيد المتكررة أسبوعياً
     for (const dWk in recurringAppointments) {
         (recurringAppointments[dWk] || []).forEach(localRec => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.dayOfWeek == dWk && item.start === localRec.start && item.end === localRec.end && item.type === 'recurring');
             if (!isAlreadyOnline) {
                 allItems.push({
                     id: `local_rec_${dWk}_${localRec.start}`,
-                    groupName: localRec.groupName || document.getElementById('group-name').value.trim() || 'مجموعة أسبوعية',
-                    teacherName: localRec.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localRec.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
-                    genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
-                    location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    groupName: localRec.groupName || 'مجموعة أسبوعية',
+                    teacherName: localRec.teacherName || 'المعلم',
+                    subjectData: localRec.subjectData || 'المادة المحددة',
+                    studentsCount: localRec.studentsCount || 20,
+                    genderAllowed: localRec.genderAllowed || 'مختلط',
+                    location: localRec.location || 'السنتر',
                     start: localRec.start,
                     end: localRec.end,
                     type: 'recurring',
@@ -1105,10 +1035,17 @@
   }
 
   window.publishSingleApptOnline = function(appt) {
-      const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
+      // ✅ التأكد الإضافي عند النشر
       const groupName = appt.groupName || document.getElementById('group-name').value.trim();
       const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
       const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
+
+      if (!groupName || !teacherName || !studentsCount) {
+          alert('⚠️ يرجى التأكد من استكمال اسم المجموعة واسم المستر والعدد المطلوب قبل النشر.');
+          return;
+      }
+
+      const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
       const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
       const location = appt.location || document.querySelector('input[name="location"]:checked').value;
       const gpsLocation = document.getElementById('gps-coords').value;
@@ -1245,33 +1182,12 @@
       }
   };
 
-  function getLocation(e) {
-      e.preventDefault();
-      const btn = e.target;
-      const textDisplay = document.getElementById('location-text');
-      const hiddenInput = document.getElementById('gps-coords');
-      btn.innerHTML = 'جاري...';
-      if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-              position => {
-                  hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                  btn.innerHTML = 'تم التحديد'; btn.style.background = 'linear-gradient(135deg, #1d4ed8, #1e3a8a)';
-                  textDisplay.textContent = `${position.coords.latitude.toFixed(3)}, ${position.coords.longitude.toFixed(3)}`;
-              },
-              error => {
-                  btn.innerHTML = 'فشل التحديد'; btn.style.background = '#ef4444';
-                  textDisplay.textContent = 'تأكد من الـ GPS';
-              }
-          );
-      }
-  }
-
   function closePublishModal(e, force = false) {
       if (force || e.target.id === 'publishModalOverlay') {
           document.getElementById('publishModalOverlay').classList.remove('active');
       }
   }
-  window.getLocation = getLocation;
+  
   window.closePublishModal = closePublishModal;
   window.closeEditModal = closeEditModal;
 
