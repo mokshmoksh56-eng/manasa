@@ -58,7 +58,7 @@
     .form-section-title { font-size: 16px; font-weight: 900; color: #1a3c6d; margin: 20px 0 12px; display: flex; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 8px; }
     .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
     .form-group { margin-bottom: 15px; width: 100%; }
-    .form-group.full-width { grid-column: 1 / -1; } /* لجعل الخريطة بعرض كامل */
+    .form-group.full-width { grid-column: 1 / -1; }
     
     .form-group label { display: flex; align-items: center; font-size: 14px; color: #1e3a8a; font-weight: 900; margin-bottom: 8px; }
     
@@ -238,7 +238,7 @@
 
         <!-- Row 3: المكان & الموقع (Mapbox) -->
         <div class="form-grid-row">
-          <div class="form-group">
+          <div class="form-group full-width">
             <label><span class="step-num">5</span> مكان الدرس</label>
             <div class="cards-grid">
               <div><input type="radio" name="location" id="loc-center" value="السنتر" checked><label for="loc-center">السنتر</label></div>
@@ -247,9 +247,9 @@
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group full-width">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <!-- 🗺️ خريطة Mapbox هنا -->
+            <!-- 🗺️️ خريطة Mapbox هنا -->
             <div id="map-container">
               <div id="map"></div>
             </div>
@@ -387,7 +387,8 @@
   // ==========================================
   // 🗺️ تهيئة خريطة Mapbox
   // ==========================================
-  mapboxgl.accessToken = 'Pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
+  // تم تصحيح المفتاح إلى حروف صغيرة (pk.)
+  mapboxgl.accessToken = 'pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
   // ضبط دعم النصوص العربية
   mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
 
@@ -434,6 +435,11 @@
   geolocate.on('geolocate', function(e) {
       marker.setLngLat([e.coords.longitude, e.coords.latitude]);
       updateLocationInput();
+  });
+
+  // ضمان تحديث أبعاد الخريطة وتفاصيلها عند تحميلها
+  map.on('load', () => {
+      map.resize();
   });
 
   // ==========================================
@@ -676,6 +682,7 @@
     const publishedSlots = JSON.parse(localStorage.getItem('published_slots') || '[]');
     let allItems = [];
 
+    // 1. المواعيد المنشورة أونلاين
     publishedSlots.forEach(slot => {
         allItems.push({
             id: slot.id,
@@ -696,6 +703,7 @@
         });
     });
 
+    // 2. المواعيد المحلية العادية
     for (const dKey in appointments) {
         (appointments[dKey] || []).forEach(localAppt => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.date === dKey && item.start === localAppt.start && item.end === localAppt.end && item.type === 'normal');
@@ -722,6 +730,7 @@
         });
     }
 
+    // 3. المواعيد المتكررة أسبوعياً
     for (const dWk in recurringAppointments) {
         (recurringAppointments[dWk] || []).forEach(localRec => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.dayOfWeek == dWk && item.start === localRec.start && item.end === localRec.end && item.type === 'recurring');
@@ -1181,6 +1190,11 @@
           renderAllCardsSummary();
       }
   };
+
+  function getLocation(e) {
+      e.preventDefault();
+      // لا حاجة لفعل شيء هنا لأن Mapbox GeolocateControl يتعامل مع هذا، لكننا تركناها لربط الزر الأساسي إن لزم.
+  }
 
   function closePublishModal(e, force = false) {
       if (force || e.target.id === 'publishModalOverlay') {
