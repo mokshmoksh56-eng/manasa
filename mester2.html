@@ -91,7 +91,7 @@
         width: 100%; 
         padding: 13px 15px; 
         border: 1px solid #cbd5e1; 
-        border-top: 2px solid #94a3b8; /* تأثير الإضاءة العلوية لزيادة العمق */
+        border-top: 2px solid #94a3b8; 
         border-radius: 10px; 
         font-size: 14.5px; 
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
@@ -99,7 +99,6 @@
         font-family: inherit; 
         font-weight: 800; 
         color: var(--text-dark);
-        /* ظل داخلي عميق للحقل */
         box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
     }
     
@@ -110,7 +109,6 @@
         outline: none; 
         background-color: var(--white); 
         transform: translateY(-2px);
-        /* تحويل الظل من داخلي إلى خارجي متوهج */
         box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
     }
     
@@ -123,7 +121,6 @@
         font-size: 15px; 
         text-align: center; 
         border: 1px solid var(--border-teal);
-        /* ظل داخلي بسيط لصندوق المادة */
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
     }
 
@@ -147,7 +144,7 @@
     #map-container { 
         width: 100%; height: 280px; border-radius: 10px; overflow: hidden; 
         border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; 
-        box-shadow: inset 0 5px 15px rgba(0,0,0,0.08); /* عمق خريطة */
+        box-shadow: inset 0 5px 15px rgba(0,0,0,0.08);
     }
     #map { width: 100%; height: 100%; }
 
@@ -176,7 +173,6 @@
         font-weight: 800; 
         color: var(--text-dark); 
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        /* ظل داخلي عميق */
         box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
     }
     
@@ -185,7 +181,6 @@
         border-top: 1px solid var(--primary-teal);
         background-color: var(--white); 
         transform: translateY(-2px);
-        /* تحويل الظل من داخلي إلى خارجي متوهج */
         box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
     }
 
@@ -242,6 +237,19 @@
     .days div.cell:hover { background: #f8fafc !important; }
     .days div.cell:nth-child(7n), .days div.cell:nth-child(7n-1) { background: #fafbfc; }
     .days div.cell.out-of-month { background: #f1f5f9 !important; color: #cbd5e1; }
+    
+    /* 🔴 تنسيقات الأيام الفائتة بالتقويم */
+    .days div.cell.past-cell { 
+        background: #f8fafc !important; 
+        cursor: not-allowed; 
+        opacity: 0.6; 
+    }
+    .days div.cell.past-cell .date-number { 
+        text-decoration: line-through; 
+        color: #94a3b8; 
+    }
+    .days div.cell.past-cell:hover { background: #f8fafc !important; }
+
     .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; }
     .cell.today-cell .date-number { background: var(--dark-teal); color: var(--white); box-shadow: 0 2px 4px rgba(27, 115, 106, 0.3); }
     .cell.selected-cell { box-shadow: inset 0 0 0 3px var(--primary-teal); background: var(--light-teal) !important;}
@@ -267,7 +275,7 @@
     .error-msg.show { display: block; }
 
     /* ========================================== */
-    /* 🃏 قسم جدول وملخص المواعيد بنظام الكروت (مع خيال 3D مخصص) */
+    /* 🃏 قسم جدول وملخص المواعيد بنظام الكروت */
     /* ========================================== */
     .summary-section { 
         background: var(--white); 
@@ -935,9 +943,15 @@
         dayEl.appendChild(badge);
       }
 
-      if (selectedDateKey === key) dayEl.classList.add('selected-cell');
+      // 🔴 منع الضغط وإضافة كلاس الأيام الفائتة
+      if (thisDate.getTime() < today.getTime()) {
+          dayEl.classList.add('past-cell');
+          dayEl.title = "هذا اليوم فائت ولا يمكن الحجز فيه";
+      } else {
+          if (selectedDateKey === key) dayEl.classList.add('selected-cell');
+          dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
+      }
 
-      dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
       daysContainer.appendChild(dayEl);
     }
   }
@@ -1065,7 +1079,7 @@
       let locationDisplay = data.address || data.street || data.gpsLocation || 'غير محدد على الخريطة';
 
       let visibilityHtml = isVisible 
-          ? `<span style="color:#0284c7; font-weight:900;">👁️ ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
+          ? `<span style="color:#0284c7; font-weight:900;">👁️️ ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
           : `<span style="color:#b91c1c; font-weight:900;">🙈 مخفي عن الطلبة (مخفي من تطبيق الطلاب)</span>`;
 
       document.getElementById('publishModalContent').innerHTML = `
