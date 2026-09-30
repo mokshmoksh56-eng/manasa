@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>دخول الطالب - منصة احجزلي</title>
+<title>دخول المعلم - منصة احجزلي</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
     body {
         min-height: 100vh;
-        background: linear-gradient(180deg, #e8f5ec 0%, #d4ecdc 100%);
+        background: linear-gradient(180deg, #e8f0fa 0%, #d4e3f7 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -19,19 +19,25 @@
     .login-card {
         background: white;
         border-radius: 24px;
-        box-shadow: 0 20px 60px rgba(30, 126, 52, 0.15);
+        box-shadow: 0 20px 60px rgba(26, 60, 109, 0.15);
         max-width: 440px;
         width: 100%;
         overflow: hidden;
     }
 
     .login-header {
-        background: linear-gradient(180deg, rgba(46, 204, 113, 0.95) 0%, rgba(30, 126, 52, 0.98) 100%),
-                    url('teacher2.png') center/cover no-repeat;
-        padding: 30px 25px 35px;
+        /* تم تعديل موضع الصورة إلى top center لتجنب قصها من الأعلى */
+        background: url('teacher.png') top center/cover no-repeat;
+        /* تم زيادة الارتفاع والمساحات الداخلية لتظهر الصورة بالكامل تقريباً */
+        min-height: 240px;
+        padding: 40px 25px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; /* لدفع النص للأسفل وترك الصورة واضحة */
         text-align: center;
         position: relative;
         border-bottom: 4px solid #f1c40f;
+        transition: background-image 0.4s ease-in-out;
     }
 
     .login-header::after {
@@ -44,56 +50,51 @@
         background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
     }
 
-    .login-icon {
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 15px;
-        font-size: 40px;
-        backdrop-filter: blur(5px);
-        animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
-    }
-
     .login-header h1 {
         font-size: 26px;
         font-weight: 900;
         color: #f1c40f;
         margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 0 #8a6d00, 0 4px 8px rgba(0,0,0,0.8);
     }
 
     .login-header p {
         font-size: 13px;
-        color: #e0f2e7;
+        color: #ffffff;
         font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    .login-body { padding: 30px 25px; }
-
-    .welcome-text {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        border: 2px dashed #86efac;
+    .tabs {
+        display: flex;
+        background: #f1f5f9;
         border-radius: 12px;
-        padding: 14px 16px;
-        margin-bottom: 22px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #166534;
-        text-align: center;
-        line-height: 1.6;
+        margin: 20px 25px 0;
+        padding: 5px;
+        gap: 5px;
     }
 
-    .welcome-text .icon { font-size: 18px; margin-left: 5px; }
+    .tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 900;
+        color: #64748b;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab.active {
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(43, 92, 158, 0.3);
+    }
+
+    .login-body { padding: 25px; }
 
     .form-group { margin-bottom: 18px; }
 
@@ -101,7 +102,7 @@
         display: block;
         font-size: 13px;
         font-weight: 900;
-        color: #166534;
+        color: #1a3c6d;
         margin-bottom: 8px;
     }
 
@@ -114,16 +115,29 @@
         border-radius: 12px;
         font-size: 16px;
         font-weight: 700;
-        color: #166534;
+        color: #1a3c6d;
         background: #fff;
         transition: all 0.2s ease;
         font-family: inherit;
     }
 
+    select.form-input {
+        cursor: pointer;
+    }
+
     .form-input:focus {
-        border-color: #2ecc71;
+        border-color: #2b5c9e;
         outline: none;
-        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15);
+        box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .form-input[dir="ltr"] {
+        text-align: left;
     }
 
     .pin-wrapper {
@@ -144,7 +158,7 @@
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        background: #f0fdf4;
+        background: #f1f5f9;
         border: none;
         border-radius: 8px;
         width: 36px;
@@ -157,19 +171,19 @@
         transition: 0.2s;
     }
 
-    .pin-toggle:hover { background: #dcfce7; }
+    .pin-toggle:hover { background: #e2e8f0; }
 
     .submit-btn {
         width: 100%;
         padding: 16px;
-        background: linear-gradient(180deg, #2ecc71 0%, #1e7e34 100%);
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
         color: white;
         border: none;
         border-radius: 12px;
         font-size: 17px;
         font-weight: 900;
         cursor: pointer;
-        box-shadow: 0 6px 0 #155724, 0 8px 15px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.15);
         transition: 0.2s;
         margin-top: 8px;
         display: flex;
@@ -180,8 +194,35 @@
 
     .submit-btn:active {
         transform: translateY(6px);
-        box-shadow: 0 0 0 #155724;
+        box-shadow: 0 0 0 #0d2342;
     }
+
+    .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .switch-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .switch-link button {
+        background: none;
+        border: none;
+        color: #2b5c9e;
+        font-weight: 900;
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 13px;
+        padding: 0;
+        margin-right: 5px;
+    }
+
+    .switch-link button:hover { color: #1a3c6d; }
 
     .error-msg {
         background: #fef2f2;
@@ -215,51 +256,44 @@
 
     .success-msg.show { display: flex; }
 
+    .form-view { display: none; }
+    .form-view.active { display: block; }
+
     .back-home {
         display: block;
         text-align: center;
-        margin: 0 25px 25px;
+        margin: 15px 25px 25px;
         color: #64748b;
         text-decoration: none;
         font-size: 13px;
         font-weight: 700;
     }
 
-    .back-home:hover { color: #2ecc71; }
-
-    .info-box {
-        background: #fffbeb;
-        border: 2px solid #fde68a;
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-top: 16px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #92400e;
-        line-height: 1.7;
+    .back-home:hover { color: #2b5c9e; }
+    
+    .row-group {
         display: flex;
-        gap: 8px;
-        align-items: flex-start;
+        gap: 15px;
     }
-
-    .info-box .icon { font-size: 16px; flex-shrink: 0; }
+    .row-group .form-group {
+        flex: 1;
+    }
 </style>
 </head>
 <body>
 
 <div class="login-card">
-    <div class="login-header">
-        <div class="login-icon">🧑‍🎓</div>
-        <h1>بوابة الطالب</h1>
-        <p>منصة احجزلي - دخول الطلاب</p>
+    <div class="login-header" id="headerSection">
+        <h1>بوابة المعلم</h1>
+        <p>منصة احجزلي - دخول المعلمين</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">🔐 تسجيل دخول</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">✍️ حساب جديد</button>
     </div>
 
     <div class="login-body">
-
-        <div class="welcome-text">
-            <span class="icon">👋</span>
-            أهلاً بك يا بطل! سجّل بياناتك عشان نعرضلك المجموعات اللي تناسبك.
-        </div>
 
         <div class="error-msg" id="errorMsg">
             <span>⚠️</span>
@@ -270,46 +304,128 @@
             <span id="successText"></span>
         </div>
 
-        <form onsubmit="handleStudentLogin(event)">
-            <div class="form-group">
-                <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
-                <input type="tel" id="studentPhone" class="form-input" 
-                       placeholder="01xxxxxxxxx" 
-                       pattern="01[0125][0-9]{8}" 
-                       maxlength="11" 
-                       required 
-                       dir="ltr"
-                       autocomplete="tel"
-                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
-                <div class="pin-wrapper">
-                    <input type="password" id="studentPin" class="form-input pin-input" 
-                           placeholder="••••" 
-                           maxlength="4" 
-                           pattern="[0-9]{4}"
-                           inputmode="numeric"
-                           required
+        <div class="form-view active" id="loginView">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
+                    <input type="tel" id="loginPhone" class="form-input" 
+                           placeholder="01xxxxxxxxx" 
+                           pattern="01[0125][0-9]{8}" 
+                           maxlength="11" 
+                           required 
                            dir="ltr"
-                           autocomplete="new-password"
-                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                    <button type="button" class="pin-toggle" onclick="togglePin('studentPin', this)">👁️</button>
+                           oninput="this.value=this.value.replace(/[^0-9]/g,''); checkLoginPhone(this.value);">
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
+                    <div class="pin-wrapper">
+                        <input type="password" id="loginPin" class="form-input pin-input" 
+                               placeholder="••••" 
+                               maxlength="4" 
+                               pattern="[0-9]{4}"
+                               inputmode="numeric"
+                               required
+                               dir="ltr"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        <button type="button" class="pin-toggle" onclick="togglePin('loginPin', this)">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="loginBtn">
+                    <span>🚀</span>
+                    <span>تسجيل الدخول</span>
+                </button>
+            </form>
+
+            <div class="switch-link">
+                ليس لديك حساب؟
+                <button type="button" onclick="switchTab('register')">أنشئ حساب جديد</button>
             </div>
+        </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span>🚀</span>
-                <span>دخول / إنشاء حساب</span>
-            </button>
-        </form>
+        <div class="form-view" id="registerView">
+            <form onsubmit="handleRegister(event)">
+                
+                <div class="row-group">
+                    <div class="form-group">
+                        <label class="form-label">🎓 اللقب <span class="required">*</span></label>
+                        <select id="regTitle" class="form-input" required onchange="updateHeaderImage(this.value)">
+                            <option value="" disabled selected>اختر...</option>
+                            <option value="مستر">مستر</option>
+                            <option value="مس">مس</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🎂 العمر <span class="required">*</span></label>
+                        <input type="number" id="regAge" class="form-input" 
+                               placeholder="مثال: 30" 
+                               min="18" max="100" 
+                               required>
+                    </div>
+                </div>
 
-        <div class="info-box">
-            <span class="icon">💡</span>
-            <div>
-                <strong>أول مرة تدخل؟</strong> هيتم إنشاء حسابك تلقائياً برقم التليفون والرقم السري.<br>
-                <strong>دخلت قبل كده؟</strong> دخل نفس الرقم والرقم السري.
+                <div class="form-group">
+                    <label class="form-label">👤 الاسم <span class="required">*</span></label>
+                    <input type="text" id="regName" class="form-input" 
+                           placeholder="مثال: أحمد محمد" 
+                           required
+                           maxlength="50">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
+                    <input type="tel" id="regPhone" class="form-input" 
+                           placeholder="01xxxxxxxxx" 
+                           pattern="01[0125][0-9]{8}" 
+                           maxlength="11" 
+                           required 
+                           dir="ltr"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                </div>
+
+                <div class="row-group">
+                    <div class="form-group">
+                        <label class="form-label">🔒 الرقم السري <span class="required">*</span></label>
+                        <div class="pin-wrapper">
+                            <input type="password" id="regPin" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🔒 تأكيد السري <span class="required">*</span></label>
+                        <div class="pin-wrapper">
+                            <input type="password" id="regPinConfirm" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="registerBtn">
+                    <span>✨</span>
+                    <span>إنشاء الحساب</span>
+                </button>
+            </form>
+
+            <div class="switch-link">
+                لديك حساب بالفعل؟
+                <button type="button" onclick="switchTab('login')">سجّل دخول</button>
             </div>
         </div>
 
@@ -319,6 +435,32 @@
 </div>
 
 <script>
+    // دالة لتحديث الصورة بناءً على اللقب
+    function updateHeaderImage(title) {
+        const header = document.getElementById('headerSection');
+        if (title === 'مس') {
+            // تم إضافة top center لضمان عدم قص الصورة في تغيير اللقب أيضاً
+            header.style.background = "url('miss.png') top center/cover no-repeat";
+        } else {
+            header.style.background = "url('teacher.png') top center/cover no-repeat";
+        }
+    }
+
+    // دالة للتحقق من رقم الهاتف في شاشة الدخول وتغيير الصورة تلقائياً
+    function checkLoginPhone(phone) {
+        if (phone.length === 11) {
+            const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
+            const user = teachers[phone];
+            if (user && user.title === 'مس') {
+                updateHeaderImage('مس');
+            } else {
+                updateHeaderImage('مستر');
+            }
+        } else {
+            updateHeaderImage('مستر');
+        }
+    }
+
     function togglePin(inputId, btn) {
         const input = document.getElementById(inputId);
         if (input.type === 'password') {
@@ -327,6 +469,22 @@
         } else {
             input.type = 'password';
             btn.textContent = '👁️';
+        }
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+        hideMessages();
+
+        if (tab === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('loginView').classList.add('active');
+            checkLoginPhone(document.getElementById('loginPhone').value);
+        } else {
+            document.getElementById('tabRegister').classList.add('active');
+            document.getElementById('registerView').classList.add('active');
+            updateHeaderImage(document.getElementById('regTitle').value || 'مستر');
         }
     }
 
@@ -347,34 +505,71 @@
         document.getElementById('successMsg').classList.remove('show');
     }
 
-    function handleStudentLogin(e) {
+    function handleLogin(e) {
         e.preventDefault();
         hideMessages();
 
-        const phone = document.getElementById('studentPhone').value.trim();
-        const pin = document.getElementById('studentPin').value.trim();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pin = document.getElementById('loginPin').value.trim();
 
-        const students = JSON.parse(localStorage.getItem('students_db') || '{}');
+        const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
+        const user = teachers[phone];
 
-        if (!students[phone]) {
-            // مستخدم جديد
-            students[phone] = { id: phone, phone, pin, role: 'student' };
-            localStorage.setItem('students_db', JSON.stringify(students));
-            showSuccess('🎉 تم إنشاء حسابك بنجاح!');
-        } else if (students[phone].pin !== pin) {
-            showError('الرقم السري غير صحيح لهذا الهاتف.');
+        if (!user || user.pin !== pin) {
+            showError('رقم التليفون أو الرقم السري غير صحيح.');
             return;
-        } else {
-            showSuccess('✅ تم تسجيل الدخول بنجاح!');
         }
 
-        const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
-        existingProfile.phone = phone;
-        existingProfile.id = phone;
-        localStorage.setItem('current_student_profile', JSON.stringify(existingProfile));
+        localStorage.setItem('current_teacher_profile', JSON.stringify(user));
+        localStorage.setItem('current_teacher_phone', user.phone);
+        showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
 
         setTimeout(() => {
-            window.location.href = 'talep.html';
+            window.location.href = 'mester1.html';
+        }, 500);
+    }
+
+    function handleRegister(e) {
+        e.preventDefault();
+        hideMessages();
+
+        const title = document.getElementById('regTitle').value;
+        const age = document.getElementById('regAge').value.trim();
+        const name = document.getElementById('regName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pin = document.getElementById('regPin').value.trim();
+        const pinConfirm = document.getElementById('regPinConfirm').value.trim();
+
+        if (name.length < 3) {
+            showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
+            return;
+        }
+
+        if (pin !== pinConfirm) {
+            showError('الرقم السري وتأكيده غير متطابقين.');
+            return;
+        }
+
+        const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
+        
+        teachers[phone] = { 
+            id: phone, 
+            title: title,
+            age: age,
+            name: name, 
+            phone: phone, 
+            pin: pin, 
+            role: 'teacher' 
+        };
+        
+        localStorage.setItem('teachers_db', JSON.stringify(teachers));
+
+        localStorage.setItem('current_teacher_profile', JSON.stringify(teachers[phone]));
+        localStorage.setItem('current_teacher_phone', phone);
+        showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
+
+        setTimeout(() => {
+            window.location.href = 'mester1.html';
         }, 500);
     }
 </script>
