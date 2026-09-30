@@ -31,6 +31,7 @@
         text-align: center;
         position: relative;
         border-bottom: 4px solid #f1c40f;
+        transition: background-image 0.4s ease-in-out; /* إضافة تأثير ناعم عند تبديل الصورة */
     }
 
     .login-header::after {
@@ -276,7 +277,7 @@
 <body>
 
 <div class="login-card">
-    <div class="login-header">
+    <div class="login-header" id="headerSection">
         <h1>بوابة المعلم</h1>
         <p>منصة احجزلي - دخول المعلمين</p>
     </div>
@@ -307,7 +308,7 @@
                            maxlength="11" 
                            required 
                            dir="ltr"
-                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                           oninput="this.value=this.value.replace(/[^0-9]/g,''); checkLoginPhone(this.value);">
                 </div>
 
                 <div class="form-group">
@@ -343,7 +344,7 @@
                 <div class="row-group">
                     <div class="form-group">
                         <label class="form-label">🎓 اللقب <span class="required">*</span></label>
-                        <select id="regTitle" class="form-input" required>
+                        <select id="regTitle" class="form-input" required onchange="updateHeaderImage(this.value)">
                             <option value="" disabled selected>اختر...</option>
                             <option value="مستر">مستر</option>
                             <option value="مس">مس</option>
@@ -428,6 +429,31 @@
 </div>
 
 <script>
+    // دالة لتحديث الصورة بناءً على اللقب
+    function updateHeaderImage(title) {
+        const header = document.getElementById('headerSection');
+        if (title === 'مس') {
+            header.style.backgroundImage = "url('miss.png')";
+        } else {
+            header.style.backgroundImage = "url('teacher.png')";
+        }
+    }
+
+    // دالة للتحقق من رقم الهاتف في شاشة الدخول وتغيير الصورة تلقائياً
+    function checkLoginPhone(phone) {
+        if (phone.length === 11) {
+            const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
+            const user = teachers[phone];
+            if (user && user.title === 'مس') {
+                updateHeaderImage('مس');
+            } else {
+                updateHeaderImage('مستر');
+            }
+        } else {
+            updateHeaderImage('مستر');
+        }
+    }
+
     function togglePin(inputId, btn) {
         const input = document.getElementById(inputId);
         if (input.type === 'password') {
@@ -447,9 +473,13 @@
         if (tab === 'login') {
             document.getElementById('tabLogin').classList.add('active');
             document.getElementById('loginView').classList.add('active');
+            // التأكد من عرض الصورة الصحيحة عند العودة لشاشة الدخول
+            checkLoginPhone(document.getElementById('loginPhone').value);
         } else {
             document.getElementById('tabRegister').classList.add('active');
             document.getElementById('registerView').classList.add('active');
+            // التأكد من عرض الصورة الصحيحة عند الانتقال لإنشاء حساب
+            updateHeaderImage(document.getElementById('regTitle').value || 'مستر');
         }
     }
 
@@ -517,7 +547,6 @@
 
         const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
         
-        // حفظ البيانات شاملة اللقب والعمر
         teachers[phone] = { 
             id: phone, 
             title: title,
