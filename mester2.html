@@ -76,7 +76,7 @@
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
     /* 🗺️ خريطة Mapbox */
-    #map-container { width: 100%; height: 260px; border-radius: 10px; overflow: hidden; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; }
+    #map-container { width: 100%; height: 280px; border-radius: 10px; overflow: hidden; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; margin-bottom: 8px; }
     #map { width: 100%; height: 100%; }
 
     .form-group select { width: 100%; padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 14.5px; font-family: inherit; outline: none; background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e3a8a' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center; background-size: 14px; padding-left: 32px; cursor: pointer; appearance: none; font-weight: 800; color: #0f172a; }
@@ -86,6 +86,15 @@
     .repeat-option label { font-size: 14px; color: #7e22ce; font-weight: 900; cursor: pointer; margin: 0; display: inline-block; }
     .duration-info { background: #e0f2fe; border-right: 4px solid #0284c7; color: #0369a1; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; }
     .duration-info.show { display: block; }
+
+    /* ⏱ زر الموقع والعداد */
+    .btn-gps { 
+        background: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 8px; 
+        font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; 
+        justify-content: center; font-family: inherit; width: 100%; transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+    }
+    .btn-gps:disabled { opacity: 0.8; cursor: not-allowed; }
 
     /* ========================================== */
     /* 📅 جدول التقويم */
@@ -249,14 +258,17 @@
           
           <div class="form-group full-width">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <!-- 🗺️️ خريطة Mapbox هنا -->
+            <!-- 🗺️ خريطة Mapbox هنا -->
             <div id="map-container">
               <div id="map"></div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                <span id="location-text" style="color: #475569; font-size: 13px; font-weight: 900;">حدد الموقع على الخريطة</span>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px;">
+                <!-- زر الـ GPS المخصص مع العداد التنازلي -->
+                <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد موقعي بدقة الآن</button>
                 <input type="hidden" id="gps-coords" value="">
             </div>
+            <div id="location-text" style="color: #475569; font-size: 14px; font-weight: 900; margin-top: 8px; text-align: center;">يرجى تحديد الموقع على الخريطة أو عبر الزر</div>
           </div>
         </div>
 
@@ -387,9 +399,7 @@
   // ==========================================
   // 🗺️ تهيئة خريطة Mapbox
   // ==========================================
-  // تم تصحيح المفتاح إلى حروف صغيرة (pk.)
   mapboxgl.accessToken = 'pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
-  // ضبط دعم النصوص العربية
   mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
 
   const map = new mapboxgl.Map({
@@ -399,10 +409,9 @@
       zoom: 12
   });
 
-  // إضافة أدوات التحكم بالخريطة (زوم وتوجيه)
   map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
-  // إضافة زر تحديد الموقع التلقائي (GPS)
+  // إضافة زر تحديد الموقع المدمج في الخريطة
   const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
@@ -410,7 +419,6 @@
   });
   map.addControl(geolocate, 'top-right');
 
-  // الدبوس القابل للتحريك
   const marker = new mapboxgl.Marker({ draggable: true })
       .setLngLat([31.3917, 31.0534])
       .addTo(map);
@@ -418,29 +426,89 @@
   function updateLocationInput() {
       const lngLat = marker.getLngLat();
       document.getElementById('gps-coords').value = `${lngLat.lat.toFixed(6)},${lngLat.lng.toFixed(6)}`;
-      document.getElementById('location-text').textContent = `تم التحديد: ${lngLat.lat.toFixed(4)}, ${lngLat.lng.toFixed(4)}`;
-      document.getElementById('location-text').style.color = '#15803d'; // لون أخضر عند التحديد
+      
+      const txt = document.getElementById('location-text');
+      txt.textContent = `دقة الموقع الحالية: ${lngLat.lat.toFixed(5)}, ${lngLat.lng.toFixed(5)}`;
+      txt.style.color = '#15803d';
   }
 
-  // تحديث القيم عند سحب الدبوس
   marker.on('dragend', updateLocationInput);
 
-  // تحريك الدبوس عند النقر على الخريطة
   map.on('click', (e) => {
       marker.setLngLat(e.lngLat);
       updateLocationInput();
   });
 
-  // ربط الدبوس مع موقع الـ GPS
   geolocate.on('geolocate', function(e) {
       marker.setLngLat([e.coords.longitude, e.coords.latitude]);
       updateLocationInput();
   });
 
-  // ضمان تحديث أبعاد الخريطة وتفاصيلها عند تحميلها
   map.on('load', () => {
       map.resize();
   });
+
+  // ==========================================
+  // ⏱ دالة جلب الموقع بدقة متناهية مع العداد التنازلي
+  // ==========================================
+  function getLocation(e) {
+      e.preventDefault();
+      const btn = document.getElementById('custom-gps-btn');
+      const textDisplay = document.getElementById('location-text');
+      const hiddenInput = document.getElementById('gps-coords');
+      
+      let counter = 3; // 3 ثواني للعداد
+      btn.disabled = true;
+      btn.style.background = '#d97706'; // لون تحذيري (برتقالي) أثناء الانتظار
+      btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
+      
+      const countdownInterval = setInterval(() => {
+          counter--;
+          if (counter > 0) {
+              btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
+          } else {
+              btn.innerHTML = `⏳ جلب إشارة الأقمار...`;
+          }
+      }, 1000);
+
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+              position => {
+                  // ننتظر حتى ينتهي العداد (ليشعر المستخدم بالدقة)
+                  setTimeout(() => {
+                      clearInterval(countdownInterval);
+                      const lat = position.coords.latitude;
+                      const lng = position.coords.longitude;
+                      
+                      hiddenInput.value = `${lat},${lng}`;
+                      btn.innerHTML = '✅ تم التحديد بدقة عالية'; 
+                      btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+                      btn.disabled = false;
+                      
+                      textDisplay.textContent = `دقة متناهية مسجلة: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                      textDisplay.style.color = '#15803d';
+
+                      // تحديث الخريطة والدبوس مع زوم قوي جداً
+                      marker.setLngLat([lng, lat]);
+                      map.flyTo({ center: [lng, lat], zoom: 17, essential: true });
+                  }, Math.max(0, (counter + 1) * 1000));
+              },
+              error => {
+                  clearInterval(countdownInterval);
+                  btn.innerHTML = '❌ فشل التحديد'; 
+                  btn.style.background = '#dc2626';
+                  btn.disabled = false;
+                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS (الموقع) في هاتفك';
+                  textDisplay.style.color = '#dc2626';
+              },
+              { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 } // طلب أعلى دقة ممكنة
+          );
+      } else {
+          clearInterval(countdownInterval);
+          btn.innerHTML = '❌ الخدمة غير مدعومة';
+          btn.disabled = false;
+      }
+  }
 
   // ==========================================
   // 📅 إعداد التقويم والوظائف الأساسية
@@ -682,7 +750,6 @@
     const publishedSlots = JSON.parse(localStorage.getItem('published_slots') || '[]');
     let allItems = [];
 
-    // 1. المواعيد المنشورة أونلاين
     publishedSlots.forEach(slot => {
         allItems.push({
             id: slot.id,
@@ -703,7 +770,6 @@
         });
     });
 
-    // 2. المواعيد المحلية العادية
     for (const dKey in appointments) {
         (appointments[dKey] || []).forEach(localAppt => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.date === dKey && item.start === localAppt.start && item.end === localAppt.end && item.type === 'normal');
@@ -712,12 +778,12 @@
                 const dayWk = new Date(y, m - 1, d).getDay();
                 allItems.push({
                     id: `local_norm_${dKey}_${localAppt.start}`,
-                    groupName: localAppt.groupName || 'مجموعة دراسية',
-                    teacherName: localAppt.teacherName || 'المعلم',
-                    subjectData: localAppt.subjectData || 'المادة المحددة',
-                    studentsCount: localAppt.studentsCount || 20,
-                    genderAllowed: localAppt.genderAllowed || 'مختلط',
-                    location: localAppt.location || 'السنتر',
+                    groupName: localAppt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة دراسية',
+                    teacherName: localAppt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
+                    subjectData: localAppt.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
+                    studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
+                    genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
+                    location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
                     start: localAppt.start,
                     end: localAppt.end,
                     type: 'normal',
@@ -730,19 +796,18 @@
         });
     }
 
-    // 3. المواعيد المتكررة أسبوعياً
     for (const dWk in recurringAppointments) {
         (recurringAppointments[dWk] || []).forEach(localRec => {
             const isAlreadyOnline = allItems.some(item => item.isOnline && item.dayOfWeek == dWk && item.start === localRec.start && item.end === localRec.end && item.type === 'recurring');
             if (!isAlreadyOnline) {
                 allItems.push({
                     id: `local_rec_${dWk}_${localRec.start}`,
-                    groupName: localRec.groupName || 'مجموعة أسبوعية',
-                    teacherName: localRec.teacherName || 'المعلم',
-                    subjectData: localRec.subjectData || 'المادة المحددة',
-                    studentsCount: localRec.studentsCount || 20,
-                    genderAllowed: localRec.genderAllowed || 'مختلط',
-                    location: localRec.location || 'السنتر',
+                    groupName: localRec.groupName || document.getElementById('group-name').value.trim() || 'مجموعة أسبوعية',
+                    teacherName: localRec.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
+                    subjectData: localRec.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
+                    studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
+                    genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
+                    location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
                     start: localRec.start,
                     end: localRec.end,
                     type: 'recurring',
@@ -925,7 +990,6 @@
     const end = document.getElementById('endTime').value;
     const isRecurring = document.getElementById('repeatWeekly').checked;
 
-    // ✅ التأكد من تعبئة كافة الحقول في الخطوات السابقة
     if (!groupName) {
         showAddError('يرجى تعبئة "اسم المجموعة" في الخطوة رقم 1');
         document.getElementById('group-name').focus();
@@ -994,7 +1058,6 @@
 
     saveAllAppts();
     
-    // تصفير فقط حقول الوقت لإتاحة إضافة مواعيد أخرى لنفس المجموعة بسهولة
     document.getElementById('startTime').value = ''; 
     document.getElementById('endTime').value = '';
     document.getElementById('durationInfo').classList.remove('show'); 
@@ -1004,7 +1067,6 @@
     renderCalendar();
     renderAllCardsSummary();
 
-    // التمرير السلس إلى قسم الكروت
     setTimeout(() => {
         document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
     }, 150);
@@ -1044,7 +1106,6 @@
   }
 
   window.publishSingleApptOnline = function(appt) {
-      // ✅ التأكد الإضافي عند النشر
       const groupName = appt.groupName || document.getElementById('group-name').value.trim();
       const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
       const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
@@ -1191,19 +1252,14 @@
       }
   };
 
-  function getLocation(e) {
-      e.preventDefault();
-      // لا حاجة لفعل شيء هنا لأن Mapbox GeolocateControl يتعامل مع هذا، لكننا تركناها لربط الزر الأساسي إن لزم.
-  }
-
-  function closePublishModal(e, force = false) {
+  window.closePublishModal = function(e, force = false) {
       if (force || e.target.id === 'publishModalOverlay') {
           document.getElementById('publishModalOverlay').classList.remove('active');
       }
-  }
-  
-  window.closePublishModal = closePublishModal;
-  window.closeEditModal = closeEditModal;
+  };
+  window.closeEditModal = function(e) {
+      if (e.target.id === 'editModalOverlay') cancelEdit();
+  };
 
   populateTimeSelects();
   renderCalendar();
