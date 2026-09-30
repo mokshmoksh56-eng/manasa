@@ -44,7 +44,7 @@
     .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
 
     /* ========================================== */
-    /* 📋 تنسيقات النافذة المنبثقة (Modal) */
+    /* 📋 النافذة المنبثقة (Modal) */
     /* ========================================== */
     .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
     .publish-modal-overlay.active { display: flex; }
@@ -89,7 +89,7 @@
     }
 
     /* ========================================== */
-    /* 📅 تنسيقات التقويم وتوزيع الأزرار الذكي */
+    /* 📅 التقويم والمواعيد */
     /* ========================================== */
     .new-calendar-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 25px; }
     .calendar-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 650px; border-top: 4px solid #f1c40f; }
@@ -172,7 +172,7 @@
     .edit-form.show { display: block; }
     .edit-form .edit-title { font-size: 14px; color: #b8860b; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
-    /* كارت الموعد */
+    /* كارت الموعد الذكي */
     .appointment { 
         display: flex; flex-direction: column; background: #fff; 
         border-right: 4px solid #4a90e2; border-radius: 10px; padding: 14px; 
@@ -185,7 +185,6 @@
     .appointment .time { font-weight: 800; color: #2c3e50; font-size: 16px; }
     .appointment .recurring-tag { display: inline-block; background: #9b59b6; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; }
 
-    /* أزرار الإجراءات */
     .appt-actions { 
         display: flex; width: 100%; justify-content: space-between; align-items: center;
         border-top: 1px dashed #eaeef3; padding-top: 12px; gap: 8px; flex-wrap: wrap;
@@ -233,7 +232,7 @@
     <div class="stepper">
         <div class="step">✓ 1. التخصص</div>
         <div class="step-divider">❯</div>
-        <div class="step active">✏️ 2. بيانات المجموعة</div>
+        <div class="step active">✏️️ 2. بيانات المجموعة</div>
     </div>
 </header>
 
@@ -253,7 +252,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span class="cell-title">👨‍‍🏫 اسم المستر/السنتر</span>
+                        <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
                         <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
                     </td>
                     <td>
@@ -406,7 +405,7 @@
   </div>
 </div>
 
-<!-- شاشة الانتظار -->
+<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
@@ -419,7 +418,9 @@
     <span>تم الحفظ تلقائياً</span>
 </div>
 
-<!-- محرك التقويم الأساسي -->
+<!-- ========================================== -->
+<!-- ⚙️ سكربت التقويم الأساسي -->
+<!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -430,11 +431,9 @@
   let selectedDateKey = null;
   let editingAppt = null;
 
-  // ذاكرة التخزين المحلية المؤقتة
   let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
   let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
 
-  // ذاكرة السيرفر الأونلاين
   window.onlineAppointments = {};
   window.onlineRecurring = {};
 
@@ -500,7 +499,6 @@
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 
-  // دمج المواعيد الأونلاين والمحلية
   function getDayAppointments(year, month, day) {
     const key = dateKey(year, month, day);
     const dayOfWeek = new Date(year, month, day).getDay();
@@ -511,7 +509,6 @@
     const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ ...a, type: 'normal' }));
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring' }));
 
-    // دمج ومنع التكرار
     const map = new Map();
     [...normalLocal, ...recurringLocal, ...normalOnline, ...recurringOnline].forEach(item => {
         const idKey = item.firebaseId || `${item.start}_${item.end}_${item.type}`;
@@ -707,12 +704,10 @@
 
     if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
 
-    // تعديل سحابي إذا كان منشوراً مسبقاً
     if (editingAppt.firebaseId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.firebaseId, newStart, newEnd, isRecurring);
     }
 
-    // تعديل محلي
     if (editingAppt.type === 'recurring') {
       const list = recurringAppointments[dayOfWeek] || [];
       const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
@@ -781,14 +776,50 @@
 </script>
 
 <!-- ========================================== -->
-<!-- 🚀 سكربت الربط الحي والمزامنة أونلاين بـ Firebase -->
+<!-- 🔥 تضمين مكتبات Firebase وبيانات مشروعك الحقيقية -->
 <!-- ========================================== -->
 <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
     import { 
-        db, waitForAuth, 
-        collection, addDoc, doc, deleteDoc, updateDoc,
+        getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, 
         onSnapshot, serverTimestamp 
-    } from './firebase-config.js';
+    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+    // ✅ بيانات مشروعك الفعلية المدمجة مباشرة
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
+      authDomain: "tagroba-fbe9b.firebaseapp.com",
+      databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
+      projectId: "tagroba-fbe9b",
+      storageBucket: "tagroba-fbe9b.firebasestorage.app",
+      messagingSenderId: "238106301728",
+      appId: "1:238106301728:web:549602e55f7fe8a7b0b345",
+      measurementId: "G-CRVE7VMZMS"
+    };
+
+    // تهيئة التطبيق
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    function waitForAuth() {
+        return new Promise((resolve, reject) => {
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    unsubscribe();
+                    resolve(user);
+                } else {
+                    signInAnonymously(auth)
+                        .then((cred) => {
+                            unsubscribe();
+                            resolve(cred.user);
+                        })
+                        .catch((err) => reject(err));
+                }
+            }, reject);
+        });
+    }
 
     function getLocation(e) {
         e.preventDefault();
@@ -817,7 +848,7 @@
         }
     }
 
-    // 1. الاستماع الحي لأي مواعيد جديدة/معدلة/محذوفة على السيرفر
+    // 1. الاستماع الحي للسيرفر لمزامنة التليفونات الأخرى أونلاين
     async function listenToOnlineSlots() {
         try {
             await waitForAuth();
@@ -846,7 +877,7 @@
                     const [y, m, d] = selectedDateKey.split('-').map(Number);
                     showPanel(y, m - 1, d);
                 }
-                console.log("📡 تم تحديث المواعيد أونلاين على كافة التليفونات.");
+                console.log("📡 تم تحديث المواعيد أونلاين من السيرفر.");
             }, (error) => {
                 console.error("خطأ في المزامنة الحية:", error);
             });
@@ -855,7 +886,7 @@
         }
     }
 
-    // 2. نشر موعد في Firebase أونلاين
+    // 2. نشر الموعد في Firebase أونلاين
     async function publishSingleApptOnline(appt) {
         const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
@@ -922,6 +953,10 @@
                     <span class="publish-data-value">${teacherName}</span>
                 </div>
                 <div class="publish-data-item">
+                    <span class="publish-data-label">👥 العدد المطلوب:</span>
+                    <span class="publish-data-value">${studentsCount} طلاب</span>
+                </div>
+                <div class="publish-data-item">
                     <span class="publish-data-label">📅 الموعد المنشور أونلاين:</span>
                     <div class="publish-data-value appts">${apptDetailsHtml}</div>
                 </div>
@@ -935,19 +970,18 @@
         }
     }
 
-    // 3. حذف موعد من السيرفر لمزامنته مع جميع الأجهزة
+    // 3. حذف الموعد أونلاين من السيرفر
     async function deleteAppointmentOnline(appt) {
         if (!confirm('هل أنت متأكد من إلغاء وحذف هذا الموعد من جميع الأجهزة؟')) return;
 
         if (appt.firebaseId) {
             try {
                 await deleteDoc(doc(db, 'published_slots', appt.firebaseId));
-                alert('✅ تم حذف الموعد أونلاين بنجاح.');
+                alert('✅ تم حذف الموعد من السيرفر بنجاح.');
             } catch (err) {
-                alert('❌ تعذر الحذف من السيرفر: ' + err.message);
+                alert('❌ تعذر الحذف: ' + err.message);
             }
         } else {
-            // حذف محلي
             const [y, m, d] = selectedDateKey.split('-').map(Number);
             const dayOfWeek = new Date(y, m - 1, d).getDay();
             if (appt.type === 'recurring') {
@@ -993,7 +1027,6 @@
     window.updateAppointmentOnline = updateAppointmentOnline;
 
     window.onload = function() {
-        // استرجاع المادة المختارة من الصفحة الأولى
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
         let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
@@ -1015,7 +1048,6 @@
             subjectDisplay.dataset.value = selectedSubjectsText;
         }
 
-        // تشغيل الاستماع المباشر للسيرفر
         listenToOnlineSlots();
     };
 </script>
