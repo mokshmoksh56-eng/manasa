@@ -3,394 +3,491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>منصة احجزلي - إعداد المجموعة</title>
+<title>منصة احجزلي - إعداد المجموعة والمواعيد</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
     /* ========================================== */
     /* 🎨 تنسيقات الصفحة الأساسية */
     /* ========================================== */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
-    body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
+    body { background-color: #f4f6f9; padding-bottom: 50px; color: #333; }
 
-    .last-save-bar { position: fixed; bottom: 10px; right: 10px; background: rgba(43, 92, 158, 0.95); color: white; padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: bold; z-index: 9998; box-shadow: 0 3px 10px rgba(0,0,0,0.2); display: none; align-items: center; gap: 5px; }
-    .last-save-bar.show { display: flex; }
-    .last-save-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; animation: pulseDot 1.5s infinite; }
-    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    .header-3d { width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat; padding: 35px 20px 50px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f; }
-    .header-3d h1 { font-size: 36px; font-weight: 900; color: #f1c40f; text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5); margin-bottom: 10px; }
-    .stepper { display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; padding: 10px 20px; margin: 15px auto 0; width: fit-content; backdrop-filter: blur(5px); }
-    .step { font-size: 14px; font-weight: bold; color: #fff; opacity: 0.6; }
-    .step.active { color: #f1c40f; opacity: 1; font-size: 16px; }
+    .header-3d { width: 100%; background: linear-gradient(180deg, rgba(43, 92, 158, 0.85) 0%, rgba(26, 60, 109, 0.9) 100%), url('teacher2.png') center/cover no-repeat; padding: 30px 20px 45px; text-align: center; position: relative; box-shadow: 0 8px 0 #0d2342, 0 12px 20px rgba(0, 0, 0, 0.3); border-bottom: 3px solid #f1c40f; }
+    .header-3d h1 { font-size: 28px; font-weight: 900; color: #f1c40f; text-shadow: 0 2px 0 #b38f00, 0 4px 0 #8a6d00, 0 6px 10px rgba(0,0,0,0.5); margin-bottom: 8px; }
+    .stepper { display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; padding: 8px 18px; margin: 12px auto 0; width: fit-content; backdrop-filter: blur(5px); }
+    .step { font-size: 13px; font-weight: bold; color: #fff; opacity: 0.6; }
+    .step.active { color: #f1c40f; opacity: 1; font-size: 15px; }
     .step-divider { color: #fff; }
 
-    .main-container { width: 100%; max-width: 1100px; margin: -30px auto 0; padding: 0 10px; position: relative; z-index: 10; }
-    .table-container { background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #2b5c9e; margin-bottom: 20px; }
-    .data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .data-table td { padding: 15px; border: 1px solid #e0e4e8; vertical-align: top; width: 50%; }
-    .cell-title { font-size: 14px; font-weight: 800; color: #1a3c6d; margin-bottom: 10px; display: block; }
-    .fixed-subject { background: #e3f2fd; color: #1a3c6d; padding: 12px 15px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 2px dashed #2b5c9e; display: block; width: 100%; text-align: center; white-space: pre-line; line-height: 1.7; }
-    .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e0e4e8; border-radius: 10px; font-size: 14px; transition: all 0.3s; background: #fff; font-family: inherit; font-weight: 700; }
-    .form-control:focus { border-color: #2b5c9e; outline: none; box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1); }
-
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; }
-    .cards-grid input[type="radio"] { display: none; }
-    .cards-grid label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; background: #f8fafc; border: 2px solid #e0e4e8; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; font-weight: bold; color: #555; font-size: 12px; }
-    .cards-grid label i { font-size: 18px; margin-bottom: 5px; }
-    .cards-grid input[type="radio"]:checked + label { background: #e3f2fd; border-color: #2b5c9e; color: #1a3c6d; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(43, 92, 158, 0.15); }
-    .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
+    .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
     /* ========================================== */
-    /* 📋 النافذة المنبثقة (Modal) */
+    /* 🔢 الترقيم الذكي (عبقرية التسلسل) */
     /* ========================================== */
-    .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
-    .publish-modal-overlay.active { display: flex; }
-    .publish-modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUpModal 0.3s ease-out; }
-    .publish-modal-header { background: linear-gradient(135deg, #2b5c9e, #1a3c6d); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #f1c40f; }
-    .publish-modal-header h2 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px; }
-    .publish-modal-header .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1; transition: transform 0.2s; }
-    .publish-modal-header .close-btn:hover { transform: scale(1.1); color: #f1c40f; }
-    
-    .publish-modal-content { padding: 20px; overflow-y: auto; font-size: 15px; color: #333; line-height: 1.6; }
-    .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #eaeef3; display: flex; flex-direction: column; }
-    .publish-data-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .publish-data-label { color: #566573; font-weight: 800; font-size: 13px; margin-bottom: 4px; }
-    .publish-data-value { color: #2c3e50; font-weight: 700; font-size: 15px; background: #f8fbff; padding: 8px 12px; border-radius: 8px; border: 1px solid #eef2f7; }
-    .publish-data-value.appts { background: #fff9e6; border-color: #fde8b1; }
-    
-    .publish-modal-footer { padding: 15px 20px; background: #f8fbff; border-top: 1px solid #eaeef3; text-align: center; }
-    .publish-modal-footer .btn-confirm { background: #2b5c9e; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.2s; box-shadow: 0 4px 10px rgba(43,92,158,0.2); }
-    .publish-modal-footer .btn-confirm:hover { background: #1a3c6d; }
-    
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    @media (max-width: 700px) {
-        .header-3d { padding: 25px 15px 40px; }
-        .header-3d h1 { font-size: 20px; }
-        .step { font-size: 12px; }
-        .step.active { font-size: 13px; }
-        .stepper { padding: 8px 14px; gap: 10px; }
-        .main-container { padding: 0 8px; margin-top: -25px; }
-        .data-table td { padding: 10px; display: block; width: 100%; border: none; border-bottom: 1px solid #e0e4e8; }
-        .data-table tr { display: block; }
-        .data-table { border-collapse: separate; }
+    .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+        color: #fff;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 900;
+        margin-left: 8px;
+        box-shadow: 0 2px 6px rgba(29, 78, 216, 0.3);
+    }
+    .step-num-lg {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+        color: #fff;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 900;
+        margin-left: 10px;
+        box-shadow: 0 3px 8px rgba(29, 78, 216, 0.3);
     }
 
     /* ========================================== */
-    /* 📅 التقويم والمواعيد */
+    /* 📋 كارت نموذج التسجيل والتقويم المدمج */
     /* ========================================== */
-    .new-calendar-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 25px; }
-    .calendar-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 650px; border-top: 4px solid #f1c40f; }
+    .booking-card { 
+        background: #fff; 
+        border-radius: 16px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+        padding: 24px; 
+        width: 100%; 
+        border-top: 4px solid #f1c40f; 
+        margin-bottom: 25px;
+    }
 
-    .add-dropdown-header { background: #f8fbff; border: 2px dashed #4a90e2; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; user-select: none; }
-    .add-dropdown-header:active { background: #eef4fc; }
-    .add-dropdown-header .label { font-weight: 700; color: #4a90e2; font-size: 15px; }
-    .add-dropdown-header .arrow { color: #4a90e2; font-size: 12px; transition: transform 0.3s; }
+    .form-section-title { font-size: 16px; font-weight: 900; color: #1a3c6d; margin: 20px 0 12px; display: flex; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 8px; }
+    .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    
+    .form-group { margin-bottom: 15px; width: 100%; }
+    .form-group label { display: flex; align-items: center; font-size: 14px; color: #1e3a8a; font-weight: 900; margin-bottom: 8px; }
+    
+    .form-control { width: 100%; padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 14.5px; transition: all 0.2s; background: #fff; font-family: inherit; font-weight: 800; color: #0f172a; }
+    .form-control:focus { border-color: #1d4ed8; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+    
+    .fixed-subject-box { 
+        background: #1d4ed8; 
+        color: #ffffff; 
+        padding: 12px 15px; 
+        border-radius: 8px; 
+        font-weight: 900; 
+        font-size: 15px; 
+        text-align: center; 
+        box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
+        border: none;
+    }
 
-    .add-dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-    .add-dropdown-content.open { max-height: 400px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #eaeef3; }
+    /* ========================================== */
+    /* ✔️ تنسيقات كروت الاختيار (بدون أيقونات) */
+    /* ========================================== */
+    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .cards-grid input[type="radio"] { display: none; }
+    .cards-grid label { 
+        position: relative; 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        padding: 12px 5px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; 
+        cursor: pointer; transition: all 0.2s; text-align: center; 
+        font-weight: 900; 
+        color: #0f172a; 
+        font-size: 13px; 
+    }
+    
+    /* عند التحديد */
+    .cards-grid input[type="radio"]:checked + label { 
+        background: #eff6ff; border-color: #1d4ed8; color: #1d4ed8; 
+        transform: translateY(-2px); box-shadow: 0 4px 10px rgba(29, 78, 216, 0.2); 
+    }
+    
+    /* تصميم علامة الصح */
+    .cards-grid input[type="radio"]:checked + label::after {
+        content: "✔";
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        width: 18px;
+        height: 18px;
+        background: #1d4ed8;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(29,78,216,0.4);
+        animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
 
-    .calendar-header { position: relative; overflow: hidden; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eaeef3; min-height: 40px; display: flex; justify-content: center; align-items: center; }
-    .title-track { display: flex; align-items: center; gap: 12px; will-change: transform, opacity; user-select: none; }
-    .month-name { color: #2c3e50; font-size: 24px; font-weight: 800; letter-spacing: 0.3px; }
-    .month-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff; font-size: 18px; font-weight: 800; box-shadow: 0 3px 10px rgba(74,144,226,0.4); flex-shrink: 0; }
-    .year-text { color: #566573; font-size: 18px; font-weight: 700; }
-    .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 800; box-shadow: 0 3px 10px rgba(231,76,60,0.35); flex-shrink: 0; margin-right: 4px; }
-    .month-appt-badge .icon { font-size: 13px; }
-    .month-appt-badge.zero { background: linear-gradient(135deg, #95a5a6, #7f8c8d); box-shadow: 0 3px 10px rgba(149,165,166,0.3); }
+    @keyframes popIn {
+        0% { transform: scale(0); }
+        100% { transform: scale(1); }
+    }
 
-    .slide-out-left { animation: slideOutLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-out-right { animation: slideOutRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-in-right { animation: slideInRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-in-left { animation: slideInLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+    .gps-wrapper { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 2px solid #cbd5e1; }
+    .btn-gps { background: #16a34a; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; width: 100%; }
 
-    @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-120%); opacity: 0; } }
-    @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
-    @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideInLeft { from { transform: translateX(-120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .form-group select { width: 100%; padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 14.5px; font-family: inherit; outline: none; background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e3a8a' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center; background-size: 14px; padding-left: 32px; cursor: pointer; appearance: none; font-weight: 800; color: #0f172a; }
+    .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
 
-    .week-wrapper { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid #dfe6ec; }
-    .week-track { will-change: transform, opacity; user-select: none; }
-    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: #1f427c; }
-    .weekdays div { text-align: center; font-weight: 700; color: #fff; padding: 12px 5px; font-size: 14px; border-left: 1px solid rgba(255, 255, 255, 0.15); }
-    .weekdays div:last-child { border-left: none; }
-    .weekdays div.friday { color: #f1c40f; }
+    .repeat-option { background: #fdf4ff; border: 2px solid #f0abfc; border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 15px 0; }
+    .repeat-option input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #9333ea; }
+    .repeat-option label { font-size: 14px; color: #7e22ce; font-weight: 900; cursor: pointer; margin: 0; display: inline-block; }
 
-    .days-wrapper { position: relative; overflow: hidden; background: #dfe6ec; touch-action: pan-y; user-select: none; padding-top: 1px; }
-    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; will-change: transform, opacity; }
-    .days div.cell { background: #fff; min-height: 95px; padding: 6px; display: flex; flex-direction: column; align-items: flex-start; color: #2c3e50; font-size: 15px; font-weight: 700; cursor: pointer; position: relative; transition: background 0.2s; }
-    .days div.cell:hover { background: #f0f5fb !important; }
-    .days div.cell:active { transform: scale(0.98); }
-    .days div.cell:nth-child(7n) { background: #fffdf5; }
-    .days div.cell:nth-child(7n-1) { background: #fffdf5; }
-    .days div.cell.out-of-month { background: #f4f6f9 !important; color: #aeb6bf; }
-
-    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; }
-    .cell.today-cell .date-number { background: #4a90e2; color: #fff; }
-    .cell.selected-cell { box-shadow: inset 0 0 0 2px #4a90e2; }
-
-    .badge { position: absolute; bottom: 8px; left: 8px; background: #e74c3c; color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-    .swipe-hint { text-align: center; font-size: 13px; color: #95a5a6; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eaeef3; user-select: none; }
-
-    .panel { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 450px; align-self: flex-start; border-top: 4px solid #2b5c9e; }
-    .panel h3 { margin: 0 0 20px 0; color: #2c3e50; font-size: 18px; padding-bottom: 12px; border-bottom: 2px solid #eaeef3; }
-    .appointments-list-container { max-height: 450px; overflow-y: auto; margin-bottom: 15px; padding-right: 5px; }
-
-    .form-group { margin-bottom: 15px; width: 100%;}
-    .form-group label { display: block; font-size: 14px; color: #566573; font-weight: 700; margin-bottom: 6px; }
-    .form-group select { width: 100%; padding: 12px 14px; border: 2px solid #dfe6ec; border-radius: 8px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s; background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23566573' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center; background-size: 16px; padding-left: 36px; cursor: pointer; -webkit-appearance: none; appearance: none; }
-    .form-group select:focus { border-color: #4a90e2; }
-
-    .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    .repeat-option { background: #f9f5ff; border: 2px solid #e0d4f7; border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 15px; }
-    .repeat-option:active { background: #f3ebff; }
-    .repeat-option input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: #9b59b6; }
-    .repeat-option label { font-size: 14px; color: #6c3483; font-weight: 700; cursor: pointer; margin: 0; }
-
-    .duration-info { background: #eaf4fd; border-right: 4px solid #4a90e2; color: #2c5f91; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: none; }
+    .duration-info { background: #e0f2fe; border-right: 4px solid #0284c7; color: #0369a1; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; }
     .duration-info.show { display: block; }
 
-    .btn-add { width: 100%; background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff; border: none; border-radius: 10px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(74,144,226,0.3); }
+    /* ========================================== */
+    /* 📅 جدول التقويم (الخطوة 8) */
+    /* ========================================== */
+    .calendar-container-block {
+        background: #f8fafc;
+        border: 2px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 20px 0;
+    }
+
+    .selected-day-banner {
+        background: #eff6ff;
+        border: 2px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .selected-day-banner .title { color: #1e3a8a; font-size: 15px; font-weight: 900; }
+    .selected-day-banner .day-badge { color: #b45309; background: #fef3c7; padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 900; border: 2px solid #fde68a; }
+
+    .calendar-header { position: relative; overflow: hidden; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; min-height: 38px; display: flex; justify-content: center; align-items: center; }
+    .title-track { display: flex; align-items: center; gap: 10px; }
+    .month-name { color: #0f172a; font-size: 20px; font-weight: 900; }
+    .month-number { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff; font-size: 15px; font-weight: 900; }
+    .year-text { color: #475569; font-size: 17px; font-weight: 800; }
+    .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 900; }
+    .month-appt-badge.zero { background: #94a3b8; }
+
+    .week-wrapper { position: relative; overflow: hidden; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: #1e3a8a; }
+    .weekdays div { text-align: center; font-weight: 900; color: #fff; padding: 9px 3px; font-size: 13px; border-left: 1px solid rgba(255, 255, 255, 0.15); }
+    .weekdays div:last-child { border-left: none; }
+    .weekdays div.friday { color: #fde047; }
+
+    .days-wrapper { position: relative; overflow: hidden; background: #cbd5e1; padding-top: 1px; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+    .days div.cell { background: #fff; min-height: 75px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; color: #0f172a; font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
+    .days div.cell:hover { background: #eff6ff !important; }
+    .days div.cell:nth-child(7n), .days div.cell:nth-child(7n-1) { background: #fffdf5; }
+    .days div.cell.out-of-month { background: #f8fafc !important; color: #94a3b8; }
+    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; }
+    .cell.today-cell .date-number { background: #1d4ed8; color: #fff; }
+    .cell.selected-cell { box-shadow: inset 0 0 0 3px #1d4ed8; }
+    .badge { position: absolute; bottom: 5px; left: 5px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+    .swipe-hint { text-align: center; font-size: 13px; font-weight: 800; color: #64748b; margin-top: 10px; }
+
+    /* زر الحفظ النهائي */
+    .btn-add { width: 100%; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff; border: none; border-radius: 10px; padding: 15px; font-size: 17px; font-weight: 900; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3); margin-top: 10px; }
     .btn-add:active { transform: scale(0.98); }
-    .btn-cancel { width: 100%; background: #95a5a6; color: #fff; border: none; border-radius: 10px; padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 10px; }
-    .btn-cancel:active { transform: scale(0.98); background: #7f8c8d; }
+    .btn-cancel { width: 100%; background: #64748b; color: #fff; border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 8px; }
 
-    .edit-form { background: #fff8e5; border: 2px solid #f0d78c; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: none; }
-    .edit-form.show { display: block; }
-    .edit-form .edit-title { font-size: 14px; color: #b8860b; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-    /* كارت الموعد */
-    .appointment { 
-        display: flex; flex-direction: column; background: #fff; 
-        border-right: 4px solid #4a90e2; border-radius: 10px; padding: 14px; 
-        margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); gap: 12px; 
-    }
-    .appointment.recurring { background: #f9f5ff; border-right-color: #9b59b6; }
-    .appointment.editing { background: #fff8e5; border-right-color: #f39c12; box-shadow: 0 0 0 2px #f0d78c; }
-
-    .appointment .info { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-    .appointment .time { font-weight: 800; color: #2c3e50; font-size: 16px; }
-    .appointment .recurring-tag { display: inline-block; background: #9b59b6; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; }
-    .appointment .online-tag { display: inline-block; background: #28a745; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; margin-right: 5px;}
-
-    .appt-actions { 
-        display: flex; width: 100%; justify-content: space-between; align-items: center;
-        border-top: 1px dashed #eaeef3; padding-top: 12px; gap: 8px; flex-wrap: wrap;
-    }
-    .appt-actions-group { display: flex; gap: 8px; }
-    
-    .btn-action { 
-        display: flex; align-items: center; justify-content: center; gap: 6px; 
-        font-size: 13px; font-weight: 800; padding: 8px 14px; border-radius: 8px; 
-        border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; 
-    }
-    
-    .btn-edit { background: #fef3c7; color: #b45309; }
-    .btn-edit:hover { background: #fde68a; }
-    .btn-delete { background: #fee2e2; color: #b91c1c; }
-    .btn-delete:hover { background: #fecaca; }
-    
-    .btn-publish { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
-    .btn-publish:hover { background: linear-gradient(135deg, #27ae60, #229954); transform: translateY(-2px); }
-    .btn-published { background: #95a5a6; color: #fff; cursor: default; }
-
-    .error-msg { background: #fdecea; color: #c0392b; border: 2px solid #f5b7b1; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 15px; font-weight: 600; display: none; }
+    .error-msg { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 12px; font-weight: 900; display: none; }
     .error-msg.show { display: block; }
 
-    @media (max-width: 800px) {
-        .calendar-card, .panel { padding: 15px; border-radius: 12px; max-width: 100%; min-height: auto; }
-        .month-name { font-size: 20px; }
-        .month-number { width: 32px; height: 32px; font-size: 15px; }
-        .year-text { font-size: 16px; }
-        .weekdays div { font-size: 11px; padding: 10px 0; }
-        .days div.cell { min-height: 65px; font-size: 13px; padding: 4px; }
-        .cell .date-number { width: 22px; height: 22px; }
-        .time-row-cal { grid-template-columns: 1fr 1fr; gap: 10px; } 
-        .badge { bottom: 4px; left: 4px; width: 15px; height: 15px; font-size: 8px; }
-        .appt-actions { flex-direction: column; align-items: flex-start; }
-        .appt-actions-group { width: 100%; }
-        .appt-actions-group .btn-action { flex: 1; }
-        .btn-publish, .btn-published { width: 100%; margin-top: 4px; }
+    /* ========================================== */
+    /* 🃏 قسم جدول وملخص المواعيد بنظام الكروت */
+    /* ========================================== */
+    .summary-section {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        padding: 24px;
+        border-top: 4px solid #1e3a8a;
+        width: 100%;
+    }
+    .summary-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f1f5f9;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .summary-section-title { color: #1e3a8a; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .summary-total-badge { background: #eff6ff; color: #1d4ed8; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 2px solid #bfdbfe; }
+    
+    .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+    
+    .summary-card {
+        background: #ffffff;
+        border: 2px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    .summary-card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(30, 58, 138, 0.1); border-color: #1d4ed8; }
+    .summary-card.recurring-border { border-top: 5px solid #9333ea; }
+    .summary-card.normal-border { border-top: 5px solid #1d4ed8; }
+
+    .sc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .sc-group-name { font-size: 17px; font-weight: 900; color: #0f172a; }
+    .sc-teacher { font-size: 14px; color: #475569; font-weight: 800; margin-top: 2px; }
+    .sc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    
+    .badge-status { font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-status.online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-status.draft { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-status.recurring { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+    .sc-time-banner { background: linear-gradient(135deg, #f0f7ff, #e0f2fe); border-radius: 10px; padding: 10px 12px; border: 1px solid #bae6fd; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 900; }
+    .sc-time-banner .time-text { color: #0369a1; }
+    .sc-time-banner .duration-pill { background: #ffffff; color: #0284c7; padding: 2px 8px; border-radius: 6px; font-size: 12px; border: 1px solid #7dd3fc; }
+
+    .sc-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: #f8fafc; border-radius: 10px; padding: 12px; font-size: 13px; border: 1px solid #e2e8f0; }
+    .sc-detail-item { display: flex; align-items: center; gap: 6px; color: #475569; font-weight: 800; }
+    .sc-detail-item.full { grid-column: span 2; }
+    .sc-detail-item .val { font-weight: 900; color: #0f172a; }
+
+    .sc-footer-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 2px dashed #e2e8f0; padding-top: 12px; }
+    .sc-actions-sub { display: flex; gap: 6px; }
+
+    .btn-action { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 900; padding: 7px 12px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-edit { background: #fef3c7; color: #b45309; }
+    .btn-delete { background: #fee2e2; color: #b91c1c; }
+    .btn-publish { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 3px 8px rgba(16,185,129,0.25); }
+    .btn-published { background: #94a3b8; color: #fff; cursor: default; }
+
+    .empty-cards-state { text-align: center; padding: 40px 20px; color: #64748b; font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
+
+    /* ========================================== */
+    /* 📋 النوافذ المنبثقة (Modals) */
+    /* ========================================== */
+    .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+    .publish-modal-overlay.active { display: flex; }
+    .publish-modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .publish-modal-header { background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #f1c40f; }
+    .publish-modal-header h2 { font-size: 18px; font-weight: 900; margin: 0; }
+    .publish-modal-header .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+    .publish-modal-content { padding: 20px; overflow-y: auto; font-size: 15px; color: #0f172a; font-weight: 800; line-height: 1.6; }
+    .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px dashed #e2e8f0; display: flex; flex-direction: column; }
+    .publish-data-item:last-child { border-bottom: none; }
+    .publish-data-label { color: #475569; font-weight: 900; font-size: 13px; margin-bottom: 4px; }
+    .publish-data-value { color: #0f172a; font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 2px solid #cbd5e1; }
+    .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 2px solid #e2e8f0; text-align: center; }
+    .publish-modal-footer .btn-confirm { background: #1e3a8a; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; }
+
+    @media (max-width: 768px) {
+        .form-grid-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+        .booking-card { padding: 16px; }
+        .days div.cell { min-height: 60px; font-size: 13px; padding: 2px; }
+        .appts-cards-grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 <body>
 
 <header class="header-3d">
-    <h1 id="page-header-title">إعداد تفاصيل المجموعة</h1>
+    <h1 id="page-header-title">إعداد تفاصيل المجموعة والمواعيد</h1>
     <div class="stepper">
-        <div class="step">✓ 1. التخصص</div>
+        <div class="step">1. التخصص</div>
         <div class="step-divider">❯</div>
-        <div class="step active">✏️ 2. بيانات المجموعة</div>
+        <div class="step active">2. المواعيد والمجموعات</div>
     </div>
 </header>
 
 <div class="main-container">
-    <div class="table-container">
-        <table class="data-table">
-            <tbody>
-                <tr>
-                    <td>
-                        <span class="cell-title">📚 المادة والصف</span>
-                        <div id="fixed-subject" class="fixed-subject">جاري جلب المادة...</div>
-                    </td>
-                    <td>
-                        <span class="cell-title">🏷️ اسم المجموعة</span>
-                        <input type="text" id="group-name" class="form-control" placeholder="مثال: مجموعة التفوق">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
-                        <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
-                    </td>
-                    <td>
-                        <span class="cell-title">👥 العدد المطلوب</span>
-                        <input type="number" id="students-count" class="form-control" placeholder="مثال: 20" min="1">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span class="cell-title">👫 الفئات المسموحة</span>
-                        <div class="cards-grid">
-                            <div class="radio-card"><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
-                            <div class="radio-card"><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
-                            <div class="radio-card"><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="cell-title">📍 مكان الدرس</span>
-                        <div class="cards-grid">
-                            <div class="radio-card"><input type="radio" name="location" id="loc-center" value="السنتر" checked><label for="loc-center"><i>🏫</i> السنتر</label></div>
-                            <div class="radio-card"><input type="radio" name="location" id="loc-teacher" value="بيت المستر"><label for="loc-teacher"><i>🏠</i> المستر</label></div>
-                            <div class="radio-card"><input type="radio" name="location" id="loc-student" value="منزل الطالب"><label for="loc-student"><i>🚗</i> الطالب</label></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="cell-title">🗺️ الموقع (GPS)</span>
-                        <div class="gps-wrapper">
-                            <button class="btn-gps" onclick="getLocation(event)">📍 تحديد موقعي الحالي</button>
-                            <span id="location-text" style="color: #666; font-size: 14px; font-weight: bold;">لم يتم التحديد</span>
-                            <input type="hidden" id="gps-coords" value="">
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- كارت إعداد المجموعة والمواعيد (تسلسل منطقي بالترتيب 1 إلى 8) -->
+    <div class="booking-card">
+        
+        <!-- عنوان توضيحي للمادة (غير مرقم) -->
+        <div class="form-group" style="margin-bottom: 25px;">
+          <label style="color: #64748b; font-size: 13px; justify-content: center;">المادة والصف المحددان مسبقاً</label>
+          <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
+        </div>
+
+        <!-- Row 1: اسم المجموعة & اسم المستر -->
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label><span class="step-num">1</span> اسم المجموعة</label>
+            <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة هنا">
+          </div>
+          <div class="form-group">
+            <label><span class="step-num">2</span> اسم المستر / السنتر</label>
+            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو المركز">
+          </div>
+        </div>
+
+        <!-- Row 2: العدد & الفئات -->
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label><span class="step-num">3</span> العدد المطلوب (السعة)</label>
+            <input type="number" id="students-count" class="form-control" placeholder="مثال: 20" min="1" value="20">
+          </div>
+          <div class="form-group">
+            <label><span class="step-num">4</span> الفئات المسموح بها</label>
+            <div class="cards-grid">
+              <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed">مختلط</label></div>
+              <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys">أولاد فقط</label></div>
+              <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls">بنات فقط</label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: المكان & الموقع -->
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label><span class="step-num">5</span> مكان الدرس</label>
+            <div class="cards-grid">
+              <div><input type="radio" name="location" id="loc-center" value="السنتر" checked><label for="loc-center">السنتر</label></div>
+              <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر"><label for="loc-teacher">بيت المستر</label></div>
+              <div><input type="radio" name="location" id="loc-student" value="منزل الطالب"><label for="loc-student">منزل الطالب</label></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><span class="step-num">6</span> الموقع الجغرافي</label>
+            <div class="gps-wrapper" style="height: 60px;">
+              <button class="btn-gps" type="button" onclick="getLocation(event)">تحديد موقعي الآن</button>
+              <span id="location-text" style="color: #475569; font-size: 13px; font-weight: 900; width: 100%; text-align: center; margin-top: -5px;">لم يتم التحديد</span>
+              <input type="hidden" id="gps-coords" value="">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7: توقيت الحصة -->
+        <div class="form-section-title" style="margin-top: 25px;">
+            <span class="step-num-lg">7</span> توقيت الحصة
+        </div>
+        <div class="time-row-cal">
+          <div class="form-group">
+            <label>من الساعة</label>
+            <select id="startTime" onchange="updateDuration()"></select>
+          </div>
+          <div class="form-group">
+            <label>إلى الساعة</label>
+            <select id="endTime" onchange="updateDuration()"></select>
+          </div>
+        </div>
+
+        <div class="duration-info" id="durationInfo"></div>
+
+        <div class="repeat-option">
+          <input type="checkbox" id="repeatWeekly">
+          <label for="repeatWeekly">تكرار أسبوعي كل <span id="repeatDayName">...</span></label>
+        </div>
+
+        <!-- Section 8: جدول التقويم (مباشرة تحت توقيت الحصة) -->
+        <div class="calendar-container-block">
+            <div class="selected-day-banner">
+              <span class="title"><span class="step-num-lg">8</span> تحديد اليوم من التقويم</span>
+              <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
+            </div>
+
+            <!-- رأس التقويم -->
+            <div class="calendar-header">
+              <div class="title-track" id="titleTrack">
+                <span class="month-number" id="monthNumber">1</span>
+                <span class="month-name" id="monthName">يناير</span>
+                <span class="year-text" id="yearText">2026</span>
+                <span class="month-appt-badge" id="monthApptBadge">
+                  <span id="monthApptCount">0</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- شبكة الأيام -->
+            <div class="week-wrapper">
+              <div class="week-track" id="weekTrack">
+                <div class="weekdays">
+                  <div>السبت</div>
+                  <div>الأحد</div>
+                  <div>الاثنين</div>
+                  <div>الثلاثاء</div>
+                  <div>الأربعاء</div>
+                  <div>الخميس</div>
+                  <div class="friday">الجمعة</div>
+                </div>
+                <div class="days-wrapper" id="daysWrapper">
+                  <div class="days" id="days"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="swipe-hint">اسحب يميناً أو يساراً لتغيير الشهر</div>
+        </div>
+
+        <!-- زر الحفظ وإنشاء الكارت -->
+        <button class="btn-add" onclick="addAppointment()">حفظ الموعد وإنشاء الكارت</button>
+        <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
     </div>
 
-    <!-- التقويم -->
-    <div class="new-calendar-container">
-      <div class="calendar-card">
-        <div class="add-dropdown-header" onclick="toggleAddDropdown()">
-          <span class="label">➕ إضافة موعد في اليوم المحدد</span>
-          <span class="arrow" id="addArrow">▼</span>
-        </div>
-        
-        <div class="add-dropdown-content" id="addDropdownContent">
-          <div class="time-row-cal">
-            <div class="form-group">
-              <label>🕐 من الساعة</label>
-              <select id="startTime" onchange="updateDuration()"></select>
+    <!-- 🌟 نظام الكروت الشامل: ملخص المجموعات والمواعيد 🌟 -->
+    <div class="summary-section" id="allSummarySection">
+        <div class="summary-section-header">
+            <div class="summary-section-title">
+                جدول المواعيد وملخص المجموعات
             </div>
-            <div class="form-group">
-              <label>🕐 إلى الساعة</label>
-              <select id="endTime" onchange="updateDuration()"></select>
-            </div>
-          </div>
-
-          <div class="duration-info" id="durationInfo"></div>
-
-          <div class="repeat-option">
-            <input type="checkbox" id="repeatWeekly">
-            <label for="repeatWeekly">
-              🔁 تكرار كل <span id="repeatDayName">...</span>
-            </label>
-          </div>
-
-          <button class="btn-add" onclick="addAppointment()">💾 حفظ الموعد</button>
-          <div class="error-msg" id="addErrorMsg" style="margin-top:10px;"></div>
-        </div>
-        
-        <div class="calendar-header">
-          <div class="title-track" id="titleTrack">
-            <span class="month-number" id="monthNumber">1</span>
-            <span class="month-name" id="monthName">يناير</span>
-            <span class="year-text" id="yearText">2026</span>
-            <span class="month-appt-badge" id="monthApptBadge">
-              <span class="icon">📋</span>
-              <span id="monthApptCount">0</span>
-            </span>
-          </div>
+            <span class="summary-total-badge" id="summaryTotalBadge">المواعيد المسجلة: 0</span>
         </div>
 
-        <div class="week-wrapper">
-          <div class="week-track" id="weekTrack">
-            <div class="weekdays">
-              <div>السبت</div>
-              <div>الأحد</div>
-              <div>الاثنين</div>
-              <div>الثلاثاء</div>
-              <div>الأربعاء</div>
-              <div>الخميس</div>
-              <div class="friday">الجمعة</div>
-            </div>
-            <div class="days-wrapper" id="daysWrapper">
-              <div class="days" id="days"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="swipe-hint">
-          👈 اسحب بإصبعك لليمين أو اليسار لتغيير الشهر 👉
-        </div>
-      </div>
-
-      <div class="panel" id="panel">
-        <h3 id="panelTitle">اختر يوماً لاستعراض المواعيد</h3>
-
-        <div class="error-msg" id="errorMsg"></div>
-
-        <div class="edit-form" id="editForm">
-          <div class="edit-title">✏️ تعديل الموعد</div>
-          <div class="time-row-cal">
-            <div class="form-group">
-              <label>🕐 من</label>
-              <select id="editStart"></select>
-            </div>
-            <div class="form-group">
-              <label>🕐 إلى</label>
-              <select id="editEnd"></select>
-            </div>
-          </div>
-          <div class="repeat-option" style="margin-top:0; margin-bottom:15px; padding: 10px;">
-            <input type="checkbox" id="editRepeatWeekly">
-            <label for="editRepeatWeekly">🔁 تكرار أسبوعي</label>
-          </div>
-          <button class="btn-add" onclick="saveEdit()">💾 حفظ التعديل</button>
-          <button class="btn-cancel" onclick="cancelEdit()">✖ إلغاء</button>
-        </div>
-
-        <div class="appointments-list-container" id="appointmentsListContainer">
-          <div id="appointmentsList"></div>
-        </div>
-      </div>
+        <div class="appts-cards-grid" id="summaryCardsGrid"></div>
     </div>
 </div>
 
-<!-- النافذة المنبثقة -->
+<!-- ✏️ النافذة المنبثقة لتعديل أي كارت -->
+<div class="publish-modal-overlay" id="editModalOverlay" onclick="closeEditModal(event)">
+  <div class="publish-modal-box" style="max-width: 440px;">
+    <div class="publish-modal-header" style="background: linear-gradient(135deg, #d97706, #b45309);">
+      <h2>تعديل الموعد</h2>
+      <button class="close-btn" onclick="cancelEdit()">✖</button>
+    </div>
+    <div class="publish-modal-content">
+      <div class="error-msg" id="editErrorMsg"></div>
+      <div class="time-row-cal">
+        <div class="form-group">
+          <label>من الساعة</label>
+          <select id="editStart"></select>
+        </div>
+        <div class="form-group">
+          <label>إلى الساعة</label>
+          <select id="editEnd"></select>
+        </div>
+      </div>
+      <div class="repeat-option" style="margin-top: 5px; margin-bottom: 15px;">
+        <input type="checkbox" id="editRepeatWeekly">
+        <label for="editRepeatWeekly">تكرار أسبوعي</label>
+      </div>
+      <button class="btn-add" style="background: linear-gradient(135deg, #d97706, #b45309);" onclick="saveEdit()">حفظ التعديل</button>
+      <button class="btn-cancel" onclick="cancelEdit()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- 🎉 النافذة المنبثقة لتأكيد النشر -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>🎉 تم حفظ ونشر المجموعة بنجاح</h2>
+      <h2>تم حفظ ونشر المجموعة بنجاح</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
     <div class="publish-modal-content" id="publishModalContent"></div>
@@ -400,9 +497,6 @@
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- ⚙️ السكريبت الأساسي والتقويم والتخزين المحلي -->
-<!-- ========================================== -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -412,7 +506,6 @@
   let currentDate = new Date();
   let selectedDateKey = null;
   let editingAppt = null;
-  let isAnimating = false;
 
   let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
   let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
@@ -444,6 +537,28 @@
     buildTimeOptions(document.getElementById('editEnd'));
   }
 
+  function formatTime(value) {
+    if(!value) return '';
+    const [h, m] = value.split(':').map(Number);
+    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    const period = h < 12 ? 'ص' : 'م';
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+  }
+
+  function calculateDuration(start, end) {
+    if (!start || !end) return '';
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const diff = (eh * 60 + em) - (sh * 60 + sm);
+    if (diff <= 0) return '';
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    let txt = '';
+    if (hours > 0) txt += `${hours} س `;
+    if (mins > 0) txt += `${mins} د`;
+    return txt.trim();
+  }
+
   function updateDuration() {
     const start = document.getElementById('startTime').value;
     const end = document.getElementById('endTime').value;
@@ -458,19 +573,11 @@
 
     const hours = Math.floor(diff / 60);
     const mins = diff % 60;
-    let txt = '⏱ المدة: ';
+    let txt = 'المدة: ';
     if (hours > 0) txt += `${hours} ساعة `;
     if (mins > 0) txt += `${mins} دقيقة`;
     info.textContent = txt;
     info.classList.add('show');
-  }
-
-  function toggleAddDropdown() {
-    const content = document.getElementById('addDropdownContent');
-    const arrow = document.getElementById('addArrow');
-    content.classList.toggle('open');
-    if(content.classList.contains('open')) { arrow.style.transform = 'rotate(180deg)'; } 
-    else { arrow.style.transform = 'rotate(0deg)'; }
   }
 
   function saveAllAppts() {
@@ -479,14 +586,15 @@
   }
 
   function removeLocalAppt(appt) {
-    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const targetDate = appt.date || selectedDateKey;
+    const [y, m, d] = targetDate.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     if (appt.type === 'recurring') {
         const list = recurringAppointments[dayOfWeek] || [];
         const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
         if (idx > -1) list.splice(idx, 1);
     } else {
-        const list = appointments[selectedDateKey] || [];
+        const list = appointments[targetDate] || [];
         const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
         if (idx > -1) list.splice(idx, 1);
     }
@@ -501,8 +609,8 @@
     const key = dateKey(year, month, day);
     const dayOfWeek = new Date(year, month, day).getDay();
 
-    const normalLocal = (appointments[key] || []).map(a => ({ ...a, type: 'normal' }));
-    const recurringLocal = (recurringAppointments[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring' }));
+    const normalLocal = (appointments[key] || []).map(a => ({ ...a, type: 'normal', date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek] }));
+    const recurringLocal = (recurringAppointments[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek] }));
 
     const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ ...a, type: 'normal', isOnline: true }));
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
@@ -516,7 +624,7 @@
             onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
         );
         if (!alreadyOnline) {
-            map.set(`local_${item.start}_${item.end}_${item.type}`, item);
+            map.set(`local_${item.start}_${item.end}_${item.type}_${item.date}`, item);
         }
     });
 
@@ -605,150 +713,201 @@
     }
   }
 
-  function changeMonthDir(direction) {
-    if (isAnimating) return;
-    isAnimating = true;
-    const titleTrack = document.getElementById('titleTrack');
-    const weekTrack = document.getElementById('weekTrack');
-    const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
-    const inClass  = direction > 0 ? 'slide-in-right' : 'slide-in-left';
-
-    titleTrack.classList.add(outClass); weekTrack.classList.add(outClass);
-
-    setTimeout(() => {
-      currentDate.setDate(1);
-      currentDate.setMonth(currentDate.getMonth() + direction);
-      renderCalendar();
-      titleTrack.classList.remove(outClass); weekTrack.classList.remove(outClass);
-      titleTrack.classList.add(inClass); weekTrack.classList.add(inClass);
-      setTimeout(() => {
-        titleTrack.classList.remove(inClass); weekTrack.classList.remove(inClass);
-        isAnimating = false;
-      }, 450);
-    }, 450);
-  }
-
-  function setupSwipeCal() {
-    const wrapper = document.getElementById('daysWrapper');
-    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
-    let isSwiping = false, isHorizontalSwipe = false;
-    const minSwipeDistance = 50, maxVerticalTolerance = 80;
-
-    wrapper.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
-      isSwiping = true; isHorizontalSwipe = false;
-    }, { passive: true });
-
-    wrapper.addEventListener('touchmove', (e) => {
-      if (!isSwiping) return;
-      const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
-      const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
-      if (!isHorizontalSwipe && diffX > 15 && diffX > diffY) isHorizontalSwipe = true;
-    }, { passive: true });
-
-    wrapper.addEventListener('touchend', (e) => {
-      if (!isSwiping) return;
-      isSwiping = false;
-      touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY;
-      const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
-      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
-      if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
-      }
-    }, { passive: true });
-  }
-
   function selectDay(year, month, day) {
     selectedDateKey = dateKey(year, month, day);
-    cancelEdit(); renderCalendar(); showPanel(year, month, day);
-    if (window.innerWidth <= 800) {
-      setTimeout(() => { document.getElementById('panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
-    }
-  }
-
-  function showPanel(year, month, day) {
     const dayOfWeek = new Date(year, month, day).getDay();
-    document.getElementById('panelTitle').textContent = `مواعيد ${dayNames[dayOfWeek]} ${day} ${monthNames[month]} ${year}`;
-    document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
-    document.getElementById('durationInfo').classList.remove('show');
-    document.getElementById('repeatWeekly').checked = false;
+    const dayString = `${dayNames[dayOfWeek]} ${day} ${monthNames[month]} ${year}`;
+    
+    document.getElementById('selectedDayLabel').textContent = dayString;
     document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
-    hideAddError(); hideError(); renderAppointments();
+
+    renderCalendar();
   }
 
-  function renderAppointments() {
-    const list = document.getElementById('appointmentsList'); list.innerHTML = '';
-    const [y, m, d] = selectedDateKey.split('-').map(Number);
-    const dayAppts = getDayAppointments(y, m - 1, d);
+  /* ======================================================== */
+  /* 🃏 بناء وتحديث شبكة الكروت بالملخص الشامل */
+  /* ======================================================== */
+  function renderAllCardsSummary() {
+    const grid = document.getElementById('summaryCardsGrid');
+    const badge = document.getElementById('summaryTotalBadge');
+    grid.innerHTML = '';
 
-    if (dayAppts.length === 0) {
-      list.innerHTML = '<div style="color: #95a5a6; text-align: center; padding: 40px 15px; font-size: 16px;">لا توجد مواعيد في هذا اليوم</div>'; return;
+    const publishedSlots = JSON.parse(localStorage.getItem('published_slots') || '[]');
+    let allItems = [];
+
+    // 1. المواعيد المنشورة أونلاين
+    publishedSlots.forEach(slot => {
+        allItems.push({
+            id: slot.id,
+            slotId: slot.id,
+            groupName: slot.groupName || 'مجموعة بدون اسم',
+            teacherName: slot.teacherName || 'غير محدد',
+            subjectData: slot.subjectData || 'غير محدد',
+            studentsCount: slot.studentsCount || 20,
+            genderAllowed: slot.genderAllowed || 'مختلط',
+            location: slot.location || 'السنتر',
+            start: slot.appointment.start,
+            end: slot.appointment.end,
+            type: slot.appointment.type,
+            dayOfWeek: slot.appointment.dayOfWeek,
+            dayName: slot.appointment.dayName || dayNames[slot.appointment.dayOfWeek],
+            date: slot.appointment.date,
+            isOnline: true
+        });
+    });
+
+    // 2. المواعيد المحلية العادية
+    for (const dKey in appointments) {
+        (appointments[dKey] || []).forEach(localAppt => {
+            const isAlreadyOnline = allItems.some(item => item.isOnline && item.date === dKey && item.start === localAppt.start && item.end === localAppt.end && item.type === 'normal');
+            if (!isAlreadyOnline) {
+                const [y, m, d] = dKey.split('-').map(Number);
+                const dayWk = new Date(y, m - 1, d).getDay();
+                allItems.push({
+                    id: `local_norm_${dKey}_${localAppt.start}`,
+                    groupName: localAppt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة دراسية',
+                    teacherName: localAppt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
+                    subjectData: localAppt.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
+                    studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
+                    genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
+                    location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    start: localAppt.start,
+                    end: localAppt.end,
+                    type: 'normal',
+                    dayOfWeek: dayWk,
+                    dayName: dayNames[dayWk],
+                    date: dKey,
+                    isOnline: false
+                });
+            }
+        });
     }
 
-    dayAppts.forEach((appt) => {
-      const el = document.createElement('div');
-      el.classList.add('appointment');
-      if (appt.type === 'recurring') el.classList.add('recurring');
-      const isEditing = editingAppt && editingAppt.start === appt.start && editingAppt.end === appt.end && editingAppt.type === appt.type;
-      if (isEditing) el.classList.add('editing');
+    // 3. المواعيد المتكررة أسبوعياً
+    for (const dWk in recurringAppointments) {
+        (recurringAppointments[dWk] || []).forEach(localRec => {
+            const isAlreadyOnline = allItems.some(item => item.isOnline && item.dayOfWeek == dWk && item.start === localRec.start && item.end === localRec.end && item.type === 'recurring');
+            if (!isAlreadyOnline) {
+                allItems.push({
+                    id: `local_rec_${dWk}_${localRec.start}`,
+                    groupName: localRec.groupName || document.getElementById('group-name').value.trim() || 'مجموعة أسبوعية',
+                    teacherName: localRec.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
+                    subjectData: localRec.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
+                    studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
+                    genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
+                    location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    start: localRec.start,
+                    end: localRec.end,
+                    type: 'recurring',
+                    dayOfWeek: parseInt(dWk),
+                    dayName: dayNames[parseInt(dWk)],
+                    date: selectedDateKey || 'كل أسبوع',
+                    isOnline: false
+                });
+            }
+        });
+    }
 
-      const recurringTag = appt.type === 'recurring' ? '<span class="recurring-tag">🔁 تكرار أسبوعي</span>' : '';
-      const onlineTag = appt.isOnline ? '<span class="online-tag">🌐 منشور</span>' : '';
-      
-      const publishBtnHtml = appt.isOnline 
-        ? `<button class="btn-action btn-published" disabled>✅ تم النشر</button>`
-        : `<button class="btn-action btn-publish" title="نشر هذا الموعد">🚀 نشر</button>`;
+    badge.textContent = `المواعيد المسجلة: ${allItems.length}`;
 
-      el.innerHTML = `
-        <div class="info">
-          <div class="time">🕐 ${formatTime(appt.start)} - ${formatTime(appt.end)}</div>
-          <div style="display:flex; gap:5px; margin-top:4px;">${recurringTag}${onlineTag}</div>
-        </div>
-        <div class="appt-actions">
-          <div class="appt-actions-group">
-            <button class="btn-action btn-edit" title="تعديل الموعد">✏️ تعديل</button>
-            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️ إلغاء</button>
-          </div>
-          ${publishBtnHtml}
-        </div>
-      `;
+    if (allItems.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-cards-state">
+                لا توجد مجموعات أو مواعيد مضافة حتى الآن.<br>حدد توقيت الحصة واليوم ثم اضغط <b>حفظ الموعد وإنشاء الكارت</b> لإنشاء البطاقة هنا فوراً.
+            </div>
+        `;
+        return;
+    }
 
-      if (!appt.isOnline) {
-          el.querySelector('.btn-publish').onclick = (e) => { e.stopPropagation(); window.publishSingleApptOnline(appt); };
-      }
-      el.querySelector('.btn-edit').onclick = (e) => { e.stopPropagation(); startEdit(appt); };
-      el.querySelector('.btn-delete').onclick = (e) => { e.stopPropagation(); window.deleteAppointmentOnline(appt); };
-      
-      list.appendChild(el);
+    allItems.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('summary-card');
+        card.classList.add(item.type === 'recurring' ? 'recurring-border' : 'normal-border');
+
+        const dur = calculateDuration(item.start, item.end);
+        const durBadge = dur ? `<span class="duration-pill">${dur}</span>` : '';
+        const isRec = item.type === 'recurring';
+
+        card.innerHTML = `
+            <div class="sc-header">
+                <div>
+                    <div class="sc-group-name">${item.groupName}</div>
+                    <div class="sc-teacher">${item.teacherName}</div>
+                </div>
+                <div class="sc-badges">
+                    ${item.isOnline ? '<span class="badge-status online">منشور</span>' : '<span class="badge-status draft">مسودة</span>'}
+                    ${isRec ? '<span class="badge-status recurring">أسبوعي</span>' : '<span class="badge-status" style="background:#e0f2fe; color:#0284c7;">محدد</span>'}
+                </div>
+            </div>
+
+            <div class="sc-time-banner">
+                <span class="time-text">من ${formatTime(item.start)} إلى ${formatTime(item.end)}</span>
+                ${durBadge}
+            </div>
+
+            <div class="sc-details-grid">
+                <div class="sc-detail-item full">
+                    <span class="val">${item.subjectData}</span>
+                </div>
+                <div class="sc-detail-item">
+                    <span class="val">${isRec ? `كل يوم ${item.dayName}` : `${item.dayName} (${item.date})`}</span>
+                </div>
+                <div class="sc-detail-item">
+                    <span class="val">${item.location}</span>
+                </div>
+                <div class="sc-detail-item">
+                    <span class="val">${item.genderAllowed}</span>
+                </div>
+                <div class="sc-detail-item">
+                    <span class="val">السعة: ${item.studentsCount} طالب</span>
+                </div>
+            </div>
+
+            <div class="sc-footer-actions">
+                <div class="sc-actions-sub">
+                    <button class="btn-action btn-edit btn-card-edit">تعديل</button>
+                    <button class="btn-action btn-delete btn-card-del">إلغاء</button>
+                </div>
+                ${item.isOnline 
+                    ? '<button class="btn-action btn-published" disabled>تم النشر</button>' 
+                    : '<button class="btn-action btn-publish btn-card-pub">نشر الموعد</button>'}
+            </div>
+        `;
+
+        card.querySelector('.btn-card-del').onclick = () => window.deleteAppointmentOnline(item);
+        card.querySelector('.btn-card-edit').onclick = () => startEdit(item);
+
+        const pubBtn = card.querySelector('.btn-card-pub');
+        if (pubBtn) {
+            pubBtn.onclick = () => {
+                if (item.date && item.date.includes('-')) selectedDateKey = item.date;
+                window.publishSingleApptOnline(item);
+            };
+        }
+
+        grid.appendChild(card);
     });
   }
 
-  function formatTime(value) {
-    if(!value) return '';
-    const [h, m] = value.split(':').map(Number);
-    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
-    const period = h < 12 ? 'ص' : 'م';
-    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
-  }
-
+  /* ======================================================== */
+  /* ✏️ التعديل عبر النافذة المنبثقة */
+  /* ======================================================== */
   function startEdit(appt) {
     editingAppt = { ...appt };
     document.getElementById('editStart').value = appt.start; 
     document.getElementById('editEnd').value = appt.end;
     document.getElementById('editRepeatWeekly').checked = (appt.type === 'recurring');
-    document.getElementById('editForm').classList.add('show');
-    
-    const addContent = document.getElementById('addDropdownContent');
-    if(addContent.classList.contains('open')) toggleAddDropdown();
-    
-    hideError(); renderAppointments();
-    document.getElementById('editForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('editErrorMsg').classList.remove('show');
+    document.getElementById('editModalOverlay').classList.add('active');
   }
 
   function cancelEdit() {
-    editingAppt = null; document.getElementById('editForm').classList.remove('show');
-    document.getElementById('editStart').value = ''; document.getElementById('editEnd').value = '';
-    hideError(); if (selectedDateKey) renderAppointments();
+    editingAppt = null; 
+    document.getElementById('editModalOverlay').classList.remove('active');
+  }
+
+  function closeEditModal(e) {
+    if (e.target.id === 'editModalOverlay') cancelEdit();
   }
 
   function saveEdit() {
@@ -756,11 +915,21 @@
     const newStart = document.getElementById('editStart').value;
     const newEnd = document.getElementById('editEnd').value;
     const isRecurring = document.getElementById('editRepeatWeekly').checked;
+    const errEl = document.getElementById('editErrorMsg');
 
-    if (!newStart || !newEnd) { showError('⚠ يجب اختيار وقت البداية والنهاية'); return; }
-    if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
+    if (!newStart || !newEnd) { 
+        errEl.textContent = 'يجب اختيار وقت البداية والنهاية'; 
+        errEl.classList.add('show'); 
+        return; 
+    }
+    if (newStart >= newEnd) { 
+        errEl.textContent = 'وقت النهاية يجب أن يكون بعد وقت البداية'; 
+        errEl.classList.add('show'); 
+        return; 
+    }
 
-    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const targetDate = editingAppt.date || selectedDateKey;
+    const [y, m, d] = targetDate.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
     
@@ -769,27 +938,35 @@
       return newStart < appt.end && newEnd > appt.start;
     });
 
-    if (conflict) { showError(`❌ تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+    if (conflict) { 
+        errEl.textContent = `تعارض مع موعد من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`; 
+        errEl.classList.add('show'); 
+        return; 
+    }
 
     if (editingAppt.isOnline && editingAppt.slotId && window.updateAppointmentOnline) {
         window.updateAppointmentOnline(editingAppt.slotId, newStart, newEnd, isRecurring);
     } else {
         removeLocalAppt(editingAppt);
+        const updatedLocal = {
+            ...editingAppt,
+            start: newStart,
+            end: newEnd,
+            type: isRecurring ? 'recurring' : 'normal'
+        };
         if (isRecurring) {
           if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
-          recurringAppointments[dayOfWeek].push({ start: newStart, end: newEnd });
+          recurringAppointments[dayOfWeek].push(updatedLocal);
         } else {
-          if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
-          appointments[selectedDateKey].push({ start: newStart, end: newEnd });
+          if (!appointments[targetDate]) appointments[targetDate] = [];
+          appointments[targetDate].push(updatedLocal);
         }
         saveAllAppts(); 
     }
 
-    editingAppt = null; 
-    document.getElementById('editForm').classList.remove('show');
-    hideError(); 
-    renderAppointments(); 
+    cancelEdit();
     renderCalendar();
+    renderAllCardsSummary();
   }
 
   function addAppointment() {
@@ -797,37 +974,71 @@
     const end = document.getElementById('endTime').value;
     const isRecurring = document.getElementById('repeatWeekly').checked;
 
-    if (!start || !end) { showAddError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
-    if (start >= end) { showAddError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
+    if (!selectedDateKey) {
+        showAddError('يرجى تحديد يوم من التقويم أولاً');
+        return;
+    }
+
+    if (!start || !end) { showAddError('يجب اختيار وقت البداية والنهاية'); return; }
+    if (start >= end) { showAddError('وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
     const conflict = existing.find(appt => start < appt.end && end > appt.start);
 
-    if (conflict) { showAddError(`❌ تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+    if (conflict) { showAddError(`تعارض مع موعد مسجل من ${formatTime(conflict.start)} إلى ${formatTime(conflict.end)}`); return; }
+
+    const groupName = document.getElementById('group-name').value.trim() || 'مجموعة دراسية';
+    const teacherName = document.getElementById('teacher-name').value.trim() || 'المعلم';
+    const studentsCount = document.getElementById('students-count').value || 20;
+    const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
+    const location = document.querySelector('input[name="location"]:checked').value;
+    const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
+
+    const newApptObj = { 
+        start, 
+        end, 
+        groupName, 
+        teacherName, 
+        studentsCount, 
+        genderAllowed, 
+        location, 
+        subjectData,
+        date: selectedDateKey,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek]
+    };
 
     if (isRecurring) {
       if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
-      recurringAppointments[dayOfWeek].push({ start, end });
+      recurringAppointments[dayOfWeek].push(newApptObj);
     } else {
       if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
-      appointments[selectedDateKey].push({ start, end });
+      appointments[selectedDateKey].push(newApptObj);
     }
 
     saveAllAppts();
-    document.getElementById('startTime').value = ''; document.getElementById('endTime').value = '';
-    document.getElementById('durationInfo').classList.remove('show'); document.getElementById('repeatWeekly').checked = false;
-    hideAddError(); toggleAddDropdown(); renderAppointments(); renderCalendar();
+    document.getElementById('startTime').value = ''; 
+    document.getElementById('endTime').value = '';
+    document.getElementById('durationInfo').classList.remove('show'); 
+    document.getElementById('repeatWeekly').checked = false;
+    hideAddError(); 
+    
+    renderCalendar();
+    renderAllCardsSummary();
+
+    // التمرير السلس إلى قسم الكروت
+    setTimeout(() => {
+        document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
+    }, 150);
   }
 
-  function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
-  function hideError() { document.getElementById('errorMsg').classList.remove('show'); }
   function showAddError(msg) { const el = document.getElementById('addErrorMsg'); el.textContent = msg; el.classList.add('show'); }
   function hideAddError() { document.getElementById('addErrorMsg').classList.remove('show'); }
 
   // ==========================================
-  // 💾 إدارة النشر والمزامنة محلياً
+  // 💾 المزامنة والنشر
   // ==========================================
   function loadLocalPublishedSlots() {
       const stored = JSON.parse(localStorage.getItem('published_slots') || '[]');
@@ -835,7 +1046,7 @@
       window.onlineRecurring = {};
 
       stored.forEach((data) => {
-          const appt = { ...data.appointment, slotId: data.id };
+          const appt = { ...data.appointment, slotId: data.id, ...data };
           if (appt.type === 'recurring') {
               const day = appt.dayOfWeek;
               if (!window.onlineRecurring[day]) window.onlineRecurring[day] = [];
@@ -847,25 +1058,20 @@
       });
 
       renderCalendar();
-      if (selectedDateKey) {
-          const [y, m, d] = selectedDateKey.split('-').map(Number);
-          showPanel(y, m - 1, d);
-      }
+      renderAllCardsSummary();
   }
 
   window.publishSingleApptOnline = function(appt) {
       const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
-      const groupName = document.getElementById('group-name').value.trim();
-      const teacherName = document.getElementById('teacher-name').value.trim();
-      const studentsCount = document.getElementById('students-count').value;
-      const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
-      const location = document.querySelector('input[name="location"]:checked').value;
+      const groupName = appt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة التفوق';
+      const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم';
+      const studentsCount = appt.studentsCount || document.getElementById('students-count').value || 20;
+      const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
+      const location = appt.location || document.querySelector('input[name="location"]:checked').value;
       const gpsLocation = document.getElementById('gps-coords').value;
 
-      if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
-      if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (الاسم، المستر، العدد).'); return; }
-
-      const [y, m, d] = selectedDateKey.split('-').map(Number);
+      const dateTarget = appt.date || selectedDateKey;
+      const [y, m, d] = dateTarget.split('-').map(Number);
       const dayOfWeek = new Date(y, m - 1, d).getDay();
       const slotId = 'group_' + Date.now();
 
@@ -873,7 +1079,7 @@
           id: slotId,
           subjectData, groupName, teacherName, studentsCount: parseInt(studentsCount),
           genderAllowed, location, gpsLocation: gpsLocation || '',
-          appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: selectedDateKey },
+          appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: dateTarget },
           publishedAt: new Date().toISOString()
       };
 
@@ -933,24 +1139,24 @@
       loadLocalPublishedSlots();
 
       let apptDetailsHtml = appt.type === 'recurring'
-          ? `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
-          : `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
+          ? `<strong>تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
+          : `<strong>يوم ${dateTarget}:</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
 
       document.getElementById('publishModalContent').innerHTML = `
           <div class="publish-data-item">
-              <span class="publish-data-label">🆔 كود النشر:</span>
-              <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${slotId}</span>
+              <span class="publish-data-label">كود النشر:</span>
+              <span class="publish-data-value" style="font-family:monospace; color:#10b981;">${slotId}</span>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">📚 المادة:</span>
+              <span class="publish-data-label">المادة:</span>
               <span class="publish-data-value">${subjectData}</span>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">🏷️ المجموعة:</span>
+              <span class="publish-data-label">المجموعة:</span>
               <span class="publish-data-value">${groupName}</span>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">📅 الموعد المنشور:</span>
+              <span class="publish-data-label">الموعد المنشور:</span>
               <div class="publish-data-value appts">${apptDetailsHtml}</div>
           </div>
       `;
@@ -961,14 +1167,15 @@
       let currentPublished = JSON.parse(localStorage.getItem('published_slots') || '[]');
       const target = currentPublished.find(item => item.id === slotId);
       if (target) {
-          const [y, m, d] = selectedDateKey.split('-').map(Number);
+          const targetDate = target.appointment.date || selectedDateKey;
+          const [y, m, d] = targetDate.split('-').map(Number);
           const dayOfWeek = new Date(y, m - 1, d).getDay();
           target.appointment.start = newStart;
           target.appointment.end = newEnd;
           target.appointment.type = isRecurring ? 'recurring' : 'normal';
           target.appointment.dayOfWeek = dayOfWeek;
           target.appointment.dayName = dayNames[dayOfWeek];
-          target.appointment.date = selectedDateKey;
+          target.appointment.date = targetDate;
           localStorage.setItem('published_slots', JSON.stringify(currentPublished));
           loadLocalPublishedSlots();
       }
@@ -977,20 +1184,21 @@
   window.deleteAppointmentOnline = function(appt) {
       if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
 
-      if (appt.slotId) {
+      if (appt.slotId || (appt.id && String(appt.id).startsWith('group_'))) {
+          const idToDelete = appt.slotId || appt.id;
           let currentPublished = JSON.parse(localStorage.getItem('published_slots') || '[]');
-          currentPublished = currentPublished.filter(item => item.id !== appt.slotId);
+          currentPublished = currentPublished.filter(item => item.id !== idToDelete);
           localStorage.setItem('published_slots', JSON.stringify(currentPublished));
 
           let groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
-          groupsList = groupsList.filter(item => item.id !== appt.slotId);
+          groupsList = groupsList.filter(item => item.id !== idToDelete);
           localStorage.setItem('mester_groups_list', JSON.stringify(groupsList));
 
           loadLocalPublishedSlots();
       } else {
           removeLocalAppt(appt);
-          renderAppointments();
           renderCalendar();
+          renderAllCardsSummary();
       }
   };
 
@@ -999,17 +1207,17 @@
       const btn = e.target;
       const textDisplay = document.getElementById('location-text');
       const hiddenInput = document.getElementById('gps-coords');
-      btn.innerHTML = '⏳ جاري...';
+      btn.innerHTML = 'جاري...';
       if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
               position => {
                   hiddenInput.value = `${position.coords.latitude},${position.coords.longitude}`;
-                  btn.innerHTML = '✅ تم التحديد'; btn.style.backgroundColor = '#1a3c6d';
-                  textDisplay.textContent = `الإحداثيات: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+                  btn.innerHTML = 'تم التحديد'; btn.style.background = 'linear-gradient(135deg, #1d4ed8, #1e3a8a)';
+                  textDisplay.textContent = `${position.coords.latitude.toFixed(3)}, ${position.coords.longitude.toFixed(3)}`;
               },
               error => {
-                  btn.innerHTML = '❌ فشل'; btn.style.backgroundColor = '#dc3545';
-                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS';
+                  btn.innerHTML = 'فشل التحديد'; btn.style.background = '#ef4444';
+                  textDisplay.textContent = 'تأكد من الـ GPS';
               }
           );
       }
@@ -1022,10 +1230,10 @@
   }
   window.getLocation = getLocation;
   window.closePublishModal = closePublishModal;
+  window.closeEditModal = closeEditModal;
 
   populateTimeSelects();
   renderCalendar();
-  setupSwipeCal();
   
   const initDate = new Date();
   selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
@@ -1033,7 +1241,7 @@
   window.onload = function() {
       const subjectDisplay = document.getElementById('fixed-subject');
       const savedDataString = localStorage.getItem('teacherSelections');
-      let selectedSubjectsText = "⚠️ لم تختر أي مادة.";
+      let selectedSubjectsText = "لم تختر أي مادة.";
       if (savedDataString) {
           try {
               const savedData = JSON.parse(savedDataString);
