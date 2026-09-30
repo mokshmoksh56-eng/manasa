@@ -114,6 +114,10 @@
         font-family: inherit;
     }
 
+    select.form-input {
+        cursor: pointer;
+    }
+
     .form-input:focus {
         border-color: #2b5c9e;
         outline: none;
@@ -259,6 +263,14 @@
     }
 
     .back-home:hover { color: #2b5c9e; }
+    
+    .row-group {
+        display: flex;
+        gap: 15px;
+    }
+    .row-group .form-group {
+        flex: 1;
+    }
 </style>
 </head>
 <body>
@@ -327,8 +339,28 @@
 
         <div class="form-view" id="registerView">
             <form onsubmit="handleRegister(event)">
+                
+                <div class="row-group">
+                    <div class="form-group">
+                        <label class="form-label">🎓 اللقب <span class="required">*</span></label>
+                        <select id="regTitle" class="form-input" required>
+                            <option value="" disabled selected>اختر...</option>
+                            <option value="مستر">مستر</option>
+                            <option value="مس">مس</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🎂 العمر <span class="required">*</span></label>
+                        <input type="number" id="regAge" class="form-input" 
+                               placeholder="مثال: 30" 
+                               min="18" max="100" 
+                               required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label">👤 الاسم الكامل <span class="required">*</span></label>
+                    <label class="form-label">👤 الاسم <span class="required">*</span></label>
                     <input type="text" id="regName" class="form-input" 
                            placeholder="مثال: أحمد محمد" 
                            required
@@ -346,33 +378,35 @@
                            oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
-                    <div class="pin-wrapper">
-                        <input type="password" id="regPin" class="form-input pin-input" 
-                               placeholder="••••" 
-                               maxlength="4" 
-                               pattern="[0-9]{4}"
-                               inputmode="numeric"
-                               required
-                               dir="ltr"
-                               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                        <button type="button" class="pin-toggle" onclick="togglePin('regPin', this)">👁️</button>
+                <div class="row-group">
+                    <div class="form-group">
+                        <label class="form-label">🔒 الرقم السري <span class="required">*</span></label>
+                        <div class="pin-wrapper">
+                            <input type="password" id="regPin" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">🔒 تأكيد الرقم السري <span class="required">*</span></label>
-                    <div class="pin-wrapper">
-                        <input type="password" id="regPinConfirm" class="form-input pin-input" 
-                               placeholder="••••" 
-                               maxlength="4" 
-                               pattern="[0-9]{4}"
-                               inputmode="numeric"
-                               required
-                               dir="ltr"
-                               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                        <button type="button" class="pin-toggle" onclick="togglePin('regPinConfirm', this)">👁️</button>
+                    <div class="form-group">
+                        <label class="form-label">🔒 تأكيد السري <span class="required">*</span></label>
+                        <div class="pin-wrapper">
+                            <input type="password" id="regPinConfirm" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
                     </div>
                 </div>
 
@@ -464,6 +498,8 @@
         e.preventDefault();
         hideMessages();
 
+        const title = document.getElementById('regTitle').value;
+        const age = document.getElementById('regAge').value.trim();
         const name = document.getElementById('regName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         const pin = document.getElementById('regPin').value.trim();
@@ -480,7 +516,18 @@
         }
 
         const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
-        teachers[phone] = { id: phone, name, phone, pin, role: 'teacher' };
+        
+        // حفظ البيانات شاملة اللقب والعمر
+        teachers[phone] = { 
+            id: phone, 
+            title: title,
+            age: age,
+            name: name, 
+            phone: phone, 
+            pin: pin, 
+            role: 'teacher' 
+        };
+        
         localStorage.setItem('teachers_db', JSON.stringify(teachers));
 
         localStorage.setItem('current_teacher_profile', JSON.stringify(teachers[phone]));
