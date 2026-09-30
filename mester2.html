@@ -258,7 +258,7 @@
           
           <div class="form-group full-width">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <!-- 🗺️ خريطة Mapbox هنا -->
+            <!-- 🗺️️ خريطة Mapbox هنا -->
             <div id="map-container">
               <div id="map"></div>
             </div>
@@ -405,13 +405,12 @@
   const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [31.3917, 31.0534], // مبدئياً على المنصورة / طلخا
-      zoom: 12
+      center: [30.8025, 26.8206], // 📍 مركز مصر المبدئي
+      zoom: 5.5 // زووم بعيد لعرض مصر
   });
 
   map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
-  // إضافة زر تحديد الموقع المدمج في الخريطة
   const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
@@ -419,8 +418,9 @@
   });
   map.addControl(geolocate, 'top-right');
 
+  // يتم وضع الدبوس مبدئياً في مركز مصر
   const marker = new mapboxgl.Marker({ draggable: true })
-      .setLngLat([31.3917, 31.0534])
+      .setLngLat([30.8025, 26.8206])
       .addTo(map);
 
   function updateLocationInput() {
@@ -428,7 +428,7 @@
       document.getElementById('gps-coords').value = `${lngLat.lat.toFixed(6)},${lngLat.lng.toFixed(6)}`;
       
       const txt = document.getElementById('location-text');
-      txt.textContent = `دقة الموقع الحالية: ${lngLat.lat.toFixed(5)}, ${lngLat.lng.toFixed(5)}`;
+      txt.textContent = `موقعك الحالي: ${lngLat.lat.toFixed(5)}, ${lngLat.lng.toFixed(5)}`;
       txt.style.color = '#15803d';
   }
 
@@ -457,9 +457,9 @@
       const textDisplay = document.getElementById('location-text');
       const hiddenInput = document.getElementById('gps-coords');
       
-      let counter = 3; // 3 ثواني للعداد
+      let counter = 3; 
       btn.disabled = true;
-      btn.style.background = '#d97706'; // لون تحذيري (برتقالي) أثناء الانتظار
+      btn.style.background = '#d97706'; 
       btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
       
       const countdownInterval = setInterval(() => {
@@ -474,7 +474,6 @@
       if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
               position => {
-                  // ننتظر حتى ينتهي العداد (ليشعر المستخدم بالدقة)
                   setTimeout(() => {
                       clearInterval(countdownInterval);
                       const lat = position.coords.latitude;
@@ -485,12 +484,12 @@
                       btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
                       btn.disabled = false;
                       
-                      textDisplay.textContent = `دقة متناهية مسجلة: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                      textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                       textDisplay.style.color = '#15803d';
 
-                      // تحديث الخريطة والدبوس مع زوم قوي جداً
+                      // 📍 تحريك الخريطة فوراً למكان المستر الفعلي
                       marker.setLngLat([lng, lat]);
-                      map.flyTo({ center: [lng, lat], zoom: 17, essential: true });
+                      map.flyTo({ center: [lng, lat], zoom: 16.5, essential: true });
                   }, Math.max(0, (counter + 1) * 1000));
               },
               error => {
@@ -501,7 +500,7 @@
                   textDisplay.textContent = 'تأكد من تفعيل الـ GPS (الموقع) في هاتفك';
                   textDisplay.style.color = '#dc2626';
               },
-              { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 } // طلب أعلى دقة ممكنة
+              { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
           );
       } else {
           clearInterval(countdownInterval);
