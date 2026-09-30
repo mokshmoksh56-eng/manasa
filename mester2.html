@@ -8,9 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    /* ========================================== */
-    /* 🎨 تنسيقات الصفحة الأساسية */
-    /* ========================================== */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
     body { background-color: #f4f6f9; padding-bottom: 40px; color: #333; }
 
@@ -43,13 +40,7 @@
     .gps-wrapper { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .btn-gps { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); display: flex; align-items: center; gap: 8px; font-family: inherit; }
 
-    .submit-btn { width: 100%; padding: 18px; background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 0 #1e8449, 0 8px 15px rgba(0, 0, 0, 0.2); margin-bottom: 30px; transition: 0.2s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #1e8449; }
-    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    /* ========================================== */
-    /* 📋 تنسيقات النافذة المنبثقة (Modal) */
-    /* ========================================== */
+    /* النافذة المنبثقة */
     .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
     .publish-modal-overlay.active { display: flex; }
     .publish-modal-box { background: #fff; border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUpModal 0.3s ease-out; }
@@ -72,22 +63,15 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    @media (max-width: 700px) {
-        .header-3d { padding: 25px 15px 40px; }
-        .header-3d h1 { font-size: 20px; }
-        .step { font-size: 12px; }
-        .step.active { font-size: 13px; }
-        .stepper { padding: 8px 14px; gap: 10px; }
-        .main-container { padding: 0 8px; margin-top: -25px; }
-        .data-table td { padding: 10px; display: block; width: 100%; border: none; border-bottom: 1px solid #e0e4e8; }
-        .data-table tr { display: block; }
-        .data-table { border-collapse: separate; }
-        .submit-btn { font-size: 16px; padding: 16px; }
-    }
+    /* مؤشر التحميل */
+    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+    .loading-overlay.show { display: flex; }
+    .loading-box { background: white; border-radius: 16px; padding: 30px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .loading-spinner { width: 50px; height: 50px; border: 5px solid #e0e4e8; border-top-color: #2b5c9e; border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: #1a3c6d; font-weight: 900; font-size: 15px; }
 
-    /* ========================================== */
-    /* 📅 تنسيقات التقويم */
-    /* ========================================== */
+    /* التقويم */
     .new-calendar-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 25px; }
     .calendar-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 650px; border-top: 4px solid #f1c40f; }
 
@@ -107,16 +91,6 @@
     .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 800; box-shadow: 0 3px 10px rgba(231,76,60,0.35); flex-shrink: 0; margin-right: 4px; }
     .month-appt-badge .icon { font-size: 13px; }
     .month-appt-badge.zero { background: linear-gradient(135deg, #95a5a6, #7f8c8d); box-shadow: 0 3px 10px rgba(149,165,166,0.3); }
-
-    .slide-out-left { animation: slideOutLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-out-right { animation: slideOutRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-in-right { animation: slideInRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    .slide-in-left { animation: slideInLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-
-    @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-120%); opacity: 0; } }
-    @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
-    @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideInLeft { from { transform: translateX(-120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
     .week-wrapper { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid #dfe6ec; }
     .week-track { will-change: transform, opacity; user-select: none; }
@@ -141,9 +115,9 @@
     .badge { position: absolute; bottom: 8px; left: 8px; background: #e74c3c; color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
     .swipe-hint { text-align: center; font-size: 13px; color: #95a5a6; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eaeef3; user-select: none; }
 
-    .panel { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 400px; align-self: flex-start; border-top: 4px solid #2b5c9e; }
+    .panel { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 25px; width: 100%; max-width: 450px; align-self: flex-start; border-top: 4px solid #2b5c9e; }
     .panel h3 { margin: 0 0 20px 0; color: #2c3e50; font-size: 18px; padding-bottom: 12px; border-bottom: 2px solid #eaeef3; }
-    .appointments-list-container { max-height: 450px; overflow-y: auto; margin-bottom: 15px; }
+    .appointments-list-container { max-height: 450px; overflow-y: auto; margin-bottom: 15px; padding-right: 5px; }
 
     .form-group { margin-bottom: 15px; width: 100%;}
     .form-group label { display: block; font-size: 14px; color: #566573; font-weight: 700; margin-bottom: 6px; }
@@ -166,41 +140,43 @@
     .btn-cancel:active { transform: scale(0.98); background: #7f8c8d; }
 
     .edit-form { background: #fff8e5; border: 2px solid #f0d78c; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: none; }
-    .edit-form.show { display: block; animation: slideDownCal 0.25s ease; }
-    @keyframes slideDownCal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .edit-form.show { display: block; }
     .edit-form .edit-title { font-size: 14px; color: #b8860b; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
-    .appointment { display: flex; justify-content: space-between; align-items: center; background: #fff; border-right: 4px solid #4a90e2; border-radius: 8px; padding: 14px; margin-bottom: 10px; animation: slideInCal 0.25s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.05); gap: 10px; }
+    .appointment { 
+        display: flex; flex-direction: column; background: #fff; 
+        border-right: 4px solid #4a90e2; border-radius: 10px; padding: 14px; 
+        margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); gap: 12px; 
+    }
     .appointment.recurring { background: #f9f5ff; border-right-color: #9b59b6; }
     .appointment.editing { background: #fff8e5; border-right-color: #f39c12; box-shadow: 0 0 0 2px #f0d78c; }
-    @keyframes slideInCal { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
 
-    .appointment .info { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+    .appointment .info { display: flex; flex-direction: column; gap: 6px; width: 100%; }
     .appointment .time { font-weight: 800; color: #2c3e50; font-size: 16px; }
     .appointment .recurring-tag { display: inline-block; background: #9b59b6; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 10px; width: fit-content; }
 
-    .appt-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .btn-edit, .btn-delete { color: #fff; border: none; border-radius: 6px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .btn-edit { background: #f39c12; }
-    .btn-edit:active { background: #d68910; transform: scale(0.92); }
-    .btn-delete { background: #e74c3c; }
-    .btn-delete:active { background: #c0392b; transform: scale(0.92); }
+    .appt-actions { 
+        display: flex; width: 100%; justify-content: space-between; align-items: center;
+        border-top: 1px dashed #eaeef3; padding-top: 12px; gap: 8px; flex-wrap: wrap;
+    }
+    .appt-actions-group { display: flex; gap: 8px; }
+    
+    .btn-action { 
+        display: flex; align-items: center; justify-content: center; gap: 6px; 
+        font-size: 13px; font-weight: 800; padding: 8px 14px; border-radius: 8px; 
+        border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; 
+    }
+    
+    .btn-edit { background: #fef3c7; color: #b45309; }
+    .btn-edit:hover { background: #fde68a; }
+    .btn-delete { background: #fee2e2; color: #b91c1c; }
+    .btn-delete:hover { background: #fecaca; }
+    
+    .btn-publish { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; box-shadow: 0 4px 10px rgba(46,204,113,0.3); }
+    .btn-publish:hover { background: linear-gradient(135deg, #27ae60, #229954); transform: translateY(-2px); }
 
     .error-msg { background: #fdecea; color: #c0392b; border: 2px solid #f5b7b1; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 15px; font-weight: 600; display: none; }
-    .error-msg.show { display: block; animation: shake 0.3s; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-    @media (max-width: 800px) {
-        .calendar-card, .panel { padding: 15px; border-radius: 12px; max-width: 100%; min-height: auto; }
-        .month-name { font-size: 20px; }
-        .month-number { width: 32px; height: 32px; font-size: 15px; }
-        .year-text { font-size: 16px; }
-        .weekdays div { font-size: 11px; padding: 10px 0; }
-        .days div.cell { min-height: 65px; font-size: 13px; padding: 4px; }
-        .cell .date-number { width: 22px; height: 22px; }
-        .time-row-cal { grid-template-columns: 1fr 1fr; gap: 10px; } 
-        .badge { bottom: 4px; left: 4px; width: 15px; height: 15px; font-size: 8px; }
-    }
+    .error-msg.show { display: block; }
 </style>
 </head>
 <body>
@@ -230,7 +206,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span class="cell-title">👨‍‍🏫 اسم المستر/السنتر</span>
+                        <span class="cell-title">👨‍🏫 اسم المستر/السنتر</span>
                         <input type="text" id="teacher-name" class="form-control" placeholder="أدخل الاسم">
                     </td>
                     <td>
@@ -270,7 +246,7 @@
         </table>
     </div>
 
-    <!-- 📅 بداية التقويم -->
+    <!-- التقويم -->
     <div class="new-calendar-container">
       <div class="calendar-card">
         <div class="add-dropdown-header" onclick="toggleAddDropdown()">
@@ -354,6 +330,10 @@
               <select id="editEnd"></select>
             </div>
           </div>
+          <div class="repeat-option" style="margin-top:0; margin-bottom:15px; padding: 10px;">
+            <input type="checkbox" id="editRepeatWeekly">
+            <label for="editRepeatWeekly">🔁 تكرار أسبوعي</label>
+          </div>
           <button class="btn-add" onclick="saveEdit()">💾 حفظ التعديل</button>
           <button class="btn-cancel" onclick="cancelEdit()">✖ إلغاء</button>
         </div>
@@ -363,26 +343,28 @@
         </div>
       </div>
     </div>
-    <!-- 📅 نهاية التقويم -->
-
-    <!-- تم التعديل هنا: نشر بدلا من الحفظ والتالي -->
-    <button class="submit-btn" id="submit-btn-main" onclick="submitGroupData()">🚀 نشر المجموعة</button>
 </div>
 
-<!-- 🟢 نافذة النشر المنبثقة (Modal) -->
+<!-- النافذة المنبثقة للبيانات -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>🎉 تم إعداد المجموعة بنجاح</h2>
+      <h2>🎉 تم حفظ ونشر الموعد بنجاح في Firebase</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
-    <div class="publish-modal-content" id="publishModalContent">
-      <!-- سيتم إضافة البيانات هنا بواسطة JavaScript -->
-    </div>
+    <div class="publish-modal-content" id="publishModalContent"></div>
     <div class="publish-modal-footer">
       <button class="btn-confirm" onclick="closePublishModal(event, true)">إغلاق ومتابعة</button>
     </div>
   </div>
+</div>
+
+<!-- شاشة الانتظار -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loading-text">جاري النشر في السيرفر أونلاين...</div>
+    </div>
 </div>
 
 <div class="last-save-bar" id="autosave-bar">
@@ -390,9 +372,7 @@
     <span>تم الحفظ تلقائياً</span>
 </div>
 
-<!-- ========================================== -->
-<!-- ⚙️ سكربت التقويم الجديد (Global Scope) -->
-<!-- ========================================== -->
+<!-- محرك التقويم -->
 <script>
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -402,7 +382,6 @@
   let currentDate = new Date();
   let selectedDateKey = null;
   let editingAppt = null;
-  let isAnimating = false;
 
   let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
   let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
@@ -564,70 +543,6 @@
     }
   }
 
-  function changeMonthDir(direction) {
-    if (isAnimating) return;
-    isAnimating = true;
-    const titleTrack = document.getElementById('titleTrack');
-    const weekTrack = document.getElementById('weekTrack');
-    const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
-    const inClass  = direction > 0 ? 'slide-in-right' : 'slide-in-left';
-
-    titleTrack.classList.add(outClass); weekTrack.classList.add(outClass);
-
-    setTimeout(() => {
-      currentDate.setDate(1);
-      currentDate.setMonth(currentDate.getMonth() + direction);
-      renderCalendar();
-      titleTrack.classList.remove(outClass); weekTrack.classList.remove(outClass);
-      titleTrack.classList.add(inClass); weekTrack.classList.add(inClass);
-      setTimeout(() => {
-        titleTrack.classList.remove(inClass); weekTrack.classList.remove(inClass);
-        isAnimating = false;
-      }, 450);
-    }, 450);
-  }
-
-  function setupSwipeCal() {
-    const wrapper = document.getElementById('daysWrapper');
-    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
-    let isSwiping = false, isHorizontalSwipe = false;
-    const minSwipeDistance = 50, maxVerticalTolerance = 80;
-
-    wrapper.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
-      isSwiping = true; isHorizontalSwipe = false;
-    }, { passive: true });
-
-    wrapper.addEventListener('touchmove', (e) => {
-      if (!isSwiping) return;
-      const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
-      const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
-      if (!isHorizontalSwipe && diffX > 15 && diffX > diffY) isHorizontalSwipe = true;
-    }, { passive: true });
-
-    wrapper.addEventListener('touchend', (e) => {
-      if (!isSwiping) return;
-      isSwiping = false;
-      touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY;
-      const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
-      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
-      if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
-      }
-    }, { passive: true });
-
-    let mouseStartX = 0, isMouseDown = false;
-    wrapper.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; isMouseDown = true; });
-    wrapper.addEventListener('mouseup', (e) => {
-      if (!isMouseDown) return;
-      isMouseDown = false;
-      const diffX = e.clientX - mouseStartX;
-      if (Math.abs(diffX) > minSwipeDistance) {
-        if (diffX > 0) changeMonthDir(-1); else changeMonthDir(1);
-      }
-    });
-  }
-
   function selectDay(year, month, day) {
     selectedDateKey = dateKey(year, month, day);
     cancelEdit(); renderCalendar(); showPanel(year, month, day);
@@ -663,16 +578,21 @@
       if (isEditing) el.classList.add('editing');
 
       const recurringTag = appt.type === 'recurring' ? '<span class="recurring-tag">🔁 تكرار أسبوعي</span>' : '';
+      
       el.innerHTML = `
         <div class="info">
           <div class="time">🕐 ${formatTime(appt.start)} - ${formatTime(appt.end)}</div>
           ${recurringTag}
         </div>
         <div class="appt-actions">
-          <button class="btn-edit" title="تعديل">✏</button>
-          <button class="btn-delete" title="حذف">✕</button>
+          <div class="appt-actions-group">
+            <button class="btn-action btn-edit" title="تعديل الموعد">✏️ تعديل</button>
+            <button class="btn-action btn-delete" title="إلغاء الموعد">🗑️ إلغاء</button>
+          </div>
+          <button class="btn-action btn-publish" title="نشر هذا الموعد أونلاين">🚀 نشر</button>
         </div>
       `;
+      el.querySelector('.btn-publish').onclick = (e) => { e.stopPropagation(); window.publishSingleApptOnline(appt); };
       el.querySelector('.btn-edit').onclick = (e) => { e.stopPropagation(); startEdit(appt); };
       el.querySelector('.btn-delete').onclick = (e) => { e.stopPropagation(); deleteAppointment(appt); };
       list.appendChild(el);
@@ -689,10 +609,14 @@
 
   function startEdit(appt) {
     editingAppt = { ...appt };
-    document.getElementById('editStart').value = appt.start; document.getElementById('editEnd').value = appt.end;
+    document.getElementById('editStart').value = appt.start; 
+    document.getElementById('editEnd').value = appt.end;
+    document.getElementById('editRepeatWeekly').checked = (appt.type === 'recurring');
     document.getElementById('editForm').classList.add('show');
+    
     const addContent = document.getElementById('addDropdownContent');
     if(addContent.classList.contains('open')) toggleAddDropdown();
+    
     hideError(); renderAppointments();
     document.getElementById('editForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -707,12 +631,15 @@
     if (!editingAppt) return;
     const newStart = document.getElementById('editStart').value;
     const newEnd = document.getElementById('editEnd').value;
+    const isRecurring = document.getElementById('editRepeatWeekly').checked;
+
     if (!newStart || !newEnd) { showError('⚠️ يجب اختيار وقت البداية والنهاية'); return; }
     if (newStart >= newEnd) { showError('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
+    
     const conflict = existing.find(appt => {
       if (appt.start === editingAppt.start && appt.end === editingAppt.end && appt.type === editingAppt.type) return false;
       return newStart < appt.end && newEnd > appt.start;
@@ -723,15 +650,27 @@
     if (editingAppt.type === 'recurring') {
       const list = recurringAppointments[dayOfWeek] || [];
       const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
-      if (idx > -1) { list[idx] = { start: newStart, end: newEnd }; recurringAppointments[dayOfWeek] = list; }
+      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete recurringAppointments[dayOfWeek]; else recurringAppointments[dayOfWeek] = list; }
     } else {
       const list = appointments[selectedDateKey] || [];
       const idx = list.findIndex(a => a.start === editingAppt.start && a.end === editingAppt.end);
-      if (idx > -1) { list[idx] = { start: newStart, end: newEnd }; appointments[selectedDateKey] = list; }
+      if (idx > -1) { list.splice(idx, 1); if (list.length === 0) delete appointments[selectedDateKey]; else appointments[selectedDateKey] = list; }
     }
 
-    saveAllAppts(); editingAppt = null; document.getElementById('editForm').classList.remove('show');
-    hideError(); renderAppointments(); renderCalendar();
+    if (isRecurring) {
+      if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
+      recurringAppointments[dayOfWeek].push({ start: newStart, end: newEnd });
+    } else {
+      if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
+      appointments[selectedDateKey].push({ start: newStart, end: newEnd });
+    }
+
+    saveAllAppts(); 
+    editingAppt = null; 
+    document.getElementById('editForm').classList.remove('show');
+    hideError(); 
+    renderAppointments(); 
+    renderCalendar();
   }
 
   function addAppointment() {
@@ -764,6 +703,8 @@
   }
 
   function deleteAppointment(appt) {
+    if (!confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) return;
+
     if (editingAppt && editingAppt.start === appt.start && editingAppt.end === appt.end && editingAppt.type === appt.type) cancelEdit();
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
@@ -787,16 +728,17 @@
 
   populateTimeSelects();
   renderCalendar();
-  setupSwipeCal();
   
   const initDate = new Date();
   selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
 </script>
 
 <!-- ========================================== -->
-<!-- 🚀 سكربت النافذة المنبثقة ومعالجة النشر -->
+<!-- 🚀 سكربت ربط Firebase أونلاين ونشر الموعد -->
 <!-- ========================================== -->
-<script>
+<script type="module">
+    import { db, waitForAuth, collection, addDoc, serverTimestamp } from './firebase-config.js';
+
     function getLocation(e) {
         e.preventDefault();
         const btn = e.target;
@@ -818,17 +760,14 @@
         }
     }
 
-    // إغلاق النافذة المنبثقة
     function closePublishModal(e, force = false) {
         if (force || e.target.id === 'publishModalOverlay') {
             document.getElementById('publishModalOverlay').classList.remove('active');
         }
     }
 
-    // ==========================================
-    // 🌐 تجميع البيانات وعرضها في نافذة منبثقة بدلا من الإرسال
-    // ==========================================
-    function submitGroupData() {
+    // نشر الموعد في Firebase مباشرة أونلاين
+    async function publishSingleApptOnline(appt) {
         const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
         const groupName = document.getElementById('group-name').value.trim();
         const teacherName = document.getElementById('teacher-name').value.trim();
@@ -837,91 +776,91 @@
         const location = document.querySelector('input[name="location"]:checked').value;
         const gpsLocation = document.getElementById('gps-coords').value;
 
-        if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى العودة للصفحة السابقة واختيار المادة والصف أولاً.'); return; }
-        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى تعبئة الحقول الأساسية (اسم المجموعة، المستر، عدد الطلاب).'); return; }
+        if (subjectData && subjectData.includes('لم تختر')) { alert('⚠️ يرجى اختيار المادة والصف أولاً.'); return; }
+        if (!groupName || !teacherName || !studentsCount) { alert('⚠️ يرجى ملء اسم المجموعة، المستر، وعدد الطلاب أولاً.'); return; }
 
-        const normalAppts = JSON.parse(localStorage.getItem('appointments') || '{}');
-        const recurringAppts = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.classList.add('show');
 
-        if (Object.keys(normalAppts).length === 0 && Object.keys(recurringAppts).length === 0) {
-            alert('⚠️ يرجى إضافة موعد واحد على الأقل في التقويم قبل النشر.');
-            return;
-        }
+        try {
+            await waitForAuth();
 
-        // تنسيق المواعيد لعرضها في النافذة المنبثقة
-        let apptsHtml = '';
-        let totalAppts = 0;
-        
-        // المواعيد المتكررة
-        for(const day in recurringAppts) {
-            const list = recurringAppts[day];
-            if(list.length) {
-                apptsHtml += `<div style="margin-bottom:8px;"><strong>🔁 تكرار أسبوعي كل ${dayNames[day]}:</strong><br>`;
-                list.forEach(a => { 
-                    apptsHtml += `▪ من ${formatTime(a.start)} إلى ${formatTime(a.end)}<br>`; 
-                    totalAppts++; 
-                });
-                apptsHtml += `</div>`;
+            const [y, m, d] = selectedDateKey.split('-').map(Number);
+            const dayOfWeek = new Date(y, m - 1, d).getDay();
+
+            const docPayload = {
+                subjectData,
+                groupName,
+                teacherName,
+                studentsCount: parseInt(studentsCount),
+                genderAllowed,
+                location,
+                gpsLocation: gpsLocation || '',
+                appointment: {
+                    start: appt.start,
+                    end: appt.end,
+                    type: appt.type,
+                    dayOfWeek: dayOfWeek,
+                    dayName: dayNames[dayOfWeek],
+                    date: selectedDateKey
+                },
+                status: 'published',
+                publishedAt: serverTimestamp()
+            };
+
+            const docRef = await addDoc(collection(db, 'published_slots'), docPayload);
+            console.log('✅ تم النشر في Firebase ID:', docRef.id);
+
+            loadingOverlay.classList.remove('show');
+
+            let apptDetailsHtml = '';
+            if (appt.type === 'recurring') {
+                apptDetailsHtml = `<strong>🔁 تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
+            } else {
+                apptDetailsHtml = `<strong>📅 يوم ${selectedDateKey}:</strong><br>▪ من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
             }
-        }
-        
-        // المواعيد العادية (أيام محددة)
-        for(const date in normalAppts) {
-            const list = normalAppts[date];
-            if(list.length) {
-                apptsHtml += `<div style="margin-bottom:8px;"><strong>📅 يوم ${date}:</strong><br>`;
-                list.forEach(a => { 
-                    apptsHtml += `▪ من ${formatTime(a.start)} إلى ${formatTime(a.end)}<br>`; 
-                    totalAppts++; 
-                });
-                apptsHtml += `</div>`;
-            }
-        }
-        
-        if(!apptsHtml) apptsHtml = '<span style="color:#e74c3c">لا توجد مواعيد</span>';
 
-        // تجهيز محتوى النافذة
-        const contentHtml = `
-            <div class="publish-data-item">
-                <span class="publish-data-label">📚 المادة والصف:</span>
-                <span class="publish-data-value">${subjectData}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">🏷️ اسم المجموعة:</span>
-                <span class="publish-data-value">${groupName}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">👨‍🏫 اسم المستر/السنتر:</span>
-                <span class="publish-data-value">${teacherName}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">👥 العدد المطلوب:</span>
-                <span class="publish-data-value">${studentsCount} طلاب</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">👫 الفئات المسموحة:</span>
-                <span class="publish-data-value">${genderAllowed}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">📍 مكان الدرس:</span>
-                <span class="publish-data-value">${location}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">🗺️ الموقع (GPS):</span>
-                <span class="publish-data-value">${gpsLocation ? 'تم تحديد الإحداثيات' : 'لم يتم التحديد'}</span>
-            </div>
-            <div class="publish-data-item">
-                <span class="publish-data-label">📅 جدول المواعيد (إجمالي ${totalAppts} موعد):</span>
-                <div class="publish-data-value appts">${apptsHtml}</div>
-            </div>
-        `;
+            const contentHtml = `
+                <div class="publish-data-item">
+                    <span class="publish-data-label">🆔 كود النشر (Firebase ID):</span>
+                    <span class="publish-data-value" style="font-family:monospace; color:#28a745;">${docRef.id}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">📚 المادة والصف:</span>
+                    <span class="publish-data-value">${subjectData}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">🏷️ اسم المجموعة:</span>
+                    <span class="publish-data-value">${groupName}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">👨‍🏫 اسم المستر/السنتر:</span>
+                    <span class="publish-data-value">${teacherName}</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">👥 العدد المطلوب:</span>
+                    <span class="publish-data-value">${studentsCount} طلاب</span>
+                </div>
+                <div class="publish-data-item">
+                    <span class="publish-data-label">📅 الموعد المنشور أونلاين:</span>
+                    <div class="publish-data-value appts">${apptDetailsHtml}</div>
+                </div>
+            `;
 
-        // إدراج المحتوى وفتح النافذة
-        document.getElementById('publishModalContent').innerHTML = contentHtml;
-        document.getElementById('publishModalOverlay').classList.add('active');
+            document.getElementById('publishModalContent').innerHTML = contentHtml;
+            document.getElementById('publishModalOverlay').classList.add('active');
+
+        } catch (error) {
+            loadingOverlay.classList.remove('show');
+            console.error('❌ خطأ في نشر الموعد:', error);
+            alert('❌ فشل النشر في Firebase:\n' + error.message);
+        }
     }
 
-    // جلب المواد التي اختارها المدرس من الصفحة السابقة
+    window.getLocation = getLocation;
+    window.closePublishModal = closePublishModal;
+    window.publishSingleApptOnline = publishSingleApptOnline;
+
     window.onload = function() {
         const subjectDisplay = document.getElementById('fixed-subject');
         const savedDataString = localStorage.getItem('teacherSelections');
