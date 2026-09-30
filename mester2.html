@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- 🗺️ مكتبات Leaflet و OpenStreetMap (مجانية 100%) -->
+<!-- 🗺️ مكتبات Leaflet و OpenStreetMap -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
@@ -35,7 +35,6 @@
         color: var(--text-dark); 
     }
 
-    /* إلغاء اللون الفيروزي تماماً وإظهار صورة teacher2.png نقية مع طبقة ظل خفيفة للنصوص */
     .header-3d { 
         width: 100%; 
         background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 100%), url('teacher2.png') center/cover no-repeat; 
@@ -86,7 +85,7 @@
     
     .fixed-subject-box { background: var(--light-teal); color: var(--dark-teal); padding: 12px 15px; border-radius: 8px; font-weight: 900; font-size: 15px; text-align: center; border: 1px solid var(--border-teal); }
 
-    /* ✔ تنسيقات كروت الاختيار مع الأيقونات */
+    /* تنسيقات كروت الاختيار مع الأيقونات */
     .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .cards-grid input[type="radio"] { display: none; }
     .cards-grid label { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 900; color: var(--text-dark); font-size: 13px; }
@@ -96,7 +95,7 @@
     
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    /* 🗺️ خريطة Leaflet */
+    /* 🗺️️ خريطة Leaflet */
     #map-container { width: 100%; height: 280px; border-radius: 10px; overflow: hidden; border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; }
     #map { width: 100%; height: 100%; }
 
@@ -196,6 +195,8 @@
     .sc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .badge-status { font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; }
     .badge-status.online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-status.hidden-student { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-status.visible-student { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     .badge-status.draft { background: #f8fafc; color: var(--text-gray); border: 1px solid #e2e8f0; }
     .badge-status.recurring { background: var(--light-teal); color: var(--dark-teal); border: 1px solid var(--border-teal); }
     .sc-time-banner { background: var(--light-teal); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border-teal); display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 900; }
@@ -205,7 +206,7 @@
     .sc-detail-item { display: flex; align-items: center; gap: 6px; color: var(--text-gray); font-weight: 800; }
     .sc-detail-item.full { grid-column: span 2; }
     .sc-detail-item .val { font-weight: 900; color: var(--text-dark); }
-    .sc-footer-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 2px dashed #e2e8f0; padding-top: 12px; }
+    .sc-footer-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 2px dashed #e2e8f0; padding-top: 12px; flex-wrap: wrap; }
     .sc-actions-sub { display: flex; gap: 6px; }
     .btn-action { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 900; padding: 7px 12px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .btn-edit { background: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; }
@@ -213,7 +214,10 @@
     .btn-delete { background: #fee2e2; color: #b91c1c; }
     .btn-publish { background: var(--primary-teal); color: var(--white); }
     .btn-publish:hover { background: var(--dark-teal); }
-    .btn-published { background: #94a3b8; color: var(--white); cursor: default; }
+    .btn-published { background: var(--dark-teal); color: var(--white); cursor: pointer; }
+    .btn-published:hover { background: var(--primary-teal); }
+    .btn-toggle-vis { background: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; font-size: 12px; padding: 7px 10px; border-radius: 6px; cursor: pointer; }
+    .btn-toggle-vis:hover { background: #e2e8f0; }
     .empty-cards-state { text-align: center; padding: 40px 20px; color: var(--text-gray); font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
 
     /* ========================================== */
@@ -229,9 +233,9 @@
     .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px dashed #e2e8f0; display: flex; flex-direction: column; }
     .publish-data-item:last-child { border-bottom: none; }
     .publish-data-label { color: var(--text-gray); font-weight: 900; font-size: 13px; margin-bottom: 4px; }
-    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
-    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); }
-    .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; }
+    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; }
+    .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; display: flex; gap: 10px; }
     .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.2s;}
     .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); }
 
@@ -303,7 +307,7 @@
           
           <div class="form-group full-width">
             <label><span class="step-num">6</span> الموقع الجغرافي</label>
-            <!-- 🗺️ خريطة Leaflet هنا -->
+            <!-- 🗺️ خريطة Leaflet -->
             <div id="map-container">
               <div id="map"></div>
             </div>
@@ -422,11 +426,11 @@
   </div>
 </div>
 
-<!-- 🎉 النافذة المنبثقة لتأكيد النشر -->
+<!-- 🎉 النافذة المنبثقة الشاملة لتأكيد/عرض النشر وحالة الظهور للطلبة -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>تم حفظ ونشر المجموعة بنجاح</h2>
+      <h2>تفاصيل نشر المجموعة وحالة الظهور</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
     <div class="publish-modal-content" id="publishModalContent"></div>
@@ -438,19 +442,17 @@
 
 <script>
   // ==========================================
-  // 🗺️ تهيئة خريطة Leaflet (المجانية 100%) وتأكيد المكان
+  // 🗺️ تهيئة خريطة Leaflet وتأكيد المكان
   // ==========================================
   let map, marker;
 
   function initMap() {
-      // 📍 البداية من مركز مصر
       map = L.map('map').setView([26.8206, 30.8025], 5.5);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
-      // زر "أين مكاني 🎯" المدمج في الخريطة أعلى اليسار
       const gpsControl = L.control({position: 'topleft'});
       gpsControl.onAdd = function (map) {
           const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
@@ -459,10 +461,8 @@
       };
       gpsControl.addTo(map);
 
-      // الدبوس
       marker = L.marker([26.8206, 30.8025], { draggable: true }).addTo(map);
 
-      // تحديث الإحداثيات وإظهار Popup للتأكيد عند النقر على الخريطة
       map.on('click', function(e) {
           const lat = e.latlng.lat;
           const lng = e.latlng.lng;
@@ -470,7 +470,6 @@
           updateLocationInput(lat, lng, true);
       });
 
-      // تحديث الإحداثيات وإظهار Popup للتأكيد عند سحب الدبوس وإفلاته
       marker.on('dragend', function(e) {
           const pos = marker.getLatLng();
           updateLocationInput(pos.lat, pos.lng, true);
@@ -527,11 +526,9 @@
                       textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                       textDisplay.style.color = '#1b736a';
 
-                      // تحريك الخريطة الدقيقة
                       marker.setLatLng([lat, lng]);
                       map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
                       
-                      // إظهار رسالة تأكيد فوق الدبوس
                       setTimeout(() => {
                         marker.bindPopup("<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:14px;'>✅ موقعك الحالي الدقيق</div>").openPopup();
                       }, 1600);
@@ -556,7 +553,7 @@
   }
 
   // ==========================================
-  // 📅 إعداد التقويم والوظائف الأساسية (مع السحب)
+  // 📅 إعداد التقويم والوظائف الأساسية
   // ==========================================
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -774,7 +771,6 @@
     }
   }
 
-  // تغيير الشهر لليمين واليسار
   function changeMonthDir(direction) {
       if (isAnimating) return;
       isAnimating = true;
@@ -840,8 +836,8 @@
           if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
           
           if (Math.abs(diffX) > minSwipeDistance) {
-              if (diffX > 0) changeMonthDir(-1); // سحب يمين -> الشهر السابق
-              else changeMonthDir(1); // سحب يسار -> الشهر التالي
+              if (diffX > 0) changeMonthDir(-1);
+              else changeMonthDir(1);
           }
       }, { passive: true });
   }
@@ -855,6 +851,104 @@
     document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
 
     renderCalendar();
+  }
+
+  /* ======================================================== */
+  /* 👁️ دالة تبديل حالة الظهور للطلبة (إخفاء / إظهار) */
+  /* ======================================================== */
+  window.toggleVisibilityOnline = function(slotId) {
+      let currentPublished = JSON.parse(localStorage.getItem('published_slots') || '[]');
+      const item = currentPublished.find(i => i.id === slotId);
+      if (item) {
+          const currentVis = (item.isVisible !== undefined) ? item.isVisible : true;
+          item.isVisible = !currentVis;
+          localStorage.setItem('published_slots', JSON.stringify(currentPublished));
+
+          // تحديث القائمة العامة للمستر/السنتر
+          let groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
+          const targetGroup = groupsList.find(g => g.id === slotId);
+          if (targetGroup) {
+              targetGroup.isActive = item.isVisible;
+              localStorage.setItem('mester_groups_list', JSON.stringify(groupsList));
+          }
+
+          loadLocalPublishedSlots();
+
+          // إعادة تحديث النافذة المنبثقة إذا كانت مفتوحة
+          if (document.getElementById('publishModalOverlay').classList.contains('active')) {
+              showPublishModalDetails(item);
+          }
+      }
+  };
+
+  /* ======================================================== */
+  /* 🌟 دالة عرض كافة البيانات بالكامل في النافذة المنبثقة 🌟 */
+  /* ======================================================== */
+  function showPublishModalDetails(data) {
+      const appt = data.appointment || data;
+      const dayNameStr = appt.dayName || dayNames[appt.dayOfWeek] || '';
+      const isVisible = (data.isVisible !== undefined) ? data.isVisible : true;
+      
+      let apptDetailsHtml = appt.type === 'recurring'
+          ? `<strong>تكرار أسبوعي كل يوم ${dayNameStr}:</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
+          : `<strong>يوم ${appt.date} (${dayNameStr}):</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
+
+      let gpsDisplay = data.gpsLocation 
+          ? `📍 ${data.gpsLocation}` 
+          : 'غير محدد على الخريطة';
+
+      let visibilityHtml = isVisible 
+          ? `<span style="color:#0284c7; font-weight:900;">👁️ ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
+          : `<span style="color:#b91c1c; font-weight:900;">🙈 مخفي عن الطلبة (مخفي من تطبيق الطلاب)</span>`;
+
+      document.getElementById('publishModalContent').innerHTML = `
+          <div class="publish-data-item">
+              <span class="publish-data-label">حالة الظهور للطلبة:</span>
+              <div class="publish-data-value">
+                  ${visibilityHtml}
+                  <button class="btn-toggle-vis" onclick="window.toggleVisibilityOnline('${data.id}')">
+                      ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
+                  </button>
+              </div>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">كود النشر:</span>
+              <span class="publish-data-value" style="font-family:monospace; color:#10b981; font-weight:900;">${data.id || data.slotId || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم المستر / السنتر:</span>
+              <span class="publish-data-value">${data.teacherName || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">المادة والصف:</span>
+              <span class="publish-data-value">${data.subjectData || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم المجموعة:</span>
+              <span class="publish-data-value">${data.groupName || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">العدد المطلوب (السعة):</span>
+              <span class="publish-data-value">${data.studentsCount || 20} طالب</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">الفئات المسموح بها:</span>
+              <span class="publish-data-value">${data.genderAllowed || 'مختلط'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">مكان الدرس:</span>
+              <span class="publish-data-value">${data.location || 'السنتر'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">الموقع الجغرافي:</span>
+              <span class="publish-data-value">${gpsDisplay}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">أيام ومواعيد الحصة:</span>
+              <div class="publish-data-value appts">${apptDetailsHtml}</div>
+          </div>
+      `;
+      document.getElementById('publishModalOverlay').classList.add('active');
   }
 
   /* ======================================================== */
@@ -878,12 +972,15 @@
             studentsCount: slot.studentsCount || 20,
             genderAllowed: slot.genderAllowed || 'مختلط',
             location: slot.location || 'السنتر',
-            start: slot.appointment.start,
-            end: slot.appointment.end,
-            type: slot.appointment.type,
-            dayOfWeek: slot.appointment.dayOfWeek,
-            dayName: slot.appointment.dayName || dayNames[slot.appointment.dayOfWeek],
-            date: slot.appointment.date,
+            gpsLocation: slot.gpsLocation || '',
+            start: slot.appointment ? slot.appointment.start : '',
+            end: slot.appointment ? slot.appointment.end : '',
+            type: slot.appointment ? slot.appointment.type : 'normal',
+            dayOfWeek: slot.appointment ? slot.appointment.dayOfWeek : 0,
+            dayName: slot.appointment ? (slot.appointment.dayName || dayNames[slot.appointment.dayOfWeek]) : '',
+            date: slot.appointment ? slot.appointment.date : '',
+            appointment: slot.appointment,
+            isVisible: (slot.isVisible !== undefined) ? slot.isVisible : true,
             isOnline: true
         });
     });
@@ -902,12 +999,15 @@
                     studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
                     genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
                     location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    gpsLocation: document.getElementById('gps-coords').value || '',
                     start: localAppt.start,
                     end: localAppt.end,
                     type: 'normal',
                     dayOfWeek: dayWk,
                     dayName: dayNames[dayWk],
                     date: dKey,
+                    appointment: { start: localAppt.start, end: localAppt.end, type: 'normal', dayOfWeek: dayWk, dayName: dayNames[dayWk], date: dKey },
+                    isVisible: true,
                     isOnline: false
                 });
             }
@@ -926,12 +1026,15 @@
                     studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
                     genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
                     location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
+                    gpsLocation: document.getElementById('gps-coords').value || '',
                     start: localRec.start,
                     end: localRec.end,
                     type: 'recurring',
                     dayOfWeek: parseInt(dWk),
                     dayName: dayNames[parseInt(dWk)],
                     date: selectedDateKey || 'كل أسبوع',
+                    appointment: { start: localRec.start, end: localRec.end, type: 'recurring', dayOfWeek: parseInt(dWk), dayName: dayNames[parseInt(dWk)], date: selectedDateKey || 'كل أسبوع' },
+                    isVisible: true,
                     isOnline: false
                 });
             }
@@ -964,7 +1067,15 @@
 
         let genderIcon = '👫';
         if (item.genderAllowed === 'أولاد فقط') genderIcon = '👨‍🎓';
-        if (item.genderAllowed === 'بنات فقط') genderIcon = '👩‍‍🎓';
+        if (item.genderAllowed === 'بنات فقط') genderIcon = '👩‍🎓';
+
+        // شارة الظهور للطلبة
+        let visibilityBadge = '';
+        if (item.isOnline) {
+            visibilityBadge = item.isVisible 
+                ? '<span class="badge-status visible-student" title="يمكن للطلاب حجز هذه المجموعة">👁️️ ظاهر للطلبة</span>' 
+                : '<span class="badge-status hidden-student" title="مخفي من تطبيق الطالب">🙈 مخفي عن الطلبة</span>';
+        }
 
         card.innerHTML = `
             <div class="sc-header">
@@ -974,6 +1085,7 @@
                 </div>
                 <div class="sc-badges">
                     ${item.isOnline ? '<span class="badge-status online">منشور</span>' : '<span class="badge-status draft">مسودة</span>'}
+                    ${visibilityBadge}
                     ${isRec ? '<span class="badge-status recurring">أسبوعي</span>' : '<span class="badge-status" style="background:var(--light-teal); color:var(--dark-teal); border:1px solid var(--border-teal);">محدد</span>'}
                 </div>
             </div>
@@ -1007,7 +1119,10 @@
                     <button class="btn-action btn-delete btn-card-del">إلغاء</button>
                 </div>
                 ${item.isOnline 
-                    ? '<button class="btn-action btn-published" disabled>تم النشر</button>' 
+                    ? `<div style="display:flex; gap:5px; align-items:center;">
+                        <button class="btn-action btn-toggle-vis btn-card-toggle" title="تغيير حالة الظهور">${item.isVisible ? '🙈 إخفاء' : '👁️ إظهار'}</button>
+                        <button class="btn-action btn-published btn-card-view">تفاصيل 👁️</button>
+                       </div>` 
                     : '<button class="btn-action btn-publish btn-card-pub">نشر الموعد</button>'}
             </div>
         `;
@@ -1023,12 +1138,26 @@
             };
         }
 
+        const viewBtn = card.querySelector('.btn-card-view');
+        if (viewBtn) {
+            viewBtn.onclick = () => {
+                showPublishModalDetails(item);
+            };
+        }
+
+        const toggleBtn = card.querySelector('.btn-card-toggle');
+        if (toggleBtn) {
+            toggleBtn.onclick = () => {
+                window.toggleVisibilityOnline(item.id);
+            };
+        }
+
         grid.appendChild(card);
     });
   }
 
   /* ======================================================== */
-  /* ✏️ التعديل عبر النافذة المنبثقة */
+  /* ✏️️ التعديل عبر النافذة المنبثقة */
   /* ======================================================== */
   function startEdit(appt) {
     editingAppt = { ...appt };
@@ -1256,6 +1385,7 @@
           subjectData, groupName, teacherName, studentsCount: parseInt(studentsCount),
           genderAllowed, location, gpsLocation: gpsLocation || '',
           appointment: { start: appt.start, end: appt.end, type: appt.type, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek], date: dateTarget },
+          isVisible: true,
           publishedAt: new Date().toISOString()
       };
 
@@ -1314,29 +1444,8 @@
       removeLocalAppt(appt);
       loadLocalPublishedSlots();
 
-      let apptDetailsHtml = appt.type === 'recurring'
-          ? `<strong>تكرار أسبوعي كل يوم ${dayNames[dayOfWeek]}:</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`
-          : `<strong>يوم ${dateTarget}:</strong><br>من ${formatTime(appt.start)} إلى ${formatTime(appt.end)}`;
-
-      document.getElementById('publishModalContent').innerHTML = `
-          <div class="publish-data-item">
-              <span class="publish-data-label">كود النشر:</span>
-              <span class="publish-data-value" style="font-family:monospace; color:#10b981;">${slotId}</span>
-          </div>
-          <div class="publish-data-item">
-              <span class="publish-data-label">المادة:</span>
-              <span class="publish-data-value">${subjectData}</span>
-          </div>
-          <div class="publish-data-item">
-              <span class="publish-data-label">المجموعة:</span>
-              <span class="publish-data-value">${groupName}</span>
-          </div>
-          <div class="publish-data-item">
-              <span class="publish-data-label">الموعد المنشور:</span>
-              <div class="publish-data-value appts">${apptDetailsHtml}</div>
-          </div>
-      `;
-      document.getElementById('publishModalOverlay').classList.add('active');
+      // عرض كافة التفاصيل فوراً بعد النشر
+      showPublishModalDetails(newSlot);
   };
 
   window.updateAppointmentOnline = function(slotId, newStart, newEnd, isRecurring) {
@@ -1414,6 +1523,7 @@
 
       populateTimeSelects();
       renderCalendar();
+      const initDate = new Date();
       selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
       loadLocalPublishedSlots();
   };
