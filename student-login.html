@@ -11,6 +11,7 @@
         min-height: 100vh;
         background: linear-gradient(180deg, #e8f5ec 0%, #d4ecdc 100%);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         padding: 20px;
@@ -59,7 +60,7 @@
         letter-spacing: 0.5px;
     }
 
-    .login-body { padding: 30px 25px; }
+    .login-body { padding: 30px 25px 20px; }
 
     .auth-tabs {
         display: flex;
@@ -150,62 +151,6 @@
 
     .pin-toggle:hover { background: #dcfce7; }
 
-    .gender-options {
-        display: flex;
-        gap: 12px;
-    }
-
-    .gender-option {
-        flex: 1;
-        position: relative;
-        cursor: pointer;
-    }
-
-    .gender-option input {
-        display: none; 
-    }
-
-    .gender-box {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px;
-        border: 2px solid #e0e4e8;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: 800;
-        color: #64748b;
-        background: #fff;
-        transition: 0.3s;
-    }
-
-    .gender-option input:checked + .gender-box {
-        border-color: #2ecc71;
-        background: #f0fdf4;
-        color: #166534;
-        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.15);
-    }
-
-    .gender-option input:checked + .gender-box::after {
-        content: '✓';
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        width: 24px;
-        height: 24px;
-        background: #2ecc71;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
     .submit-btn {
         width: 100%;
         padding: 16px;
@@ -230,6 +175,15 @@
         box-shadow: 0 0 0 #155724;
     }
 
+    /* تنسيق الزر في وضع الحذف */
+    .submit-btn.delete-mode {
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 6px 0 #991b1b, 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+    .submit-btn.delete-mode:active {
+        box-shadow: 0 0 0 #991b1b;
+    }
+
     .error-msg, .success-msg {
         padding: 12px 15px;
         border-radius: 10px;
@@ -246,18 +200,6 @@
     
     .error-msg.show, .success-msg.show { display: flex; }
 
-    .back-home {
-        display: block;
-        text-align: center;
-        margin: 0 25px 25px;
-        color: #64748b;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .back-home:hover { color: #2ecc71; }
-
     .info-box {
         background: #e0f2fe;
         border: 2px solid #bae6fd;
@@ -268,6 +210,51 @@
         font-weight: 700;
         color: #075985;
         line-height: 1.6;
+    }
+
+    /* تنسيق الروابط السفلية (العودة للرئيسية وحذف الحساب) */
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin: 0 25px 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .footer-link {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .footer-link:hover { color: #2ecc71; }
+    
+    .delete-link { color: #ef4444; }
+    .delete-link:hover { color: #dc2626; }
+    
+    .divider { color: #cbd5e1; }
+
+    .brand-signature {
+        margin-top: 25px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #155724;
+        text-align: center;
+        opacity: 0.9;
+    }
+
+    .brand-signature span {
+        color: #b45309;
+        background: #fef3c7;
+        padding: 3px 10px;
+        border-radius: 8px;
+        margin-right: 5px;
+        border: 1px dashed #f59e0b;
+        display: inline-block;
     }
 </style>
 </head>
@@ -281,8 +268,8 @@
 
     <div class="login-body">
         
-        <!-- التبويبات -->
-        <div class="auth-tabs">
+        <!-- التبويبات (تم الإبقاء على الدخول والإنشاء فقط) -->
+        <div class="auth-tabs" id="mainTabs">
             <div class="auth-tab active" onclick="switchTab('login')">تسجيل دخول</div>
             <div class="auth-tab" onclick="switchTab('register')">حساب جديد</div>
         </div>
@@ -298,7 +285,6 @@
 
         <form onsubmit="handleStudentAuth(event)">
             
-            <!-- حقل اسم الطالب (يظهر فقط في إنشاء الحساب) -->
             <div class="form-group" id="nameGroup" style="display: none;">
                 <label class="form-label">👤 اسم الطالب <span class="required">*</span></label>
                 <input type="text" id="studentName" class="form-input" 
@@ -306,7 +292,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">📱 رقم التليفون (لولي الأمر أو الطالب) <span class="required">*</span></label>
+                <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
                 <input type="tel" id="studentPhone" class="form-input" 
                        placeholder="01xxxxxxxxx" 
                        maxlength="11" 
@@ -316,7 +302,7 @@
                        oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="pinGroup">
                 <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
                 <div class="pin-wrapper">
                     <input type="password" id="studentPin" class="form-input pin-input" 
@@ -331,7 +317,6 @@
                 </div>
             </div>
 
-            <!-- حقل تأكيد الرقم السري (يظهر فقط في إنشاء الحساب) -->
             <div class="form-group" id="confirmPinGroup" style="display: none;">
                 <label class="form-label">🔒 تأكيد الرقم السري <span class="required">*</span></label>
                 <div class="pin-wrapper">
@@ -346,25 +331,6 @@
                 </div>
             </div>
 
-            <!-- اختيار النوع سيظهر فقط في إنشاء الحساب -->
-            <div class="form-group" id="genderGroup" style="display: none;">
-                <label class="form-label">النوع <span class="required">*</span></label>
-                <div class="gender-options">
-                    <label class="gender-option">
-                        <input type="radio" name="studentGender" value="boy">
-                        <div class="gender-box">
-                            <span>👦</span> ولد
-                        </div>
-                    </label>
-                    <label class="gender-option">
-                        <input type="radio" name="studentGender" value="girl">
-                        <div class="gender-box">
-                            <span>👧</span> بنت
-                        </div>
-                    </label>
-                </div>
-            </div>
-
             <button type="submit" class="submit-btn" id="submitBtn">
                 <span>🚀</span>
                 <span id="submitBtnText">تسجيل الدخول</span>
@@ -376,7 +342,16 @@
         </form>
     </div>
 
-    <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
+    <!-- الروابط السفلية (العودة للرئيسية وحذف الحساب) -->
+    <div class="footer-links">
+        <a href="index.html" class="footer-link">← العودة الرئيسية</a>
+        <span class="divider">|</span>
+        <a href="javascript:void(0)" class="footer-link delete-link" onclick="switchTab('delete')">🗑️ حذف الحساب</a>
+    </div>
+</div>
+
+<div class="brand-signature">
+    تطوير وبناء <span>احجزلي 🚀</span>
 </div>
 
 <script>
@@ -387,38 +362,61 @@
         hideMessages();
         
         const tabs = document.querySelectorAll('.auth-tab');
-        const radios = document.querySelectorAll('input[name="studentGender"]');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // إزالة التفعيل من التبويبات
+        tabs.forEach(t => t.classList.remove('active'));
 
         if (mode === 'login') {
             tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
             
             document.getElementById('nameGroup').style.display = 'none';
             document.getElementById('studentName').required = false;
 
+            document.getElementById('pinGroup').style.display = 'block';
+            document.getElementById('studentPin').required = true;
+
             document.getElementById('confirmPinGroup').style.display = 'none';
             document.getElementById('studentPinConfirm').required = false;
             
-            document.getElementById('genderGroup').style.display = 'none';
-            radios.forEach(r => r.required = false);
-            
             document.getElementById('multiChildInfo').style.display = 'none';
+            
             document.getElementById('submitBtnText').textContent = 'تسجيل الدخول';
-        } else {
-            tabs[0].classList.remove('active');
+            submitBtn.classList.remove('delete-mode');
+            
+        } else if (mode === 'register') {
             tabs[1].classList.add('active');
             
             document.getElementById('nameGroup').style.display = 'block';
             document.getElementById('studentName').required = true;
 
+            document.getElementById('pinGroup').style.display = 'block';
+            document.getElementById('studentPin').required = true;
+
             document.getElementById('confirmPinGroup').style.display = 'block';
             document.getElementById('studentPinConfirm').required = true;
 
-            document.getElementById('genderGroup').style.display = 'block';
-            radios.forEach(r => r.required = true);
-
             document.getElementById('multiChildInfo').style.display = 'block';
+            
             document.getElementById('submitBtnText').textContent = 'إنشاء حساب جديد';
+            submitBtn.classList.remove('delete-mode');
+            
+        } else if (mode === 'delete') {
+            // في حالة الحذف، لا يوجد تبويب مفعل في الأعلى
+            document.getElementById('nameGroup').style.display = 'none';
+            document.getElementById('studentName').required = false;
+
+            // إخفاء الرقم السري في حالة الحذف
+            document.getElementById('pinGroup').style.display = 'none';
+            document.getElementById('studentPin').required = false;
+
+            document.getElementById('confirmPinGroup').style.display = 'none';
+            document.getElementById('studentPinConfirm').required = false;
+
+            document.getElementById('multiChildInfo').style.display = 'none';
+            
+            document.getElementById('submitBtnText').textContent = 'حذف الحساب نهائياً';
+            submitBtn.classList.add('delete-mode');
         }
     }
 
@@ -466,25 +464,53 @@
             return;
         }
 
-        const pin = document.getElementById('studentPin').value.trim();
-        
-        // مفتاح الحساب هو (رقم التليفون + الرقم السري) للتفريق بين الإخوة
-        const accountKey = phone + '_' + pin;
-        
         const students = JSON.parse(localStorage.getItem('students_db') || '{}');
+
+        // ==== حالة حذف الحساب ====
+        if (currentMode === 'delete') {
+            let deletedCount = 0;
+            
+            // البحث عن كل الحسابات المرتبطة برقم التليفون وحذفها
+            for (const key in students) {
+                if (students[key].phone === phone) {
+                    delete students[key];
+                    deletedCount++;
+                }
+            }
+
+            if (deletedCount > 0) {
+                localStorage.setItem('students_db', JSON.stringify(students));
+                
+                // مسح الجلسة الحالية لو كان نفس المستخدم مسجل دخوله
+                const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+                if (existingProfile.phone === phone) {
+                    localStorage.removeItem('current_student_profile');
+                }
+                
+                showSuccess('✅ تم حذف الحساب (أو الحسابات) المرتبطة بهذا الرقم بنجاح.');
+                document.getElementById('studentPhone').value = ''; // تفريغ الحقل
+                
+                // الرجوع لوضع تسجيل الدخول تلقائيا بعد الحذف بـ 3 ثواني
+                setTimeout(() => {
+                    switchTab('login');
+                }, 3000);
+
+            } else {
+                showError('⚠️ لا يوجد أي حساب مسجل بهذا الرقم.');
+            }
+            return;
+        }
+        // ========================
+
+        const pin = document.getElementById('studentPin').value.trim();
+        const accountKey = phone + '_' + pin;
 
         if (currentMode === 'register') {
             const name = document.getElementById('studentName').value.trim();
             const pinConfirm = document.getElementById('studentPinConfirm').value.trim();
-            const genderSelected = document.querySelector('input[name="studentGender"]:checked');
 
             if (pin !== pinConfirm) {
                 showError('الرقم السري وتأكيد الرقم السري غير متطابقين.');
-                return;
-            }
-
-            if (!genderSelected) {
-                showError('يرجى اختيار النوع (ولد أو بنت).');
                 return;
             }
 
@@ -499,15 +525,14 @@
                 name: name,
                 phone: phone, 
                 pin: pin, 
-                role: 'student',
-                gender: genderSelected.value
+                role: 'student'
             };
             localStorage.setItem('students_db', JSON.stringify(students));
             
             showSuccess(`🎉 تم إنشاء حساب (${name}) بنجاح! جاري الدخول...`);
             loginStudent(accountKey, phone, name);
 
-        } else {
+        } else if (currentMode === 'login') {
             // حالة تسجيل الدخول
             if (!students[accountKey]) {
                 // للتحقق هل الرقم مسجل أصلاً ولكن برقم سري آخر؟
@@ -527,7 +552,6 @@
     }
 
     function loginStudent(accountKey, phone, name) {
-        // حفظ بيانات الدخول الحالية
         const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         existingProfile.id = accountKey;
         existingProfile.phone = phone;
