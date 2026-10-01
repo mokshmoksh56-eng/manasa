@@ -35,32 +35,42 @@
 <body class="max-w-6xl mx-auto">
 
     <!-- هيدر لوحة التحكم -->
-    <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-2xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-amber-400">📊 لوحة التحكم المركزية (school.html)</h1>
-            <p class="text-sm text-slate-300 mt-1">متابعة الطلاب، المعلمين، الخرائط (Leaflet)، ونقرات الواتساب</p>
-        </div>
-        <div class="flex gap-2">
-            <a href="index.html" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition">الرئيسية</a>
-            <button onclick="exportData()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">تصدير البيانات</button>
-        </div>
+    <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-2xl shadow-lg mb-6 text-center">
+        <h1 class="text-2xl font-black text-amber-400">📊 لوحة التحكم المركزية (school.html)</h1>
+        <p class="text-sm text-slate-300 mt-1">متابعة الطلاب، المعلمين، الخرائط (Leaflet)، ونقرات الواتساب</p>
     </header>
 
-    <!-- إحصائيات سريعة -->
+    <!-- إحصائيات سريعة متقدمة (مع تفصيل الفئات) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="card !mb-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-            <p class="text-xs opacity-90">إجمالي الطلاب المسجلين</p>
-            <h3 class="text-3xl font-black mt-1" id="statStudentsCount">0</h3>
+        <!-- إحصائية الطلاب -->
+        <div class="card !mb-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex flex-col justify-between">
+            <div>
+                <p class="text-xs opacity-90">إجمالي الطلاب المسجلين</p>
+                <h3 class="text-3xl font-black mt-1" id="statStudentsCount">0</h3>
+            </div>
+            <div class="mt-3 text-xs font-bold bg-white/20 rounded-lg px-2 py-1.5 flex justify-between items-center">
+                <span>👦 أولاد: <span id="statBoysCount">0</span></span>
+                <span>👧 بنات: <span id="statGirlsCount">0</span></span>
+            </div>
         </div>
-        <div class="card !mb-0 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
-            <p class="text-xs opacity-90">إجمالي المعلمين (مستر / مس)</p>
-            <h3 class="text-3xl font-black mt-1" id="statTeachersCount">0</h3>
+
+        <!-- إحصائية المعلمين -->
+        <div class="card !mb-0 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex flex-col justify-between">
+            <div>
+                <p class="text-xs opacity-90">إجمالي المعلمين المسجلين</p>
+                <h3 class="text-3xl font-black mt-1" id="statTeachersCount">0</h3>
+            </div>
+            <div class="mt-3 text-xs font-bold bg-white/20 rounded-lg px-2 py-1.5 flex justify-between items-center">
+                <span>👨‍🏫 مستر: <span id="statMisterCount">0</span></span>
+                <span>👩‍🏫 مس: <span id="statMissCount">0</span></span>
+            </div>
         </div>
-        <div class="card !mb-0 bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+
+        <div class="card !mb-0 bg-gradient-to-br from-amber-500 to-orange-600 text-white flex flex-col justify-center">
             <p class="text-xs opacity-90">إجمالي المجموعات المسجلة</p>
             <h3 class="text-3xl font-black mt-1" id="statGroupsCount">0</h3>
         </div>
-        <div class="card !mb-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+        <div class="card !mb-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white flex flex-col justify-center">
             <p class="text-xs opacity-90">إجمالي نقرات الواتساب</p>
             <h3 class="text-3xl font-black mt-1" id="statWhatsappClicks">0</h3>
         </div>
@@ -78,7 +88,7 @@
         
         <!-- خريطة الطلاب -->
         <div class="card !mb-0 border-emerald-200">
-            <h2 class="text-lg font-black text-emerald-800 mb-1 flex items-center gap-2"><span>👨‍🎓</span> خريطة الطلاب (دروس المنازل)</h2>
+            <h2 class="text-lg font-black text-emerald-800 mb-1 flex items-center gap-2"><span>👨‍‍🎓</span> خريطة الطلاب (دروس المنازل)</h2>
             <p class="text-xs text-slate-500 mb-3">يعرض المجموعات التي اختار المعلم إقامتها في (منزل الطالب).</p>
             <div id="studentsMap" class="map-container border-emerald-300"></div>
             <div class="mt-3 text-xs font-bold text-emerald-600">الإجمالي: <span id="studentsMapCount">0</span> موقع</div>
@@ -100,7 +110,6 @@
                         <th>الرقم السري</th>
                         <th>المرحلة / الصف</th>
                         <th>تاريخ التسجيل</th>
-                        <th>أيام الاشتراك</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
@@ -123,6 +132,7 @@
                         <th>اسم المعلم</th>
                         <th>رقم التليفون</th>
                         <th>الرقم السري</th>
+                        <th>أيام الاشتراك</th>
                         <th>التركيز على الخريطة</th>
                         <th class="text-left">إجراءات والتواصل</th>
                     </tr>
@@ -144,10 +154,13 @@
     };
 
     function loadDashboardData() {
-        // بيانات الطلاب
+        // --- 1. معالجة بيانات الطلاب ---
         const studentsDB = JSON.parse(localStorage.getItem('students_db') || '{}');
         const studentsArr = Object.values(studentsDB);
         
+        let boysCount = 0;
+        let girlsCount = 0;
+
         document.getElementById('statStudentsCount').textContent = studentsArr.length;
         document.getElementById('studentsBadge').textContent = `${studentsArr.length} طالب`;
         
@@ -155,32 +168,50 @@
         studentsBody.innerHTML = '';
 
         if (studentsArr.length === 0) {
-            studentsBody.innerHTML = `<tr><td colspan="7" class="text-center text-slate-400 py-6">لا توجد بيانات طلاب مسجلة.</td></tr>`;
+            studentsBody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-6">لا توجد بيانات طلاب مسجلة.</td></tr>`;
         } else {
             studentsArr.forEach((st) => {
-                const regDate = st.registeredAt ? new Date(st.registeredAt) : new Date();
-                const diffDays = Math.max(1, Math.ceil(Math.abs(new Date() - regDate) / (1000 * 60 * 60 * 24)));
+                // حساب عدد الأولاد والبنات (مع افتراض الأولاد كقيمة افتراضية لو لم تحدد)
+                let genderIcon = '👤';
+                if (st.gender === 'girl') {
+                    girlsCount++;
+                    genderIcon = '👧';
+                } else if (st.gender === 'boy') {
+                    boysCount++;
+                    genderIcon = '👦';
+                } else {
+                    // إذا لم تكن مسجلة في الداتابيز الحالية
+                    boysCount++;
+                    genderIcon = '👦';
+                }
 
                 studentsBody.innerHTML += `
                     <tr>
-                        <td>${st.name || 'بدون اسم'}</td>
+                        <td class="font-bold text-slate-800">${genderIcon} ${st.name || 'بدون اسم'}</td>
                         <td dir="ltr" class="text-left">${st.phone || '-'}</td>
                         <td><span class="bg-slate-100 px-2 py-1 rounded font-mono">${st.pin || '----'}</span></td>
                         <td>${st.stage || '-'} / ${st.grade || '-'}</td>
                         <td>${st.registeredAt ? new Date(st.registeredAt).toLocaleDateString('ar-EG') : 'اليوم'}</td>
-                        <td><span class="font-bold text-emerald-600">${diffDays} يوم</span></td>
                         <td>
-                            <button onclick="deleteStudent('${st.id || st.phone}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-lg text-xs hover:bg-rose-100 transition">🗑 حذف</button>
+                            <button onclick="deleteStudent('${st.id || st.phone}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">🗑 حذف</button>
                         </td>
                     </tr>
                 `;
             });
         }
+        
+        // تحديث إحصائيات الأولاد والبنات
+        document.getElementById('statBoysCount').textContent = boysCount;
+        document.getElementById('statGirlsCount').textContent = girlsCount;
 
-        // بيانات المعلمين والتواصل واتساب
+
+        // --- 2. معالجة بيانات المعلمين ---
         const teachersDB = JSON.parse(localStorage.getItem('teachers_db') || '{}');
         const teachersArr = Object.values(teachersDB);
         
+        let misterCount = 0;
+        let missCount = 0;
+
         document.getElementById('statTeachersCount').textContent = teachersArr.length;
         document.getElementById('teachersBadge').textContent = `${teachersArr.length} معلم`;
 
@@ -188,20 +219,33 @@
         teachersBody.innerHTML = '';
 
         if (teachersArr.length === 0) {
-            teachersBody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-6">لا توجد حسابات معلمين مسجلة.</td></tr>`;
+            teachersBody.innerHTML = `<tr><td colspan="7" class="text-center text-slate-400 py-6">لا توجد حسابات معلمين مسجلة.</td></tr>`;
         } else {
             teachersArr.forEach((t) => {
                 const title = t.title || 'مستر';
+                
+                // حساب عدد (مستر / مس)
+                if (title === 'مس') {
+                    missCount++;
+                } else {
+                    misterCount++;
+                }
+
                 const waPhone = t.phone.startsWith('0') ? '2' + t.phone : t.phone;
                 const waMessage = encodeURIComponent(`السلام عليكم ${title} ${t.name}، بخصوص تفعيل اشتراكك معنا على منصة احجزلي...`);
                 const waLink = `https://wa.me/${waPhone}?text=${waMessage}`;
 
+                // حساب عدد أيام الاشتراك للمعلم
+                const regDate = t.registeredAt ? new Date(t.registeredAt) : new Date();
+                const diffDays = Math.max(1, Math.ceil(Math.abs(new Date() - regDate) / (1000 * 60 * 60 * 24)));
+
                 teachersBody.innerHTML += `
                     <tr>
-                        <td><span class="px-2 py-1 rounded-full text-xs ${title === 'مس' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'}">${title}</span></td>
-                        <td>${t.name || '-'}</td>
+                        <td><span class="px-2 py-1 rounded-full text-xs font-bold ${title === 'مس' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'}">${title}</span></td>
+                        <td class="font-bold text-slate-800">${t.name || '-'}</td>
                         <td dir="ltr" class="text-left">${t.phone || '-'}</td>
                         <td><span class="bg-slate-100 px-2 py-1 rounded font-mono">${t.pin || '----'}</span></td>
+                        <td><span class="font-bold text-blue-600">${diffDays} يوم</span></td>
                         <td>
                             <button onclick="focusTeacherOnMap('${t.phone}')" class="text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition flex items-center gap-1">📍 عرض المواقع</button>
                         </td>
@@ -215,7 +259,13 @@
                 `;
             });
         }
+        
+        // تحديث إحصائيات المستر والمس
+        document.getElementById('statMisterCount').textContent = misterCount;
+        document.getElementById('statMissCount').textContent = missCount;
 
+
+        // --- 3. بيانات أخرى ---
         const groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
         document.getElementById('statGroupsCount').textContent = groupsList.length;
 
@@ -331,7 +381,7 @@
         studentsMap.flyToBounds(bounds, { padding: [50, 50], maxZoom: 16, duration: 1.5 });
     }
 
-    // دوال الحذف والتصدير
+    // دوال الحذف
     function deleteStudent(studentId) {
         if (confirm('⚠ هل أنت متأكد من حذف هذا الطالب نهائياً من المنصة؟')) {
             let studentsDB = JSON.parse(localStorage.getItem('students_db') || '{}');
@@ -356,22 +406,6 @@
             loadDashboardData();
             populateMaps();
         }
-    }
-
-    function exportData() {
-        const allData = {
-            students: JSON.parse(localStorage.getItem('students_db') || '{}'),
-            teachers: JSON.parse(localStorage.getItem('teachers_db') || '{}'),
-            groups: JSON.parse(localStorage.getItem('mester_groups_list') || '[]'),
-            published: JSON.parse(localStorage.getItem('published_slots') || '[]')
-        };
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `school_backup_${new Date().toISOString().slice(0,10)}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
     }
 </script>
 
