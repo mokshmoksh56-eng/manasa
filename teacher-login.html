@@ -219,28 +219,6 @@
         cursor: not-allowed;
     }
 
-    .switch-link {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 13px;
-        color: #64748b;
-        font-weight: 700;
-    }
-
-    .switch-link button {
-        background: none;
-        border: none;
-        color: #2b5c9e;
-        font-weight: 900;
-        cursor: pointer;
-        text-decoration: underline;
-        font-size: 13px;
-        padding: 0;
-        margin-right: 5px;
-    }
-
-    .switch-link button:hover { color: #1a3c6d; }
-
     .error-msg {
         background: #fef2f2;
         border: 2px solid #fecaca;
@@ -276,17 +254,41 @@
     .form-view { display: none; }
     .form-view.active { display: block; }
 
+    /* التنسيقات الجديدة للروابط السفلية */
+    .bottom-links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px 25px;
+        margin-top: 15px;
+    }
+
     .back-home {
-        display: block;
-        text-align: center;
-        margin: 15px 25px 25px;
         color: #64748b;
         text-decoration: none;
         font-size: 13px;
         font-weight: 700;
+        transition: 0.3s;
     }
 
     .back-home:hover { color: #2b5c9e; }
+
+    .delete-account {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.3s;
+    }
+
+    .delete-account:hover {
+        color: #b02a37;
+    }
     
     .row-group {
         display: flex;
@@ -307,7 +309,7 @@
 
     <div class="tabs">
         <button class="tab active" id="tabLogin" onclick="switchTab('login')">🔐 تسجيل دخول</button>
-        <button class="tab" id="tabRegister" onclick="switchTab('register')">✍️ حساب جديد</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">✍️️ حساب جديد</button>
     </div>
 
     <div class="login-body">
@@ -354,11 +356,6 @@
                     <span>تسجيل الدخول</span>
                 </button>
             </form>
-
-            <div class="switch-link">
-                ليس لديك حساب؟
-                <button type="button" onclick="switchTab('register')">أنشئ حساب جديد</button>
-            </div>
         </div>
 
         <div class="form-view" id="registerView">
@@ -376,7 +373,6 @@
                     
                     <div class="form-group">
                         <label class="form-label">🎂 العمر <span class="required">*</span></label>
-                        <!-- تم التعديل هنا ليتم قبول الأرقام فقط بحد أقصى رقمين -->
                         <input type="text" id="regAge" class="form-input" 
                                placeholder="مثال: 30" 
                                inputmode="numeric"
@@ -442,16 +438,15 @@
                     <span>إنشاء الحساب</span>
                 </button>
             </form>
-
-            <div class="switch-link">
-                لديك حساب بالفعل؟
-                <button type="button" onclick="switchTab('login')">سجّل دخول</button>
-            </div>
         </div>
 
     </div>
 
-    <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
+    <!-- الروابط السفلية المعدلة -->
+    <div class="bottom-links">
+        <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
+        <button type="button" class="delete-account" onclick="deleteAccount()">🗑️ حذف الحساب</button>
+    </div>
 </div>
 
 <script>
@@ -529,7 +524,6 @@
         const phone = document.getElementById('loginPhone').value.trim();
         const pin = document.getElementById('loginPin').value.trim();
 
-        // --- قواعد التحقق الجديدة في تسجيل الدخول ---
         if (phone.length !== 11) {
             showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
             return;
@@ -567,7 +561,6 @@
         const pin = document.getElementById('regPin').value.trim();
         const pinConfirm = document.getElementById('regPinConfirm').value.trim();
 
-        // --- قواعد التحقق الجديدة في الحساب الجديد ---
         if (age.length !== 2) {
             showError('عفواً، العمر يجب أن يتكون من رقمين فقط.');
             return;
@@ -614,6 +607,36 @@
         setTimeout(() => {
             window.location.href = 'mester1.html';
         }, 500);
+    }
+
+    // دالة حذف الحساب
+    function deleteAccount() {
+        const phone = prompt('لحذف حسابك، يرجى إدخال رقم التليفون الخاص بك:');
+        if (phone) {
+            const teachers = JSON.parse(localStorage.getItem('teachers_db') || '{}');
+            if (teachers[phone]) {
+                const pin = prompt('يرجى إدخال الرقم السري المكون من 4 أرقام لتأكيد الحذف:');
+                if (teachers[phone].pin === pin) {
+                    if (confirm('هل أنت متأكد من حذف الحساب نهائياً؟ لا يمكن التراجع عن هذه الخطوة.')) {
+                        delete teachers[phone];
+                        localStorage.setItem('teachers_db', JSON.stringify(teachers));
+                        
+                        // تنظيف الجلسة الحالية إذا كان الحساب المحذوف هو نفسه المسجل الدخول
+                        if (localStorage.getItem('current_teacher_phone') === phone) {
+                            localStorage.removeItem('current_teacher_profile');
+                            localStorage.removeItem('current_teacher_phone');
+                        }
+                        
+                        alert('تم حذف الحساب بنجاح.');
+                        window.location.reload();
+                    }
+                } else {
+                    alert('الرقم السري غير صحيح. تم إلغاء عملية الحذف.');
+                }
+            } else {
+                alert('رقم التليفون غير مسجل لدينا.');
+            }
+        }
     }
 </script>
 
