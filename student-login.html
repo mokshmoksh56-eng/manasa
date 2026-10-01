@@ -61,7 +61,6 @@
 
     .login-body { padding: 30px 25px; }
 
-    /* تبويبات تسجيل الدخول وإنشاء الحساب */
     .auth-tabs {
         display: flex;
         background: #f0fdf4;
@@ -151,7 +150,6 @@
 
     .pin-toggle:hover { background: #dcfce7; }
 
-    /* تصميم اختيار النوع (ولد/بنت) */
     .gender-options {
         display: flex;
         gap: 12px;
@@ -183,7 +181,6 @@
         transition: 0.3s;
     }
 
-    /* تأثير عند اختيار ولد أو بنت */
     .gender-option input:checked + .gender-box {
         border-color: #2ecc71;
         background: #f0fdf4;
@@ -191,7 +188,6 @@
         box-shadow: 0 4px 10px rgba(46, 204, 113, 0.15);
     }
 
-    /* علامة الصح التي تظهر عند الاختيار */
     .gender-option input:checked + .gender-box::after {
         content: '✓';
         position: absolute;
@@ -234,10 +230,7 @@
         box-shadow: 0 0 0 #155724;
     }
 
-    .error-msg {
-        background: #fef2f2;
-        border: 2px solid #fecaca;
-        color: #991b1b;
+    .error-msg, .success-msg {
         padding: 12px 15px;
         border-radius: 10px;
         font-size: 13px;
@@ -248,23 +241,10 @@
         gap: 8px;
     }
 
-    .error-msg.show { display: flex; }
-
-    .success-msg {
-        background: #f0fdf4;
-        border: 2px solid #bbf7d0;
-        color: #166534;
-        padding: 12px 15px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 15px;
-        display: none;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .success-msg.show { display: flex; }
+    .error-msg { background: #fef2f2; border: 2px solid #fecaca; color: #991b1b; }
+    .success-msg { background: #f0fdf4; border: 2px solid #bbf7d0; color: #166534; }
+    
+    .error-msg.show, .success-msg.show { display: flex; }
 
     .back-home {
         display: block;
@@ -277,6 +257,18 @@
     }
 
     .back-home:hover { color: #2ecc71; }
+
+    .info-box {
+        background: #e0f2fe;
+        border: 2px solid #bae6fd;
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 15px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #075985;
+        line-height: 1.6;
+    }
 </style>
 </head>
 <body>
@@ -306,8 +298,15 @@
 
         <form onsubmit="handleStudentAuth(event)">
             
+            <!-- حقل اسم الطالب (يظهر فقط في إنشاء الحساب) -->
+            <div class="form-group" id="nameGroup" style="display: none;">
+                <label class="form-label">👤 اسم الطالب <span class="required">*</span></label>
+                <input type="text" id="studentName" class="form-input" 
+                       placeholder="اكتب اسم الطالب (مثال: يوسف محمد)">
+            </div>
+
             <div class="form-group">
-                <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
+                <label class="form-label">📱 رقم التليفون (لولي الأمر أو الطالب) <span class="required">*</span></label>
                 <input type="tel" id="studentPhone" class="form-input" 
                        placeholder="01xxxxxxxxx" 
                        maxlength="11" 
@@ -332,7 +331,7 @@
                 </div>
             </div>
 
-            <!-- هذا الحقل سيظهر فقط في حالة إنشاء الحساب -->
+            <!-- حقل تأكيد الرقم السري (يظهر فقط في إنشاء الحساب) -->
             <div class="form-group" id="confirmPinGroup" style="display: none;">
                 <label class="form-label">🔒 تأكيد الرقم السري <span class="required">*</span></label>
                 <div class="pin-wrapper">
@@ -347,7 +346,7 @@
                 </div>
             </div>
 
-            <!-- اختيار النوع سيظهر فقط في حالة إنشاء الحساب -->
+            <!-- اختيار النوع سيظهر فقط في إنشاء الحساب -->
             <div class="form-group" id="genderGroup" style="display: none;">
                 <label class="form-label">النوع <span class="required">*</span></label>
                 <div class="gender-options">
@@ -370,6 +369,10 @@
                 <span>🚀</span>
                 <span id="submitBtnText">تسجيل الدخول</span>
             </button>
+            
+            <div class="info-box" id="multiChildInfo" style="display: none;">
+                💡 <strong>لديك أكثر من طفل؟</strong> يمكنك التسجيل لهم بنفس رقم الهاتف، فقط تأكد من وضع <strong>رقم سري مختلف</strong> لكل طالب.
+            </div>
         </form>
     </div>
 
@@ -377,7 +380,7 @@
 </div>
 
 <script>
-    let currentMode = 'login'; // 'login' or 'register'
+    let currentMode = 'login'; 
 
     function switchTab(mode) {
         currentMode = mode;
@@ -390,23 +393,31 @@
             tabs[0].classList.add('active');
             tabs[1].classList.remove('active');
             
+            document.getElementById('nameGroup').style.display = 'none';
+            document.getElementById('studentName').required = false;
+
             document.getElementById('confirmPinGroup').style.display = 'none';
             document.getElementById('studentPinConfirm').required = false;
             
             document.getElementById('genderGroup').style.display = 'none';
             radios.forEach(r => r.required = false);
-
+            
+            document.getElementById('multiChildInfo').style.display = 'none';
             document.getElementById('submitBtnText').textContent = 'تسجيل الدخول';
         } else {
             tabs[0].classList.remove('active');
             tabs[1].classList.add('active');
             
+            document.getElementById('nameGroup').style.display = 'block';
+            document.getElementById('studentName').required = true;
+
             document.getElementById('confirmPinGroup').style.display = 'block';
             document.getElementById('studentPinConfirm').required = true;
 
             document.getElementById('genderGroup').style.display = 'block';
             radios.forEach(r => r.required = true);
 
+            document.getElementById('multiChildInfo').style.display = 'block';
             document.getElementById('submitBtnText').textContent = 'إنشاء حساب جديد';
         }
     }
@@ -445,22 +456,25 @@
 
         const phone = document.getElementById('studentPhone').value.trim();
         
-        // 1. التحقق من أن رقم التليفون 11 رقم بالضبط
         if (phone.length !== 11) {
             showError('رقم التليفون يجب أن يتكون من 11 رقم بالضبط.');
             return;
         }
 
-        // 2. التحقق من صيغة الرقم (يبدأ بـ 010, 011, 012, 015)
         if (!/^01[0125][0-9]{8}$/.test(phone)) {
-            showError('يرجى إدخال رقم هاتف مصري صحيح (مثال: 010, 011, 012, 015).');
+            showError('يرجى إدخال رقم هاتف مصري صحيح (مثال: يبدأ بـ 010, 011, 012, 015).');
             return;
         }
 
         const pin = document.getElementById('studentPin').value.trim();
+        
+        // مفتاح الحساب هو (رقم التليفون + الرقم السري) للتفريق بين الإخوة
+        const accountKey = phone + '_' + pin;
+        
         const students = JSON.parse(localStorage.getItem('students_db') || '{}');
 
         if (currentMode === 'register') {
+            const name = document.getElementById('studentName').value.trim();
             const pinConfirm = document.getElementById('studentPinConfirm').value.trim();
             const genderSelected = document.querySelector('input[name="studentGender"]:checked');
 
@@ -474,48 +488,55 @@
                 return;
             }
 
-            if (students[phone]) {
-                showError('هذا الرقم مسجل لدينا بالفعل! يرجى اختيار تسجيل الدخول.');
+            if (students[accountKey]) {
+                showError('يوجد طالب مسجل بهذا الرقم وهذا الرقم السري بالفعل! إذا كنت تسجل لأخ آخر، يرجى اختيار رقم سري مختلف.');
                 return;
             }
 
-            students[phone] = { 
-                id: phone, 
+            // تسجيل الطالب
+            students[accountKey] = { 
+                id: accountKey, 
+                name: name,
                 phone: phone, 
                 pin: pin, 
                 role: 'student',
                 gender: genderSelected.value
             };
             localStorage.setItem('students_db', JSON.stringify(students));
-            showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري الدخول...');
             
-            loginStudent(phone);
+            showSuccess(`🎉 تم إنشاء حساب (${name}) بنجاح! جاري الدخول...`);
+            loginStudent(accountKey, phone, name);
 
         } else {
-            if (!students[phone]) {
-                showError('لا يوجد حساب مسجل بهذا الرقم. يرجى إنشاء حساب جديد.');
+            // حالة تسجيل الدخول
+            if (!students[accountKey]) {
+                // للتحقق هل الرقم مسجل أصلاً ولكن برقم سري آخر؟
+                const anyAccountWithPhone = Object.values(students).some(s => s.phone === phone);
+                if (anyAccountWithPhone) {
+                    showError('الرقم السري غير صحيح لهذا الطالب.');
+                } else {
+                    showError('لا يوجد حساب مسجل بهذا الرقم. يرجى إنشاء حساب جديد.');
+                }
                 return;
             }
 
-            if (students[phone].pin !== pin) {
-                showError('الرقم السري غير صحيح، يرجى المحاولة مرة أخرى.');
-                return;
-            }
-
-            showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التوجيه...');
-            loginStudent(phone);
+            const studentData = students[accountKey];
+            showSuccess(`✅ أهلاً بك يا ${studentData.name}! جاري التوجيه...`);
+            loginStudent(accountKey, studentData.phone, studentData.name);
         }
     }
 
-    function loginStudent(phone) {
+    function loginStudent(accountKey, phone, name) {
+        // حفظ بيانات الدخول الحالية
         const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+        existingProfile.id = accountKey;
         existingProfile.phone = phone;
-        existingProfile.id = phone;
+        existingProfile.name = name;
         localStorage.setItem('current_student_profile', JSON.stringify(existingProfile));
 
         setTimeout(() => {
             window.location.href = 'talep.html';
-        }, 1000);
+        }, 1200);
     }
 </script>
 
