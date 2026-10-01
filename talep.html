@@ -9,10 +9,6 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet" />
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
 
-<!-- ✅ مكتبات Firebase Compat -->
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-
 <style>
 :root{ --primary-950:#064E3B; --primary-900:#065F46; --primary-800:#047857; --primary-700:#059669; --primary-600:#10B981; --primary-500:#34D399; --primary-400:#6EE7B7; --primary-300:#A7F3D0; --primary-200:#D1FAE5; --primary-100:#ECFDF5; --primary-50:#F0FDF4; --gold-600:#D97706; --gold-500:#F59E0B; --gold-400:#FBBF24; --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#FFFFFF; --surface-2:#F8FAFC; }
 *{ font-weight:800; font-family:'Cairo',sans-serif; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -77,6 +73,23 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .class-result-card.colored .card-avail-pill { background: linear-gradient(135deg, var(--c-main), var(--c-dark)); color: #fff; border: none; box-shadow: 0 4px 10px -3px var(--c-main); }
 .class-result-card.colored .card-map-btn { background: var(--c-light); color: var(--c-dark); border: 1.5px solid var(--c-border); }
 .class-result-card.colored .card-map-btn:hover { background: var(--c-border); color: #fff; }
+
+/* إضافة علامة صح لاختيارات المعلم وأي خيارات من نوع الراديو عند التحديد */
+input[type="radio"]:checked + .option-btn::after {
+    content: ' ✔';
+    color: var(--primary-700);
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+/* إضافة علامة صح لاختيارات مكان الدرس عند التحديد */
+.filter-chip.active::after {
+    content: ' ✔';
+    color: var(--primary-700);
+    font-size: 14px;
+    margin-right: 6px;
+}
+
 </style>
 </head>
 <body>
@@ -194,71 +207,14 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
     };
 
     let studentProfile = JSON.parse(localStorage.getItem('current_student_profile')) || null;
-    let classesDB = [];
+    let classesDB = []; // البيانات ستكون فارغة لعدم وجود Firebase
     let currentPlaceFilter = 'all';
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
     let studentLat = null; let studentLng = null; let isGpsActive = false; let studentSearchRadiusKm = 1.0;
     let map = null; let studentSearchMarker = null; let teacherMarkersList = [];
 
-    // ✅ تهيئة Firebase وربط البيانات أونلاين
-    const firebaseConfig = {
-      apiKey: "AIzaSyC9EXJnOL6ReTB41Kc8SXMcnK657_h2Mwc",
-      authDomain: "tagroba-fbe9b.firebaseapp.com",
-      databaseURL: "https://tagroba-fbe9b-default-rtdb.firebaseio.com",
-      projectId: "tagroba-fbe9b",
-      storageBucket: "tagroba-fbe9b.firebasestorage.app",
-      messagingSenderId: "238106301728",
-      appId: "1:238106301728:web:549602e55f7fe8a7b0b345"
-    };
-
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
-
-    function fetchOnlineClasses() {
-        db.collection('published_slots').where('status', '==', 'published').onSnapshot((snapshot) => {
-            classesDB = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const appt = data.appointment || {};
-                
-                // تصفية البيانات بشكل يتناسب مع احتياجات بوابة الطالب
-                classesDB.push({
-                    id: doc.id,
-                    teacherTitle: data.teacherTitle || (data.teacherName.includes('مس') ? 'مس' : 'مستر'),
-                    teacherName: data.teacherName,
-                    groupName: data.groupName,
-                    subject: data.subject || data.subjectData.split('-')[0].trim(),
-                    grade: data.grade || (data.subjectData.match(/الصف:\s*([^|\n]+)/) ? data.subjectData.match(/الصف:\s*([^|\n]+)/)[1].trim() : ''),
-                    gender: data.gender || (data.genderAllowed === 'مختلط' ? 'mixed' : (data.genderAllowed === 'أولاد فقط' ? 'boys' : 'girls')),
-                    type: data.type || (data.location === 'السنتر' ? 'center' : (data.location === 'بيت المستر' ? 'teacher_home' : 'student_home')),
-                    location: data.location,
-                    address: data.location,
-                    startTime: appt.start,
-                    endTime: appt.end,
-                    daysNames: appt.dayName ? [appt.dayName] : [],
-                    date: appt.date,
-                    maxCapacity: data.maxCapacity || data.studentsCount,
-                    bookedBoys: data.bookedBoys || 0,
-                    bookedGirls: data.bookedGirls || 0,
-                    lat: data.lat || (data.gpsLocation ? parseFloat(data.gpsLocation.split(',')[0]) : null),
-                    lng: data.lng || (data.gpsLocation ? parseFloat(data.gpsLocation.split(',')[1]) : null),
-                    isActive: true,
-                    apptType: appt.type
-                });
-            });
-            console.log("📡 تم تحديث المجموعات أونلاين.");
-            if(document.getElementById('searchView').classList.contains('fade-enter-active')) {
-                setupStudentDashboard();
-                renderClasses();
-            }
-        }, (error) => {
-            console.error("خطأ في المزامنة للطالب:", error);
-        });
-    }
-
     window.onload = function() {
-        fetchOnlineClasses();
         if (studentProfile) { setupStudentDashboard(); showView('searchView'); } 
         else { showView('loginView'); }
     };
@@ -555,7 +511,7 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
         const cls = classesDB.find(c => c.id === classId);
         if(!cls) return;
         const msg = `السلام عليكم ${cls.teacherTitle} ${cls.teacherName}،\nأنا الطالب: ${studentProfile.name}\nحابب احجز معاك في مجموعة ( ${cls.groupName} ) لمادة ${cls.subject}.`;
-        const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`; // يرجى إضافة رقم المعلم الفعلي هنا
+        const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`;
         window.open(whatsappUrl, '_blank');
     }
 
