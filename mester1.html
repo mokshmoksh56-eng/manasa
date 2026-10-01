@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* =========================================
-           متغيرات الألوان 
+           متغيرات الألوان (تم ضبط التباين وتغميق الألوان لضمان وضوح النصوص)
            ========================================= */
         :root {
             --primary-teal: #009688;
@@ -70,9 +70,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* =========================================
-           شريط الخطوات (Stepper)
-           ========================================= */
+        /* تعديلات شريط الخطوات (Stepper) ليكون تفاعلياً */
         .stepper {
             display: flex;
             justify-content: center;
@@ -95,25 +93,18 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            text-decoration: none;
             transition: all 0.2s ease;
         }
 
-        /* تنسيق خاص للزر الثاني لضمان عمله باللمس */
         .step.clickable {
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            user-select: none;
         }
 
-        .step.clickable:hover, .step.clickable:active {
+        .step.clickable:hover {
             color: #00E5FF;
             opacity: 1;
             transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.25);
-            border-color: #00E5FF;
         }
 
         .step.active {
@@ -193,6 +184,32 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
+        /* =========================================
+           شريط حالة المزامنة مع Firebase
+           ========================================= */
+        .sync-status-bar {
+            position: fixed;
+            bottom: 12px;
+            left: 12px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 900;
+            color: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .sync-status-bar.show { opacity: 1; transform: translateY(0); }
+        .sync-status-bar.syncing { background: #3b82f6; }
+        .sync-status-bar.success { background: #10b981; }
+        .sync-status-bar.error { background: #ef4444; }
 
         /* =========================================
            عنصر المرحلة (Accordion) وتلوينها
@@ -393,6 +410,7 @@
 
         .save-btn:hover { background: var(--dark-teal); }
         .save-btn:active { transform: scale(0.98); }
+        .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .summary-box {
             background: var(--white); border: 1.5px solid var(--primary-teal); border-radius: 10px;
@@ -422,10 +440,7 @@
         <div class="stepper">
             <div class="step active">1. التخصص</div>
             <div class="step-divider">❯</div>
-            <!-- تم التعديل ليصبح div لتفادي مشاكل الروابط في تطبيقات تعديل الأكواد -->
-            <div class="step clickable" onclick="goToMester2Bypass()" title="تخطي والانتقال للمواعيد والمجموعات">
-                2. المواعيد والمجموعات
-            </div>
+            <a class="step clickable" onclick="saveSelection()" title="اضغط للانتقال لصفحة المواعيد والمجموعات">2. المواعيد والمجموعات</a>
         </div>
     </header>
 
@@ -517,7 +532,7 @@
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <button class="save-btn" onclick="saveSelection()">الانتقال للخطوة التالية ❯</button>
+        <button class="save-btn" id="saveSelectionBtn" onclick="saveSelection()">الانتقال للخطوة التالية ❯</button>
 
     </div>
 
@@ -527,7 +542,54 @@
         <span>تم الحفظ تلقائياً</span>
     </div>
 
-    <script>
+    <!-- 🔄 شريط حالة المزامنة مع Firebase -->
+    <div class="sync-status-bar" id="syncStatusBar">
+        <span id="syncIcon">⏳</span>
+        <span id="syncText">جاري المزامنة...</span>
+    </div>
+
+    <script type="module">
+        // ==========================================
+        // 🔥 استيراد دوال Firebase
+        // ==========================================
+        import { 
+            updateTeacherSelections, getTeacher 
+        } from './firebase-config.js';
+
+        // ==========================================
+        // 🔐 التحقق من تسجيل الدخول
+        // ==========================================
+        const TEACHER_PHONE = localStorage.getItem('current_teacher_phone');
+        if (!TEACHER_PHONE) {
+            alert('⚠️ يجب تسجيل الدخول أولاً.');
+            window.location.href = 'teacher-login.html';
+        }
+
+        // ==========================================
+        // 🔄 شريط حالة المزامنة
+        // ==========================================
+        function showSyncStatus(type, message) {
+            const bar = document.getElementById('syncStatusBar');
+            const icon = document.getElementById('syncIcon');
+            const text = document.getElementById('syncText');
+            
+            bar.classList.remove('syncing', 'success', 'error');
+            bar.classList.add(type, 'show');
+            
+            if (type === 'syncing') icon.textContent = '⏳';
+            if (type === 'success') icon.textContent = '✅';
+            if (type === 'error') icon.textContent = '❌';
+            
+            text.textContent = message;
+            
+            if (type !== 'syncing') {
+                setTimeout(() => bar.classList.remove('show'), 2500);
+            }
+        }
+
+        // ==========================================
+        // 📚 بيانات المواد حسب الصف
+        // ==========================================
         const subjectsData = {
             'KG1': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
             'KG2': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
@@ -548,6 +610,9 @@
             'الثالث الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا', 'إحصاء']
         };
 
+        // ==========================================
+        // 📦 حالة الاختيارات
+        // ==========================================
         const selections = {
             kg: { grade: '', subjects: [] },
             primary: { grade: '', subjects: [] },
@@ -564,7 +629,11 @@
 
         const MESTER1_SAVE_KEY = 'mester1_selections';
         let autosaveTimer = null;
+        let isSyncing = false;
 
+        // ==========================================
+        // 💾 الحفظ التلقائي
+        // ==========================================
         function showAutosaveBar() {
             const bar = document.getElementById('autosave-bar');
             if (!bar) return;
@@ -575,7 +644,7 @@
             }, 1200);
         }
 
-        function autoSaveMester1() {
+        async function autoSaveMester1() {
             try {
                 const finalData = {};
                 for (const stageId in selections) {
@@ -584,18 +653,56 @@
                         finalData[stageId] = { grade, subjects: [...subjects] };
                     }
                 }
+                
+                // احفظ محلياً
                 localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
+                localStorage.setItem('teacherSelections', JSON.stringify(finalData));
                 showAutosaveBar();
+
+                // ⬆️ ارفع إلى Firebase (بشكل غير معطل للواجهة)
+                if (TEACHER_PHONE) {
+                    try {
+                        showSyncStatus('syncing', 'جاري الحفظ...');
+                        await updateTeacherSelections(TEACHER_PHONE, finalData);
+                        showSyncStatus('success', 'تم الحفظ سحابياً');
+                    } catch (err) {
+                        console.error('فشل المزامنة مع Firebase:', err);
+                        showSyncStatus('error', 'فشل المزامنة');
+                    }
+                }
             } catch(e) {
                 console.error('خطأ في الحفظ التلقائي:', e);
             }
         }
 
-        function restoreMester1() {
+        // ==========================================
+        // 🔄 استرجاع الاختيارات (من Firebase أولاً، ثم localStorage)
+        // ==========================================
+        async function restoreMester1() {
             try {
-                const raw = localStorage.getItem(MESTER1_SAVE_KEY);
-                if (!raw) return false;
-                const saved = JSON.parse(raw);
+                let saved = null;
+
+                // ⬇️ حاول جلب البيانات من Firebase أولاً
+                if (TEACHER_PHONE) {
+                    try {
+                        showSyncStatus('syncing', 'جاري تحميل بياناتك...');
+                        const teacher = await getTeacher(TEACHER_PHONE);
+                        if (teacher && teacher.selections) {
+                            saved = teacher.selections;
+                            showSyncStatus('success', 'تم تحميل بياناتك');
+                        }
+                    } catch (err) {
+                        console.warn('فشل تحميل من Firebase، سأستخدم localStorage:', err);
+                    }
+                }
+
+                // ⬇️ إن لم يوجد في Firebase، استخدم localStorage
+                if (!saved) {
+                    const raw = localStorage.getItem(MESTER1_SAVE_KEY);
+                    if (raw) saved = JSON.parse(raw);
+                }
+
+                if (!saved) return false;
 
                 let hasAny = false;
 
@@ -608,15 +715,19 @@
                     selections[stageId].grade = grade;
                     selections[stageId].subjects = [...subjects];
 
+                    // فعّل زر الصف
                     const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
                         .find(b => b.textContent.trim() === grade);
                     if (gradeBtn) gradeBtn.classList.add('selected');
 
+                    // افتح المرحلة
                     const stageItem = document.getElementById(`stage-${stageId}`);
                     if (stageItem) stageItem.classList.add('active');
 
+                    // اعرض المواد
                     renderSubjects(grade, stageId, true);
 
+                    // فعّل المواد المختارة
                     setTimeout(() => {
                         document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
                             const subjName = btn.textContent.replace('✓', '').trim();
@@ -631,6 +742,9 @@
 
                 if (hasAny) {
                     updateSummary();
+                    // احفظ في localStorage أيضاً
+                    localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(saved));
+                    localStorage.setItem('teacherSelections', JSON.stringify(saved));
                 }
                 return hasAny;
             } catch(e) {
@@ -639,12 +753,16 @@
             }
         }
 
+        // ==========================================
+        // 🎯 دوال التفاعل مع المراحل والصفوف
+        // ==========================================
         function toggleStage(event, header) {
             const stageItem = header.parentElement;
             stageItem.classList.toggle('active');
         }
 
         function selectGrade(gradeName, stageId, btn) {
+            // امسح باقي المراحل
             for (const key in selections) {
                 if (key !== stageId && selections[key].grade !== '') {
                     selections[key] = { grade: '', subjects: [] };
@@ -669,6 +787,7 @@
             const currentGrade = selections[stageId].grade;
             const container = document.getElementById(`subjects-container-${stageId}`);
 
+            // إذا كان نفس الصف، قم بطي/فتح المواد
             if (currentGrade === gradeName) {
                 const section = container.querySelector('.subjects-section');
                 if (section) {
@@ -683,6 +802,7 @@
                 return;
             }
 
+            // اختيار صف جديد
             selections[stageId].grade = gradeName;
             selections[stageId].subjects = [];
 
@@ -827,28 +947,10 @@
             }
         }
 
-        /* 
-           الدالة الآمنة: تنقلك مباشرة للصفحة الثانية بغض النظر عن اختيارك لأي مادة.
-        */
-        function goToMester2Bypass() {
-            try {
-                const finalData = {};
-                for (const stageId in selections) {
-                    const { grade, subjects } = selections[stageId];
-                    if (subjects.length > 0) {
-                        finalData[stageId] = { grade, subjects };
-                    }
-                }
-                localStorage.setItem('teacherSelections', JSON.stringify(finalData));
-                localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
-                window.location.href = "mester2.html";
-            } catch (err) {
-                console.error("حدث خطأ، لكن سيتم الانتقال:", err);
-                window.location.href = "mester2.html";
-            }
-        }
-
-        function saveSelection() {
+        // ==========================================
+        // 💾 زر الانتقال للخطوة التالية
+        // ==========================================
+        async function saveSelection() {
             let total = 0;
             for (const stageId in selections) {
                 total += selections[stageId].subjects.length;
@@ -867,15 +969,42 @@
                 }
             }
 
+            // 💾 احفظ محلياً
             localStorage.setItem('teacherSelections', JSON.stringify(finalData));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
 
-            window.location.href = "mester2.html";
+            // ⬆️ ارفع إلى Firebase
+            if (TEACHER_PHONE) {
+                const saveBtn = document.getElementById('saveSelectionBtn');
+                saveBtn.disabled = true;
+                saveBtn.textContent = '⏳ جاري الحفظ...';
+                
+                try {
+                    showSyncStatus('syncing', 'جاري الحفظ سحابياً...');
+                    await updateTeacherSelections(TEACHER_PHONE, finalData);
+                    showSyncStatus('success', 'تم الحفظ بنجاح');
+                    
+                    setTimeout(() => {
+                        window.location.href = "mester2.html";
+                    }, 600);
+                } catch (err) {
+                    console.error('فشل الحفظ:', err);
+                    showSyncStatus('error', 'فشل الحفظ - حاول مرة أخرى');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'الانتقال للخطوة التالية ❯';
+                }
+            } else {
+                window.location.href = "mester2.html";
+            }
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
-            restoreMester1();
+        // ==========================================
+        // 🚀 التهيئة عند التحميل
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async function() {
+            await restoreMester1();
 
+            // احفظ عند مغادرة الصفحة (احتياطي)
             window.addEventListener('beforeunload', function() {
                 try {
                     const finalData = {};
@@ -889,12 +1018,22 @@
                 } catch(e) {}
             });
 
-            window.addEventListener('pageshow', function(e) {
+            // أعد التحميل عند الرجوع من BFCache
+            window.addEventListener('pageshow', async function(e) {
                 if (e.persisted) {
-                    restoreMester1();
+                    await restoreMester1();
                 }
             });
         });
+
+        // ==========================================
+        // 🌐 ربط الدوال بالـ window
+        // ==========================================
+        window.toggleStage = toggleStage;
+        window.selectGrade = selectGrade;
+        window.toggleSubject = toggleSubject;
+        window.confirmStageSelection = confirmStageSelection;
+        window.saveSelection = saveSelection;
     </script>
 </body>
 </html>
