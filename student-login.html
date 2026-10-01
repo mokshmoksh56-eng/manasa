@@ -26,7 +26,9 @@
     }
 
     .login-header {
-        background: url('student.png') center/cover no-repeat;
+        /* إضافة طبقة داكنة شفافة (Overlay) فوق الصورة لإبراز النص */
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.75) 100%),
+                    url('student.png') center/cover no-repeat;
         padding: 50px 25px 40px;
         text-align: center;
         position: relative;
@@ -44,18 +46,19 @@
     }
 
     .login-header h1 {
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 900;
         color: #f1c40f;
-        margin-bottom: 5px;
-        text-shadow: 0 2px 0 #8a6d00, 0 4px 10px rgba(0,0,0,0.8);
+        margin-bottom: 8px;
+        /* ظل خفيف للنص ليصبح أكثر وضوحاً */
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
     .login-header p {
-        font-size: 14px;
+        font-size: 15px;
         color: #ffffff;
         font-weight: 700;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+        letter-spacing: 0.5px;
     }
 
     .login-body { padding: 30px 25px; }
