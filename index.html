@@ -134,7 +134,7 @@
         position: relative;
         z-index: 2;
         margin-top: -40px;
-        flex: 1;
+        flex: 1; /* لجعل المحتوى يتمدد ويدفع الفوتر للأسفل */
     }
 
     .gate-card {
@@ -190,26 +190,6 @@
         font-weight: 900;
         color: #1a3c6d;
         letter-spacing: 0.5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .gate-title .welcome-badge {
-        font-size: 12px;
-        font-weight: 800;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        padding: 4px 12px;
-        border-radius: 20px;
-        box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
-        animation: pulse-badge 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-badge {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
     }
 
     .gate-desc {
@@ -357,86 +337,6 @@
         font-size: 12px;
     }
 
-    /* 🔔 شريط ترحيبي للمستخدم المسجل دخوله */
-    .welcome-strip {
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto -20px;
-        padding: 12px 20px;
-        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        border: 2px solid #a7f3d0;
-        border-radius: 16px;
-        display: none;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.1);
-        animation: slideDown 0.4s ease;
-        position: relative;
-        z-index: 5;
-    }
-    .welcome-strip.show { display: flex; }
-
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .welcome-strip-content {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
-    }
-
-    .welcome-strip .user-icon {
-        font-size: 26px;
-        background: white;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 3px 8px rgba(16, 185, 129, 0.2);
-    }
-
-    .welcome-strip .user-info { display: flex; flex-direction: column; gap: 2px; }
-    .welcome-strip .user-name { font-size: 15px; font-weight: 900; color: #065f46; }
-    .welcome-strip .user-role { font-size: 12px; font-weight: 700; color: #047857; }
-
-    .welcome-strip-actions { display: flex; gap: 8px; }
-
-    .strip-btn {
-        padding: 8px 14px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 900;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .strip-btn.continue {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
-    }
-
-    .strip-btn.continue:hover { transform: translateY(-2px); }
-
-    .strip-btn.logout {
-        background: white;
-        color: #dc2626;
-        border: 2px solid #fecaca;
-    }
-
-    .strip-btn.logout:hover { background: #fef2f2; }
-
     @media (max-width: 700px) {
         .gate-header { padding: 40px 20px 60px; }
         .gate-header h1 { font-size: 38px; }
@@ -455,15 +355,6 @@
         .gate-btn { padding: 9px 22px; font-size: 13px; }
 
         .disclaimer-box { flex-direction: column; text-align: center; gap: 8px; padding: 12px; }
-
-        .welcome-strip {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 14px;
-            margin: 15px 15px -10px;
-        }
-        .welcome-strip-actions { justify-content: stretch; }
-        .welcome-strip-actions .strip-btn { flex: 1; justify-content: center; }
     }
 
     @media (max-width: 380px) {
@@ -495,60 +386,33 @@
         </div>
     </header>
 
-    <!-- 🔔 شريط ترحيبي للمستخدم المسجل دخوله -->
-    <div class="welcome-strip" id="welcomeStrip">
-        <div class="welcome-strip-content">
-            <div class="user-icon" id="userIcon">👤</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">مستخدم</div>
-                <div class="user-role" id="userRole">مسجل دخول</div>
-            </div>
-        </div>
-        <div class="welcome-strip-actions">
-            <a href="#" class="strip-btn continue" id="continueBtn">
-                <span>متابعة</span>
-                <span>❯</span>
-            </a>
-            <button type="button" class="strip-btn logout" onclick="logoutUser()">
-                <span>🚪</span>
-                <span>خروج</span>
-            </button>
-        </div>
-    </div>
-
     <main class="gates-wrapper">
 
         <!-- ✅ بوابة المعلم → teacher-login.html -->
-        <a href="teacher-login.html" class="gate-card teacher-card" id="teacherCard">
+        <a href="teacher-login.html" class="gate-card teacher-card">
             <div class="gate-card-content">
-                <div class="gate-title">
-                    <span>بوابة المعلم</span>
-                    <span class="welcome-badge" id="teacherWelcomeBadge" style="display: none;">✓ مسجل</span>
-                </div>
+                <div class="gate-title">بوابة المعلم</div>
                 <div class="gate-desc">
                     أنشئ مجموعاتك، حدد مواعيدك، وتابع الحضور والمدفوعات لطلابك بسهولة.
                 </div>
                 <span class="gate-btn">
                     <span>❯</span>
-                    <span id="teacherBtnText">دخول المعلمين</span>
+                    <span>دخول المعلمين</span>
                 </span>
             </div>
             <div class="gate-card-image"></div>
         </a>
 
         <!-- ✅ بوابة الطالب → student-login.html -->
-        <a href="student-login.html" class="gate-card student-card" id="studentCard">
+        <a href="student-login.html" class="gate-card student-card">
             <div class="gate-card-content">
-                <div class="gate-title">
-                    <span>بوابة الطالب</span>
-                    <span class="welcome-badge" id="studentWelcomeBadge" style="display: none;">✓ مسجل</span>
-                </div>
+                <div class="gate-title">بوابة الطالب</div>
                 <div class="gate-desc">
                     ابحث عن أفضل المعلمين في منطقتك، واحجز مكانك بضغطة زر.
                 </div>
                 <span class="gate-btn">
                     <span>❯</span>
-                    <span id="studentBtnText">دخول الطلاب</span>
+                    <span>دخول الطلاب</span>
                 </span>
             </div>
             <div class="gate-card-image"></div>
@@ -577,111 +441,12 @@
     </footer>
 
     <script>
-        // ==========================================
-        // 🔍 فحص حالة تسجيل الدخول للمعلم والطالب
-        // ==========================================
-        function checkLoginStatus() {
-            const teacherPhone = localStorage.getItem('current_teacher_phone');
-            const teacherProfileStr = localStorage.getItem('current_teacher_profile');
-            const studentProfileStr = localStorage.getItem('current_student_profile');
-
-            const teacherCard = document.getElementById('teacherCard');
-            const studentCard = document.getElementById('studentCard');
-            const teacherBadge = document.getElementById('teacherWelcomeBadge');
-            const studentBadge = document.getElementById('studentWelcomeBadge');
-            const teacherBtnText = document.getElementById('teacherBtnText');
-            const studentBtnText = document.getElementById('studentBtnText');
-            const welcomeStrip = document.getElementById('welcomeStrip');
-            const userName = document.getElementById('userName');
-            const userRole = document.getElementById('userRole');
-            const userIcon = document.getElementById('userIcon');
-            const continueBtn = document.getElementById('continueBtn');
-
-            // ============ حالة المعلم ============
-            if (teacherPhone && teacherProfileStr) {
-                try {
-                    const teacher = JSON.parse(teacherProfileStr);
-                    
-                    // المعلم مسجل دخوله
-                    if (teacherCard) teacherCard.href = 'mester1.html';
-                    if (teacherBadge) teacherBadge.style.display = 'inline-flex';
-                    if (teacherBtnText) teacherBtnText.textContent = 'متابعة كمعلم';
-                    if (teacherCard) {
-                        teacherCard.style.borderColor = '#2b5c9e';
-                        teacherCard.style.boxShadow = '0 5px 0 rgba(43,92,158,0.15), 0 8px 25px rgba(43,92,158,0.2)';
-                    }
-
-                    // أظهر الشريط الترحيبي للمعلم
-                    welcomeStrip.classList.add('show');
-                    userName.textContent = `${teacher.title || 'مستر'} ${teacher.name || 'معلم'}`;
-                    userRole.textContent = '👨‍🏫 معلم مسجل دخول';
-                    userIcon.textContent = teacher.title === 'مس' ? '👩‍🏫' : '👨‍🏫';
-                    continueBtn.href = 'mester1.html';
-                } catch (e) {
-                    console.warn('خطأ في قراءة بيانات المعلم:', e);
-                }
-            }
-            // ============ حالة الطالب ============
-            else if (studentProfileStr) {
-                try {
-                    const student = JSON.parse(studentProfileStr);
-
-                    if (studentCard) studentCard.href = 'talep.html';
-                    if (studentBadge) studentBadge.style.display = 'inline-flex';
-                    if (studentBtnText) studentBtnText.textContent = 'متابعة كطالب';
-                    if (studentCard) {
-                        studentCard.style.borderColor = '#28a745';
-                        studentCard.style.boxShadow = '0 5px 0 rgba(40,167,69,0.15), 0 8px 25px rgba(40,167,69,0.2)';
-                    }
-
-                    // أظهر الشريط الترحيبي للطالب
-                    welcomeStrip.classList.add('show');
-                    userName.textContent = student.name || 'طالب';
-                    userRole.textContent = `👨‍🎓 ${student.grade || 'طالب مسجل دخول'}`;
-                    userIcon.textContent = student.gender === 'girl' ? '👧' : '👦';
-                    continueBtn.href = 'talep.html';
-                } catch (e) {
-                    console.warn('خطأ في قراءة بيانات الطالب:', e);
-                }
-            }
-        }
-
-        // ==========================================
-        // 🚪 تسجيل الخروج
-        // ==========================================
-        function logoutUser() {
-            const confirmLogout = confirm('هل أنت متأكد من تسجيل الخروج؟');
-            if (!confirmLogout) return;
-
-            // امسح جميع بيانات الجلسات
-            localStorage.removeItem('current_teacher_phone');
-            localStorage.removeItem('current_teacher_profile');
-            localStorage.removeItem('current_student_profile');
-            localStorage.removeItem('teacherSelections');
-            localStorage.removeItem('mester1_selections');
-
-            // أعد تحميل الصفحة
-            window.location.reload();
-        }
-
-        // ==========================================
-        // 🚀 التهيئة عند التحميل
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', function() {
-            checkLoginStatus();
-        });
-
-        // عند الرجوع من BFCache، أعد الفحص
+        // ✅ تحسين تجربة الرجوع من الصفحات الأخرى
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
-                checkLoginStatus();
                 console.log('✅ تم استرجاع الصفحة من BFCache');
             }
         });
-
-        // ربط الدوال بالـ window
-        window.logoutUser = logoutUser;
-        window.checkLoginStatus = checkLoginStatus;
     </script>
 
 </body>
