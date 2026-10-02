@@ -1,11 +1,13 @@
-// ==========================================
-// 🔥 firebase-config.js - النسخة المُحسّنة والمضمونة
-// ==========================================
+// firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { 
     getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, 
     collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { 
+    getAuth, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyABNlQQpyIw3k_ziw_-xT7SUrMV_v8Tt1Y",
@@ -17,19 +19,18 @@ const firebaseConfig = {
     measurementId: "G-VG0KN2RMS0"
 };
 
-// تهيئة Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const analytics = getAnalytics(app);
 
-// ==========================================
-// 👨‍🏫 دوال المعلمين
-// ==========================================
+// ============ دوال المعلمين ============
 export async function saveTeacher(teacher) {
+    // نستخدم رقم الهاتف كمُعرّف للمستند
     await setDoc(doc(db, "teachers", teacher.phone), {
         ...teacher,
         createdAt: serverTimestamp()
     });
-    return true;
 }
 
 export async function getTeacher(phone) {
@@ -44,28 +45,16 @@ export async function getAllTeachers() {
 
 export async function deleteTeacher(phone) {
     await deleteDoc(doc(db, "teachers", phone));
-    return true;
 }
 
-// ⭐ دالة تحديث اختيارات المعلم (يستخدمها mester1.html)
-export async function updateTeacherSelections(phone, selections) {
-    await updateDoc(doc(db, "teachers", phone), {
-        selections: selections,
-        selectionsUpdatedAt: serverTimestamp()
-    });
-    return true;
-}
-
-// ==========================================
-// 🎓 دوال الطلاب
-// ==========================================
+// ============ دوال الطلاب ============
 export async function saveStudent(student) {
+    // المفتاح: phone_pin
     const key = `${student.phone}_${student.pin}`;
     await setDoc(doc(db, "students", key), {
         ...student,
         registeredAt: serverTimestamp()
     });
-    return true;
 }
 
 export async function getStudent(phone, pin) {
@@ -89,12 +78,9 @@ export async function deleteStudentsByPhone(phone) {
     for (const s of students) {
         await deleteDoc(doc(db, "students", s.id));
     }
-    return true;
 }
 
-// ==========================================
-// 📚 دوال المجموعات (published_slots)
-// ==========================================
+// ============ دوال المجموعات (published_slots) ============
 export async function publishGroup(group) {
     const ref = doc(collection(db, "groups"));
     await setDoc(ref, {
@@ -107,12 +93,10 @@ export async function publishGroup(group) {
 
 export async function updateGroup(groupId, data) {
     await updateDoc(doc(db, "groups", groupId), data);
-    return true;
 }
 
 export async function deleteGroup(groupId) {
     await deleteDoc(doc(db, "groups", groupId));
-    return true;
 }
 
 export async function getAllGroups() {
@@ -126,9 +110,7 @@ export async function getGroupsByTeacher(teacherPhone) {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-// ==========================================
-// 📅 دوال المواعيد (appointments)
-// ==========================================
+// ============ دوال المواعيد (appointments) ============
 export async function saveAppointment(appt) {
     const ref = doc(collection(db, "appointments"));
     await setDoc(ref, { ...appt, id: ref.id, createdAt: serverTimestamp() });
@@ -143,12 +125,9 @@ export async function getAppointmentsByTeacher(teacherPhone) {
 
 export async function deleteAppointment(id) {
     await deleteDoc(doc(db, "appointments", id));
-    return true;
 }
 
-// ==========================================
-// 📊 دوال الإحصائيات (school.html)
-// ==========================================
+// ============ دوال الإحصائيات (school.html) ============
 export async function getDashboardStats() {
     const [students, teachers, groups] = await Promise.all([
         getAllStudents(),
@@ -158,9 +137,7 @@ export async function getDashboardStats() {
     return { students, teachers, groups };
 }
 
-// ==========================================
-// 📈 دوال إضافية
-// ==========================================
+// ============ دوال إضافية ============
 export async function incrementWhatsappClicks() {
     const ref = doc(db, "stats", "whatsapp");
     const snap = await getDoc(ref);
@@ -173,7 +150,4 @@ export async function getWhatsappClicks() {
     return snap.exists() ? (snap.data().count || 0) : 0;
 }
 
-// ==========================================
-// 🎯 التصدير
-// ==========================================
-export { app, db };
+export { app, db, auth, analytics };
