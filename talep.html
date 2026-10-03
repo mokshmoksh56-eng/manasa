@@ -234,7 +234,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
     let map = null; let studentSearchMarker = null; 
     let teacherMarkersLayerGroup = null; let searchCircleLayer = null;
 
-    // أيقونة الطالب الإفتراضية من Leaflet (الدبوس الأزرق) لتطابق صورة المعلم
+    // أيقونة الطالب الإفتراضية من Leaflet (الدبوس الأزرق)
     const defaultLeafletIcon = L.icon({
         iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -298,7 +298,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         map = L.map('studentMap', { zoomControl: false }).setView([startLat, startLng], 12);
         L.control.zoom({ position: 'topleft' }).addTo(map);
 
-        // إضافة زر الـ GPS (🎯) أسفل أزرار التكبير/التصغير
         const gpsControl = L.control({position: 'topleft'});
         gpsControl.onAdd = function () {
             const div = L.DomUtil.create('div', 'leaflet-control-custom-gps');
@@ -319,7 +318,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         
         teacherMarkersLayerGroup = L.layerGroup().addTo(map);
 
-        // استخدام الدبوس الأزرق الكلاسيكي لموقع الطالب بناءً على الصورة المرفقة
         studentSearchMarker = L.marker([startLat, startLng], { icon: defaultLeafletIcon, draggable: true }).addTo(map);
         
         studentLat = startLat; studentLng = startLng;
@@ -550,10 +548,11 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 240 });
             
-            // ✅ عند الضغط: نمنع الدبوس من التحرك + نبرز الكارت في الأسفل
+            // ✅ الإصلاح: إيقاف انتقال حدث الضغط للخريطة وفتح النافذة برمجياً
             marker.on('click', function(e) {
-                L.DomEvent.stopPropagation(e);
-                window.highlightCard(cls.id);
+                L.DomEvent.stop(e); // يمنع النقر من الوصول للخريطة نهائياً
+                marker.openPopup(); // يفتح النافذة المنبثقة يدوياً
+                window.highlightCard(cls.id); // يضيء الكارت في الأسفل
             });
 
             marker.addTo(teacherMarkersLayerGroup);
@@ -607,7 +606,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
-            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
+            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
         }
 
         filteredClasses.forEach((cls, index) => {
