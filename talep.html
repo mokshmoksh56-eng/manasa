@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- مكتبات Leaflet بدلاً من Mapbox -->
+<!-- مكتبات Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
@@ -45,7 +45,7 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .filter-chip.active { background: var(--primary-100); border-color: var(--primary-500); color: var(--primary-800); }
 #studentMap { width: 100%; height: 45vh; min-height: 350px; border-radius: 16px; border: 2px solid var(--line); z-index: 1; margin-bottom: 24px; box-shadow: 0 10px 25px -10px rgba(0,0,0,0.1); overflow: hidden; }
 
-/* أيقونات Leaflet */
+/* أيقونات المعلمين */
 .leaflet-div-icon { background: transparent; border: none; }
 .mb-marker-teacher { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: #fff; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.35); border: 3px solid var(--primary-600); cursor: pointer; transition: transform 0.2s ease; margin-left: -22px; margin-top: -22px; }
 .mb-marker-teacher:hover { transform: scale(1.15); }
@@ -53,19 +53,15 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .mb-marker-teacher.type-teacher_home { border-color: #D97706; }
 .mb-marker-teacher.type-student_home { border-color: #10B981; }
 
-/* تأثير النبض لموقع الطالب */
-@keyframes gpsPulse {
-    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-}
-.mb-marker-student { width: 22px; height: 22px; background: #3B82F6; border-radius: 50%; border: 3px solid #fff; cursor: grab; animation: gpsPulse 2s infinite; z-index: 10; margin-left: -11px; margin-top: -11px; }
-
 /* تنسيقات نافذة Leaflet */
 .leaflet-popup-content-wrapper { border-radius: 14px !important; font-family: 'Cairo', sans-serif !important; font-weight: bold !important; box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important; padding: 0 !important; }
 .leaflet-popup-content { margin: 12px !important; direction: rtl !important; text-align: right !important; }
 .leaflet-popup-close-button { right: auto !important; left: 8px !important; color: #64748B !important; font-size: 20px !important; font-weight: bold !important; top: 8px !important; }
 .leaflet-container a.leaflet-popup-close-button { padding: 4px !important; width: 24px !important; height: 24px !important; display: flex !important; justify-content: center !important; align-items: center !important; }
+
+/* زر الـ GPS المدمج بالخريطة */
+.leaflet-control-custom-gps { background: #fff; border: 2px solid rgba(0,0,0,0.2); width: 34px; height: 34px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 1px 5px rgba(0,0,0,0.65); transition: background 0.2s; margin-left: 10px; margin-top: 10px; }
+.leaflet-control-custom-gps:hover { background: #f4f4f4; }
 
 @keyframes slideUpCard { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .class-result-card { animation: slideUpCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; transition: all 0.3s ease; }
@@ -197,10 +193,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                         <button type="button" onclick="window.setQuickRadius(5, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="5">5 كم</button>
                         <button type="button" onclick="window.setQuickRadius(10, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="10">10 كم</button>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button type="button" onclick="window.requestGPSLocation()" class="bg-slate-100 text-slate-700 border border-slate-300 font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 active:scale-95 transition-all"><span>🎯</span> تحديد موقعي</button>
-                        <button type="button" onclick="window.applyMapSearch()" class="bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 shadow-md hover:bg-emerald-700 active:scale-95 transition-all"><span>🔍</span> بحث في النطاق</button>
-                    </div>
                 </div>
             </div>
 
@@ -241,6 +233,17 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
 
     let map = null; let studentSearchMarker = null; 
     let teacherMarkersLayerGroup = null; let searchCircleLayer = null;
+
+    // أيقونة الطالب الإفتراضية من Leaflet (الدبوس الأزرق) لتطابق صورة المعلم
+    const defaultLeafletIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
     window.saveMapState = function() {
         const subject = document.getElementById('filterSubject') ? document.getElementById('filterSubject').value : 'all';
@@ -295,20 +298,29 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         map = L.map('studentMap', { zoomControl: false }).setView([startLat, startLng], 12);
         L.control.zoom({ position: 'topleft' }).addTo(map);
 
+        // إضافة زر الـ GPS (🎯) أسفل أزرار التكبير/التصغير
+        const gpsControl = L.control({position: 'topleft'});
+        gpsControl.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-custom-gps');
+            div.innerHTML = '🎯';
+            div.title = "موقعي الفعلي";
+            div.onclick = function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                window.requestGPSLocation();
+            };
+            return div;
+        };
+        gpsControl.addTo(map);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
         
         teacherMarkersLayerGroup = L.layerGroup().addTo(map);
 
-        const studentIcon = L.divIcon({
-            className: '',
-            html: '<div class="mb-marker-student"></div>',
-            iconSize: [22, 22],
-            iconAnchor: [11, 11]
-        });
-
-        studentSearchMarker = L.marker([startLat, startLng], { icon: studentIcon, draggable: true }).addTo(map);
+        // استخدام الدبوس الأزرق الكلاسيكي لموقع الطالب بناءً على الصورة المرفقة
+        studentSearchMarker = L.marker([startLat, startLng], { icon: defaultLeafletIcon, draggable: true }).addTo(map);
         
         studentLat = startLat; studentLng = startLng;
         
@@ -481,7 +493,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.renderClasses(); 
     };
 
-    // الدالة المسؤولة عن تسليط الضوء الأخضر المضئ على الكارت
     window.highlightCard = function(classId) {
         const cardId = 'class-card-' + classId;
         const cardElement = document.getElementById(cardId);
@@ -539,8 +550,9 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 240 });
             
-            // عند الضغط على الماركر، نشغل إضاءة الكارت تحت
+            // ✅ عند الضغط: نمنع الدبوس من التحرك + نبرز الكارت في الأسفل
             marker.on('click', function(e) {
+                L.DomEvent.stopPropagation(e);
                 window.highlightCard(cls.id);
             });
 
@@ -595,7 +607,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
-            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
+            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
         }
 
         filteredClasses.forEach((cls, index) => {
