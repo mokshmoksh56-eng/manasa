@@ -17,17 +17,14 @@
     .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px; }
     .table-auto th, .table-auto td { padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
     
-    /* تنسيقات الخرائط */
     .map-container { width: 100%; height: 350px; border-radius: 14px; border: 2px solid #e2e8f0; margin-top: 10px; overflow: hidden; z-index: 1; }
     
-    /* أيقونات الخرائط (HTML مخصصة لـ Leaflet) */
     .clear-leaflet-bg { background: transparent; border: none; }
     .admin-marker { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 20px; border: 2px solid; cursor: pointer; transition: transform 0.2s; }
     .admin-marker:hover { transform: scale(1.1); }
     .marker-teacher { border-color: #2563EB; }
     .marker-student { border-color: #10B981; }
     
-    /* تنسيق النوافذ المنبثقة لـ Leaflet */
     .leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'Cairo', sans-serif; }
     .leaflet-popup-content { margin: 12px; }
 </style>
@@ -40,9 +37,8 @@
         <p class="text-sm text-slate-300 mt-1">متابعة الطلاب، المعلمين، الخرائط (Leaflet)، ونقرات الواتساب</p>
     </header>
 
-    <!-- إحصائيات سريعة متقدمة (مع تفصيل الفئات) -->
+    <!-- إحصائيات سريعة متقدمة -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <!-- إحصائية الطلاب -->
         <div class="card !mb-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex flex-col justify-between">
             <div>
                 <p class="text-xs opacity-90">إجمالي الطلاب المسجلين</p>
@@ -54,7 +50,6 @@
             </div>
         </div>
 
-        <!-- إحصائية المعلمين -->
         <div class="card !mb-0 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex flex-col justify-between">
             <div>
                 <p class="text-xs opacity-90">إجمالي المعلمين المسجلين</p>
@@ -78,7 +73,6 @@
 
     <!-- قسم الخرائط -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- خريطة المعلمين -->
         <div class="card !mb-0" id="mapSection">
             <h2 class="text-lg font-black text-slate-800 mb-1 flex items-center gap-2"><span>👨‍🏫</span> خريطة المعلمين والسناتر</h2>
             <p class="text-xs text-slate-500 mb-3">يعرض المجموعات التي تتم في (السنتر) أو (بيت المستر).</p>
@@ -86,7 +80,6 @@
             <div class="mt-3 text-xs font-bold text-blue-600">الإجمالي: <span id="teachersMapCount">0</span> موقع</div>
         </div>
         
-        <!-- خريطة الطلاب -->
         <div class="card !mb-0 border-emerald-200">
             <h2 class="text-lg font-black text-emerald-800 mb-1 flex items-center gap-2"><span>👨‍‍🎓</span> خريطة الطلاب (دروس المنازل)</h2>
             <p class="text-xs text-slate-500 mb-3">يعرض المجموعات التي اختار المعلم إقامتها في (منزل الطالب).</p>
@@ -95,7 +88,92 @@
         </div>
     </div>
 
-    <!-- جدول إدارة الطلاب المسجلين -->
+    <!-- 🆕 قسم إدارة الصفوف والمواد الدراسية -->
+    <div class="card">
+        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <h2 class="text-lg font-black text-slate-800">🎓 إدارة الصفوف والمواد الدراسية</h2>
+            <div class="flex gap-2 flex-wrap">
+                <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full" id="gradesBadge">0 صف مخصص</span>
+                <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full" id="subjectsBadge">0 مادة مخصصة</span>
+            </div>
+        </div>
+        
+        <p class="text-xs text-slate-500 mb-4">💡 من هنا يمكنك إضافة <strong>صفوف جديدة</strong> و<strong>مواد جديدة</strong>. الكل سيظهر تلقائياً لكل المعلمين <strong>على كل الأجهزة</strong>.</p>
+        
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-4 bg-slate-100 p-1 rounded-xl">
+            <button id="tabGrades" onclick="window.switchAdminTab('grades')" class="flex-1 py-2 rounded-lg font-black text-sm transition-all bg-white shadow-md text-slate-800">
+                🎓 إدارة الصفوف
+            </button>
+            <button id="tabSubjects" onclick="window.switchAdminTab('subjects')" class="flex-1 py-2 rounded-lg font-black text-sm transition-all text-slate-500">
+                📚 إدارة المواد
+            </button>
+        </div>
+        
+        <!-- 🎓 قسم إدارة الصفوف -->
+        <div id="gradesPanel">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-black text-slate-700 mb-2">اختر المرحلة:</label>
+                    <select id="gradesStageSelect" class="w-full p-3 border-2 border-slate-200 rounded-xl font-black bg-white text-slate-800" onchange="window.renderGradesForAdmin()">
+                        <option value="">اختر المرحلة...</option>
+                        <option value="kg">🧸 رياض الأطفال</option>
+                        <option value="primary">📗 المرحلة الابتدائية</option>
+                        <option value="prep">📘 المرحلة الإعدادية</option>
+                        <option value="secondary">📙 المرحلة الثانوية</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="adminGradesContainer" class="hidden">
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                    <h3 class="font-black text-blue-900 mb-3 text-sm">📋 الصفوف الحالية:</h3>
+                    <div id="adminGradesList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4"></div>
+                    
+                    <button onclick="window.addNewGradeFromAdmin()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <span class="text-xl">➕</span>
+                        <span>إضافة صف جديد</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 📚 قسم إدارة المواد -->
+        <div id="subjectsPanel" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-black text-slate-700 mb-2">اختر المرحلة:</label>
+                    <select id="adminStageSelect" class="w-full p-3 border-2 border-slate-200 rounded-xl font-black bg-white text-slate-800" onchange="window.updateAdminGrades()">
+                        <option value="">اختر المرحلة...</option>
+                        <option value="kg">🧸 رياض الأطفال</option>
+                        <option value="primary">📗 المرحلة الابتدائية</option>
+                        <option value="prep">📘 المرحلة الإعدادية</option>
+                        <option value="secondary">📙 المرحلة الثانوية</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-black text-slate-700 mb-2">اختر الصف الدراسي:</label>
+                    <select id="adminGradeSelect" class="w-full p-3 border-2 border-slate-200 rounded-xl font-black bg-white text-slate-800" onchange="window.renderSubjectsForAdmin()" disabled>
+                        <option value="">اختر المرحلة أولاً...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="adminSubjectsContainer" class="hidden">
+                <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4">
+                    <h3 class="font-black text-slate-700 mb-3 text-sm">📋 المواد الحالية:</h3>
+                    <div id="adminSubjectsList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4"></div>
+                    
+                    <button onclick="window.addNewSubjectFromAdmin()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <span class="text-xl">➕</span>
+                        <span>إضافة مادة جديدة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول إدارة الطلاب -->
     <div class="card">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-black text-slate-800">👥 سجل الطلاب المسجلين</h2>
@@ -118,7 +196,7 @@
         </div>
     </div>
 
-    <!-- جدول إدارة المعلمين والتواصل معاهم -->
+    <!-- جدول إدارة المعلمين -->
     <div class="card">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-black text-slate-800">👨‍🏫👩‍🏫 سجل المعلمين وإدارتهم</h2>
@@ -142,101 +220,184 @@
         </div>
     </div>
 
-<script>
+<script type="module">
+    // ==========================================
+    // 🔥 استيراد دوال Firebase
+    // ==========================================
+    import { 
+        getAllStudents, 
+        getAllTeachers, 
+        getAllGroups,
+        deleteStudentByKey,
+        deleteTeacher,
+        deleteGroup,
+        getWhatsappClicks,
+        getAllCustomSubjects,
+        addCustomSubjectToFirebase,
+        removeCustomSubjectFromFirebase,
+        getAllCustomGrades,
+        addCustomGradeToFirebase,
+        removeCustomGradeFromFirebase
+    } from './firebase-config.js';
+
+    // ==========================================
+    // 📌 الثوابت - المراحل والصفوف والمواد
+    // ==========================================
+    
+    const ADMIN_EDUCATION_STRUCTURE = {
+        kg: { 
+            name: '🧸 رياض الأطفال',
+            baseGrades: ['KG1', 'KG2'] 
+        },
+        primary: { 
+            name: '📗 المرحلة الابتدائية',
+            baseGrades: ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'] 
+        },
+        prep: { 
+            name: '📘 المرحلة الإعدادية',
+            baseGrades: ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'] 
+        },
+        secondary: { 
+            name: '📙 المرحلة الثانوية',
+            baseGrades: ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'] 
+        }
+    };
+    
+    const ADMIN_BASE_SUBJECTS = {
+        'KG1': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
+        'KG2': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
+        'الأول الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
+        'الثاني الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
+        'الثالث الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية'],
+        'الرابع الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'الخامس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'السادس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'الأول الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'الثاني الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'الثالث الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
+        'الأول الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'فلسفة ومنطق'],
+        'الثاني الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا'],
+        'الثالث الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا', 'إحصاء']
+    };
+    
+    // ==========================================
+    // 🔄 متغيرات عامة
+    // ==========================================
     let teachersMap = null;
     let studentsMap = null;
     let tLayerGroup = null;
     let sLayerGroup = null;
+    
+    let cachedStudents = [];
+    let cachedTeachers = [];
+    let cachedGroups = [];
+    let cachedCustomGrades = {};
+    let cachedCustomSubjects = {};
 
-    window.onload = function() {
-        loadDashboardData();
+    // ==========================================
+    // 🚀 بدء التطبيق
+    // ==========================================
+    window.addEventListener('load', async function() {
+        await loadDashboardData();
         initMaps();
-    };
+        await updateGradesBadge();
+        await updateSubjectsBadge();
+    });
 
-    function loadDashboardData() {
-        // --- 1. معالجة بيانات الطلاب ---
-        const studentsDB = JSON.parse(localStorage.getItem('students_db') || '{}');
-        const studentsArr = Object.values(studentsDB);
-        
+    // ==========================================
+    // 📊 تحميل البيانات من Firebase
+    // ==========================================
+    async function loadDashboardData() {
+        try {
+            const [students, teachers, groups, whatsappClicks] = await Promise.all([
+                getAllStudents(),
+                getAllTeachers(),
+                getAllGroups(),
+                getWhatsappClicks()
+            ]);
+            
+            cachedStudents = students;
+            cachedTeachers = teachers;
+            cachedGroups = groups;
+            
+            renderStudentsStats(students);
+            renderTeachersStats(teachers);
+            document.getElementById('statGroupsCount').textContent = groups.length;
+            document.getElementById('statWhatsappClicks').textContent = whatsappClicks;
+            
+        } catch (error) {
+            console.error('❌ خطأ في تحميل البيانات:', error);
+        }
+    }
+
+    // ==========================================
+    // 👥 إحصائيات الطلاب
+    // ==========================================
+    function renderStudentsStats(students) {
         let boysCount = 0;
         let girlsCount = 0;
 
-        document.getElementById('statStudentsCount').textContent = studentsArr.length;
-        document.getElementById('studentsBadge').textContent = `${studentsArr.length} طالب`;
+        document.getElementById('statStudentsCount').textContent = students.length;
+        document.getElementById('studentsBadge').textContent = `${students.length} طالب`;
         
         const studentsBody = document.getElementById('studentsTableBody');
         studentsBody.innerHTML = '';
 
-        if (studentsArr.length === 0) {
+        if (students.length === 0) {
             studentsBody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-6">لا توجد بيانات طلاب مسجلة.</td></tr>`;
         } else {
-            studentsArr.forEach((st) => {
-                // حساب عدد الأولاد والبنات (مع افتراض الأولاد كقيمة افتراضية لو لم تحدد)
+            students.forEach((st) => {
                 let genderIcon = '👤';
-                if (st.gender === 'girl') {
-                    girlsCount++;
-                    genderIcon = '👧';
-                } else if (st.gender === 'boy') {
-                    boysCount++;
-                    genderIcon = '👦';
-                } else {
-                    // إذا لم تكن مسجلة في الداتابيز الحالية
-                    boysCount++;
-                    genderIcon = '👦';
-                }
+                if (st.gender === 'girl') { girlsCount++; genderIcon = '👧'; }
+                else if (st.gender === 'boy') { boysCount++; genderIcon = '👦'; }
+                else { boysCount++; genderIcon = '👦'; }
 
+                const regDate = st.registeredAt?.toDate ? st.registeredAt.toDate() : (st.registeredAt ? new Date(st.registeredAt) : new Date());
+                
                 studentsBody.innerHTML += `
                     <tr>
                         <td class="font-bold text-slate-800">${genderIcon} ${st.name || 'بدون اسم'}</td>
                         <td dir="ltr" class="text-left">${st.phone || '-'}</td>
                         <td><span class="bg-slate-100 px-2 py-1 rounded font-mono">${st.pin || '----'}</span></td>
                         <td>${st.stage || '-'} / ${st.grade || '-'}</td>
-                        <td>${st.registeredAt ? new Date(st.registeredAt).toLocaleDateString('ar-EG') : 'اليوم'}</td>
+                        <td>${regDate.toLocaleDateString('ar-EG')}</td>
                         <td>
-                            <button onclick="deleteStudent('${st.id || st.phone}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">🗑 حذف</button>
+                            <button onclick="window.deleteStudentById('${st.id}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">🗑 حذف</button>
                         </td>
                     </tr>
                 `;
             });
         }
         
-        // تحديث إحصائيات الأولاد والبنات
         document.getElementById('statBoysCount').textContent = boysCount;
         document.getElementById('statGirlsCount').textContent = girlsCount;
+    }
 
-
-        // --- 2. معالجة بيانات المعلمين ---
-        const teachersDB = JSON.parse(localStorage.getItem('teachers_db') || '{}');
-        const teachersArr = Object.values(teachersDB);
-        
+    // ==========================================
+    // 👨‍🏫 إحصائيات المعلمين
+    // ==========================================
+    function renderTeachersStats(teachers) {
         let misterCount = 0;
         let missCount = 0;
 
-        document.getElementById('statTeachersCount').textContent = teachersArr.length;
-        document.getElementById('teachersBadge').textContent = `${teachersArr.length} معلم`;
+        document.getElementById('statTeachersCount').textContent = teachers.length;
+        document.getElementById('teachersBadge').textContent = `${teachers.length} معلم`;
 
         const teachersBody = document.getElementById('teachersTableBody');
         teachersBody.innerHTML = '';
 
-        if (teachersArr.length === 0) {
+        if (teachers.length === 0) {
             teachersBody.innerHTML = `<tr><td colspan="7" class="text-center text-slate-400 py-6">لا توجد حسابات معلمين مسجلة.</td></tr>`;
         } else {
-            teachersArr.forEach((t) => {
+            teachers.forEach((t) => {
                 const title = t.title || 'مستر';
-                
-                // حساب عدد (مستر / مس)
-                if (title === 'مس') {
-                    missCount++;
-                } else {
-                    misterCount++;
-                }
+                if (title === 'مس') missCount++; else misterCount++;
 
                 const waPhone = t.phone.startsWith('0') ? '2' + t.phone : t.phone;
                 const waMessage = encodeURIComponent(`السلام عليكم ${title} ${t.name}، بخصوص تفعيل اشتراكك معنا على منصة احجزلي...`);
                 const waLink = `https://wa.me/${waPhone}?text=${waMessage}`;
 
-                // حساب عدد أيام الاشتراك للمعلم
-                const regDate = t.registeredAt ? new Date(t.registeredAt) : new Date();
+                const regDate = t.registeredAt?.toDate ? t.registeredAt.toDate() : (t.createdAt?.toDate ? t.createdAt.toDate() : (t.registeredAt ? new Date(t.registeredAt) : new Date()));
                 const diffDays = Math.max(1, Math.ceil(Math.abs(new Date() - regDate) / (1000 * 60 * 60 * 24)));
 
                 teachersBody.innerHTML += `
@@ -247,12 +408,12 @@
                         <td><span class="bg-slate-100 px-2 py-1 rounded font-mono">${t.pin || '----'}</span></td>
                         <td><span class="font-bold text-blue-600">${diffDays} يوم</span></td>
                         <td>
-                            <button onclick="focusTeacherOnMap('${t.phone}')" class="text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition flex items-center gap-1">📍 عرض المواقع</button>
+                            <button onclick="window.focusTeacherOnMap('${t.phone}')" class="text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition flex items-center gap-1">📍 عرض المواقع</button>
                         </td>
                         <td>
                             <div class="flex gap-2 justify-end">
                                 <a href="${waLink}" target="_blank" class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition flex items-center gap-1">💬 واتساب</a>
-                                <button onclick="deleteTeacher('${t.phone}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-100 transition">🗑 حذف</button>
+                                <button onclick="window.deleteTeacherById('${t.phone}')" class="text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-100 transition">🗑 حذف</button>
                             </div>
                         </td>
                     </tr>
@@ -260,22 +421,15 @@
             });
         }
         
-        // تحديث إحصائيات المستر والمس
         document.getElementById('statMisterCount').textContent = misterCount;
         document.getElementById('statMissCount').textContent = missCount;
-
-
-        // --- 3. بيانات أخرى ---
-        const groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
-        document.getElementById('statGroupsCount').textContent = groupsList.length;
-
-        const whatsappClicks = localStorage.getItem('total_whatsapp_clicks') || '0';
-        document.getElementById('statWhatsappClicks').textContent = whatsappClicks;
     }
 
-    // تهيئة خرائط Leaflet
+    // ==========================================
+    // 🗺️ تهيئة الخرائط
+    // ==========================================
     function initMaps() {
-        const defaultCenter = [31.0409, 31.3785]; // المنصورة كمركز افتراضي
+        const defaultCenter = [31.0409, 31.3785];
 
         teachersMap = L.map('teachersMap').setView(defaultCenter, 11);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -295,11 +449,10 @@
     function populateMaps() {
         if(!teachersMap || !studentsMap) return;
 
-        // تنظيف العلامات القديمة من الخريطة
         tLayerGroup.clearLayers();
         sLayerGroup.clearLayers();
 
-        const groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
+        const groupsList = cachedGroups;
         const tBounds = L.latLngBounds();
         const sBounds = L.latLngBounds();
         
@@ -311,7 +464,6 @@
                 const isStudentHome = (cls.type === 'student_home' || cls.location === 'منزل الطالب');
                 const emoji = isStudentHome ? '🚗' : (cls.type === 'teacher_home' ? '🏡' : '🏫');
                 
-                // استخدام أيقونات HTML المخصصة عبر L.divIcon
                 const customIcon = L.divIcon({
                     className: 'clear-leaflet-bg',
                     html: `<div class="admin-marker ${isStudentHome ? 'marker-student' : 'marker-teacher'}">${emoji}</div>`,
@@ -347,66 +499,417 @@
         document.getElementById('teachersMapCount').textContent = tCount;
         document.getElementById('studentsMapCount').textContent = sCount;
 
-        // ضبط الزووم التلقائي
         if (tCount > 0) teachersMap.fitBounds(tBounds, { padding: [40, 40], maxZoom: 15 });
         if (sCount > 0) studentsMap.fitBounds(sBounds, { padding: [40, 40], maxZoom: 15 });
     }
 
-    // دالة التركيز على موقع المعلم في الخريطة باستخدام FlyTo الانسيابي الخاص بـ Leaflet
-    function focusTeacherOnMap(phone) {
+    // ==========================================
+    // 📍 التركيز على خريطة معلم
+    // ==========================================
+    window.focusTeacherOnMap = function(phone) {
         if(!teachersMap || !studentsMap) {
-            alert('الخرائط قيد التحميل، يرجى الانتظار ثانية.');
+            alert('الخرائط قيد التحميل.');
             return;
         }
 
-        const groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]');
-        const teacherGroups = groupsList.filter(g => g.phone === phone && g.lat && g.lng);
+        const teacherGroups = cachedGroups.filter(g => g.phone === phone && g.lat && g.lng);
         
         if (teacherGroups.length === 0) {
-            alert('لا توجد مواقع/سناتر مسجلة على الخريطة لهذا المعلم حالياً.');
+            alert('لا توجد مواقع مسجلة على الخريطة لهذا المعلم.');
             return;
         }
 
-        // التمرير السلس لقسم الخريطة
         document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // تجميع إحداثيات المعلم
         const bounds = L.latLngBounds();
         teacherGroups.forEach(g => {
             bounds.extend([g.lat, g.lng]);
         });
 
-        // تطبيق الزووم الانسيابي على الخريطتين 
         teachersMap.flyToBounds(bounds, { padding: [50, 50], maxZoom: 16, duration: 1.5 });
         studentsMap.flyToBounds(bounds, { padding: [50, 50], maxZoom: 16, duration: 1.5 });
     }
 
-    // دوال الحذف
-    function deleteStudent(studentId) {
-        if (confirm('⚠ هل أنت متأكد من حذف هذا الطالب نهائياً من المنصة؟')) {
-            let studentsDB = JSON.parse(localStorage.getItem('students_db') || '{}');
-            for (let k in studentsDB) { if (studentsDB[k].id === studentId || studentsDB[k].phone === studentId) delete studentsDB[k]; }
-            localStorage.setItem('students_db', JSON.stringify(studentsDB));
-            loadDashboardData();
+    // ==========================================
+    // 🗑️ حذف طالب
+    // ==========================================
+    window.deleteStudentById = async function(studentId) {
+        if (!confirm('⚠ هل أنت متأكد من حذف هذا الطالب نهائياً من المنصة؟')) return;
+        
+        try {
+            await deleteStudentByKey(studentId);
+            alert('✅ تم حذف الطالب بنجاح.');
+            await loadDashboardData();
+        } catch (error) {
+            console.error('❌ خطأ في الحذف:', error);
+            alert('حدث خطأ في الحذف. حاول مرة أخرى.');
         }
     }
 
-    function deleteTeacher(phone) {
-        if (confirm('⚠️ تحذير: سيتم حذف حساب المعلم ومجموعاته نهائياً. هل أنت متأكد؟')) {
-            let teachersDB = JSON.parse(localStorage.getItem('teachers_db') || '{}');
-            delete teachersDB[phone];
-            localStorage.setItem('teachers_db', JSON.stringify(teachersDB));
+    // ==========================================
+    // 🗑️ حذف معلم
+    // ==========================================
+    window.deleteTeacherById = async function(phone) {
+        if (!confirm('⚠️ تحذير: سيتم حذف حساب المعلم ومجموعاته نهائياً. هل أنت متأكد؟')) return;
+        
+        try {
+            const teacherGroups = cachedGroups.filter(g => g.phone === phone);
+            for (const group of teacherGroups) {
+                await deleteGroup(group.id);
+            }
             
-            let groupsList = JSON.parse(localStorage.getItem('mester_groups_list') || '[]').filter(g => g.phone !== phone);
-            localStorage.setItem('mester_groups_list', JSON.stringify(groupsList));
-
-            let published = JSON.parse(localStorage.getItem('published_slots') || '[]').filter(p => p.phone !== phone);
-            localStorage.setItem('published_slots', JSON.stringify(published));
-
-            loadDashboardData();
+            await deleteTeacher(phone);
+            
+            alert('✅ تم حذف المعلم ومجموعاته بنجاح.');
+            await loadDashboardData();
             populateMaps();
+        } catch (error) {
+            console.error('❌ خطأ في الحذف:', error);
+            alert('حدث خطأ في الحذف. حاول مرة أخرى.');
         }
     }
+
+    // ==========================================
+    // 🎓 Tab Switching
+    // ==========================================
+    window.switchAdminTab = function(tab) {
+        const tabGrades = document.getElementById('tabGrades');
+        const tabSubjects = document.getElementById('tabSubjects');
+        const gradesPanel = document.getElementById('gradesPanel');
+        const subjectsPanel = document.getElementById('subjectsPanel');
+        
+        if (tab === 'grades') {
+            tabGrades.classList.add('bg-white', 'shadow-md', 'text-slate-800');
+            tabGrades.classList.remove('text-slate-500');
+            tabSubjects.classList.remove('bg-white', 'shadow-md', 'text-slate-800');
+            tabSubjects.classList.add('text-slate-500');
+            gradesPanel.classList.remove('hidden');
+            subjectsPanel.classList.add('hidden');
+        } else {
+            tabSubjects.classList.add('bg-white', 'shadow-md', 'text-slate-800');
+            tabSubjects.classList.remove('text-slate-500');
+            tabGrades.classList.remove('bg-white', 'shadow-md', 'text-slate-800');
+            tabGrades.classList.add('text-slate-500');
+            subjectsPanel.classList.remove('hidden');
+            gradesPanel.classList.add('hidden');
+        }
+    };
+    
+    // ==========================================
+    // 🛠️ دالة مساعدة: جلب كل الصفوف (الأساسية + المخصصة)
+    // ==========================================
+    function getAllGradesForStage(stageId) {
+        const base = ADMIN_EDUCATION_STRUCTURE[stageId]?.baseGrades || [];
+        const custom = cachedCustomGrades[stageId] || [];
+        return [...base, ...custom];
+    }
+    
+    // ==========================================
+    // 🎓 إدارة الصفوف
+    // ==========================================
+    
+    window.renderGradesForAdmin = async function() {
+        const stageId = document.getElementById('gradesStageSelect').value;
+        const container = document.getElementById('adminGradesContainer');
+        const list = document.getElementById('adminGradesList');
+        
+        if (!stageId) {
+            container.classList.add('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        list.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">⏳ جاري التحميل...</div>';
+        
+        try {
+            cachedCustomGrades = await getAllCustomGrades();
+        } catch (e) {
+            console.error('خطأ:', e);
+            cachedCustomGrades = {};
+        }
+        
+        const baseGrades = ADMIN_EDUCATION_STRUCTURE[stageId]?.baseGrades || [];
+        const customList = cachedCustomGrades[stageId] || [];
+        
+        list.innerHTML = '';
+        
+        baseGrades.forEach(g => {
+            list.innerHTML += `
+                <div class="bg-white border-2 border-slate-200 rounded-lg p-3 text-center font-black text-slate-700 text-sm">
+                    📚 ${g}
+                    <div class="text-[10px] text-slate-400 mt-1">أساسي</div>
+                </div>
+            `;
+        });
+        
+        customList.forEach(g => {
+            list.innerHTML += `
+                <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-3 text-center font-black text-blue-800 text-sm relative">
+                    ⭐ ${g}
+                    <div class="text-[10px] text-blue-600 mt-1">مخصص</div>
+                    <button onclick="window.removeCustomGrade('${stageId}', '${g}')" 
+                            class="absolute -top-2 -left-2 w-6 h-6 bg-rose-500 text-white rounded-full text-xs font-black shadow-md hover:bg-rose-600 transition"
+                            title="حذف">✖</button>
+                </div>
+            `;
+        });
+    };
+    
+    window.addNewGradeFromAdmin = async function() {
+        const stageId = document.getElementById('gradesStageSelect').value;
+        if (!stageId) {
+            alert('⚠️ اختر المرحلة أولاً');
+            return;
+        }
+        
+        const stageName = ADMIN_EDUCATION_STRUCTURE[stageId]?.name || stageId;
+        const newGrade = prompt(`✏️ اكتب اسم الصف الجديد لـ "${stageName}":\n\nمثال: الرابع الإعدادي`);
+        if (!newGrade) return;
+        
+        const trimmed = newGrade.trim();
+        if (trimmed.length < 2) {
+            alert('⚠️ اسم الصف قصير جداً (حرفين على الأقل)');
+            return;
+        }
+        
+        const baseGrades = ADMIN_EDUCATION_STRUCTURE[stageId]?.baseGrades || [];
+        const customList = cachedCustomGrades[stageId] || [];
+        
+        if (baseGrades.includes(trimmed) || customList.includes(trimmed)) {
+            alert('⚠️ هذا الصف موجود بالفعل!');
+            return;
+        }
+        
+        const result = await addCustomGradeToFirebase(stageId, trimmed);
+        
+        if (result.ok) {
+            alert(`✅ تمت إضافة "${trimmed}" إلى ${stageName}\n\nستظهر تلقائياً لكل المعلمين على كل الأجهزة.`);
+            await window.renderGradesForAdmin();
+            await updateGradesBadge();
+        } else {
+            alert('❌ خطأ: ' + result.error);
+        }
+    };
+    
+    window.removeCustomGrade = async function(stageId, gradeName) {
+        if (!confirm(`⚠️ هل تريد حذف صف "${gradeName}"؟\n\nملاحظة: سيتم حذفه من كل الأجهزة.`)) return;
+        
+        const result = await removeCustomGradeFromFirebase(stageId, gradeName);
+        
+        if (result.ok) {
+            alert('✅ تم حذف الصف بنجاح.');
+            await window.renderGradesForAdmin();
+            await updateGradesBadge();
+        } else {
+            alert('❌ خطأ: ' + result.error);
+        }
+    };
+    
+    // ==========================================
+    // 📚 إدارة المواد - التحديث الأهم
+    // ==========================================
+    
+    // ✅ الدالة المعدلة - بدون await قبل قراءة القيمة
+    window.updateAdminGrades = function() {
+        const stageSelect = document.getElementById('adminStageSelect');
+        const gradeSelect = document.getElementById('adminGradeSelect');
+        const container = document.getElementById('adminSubjectsContainer');
+        
+        if (!stageSelect || !gradeSelect) {
+            console.error('❌ عناصر الاختيار مش موجودة');
+            return;
+        }
+        
+        const stage = stageSelect.value;
+        console.log('🔄 المرحلة المختارة:', stage);
+        
+        // ✅ نفضي القائمة
+        gradeSelect.innerHTML = '<option value="">اختر الصف...</option>';
+        
+        // ✅ لو مفيش مرحلة، نعطل القائمة
+        if (!stage) {
+            gradeSelect.disabled = true;
+            if (container) container.classList.add('hidden');
+            return;
+        }
+        
+        if (!ADMIN_EDUCATION_STRUCTURE[stage]) {
+            console.error('❌ المرحلة غير معروفة:', stage);
+            gradeSelect.disabled = true;
+            return;
+        }
+        
+        // ✅ نجيب الصفوف الأساسية فوراً (بدون انتظار)
+        const baseGrades = ADMIN_EDUCATION_STRUCTURE[stage].baseGrades || [];
+        baseGrades.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g;
+            opt.textContent = g;
+            gradeSelect.appendChild(opt);
+        });
+        
+        // ✅ نفعل القائمة فوراً
+        gradeSelect.disabled = false;
+        if (container) container.classList.add('hidden');
+        
+        console.log('✅ تم تحميل', baseGrades.length, 'صف أساسي');
+        
+        // ✅ نجيب الصفوف المخصصة من Firebase بشكل غير متزامن
+        (async () => {
+            try {
+                cachedCustomGrades = await getAllCustomGrades();
+                const customList = cachedCustomGrades[stage] || [];
+                
+                // ✅ نضيف الصفوف المخصصة
+                customList.forEach(g => {
+                    // نتأكد إنها مش موجودة
+                    const exists = Array.from(gradeSelect.options).some(opt => opt.value === g);
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = g;
+                        opt.textContent = `${g} ⭐`;
+                        gradeSelect.appendChild(opt);
+                    }
+                });
+                
+                console.log('✅ تم تحميل الصفوف المخصصة:', customList);
+            } catch (e) {
+                console.error('❌ خطأ في تحميل الصفوف المخصصة:', e);
+            }
+        })();
+    };
+    
+    window.renderSubjectsForAdmin = async function() {
+        const grade = document.getElementById('adminGradeSelect').value;
+        const container = document.getElementById('adminSubjectsContainer');
+        const list = document.getElementById('adminSubjectsList');
+        
+        if (!grade) {
+            container.classList.add('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        list.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">⏳ جاري التحميل...</div>';
+        
+        const baseSubjects = ADMIN_BASE_SUBJECTS[grade] || [];
+        
+        try {
+            cachedCustomSubjects = await getAllCustomSubjects();
+        } catch (e) {
+            console.error('خطأ:', e);
+            cachedCustomSubjects = {};
+        }
+        const customList = cachedCustomSubjects[grade] || [];
+        
+        list.innerHTML = '';
+        
+        const isCustomGrade = !baseSubjects.length && grade;
+        if (isCustomGrade) {
+            list.innerHTML = `
+                <div class="col-span-full bg-blue-50 border-2 border-blue-200 rounded-lg p-3 text-center text-blue-800 text-xs font-black mb-2">
+                    💡 هذا صف مخصص - لا توجد به مواد أساسية. يمكنك إضافة مواد جديدة له.
+                </div>
+            `;
+        }
+        
+        baseSubjects.forEach(sub => {
+            list.innerHTML += `
+                <div class="bg-white border-2 border-slate-200 rounded-lg p-3 text-center font-black text-slate-700 text-sm">
+                    📚 ${sub}
+                    <div class="text-[10px] text-slate-400 mt-1">أساسية</div>
+                </div>
+            `;
+        });
+        
+        customList.forEach(sub => {
+            list.innerHTML += `
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-3 text-center font-black text-amber-800 text-sm relative">
+                    ⭐ ${sub}
+                    <div class="text-[10px] text-amber-600 mt-1">مخصصة</div>
+                    <button onclick="window.removeCustomSubject('${grade}', '${sub}')" 
+                            class="absolute -top-2 -left-2 w-6 h-6 bg-rose-500 text-white rounded-full text-xs font-black shadow-md hover:bg-rose-600 transition"
+                            title="حذف">✖</button>
+                </div>
+            `;
+        });
+    };
+    
+    window.addNewSubjectFromAdmin = async function() {
+        const grade = document.getElementById('adminGradeSelect').value;
+        if (!grade) {
+            alert('⚠️ اختر الصف أولاً');
+            return;
+        }
+        
+        const newSubject = prompt(`✏️ اكتب اسم المادة الجديدة لـ "${grade}":`);
+        if (!newSubject) return;
+        
+        const trimmed = newSubject.trim();
+        if (trimmed.length < 2) {
+            alert('⚠️ اسم المادة قصير جداً (حرفين على الأقل)');
+            return;
+        }
+        
+        const baseSubjects = ADMIN_BASE_SUBJECTS[grade] || [];
+        const customList = cachedCustomSubjects[grade] || [];
+        
+        if (baseSubjects.includes(trimmed) || customList.includes(trimmed)) {
+            alert('⚠️ هذه المادة موجودة بالفعل!');
+            return;
+        }
+        
+        const result = await addCustomSubjectToFirebase(grade, trimmed);
+        
+        if (result.ok) {
+            alert(`✅ تمت إضافة "${trimmed}" إلى ${grade}\n\nستظهر تلقائياً لكل المعلمين على كل الأجهزة.`);
+            await window.renderSubjectsForAdmin();
+            await updateSubjectsBadge();
+        } else {
+            alert('❌ خطأ: ' + result.error);
+        }
+    };
+    
+    window.removeCustomSubject = async function(grade, subjectName) {
+        if (!confirm(`⚠️ هل تريد حذف مادة "${subjectName}" من "${grade}"؟\n\nملاحظة: سيتم حذفها من كل الأجهزة.`)) return;
+        
+        const result = await removeCustomSubjectFromFirebase(grade, subjectName);
+        
+        if (result.ok) {
+            alert('✅ تم الحذف بنجاح.');
+            await window.renderSubjectsForAdmin();
+            await updateSubjectsBadge();
+        } else {
+            alert('❌ خطأ: ' + result.error);
+        }
+    };
+    
+    // ==========================================
+    // 📊 تحديث الـ Badges
+    // ==========================================
+    
+    async function updateGradesBadge() {
+        try {
+            cachedCustomGrades = await getAllCustomGrades();
+            const totalCustom = Object.values(cachedCustomGrades).reduce((sum, arr) => sum + arr.length, 0);
+            const badge = document.getElementById('gradesBadge');
+            if (badge) badge.textContent = `${totalCustom} صف مخصص`;
+        } catch (e) {
+            console.error('خطأ:', e);
+        }
+    }
+    
+    async function updateSubjectsBadge() {
+        try {
+            cachedCustomSubjects = await getAllCustomSubjects();
+            const totalCustom = Object.values(cachedCustomSubjects).reduce((sum, arr) => sum + arr.length, 0);
+            const badge = document.getElementById('subjectsBadge');
+            if (badge) badge.textContent = `${totalCustom} مادة مخصصة`;
+        } catch (e) {
+            console.error('خطأ:', e);
+        }
+    }
+
 </script>
 
 </body>
