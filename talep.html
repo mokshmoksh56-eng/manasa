@@ -46,7 +46,15 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .mb-marker-teacher.type-center { border-color: #2563EB; }
 .mb-marker-teacher.type-teacher_home { border-color: #D97706; }
 .mb-marker-teacher.type-student_home { border-color: #10B981; }
-.mb-marker-student { width: 22px; height: 22px; background: #3B82F6; border-radius: 50%; box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.35), 0 0 0 14px rgba(59, 130, 246, 0.15); border: 3px solid #fff; cursor: grab; }
+
+/* تأثير النبض لموقع الطالب */
+@keyframes gpsPulse {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+.mb-marker-student { width: 22px; height: 22px; background: #3B82F6; border-radius: 50%; border: 3px solid #fff; cursor: grab; animation: gpsPulse 2s infinite; z-index: 10; }
+
 .mapboxgl-popup-content { border-radius: 14px !important; font-family: 'Cairo', sans-serif !important; font-weight: bold !important; text-align: right !important; direction: rtl !important; padding: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important; }
 .mapboxgl-popup-close-button { font-size: 20px !important; color: #64748B !important; padding: 4px 8px !important; }
 .map-popup-btn { background: linear-gradient(135deg,#25D366 0%, #128C7E 100%); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 900; width: 100%; margin-top: 8px; font-size: 13px; display: flex; justify-content: center; gap: 5px; align-items: center; transition: all 0.2s; }
@@ -63,32 +71,19 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .theme-indigo { --c-main:#4338CA; --c-dark:#312E81; --c-light:#E0E7FF; --c-lighter:#EEF2FF; --c-border:#A5B4FC; --c-text:#312E81; --c-header:#4338CA; --c-header2:#3730A3; }
 .theme-lime { --c-main:#65A30D; --c-dark:#3F6212; --c-light:#ECFCCB; --c-lighter:#F7FEE7; --c-border:#BEF264; --c-text:#3F6212; --c-header:#65A30D; --c-header2:#4D7C0F; }
 .theme-slate { --c-main:#475569; --c-dark:#1E293B; --c-light:#E2E8F0; --c-lighter:#F1F5F9; --c-border:#94A3B8; --c-text:#334155; --c-header:#475569; --c-header2:#334155; }
-.class-result-card.colored { background: linear-gradient(160deg, var(--c-lighter) 0%, #FFFFFF 40%); border: 3px solid var(--c-border) !important; box-shadow: 0 8px 24px -10px var(--c-main); }
-.class-result-card.colored::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 6px; background: linear-gradient(90deg, var(--c-header), var(--c-header2)); border-radius: 22px 22px 0 0; }
-.class-result-card.colored .card-teacher-name { color: var(--c-dark); font-size: 20px; font-weight: 900; }
-.class-result-card.colored .card-subject-badge { background: linear-gradient(135deg, var(--c-main), var(--c-dark)); color: #fff !important; border-color: var(--c-dark) !important; font-size: 13px; padding: 6px 12px; border-radius: 10px; box-shadow: 0 4px 10px -3px var(--c-main); }
-.class-result-card.colored .card-group-name { background: var(--c-light); color: var(--c-text); border: 1.5px solid var(--c-border); padding: 4px 10px; border-radius: 8px; font-size: 12px; display: inline-block; margin-top: 4px; }
-.class-result-card.colored .card-info-box { background: var(--c-lighter); border: 1.5px dashed var(--c-border); border-radius: 14px; padding: 12px; }
+.class-result-card.colored { background: linear-gradient(160deg, var(--c-lighter) 0%, #FFFFFF 40%); border: 2px solid var(--c-border) !important; box-shadow: 0 4px 12px -5px var(--c-main); }
+.class-result-card.colored::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 5px; background: linear-gradient(90deg, var(--c-header), var(--c-header2)); border-radius: 16px 16px 0 0; }
+.class-result-card.colored .card-teacher-name { color: var(--c-dark); font-weight: 900; }
+.class-result-card.colored .card-subject-badge { background: linear-gradient(135deg, var(--c-main), var(--c-dark)); color: #fff !important; border-color: var(--c-dark) !important; font-size: 13px; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px -3px var(--c-main); }
+.class-result-card.colored .card-group-name { background: var(--c-light); color: var(--c-text); border: 1.5px solid var(--c-border); padding: 2px 8px; border-radius: 6px; font-size: 12px; display: inline-block; margin-top: 4px; }
+.class-result-card.colored .card-info-box { background: var(--c-lighter); border: 1.5px dashed var(--c-border); border-radius: 10px; }
 .class-result-card.colored .card-schedule-time { color: var(--c-dark); font-weight: 900; }
 .class-result-card.colored .card-avail-pill { background: linear-gradient(135deg, var(--c-main), var(--c-dark)); color: #fff; border: none; box-shadow: 0 4px 10px -3px var(--c-main); }
 .class-result-card.colored .card-map-btn { background: var(--c-light); color: var(--c-dark); border: 1.5px solid var(--c-border); }
 .class-result-card.colored .card-map-btn:hover { background: var(--c-border); color: #fff; }
 
-/* إضافة علامة صح لاختيارات المعلم وأي خيارات من نوع الراديو عند التحديد */
-input[type="radio"]:checked + .option-btn::after {
-    content: ' ✔';
-    color: var(--primary-700);
-    font-size: 14px;
-    margin-right: 6px;
-}
-
-/* إضافة علامة صح لاختيارات مكان الدرس عند التحديد */
-.filter-chip.active::after {
-    content: ' ✔';
-    color: var(--primary-700);
-    font-size: 14px;
-    margin-right: 6px;
-}
+input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
+.filter-chip.active::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
 
 </style>
 </head>
@@ -96,7 +91,7 @@ input[type="radio"]:checked + .option-btn::after {
 
 <div class="main-card relative">
     <header class="app-header">
-        <img src="student.png" alt="بوابة الطالب" class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white shadow-lg object-cover bg-white animate-float">
+        <img src="student.png" alt="بوابة الطالب" class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white shadow-lg object-cover bg-white animate-float" onerror="this.src='https://via.placeholder.com/150'">
         <h1 class="app-title">منصة <span class="accent">احجزلى</span></h1>
         <p class="app-subtitle">بوابة الطالب - احجز دروسك بسهولة</p>
     </header>
@@ -105,7 +100,7 @@ input[type="radio"]:checked + .option-btn::after {
         <div id="loginView" class="fade-enter-active">
             <h2 class="text-[20px] font-black text-slate-800 mb-2">👋 أهلاً بك يا بطل!</h2>
             <p class="text-[14px] text-slate-500 mb-6 font-bold">سجل بياناتك مرة واحدة بس عشان نعرضلك المجموعات اللي تناسب صفك.</p>
-            <form onsubmit="handleStudentLogin(event)">
+            <form onsubmit="window.handleStudentLogin(event)">
                 <label class="field-label">اسمك ايه؟ <span class="text-rose-500">*</span></label>
                 <input type="text" id="studentName" required placeholder="الاسم الثلاثي" class="input-base">
                 <label class="field-label">رقم التليفون (واتساب) <span class="text-rose-500">*</span></label>
@@ -116,7 +111,7 @@ input[type="radio"]:checked + .option-btn::after {
                     <label><input type="radio" name="studentGender" value="girl" class="hidden"><div class="option-btn"><span class="text-2xl">👧</span><span>بنت</span></div></label>
                 </div>
                 <label class="field-label">أنت في أي مرحلة؟ <span class="text-rose-500">*</span></label>
-                <select id="stageSelect" class="input-base" required onchange="updateGrades()">
+                <select id="stageSelect" class="input-base" required onchange="window.updateGrades()">
                     <option value="" disabled selected>اختر المرحلة...</option>
                     <option value="kg">رياض الأطفال (KG)</option>
                     <option value="primary">المرحلة الابتدائية</option>
@@ -138,8 +133,8 @@ input[type="radio"]:checked + .option-btn::after {
                     <p class="text-sm font-bold text-emerald-700 mt-1 truncate" id="displayStudentGrade">--</p>
                 </div>
                 <div class="flex gap-1.5 flex-shrink-0">
-                    <button onclick="editStudentData()" class="bg-white text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">✏️ تعديل</button>
-                    <button onclick="clearAllData()" class="bg-white text-rose-600 border border-rose-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">🗑️ مسح</button>
+                    <button onclick="window.editStudentData()" class="bg-white text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">✏️ تعديل</button>
+                    <button onclick="window.clearAllData()" class="bg-white text-rose-600 border border-rose-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">🗑️ مسح</button>
                 </div>
             </div>
 
@@ -147,23 +142,23 @@ input[type="radio"]:checked + .option-btn::after {
             
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
                 <label class="field-label !text-sm">المادة الدراسية</label>
-                <select id="filterSubject" class="input-base !py-2.5 !text-sm mb-3" onchange="renderClasses()">
+                <select id="filterSubject" class="input-base !py-2.5 !text-sm mb-3" onchange="window.saveMapState(); window.renderClasses();">
                     <option value="all">📚 كل المواد</option>
                 </select>
 
                 <label class="field-label !text-sm">المعلم (مستر / مس)</label>
                 <div class="flex gap-2 mb-3">
-                    <label class="flex-1"><input type="radio" name="filterTeacher" value="all" checked class="hidden" onchange="renderClasses()"><div class="option-btn !py-2 !text-xs !flex-row">الكل</div></label>
-                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مستر" class="hidden" onchange="renderClasses()"><div class="option-btn !py-2 !text-xs !flex-row">👨‍🏫 مستر</div></label>
-                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="renderClasses()"><div class="option-btn !py-2 !text-xs !flex-row">👩‍🏫 مس</div></label>
+                    <label class="flex-1"><input type="radio" name="filterTeacher" value="all" checked class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">الكل</div></label>
+                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مستر" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👨‍🏫 مستر</div></label>
+                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👩‍🏫 مس</div></label>
                 </div>
 
                 <label class="field-label !text-sm">مكان الدرس</label>
                 <div class="filter-bar !mb-0">
-                    <div class="filter-chip active" onclick="setPlaceFilter('all', this)">🌍 أي مكان</div>
-                    <div class="filter-chip" onclick="setPlaceFilter('center', this)">🏫 سنتر</div>
-                    <div class="filter-chip" onclick="setPlaceFilter('teacher_home', this)">🏡 بيت المستر</div>
-                    <div class="filter-chip" onclick="setPlaceFilter('student_home', this)">🚗 في منزلي</div>
+                    <div class="filter-chip active" data-value="all" onclick="window.setPlaceFilter('all', this)">🌍 أي مكان</div>
+                    <div class="filter-chip" data-value="center" onclick="window.setPlaceFilter('center', this)">🏫 سنتر</div>
+                    <div class="filter-chip" data-value="teacher_home" onclick="window.setPlaceFilter('teacher_home', this)">🏡 بيت المستر</div>
+                    <div class="filter-chip" data-value="student_home" onclick="window.setPlaceFilter('student_home', this)">🚗 في منزلي</div>
                 </div>
             </div>
 
@@ -171,16 +166,16 @@ input[type="radio"]:checked + .option-btn::after {
                 <h3 class="font-black text-slate-800 text-[15px] mb-3 flex items-center gap-2"><span>📍</span> حدد نطاق البحث على الخريطة</h3>
                 <div class="flex flex-col gap-3">
                     <div class="flex justify-between items-center text-sm font-bold text-slate-600"><span>مسافة البحث:</span><span id="searchRadiusDisplay" class="text-emerald-600 font-black">1 كم</span></div>
-                    <input type="range" id="searchRadiusSlider" min="1" max="50" step="1" value="1" class="w-full accent-emerald-500" oninput="updateSearchRadius(this.value)">
+                    <input type="range" id="searchRadiusSlider" min="1" max="50" step="1" value="1" class="w-full accent-emerald-500" oninput="window.updateSearchRadius(this.value)">
                     <div class="grid grid-cols-4 gap-2">
-                        <button type="button" onclick="setQuickRadius(1, this)" class="quick-radius-btn bg-emerald-600 text-white font-black py-2 rounded-lg text-[11px] shadow-sm active:scale-95 transition-all" data-radius="1">1 كم</button>
-                        <button type="button" onclick="setQuickRadius(3, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="3">3 كم</button>
-                        <button type="button" onclick="setQuickRadius(5, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="5">5 كم</button>
-                        <button type="button" onclick="setQuickRadius(10, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="10">10 كم</button>
+                        <button type="button" onclick="window.setQuickRadius(1, this)" class="quick-radius-btn bg-emerald-600 text-white font-black py-2 rounded-lg text-[11px] shadow-sm active:scale-95 transition-all" data-radius="1">1 كم</button>
+                        <button type="button" onclick="window.setQuickRadius(3, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="3">3 كم</button>
+                        <button type="button" onclick="window.setQuickRadius(5, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="5">5 كم</button>
+                        <button type="button" onclick="window.setQuickRadius(10, this)" class="quick-radius-btn bg-slate-100 text-slate-700 border border-slate-300 font-black py-2 rounded-lg text-[11px] active:scale-95 transition-all" data-radius="10">10 كم</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button type="button" onclick="requestGPSLocation()" class="bg-slate-100 text-slate-700 border border-slate-300 font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 active:scale-95 transition-all"><span>🎯</span> تحديد موقعي</button>
-                        <button type="button" onclick="applyMapSearch()" class="bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 shadow-md hover:bg-emerald-700 active:scale-95 transition-all"><span>🔍</span> بحث في النطاق</button>
+                        <button type="button" onclick="window.requestGPSLocation()" class="bg-slate-100 text-slate-700 border border-slate-300 font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 active:scale-95 transition-all"><span>🎯</span> تحديد موقعي</button>
+                        <button type="button" onclick="window.applyMapSearch()" class="bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex justify-center items-center gap-1 shadow-md hover:bg-emerald-700 active:scale-95 transition-all"><span>🔍</span> بحث في النطاق</button>
                     </div>
                 </div>
             </div>
@@ -193,12 +188,14 @@ input[type="radio"]:checked + .option-btn::after {
                 <span class="bg-emerald-100 text-emerald-800 text-sm font-black px-3 py-0.5 rounded-md border border-emerald-200 mr-auto" id="resultCount">0</span>
             </div>
 
-            <div id="classesContainer" class="space-y-5 pb-10"></div>
+            <div id="classesContainer" class="space-y-4 pb-10"></div>
         </div>
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { getAllGroups } from './firebase-config.js';
+
     const EDUCATION_STRUCTURE = {
         kg: { grades: ['KG 1', 'KG 2'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','لغة فرنسية'] },
         primary: { grades: ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية'] },
@@ -207,54 +204,102 @@ input[type="radio"]:checked + .option-btn::after {
     };
 
     let studentProfile = JSON.parse(localStorage.getItem('current_student_profile')) || null;
-    let classesDB = []; // البيانات ستكون فارغة لعدم وجود Firebase
-    let currentPlaceFilter = 'all';
+    window.classesDB = []; 
+    
+    // استرجاع الإعدادات المحفوظة إن وجدت للحفاظ عليها عند التحديث
+    let savedMapState = JSON.parse(sessionStorage.getItem('student_map_state')) || {};
+    let currentPlaceFilter = savedMapState.place || 'all';
+    let studentSearchRadiusKm = savedMapState.radius || 1.0;
+    let studentLat = savedMapState.lat || null; 
+    let studentLng = savedMapState.lng || null; 
+    let isGpsActive = savedMapState.isGpsActive || false;
+    let savedSubject = savedMapState.subject || 'all';
+    let savedTeacher = savedMapState.teacher || 'all';
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibW9rc2htb2tzaCIsImEiOiJjbXRyZXF5cXkwMWRhMnlzaDI0OXJiNXQ1In0.X30BmuAkJ69jOlicXZK53A';
-    let studentLat = null; let studentLng = null; let isGpsActive = false; let studentSearchRadiusKm = 1.0;
     let map = null; let studentSearchMarker = null; let teacherMarkersList = [];
 
-    window.onload = function() {
-        if (studentProfile) { setupStudentDashboard(); showView('searchView'); } 
-        else { showView('loginView'); }
+    window.saveMapState = function() {
+        const subject = document.getElementById('filterSubject') ? document.getElementById('filterSubject').value : 'all';
+        const teacher = document.querySelector('input[name="filterTeacher"]:checked') ? document.querySelector('input[name="filterTeacher"]:checked').value : 'all';
+        sessionStorage.setItem('student_map_state', JSON.stringify({
+            lat: studentLat, lng: studentLng, radius: studentSearchRadiusKm, place: currentPlaceFilter, isGpsActive: isGpsActive, subject: subject, teacher: teacher
+        }));
     };
 
-    function showView(viewId) {
+    async function initApp() {
+        if (studentProfile) { 
+            window.setupStudentDashboard(); 
+            window.showView('searchView'); 
+            await window.fetchClassesFromFirebase();
+        } 
+        else { window.showView('loginView'); }
+    }
+
+    window.fetchClassesFromFirebase = async function() {
+        try {
+            const allGroups = await getAllGroups();
+            window.classesDB = allGroups.filter(g => g.isActive !== false);
+            window.renderClasses();
+        } catch (error) {
+            console.error("خطأ في جلب المجموعات من السيرفر:", error);
+        }
+    };
+
+    window.showView = function(viewId) {
         document.querySelectorAll('.fade-enter-active, .fade-enter').forEach(el => { el.classList.remove('fade-enter-active'); el.classList.add('fade-enter'); });
         document.getElementById(viewId).classList.remove('fade-enter'); document.getElementById(viewId).classList.add('fade-enter-active');
         if (viewId === 'searchView') {
             setTimeout(() => {
-                initMap();
+                window.initMap();
                 if (map) map.resize();
-                isGpsActive = true;
-                updateSearchCircle();
-                autoDetectStudentLocation();
-                renderClasses();
+                // تفعيل التحديث التلقائي للموقع فقط إذا لم يكن هناك موقع محفوظ مسبقاً
+                if(!studentLat) {
+                   window.autoDetectStudentLocation();
+                } else {
+                   window.updateSearchCircle();
+                   window.renderClasses();
+                }
             }, 200);
         }
-    }
+    };
 
-    function initMap() {
+    window.initMap = function() {
         if (map) return;
         let defaultLat = 31.0409, defaultLng = 31.3785;
-        map = new mapboxgl.Map({ container: 'studentMap', style: 'mapbox://styles/mapbox/streets-v12', center: [defaultLng, defaultLat], zoom: 12, attributionControl: false });
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
-        const studentEl = document.createElement('div'); studentEl.className = 'mb-marker-student';
-        studentSearchMarker = new mapboxgl.Marker({ element: studentEl, draggable: true, anchor: 'center' }).setLngLat([defaultLng, defaultLat]).addTo(map);
-        studentLat = defaultLat; studentLng = defaultLng;
-        studentSearchMarker.on('dragend', () => { const lngLat = studentSearchMarker.getLngLat(); studentLat = lngLat.lat; studentLng = lngLat.lng; updateSearchCircle(); });
-        map.on('click', (e) => { studentLat = e.lngLat.lat; studentLng = e.lngLat.lng; studentSearchMarker.setLngLat([studentLng, studentLat]); updateSearchCircle(); });
-        map.on('load', () => { addSearchCircleSource(); });
-    }
+        let startLat = studentLat || defaultLat;
+        let startLng = studentLng || defaultLng;
 
-    function addSearchCircleSource() {
+        map = new mapboxgl.Map({ container: 'studentMap', style: 'mapbox://styles/mapbox/streets-v12', center: [startLng, startLat], zoom: 12, attributionControl: false });
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
+        
+        const studentEl = document.createElement('div'); studentEl.className = 'mb-marker-student';
+        studentSearchMarker = new mapboxgl.Marker({ element: studentEl, draggable: true, anchor: 'center' }).setLngLat([startLng, startLat]).addTo(map);
+        
+        studentLat = startLat; studentLng = startLng;
+        
+        studentSearchMarker.on('dragend', () => { 
+            const lngLat = studentSearchMarker.getLngLat(); studentLat = lngLat.lat; studentLng = lngLat.lng; 
+            window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+        });
+        
+        map.on('click', (e) => { 
+            studentLat = e.lngLat.lat; studentLng = e.lngLat.lng; 
+            studentSearchMarker.setLngLat([studentLng, studentLat]); 
+            window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+        });
+        
+        map.on('load', () => { window.addSearchCircleSource(); });
+    };
+
+    window.addSearchCircleSource = function() {
         if (!map || map.getSource('search-circle')) return;
-        map.addSource('search-circle', { type: 'geojson', data: createSearchCircleGeoJSON(studentLat || 31.0409, studentLng || 31.3785, studentSearchRadiusKm * 1000) });
+        map.addSource('search-circle', { type: 'geojson', data: window.createSearchCircleGeoJSON(studentLat || 31.0409, studentLng || 31.3785, studentSearchRadiusKm * 1000) });
         map.addLayer({ id: 'search-circle-fill', type: 'fill', source: 'search-circle', paint: { 'fill-color': '#10B981', 'fill-opacity': 0.15 } });
         map.addLayer({ id: 'search-circle-stroke', type: 'line', source: 'search-circle', paint: { 'line-color': '#10B981', 'line-width': 2, 'line-dasharray': [2, 2] } });
-    }
+    };
 
-    function createSearchCircleGeoJSON(lat, lng, radiusMeters, steps = 64) {
+    window.createSearchCircleGeoJSON = function(lat, lng, radiusMeters, steps = 64) {
         const coords = []; const earthRadius = 6378137; const latRad = lat * Math.PI / 180;
         for (let i = 0; i < steps; i++) {
             const angle = (i / steps) * 2 * Math.PI; const dx = radiusMeters * Math.cos(angle); const dy = radiusMeters * Math.sin(angle);
@@ -263,15 +308,15 @@ input[type="radio"]:checked + .option-btn::after {
         }
         coords.push(coords[0]);
         return { type: 'Feature', geometry: { type: 'Polygon', coordinates: [coords] } };
-    }
+    };
 
-    function updateSearchCircle() {
+    window.updateSearchCircle = function() {
         if (!map || !studentLat || !studentLng) return;
         const source = map.getSource('search-circle');
-        if (source) source.setData(createSearchCircleGeoJSON(studentLat, studentLng, studentSearchRadiusKm * 1000));
-    }
+        if (source) source.setData(window.createSearchCircleGeoJSON(studentLat, studentLng, studentSearchRadiusKm * 1000));
+    };
 
-    function autoDetectStudentLocation() {
+    window.autoDetectStudentLocation = function() {
         if (!navigator.geolocation) return;
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -279,52 +324,56 @@ input[type="radio"]:checked + .option-btn::after {
                 if (map && studentSearchMarker) {
                     studentSearchMarker.setLngLat([lng, lat]); studentLat = lat; studentLng = lng;
                     map.flyTo({ center: [lng, lat], zoom: 14, speed: 1.5 });
-                    updateSearchCircle(); isGpsActive = true; renderClasses();
+                    isGpsActive = true; window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
                 }
             },
-            () => { isGpsActive = true; renderClasses(); },
+            () => { isGpsActive = true; window.renderClasses(); },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
         );
-    }
+    };
 
-    function updateSearchRadius(km) {
+    window.updateSearchRadius = function(km) {
         studentSearchRadiusKm = parseFloat(km);
         document.getElementById('searchRadiusDisplay').innerText = studentSearchRadiusKm + ' كم';
-        updateSearchCircle();
+        window.updateSearchCircle();
         document.querySelectorAll('.quick-radius-btn').forEach(b => {
             if (parseFloat(b.dataset.radius) === studentSearchRadiusKm) { b.classList.add('bg-emerald-600', 'text-white'); b.classList.remove('bg-slate-100', 'text-slate-700', 'border'); } 
             else { b.classList.remove('bg-emerald-600', 'text-white'); b.classList.add('bg-slate-100', 'text-slate-700', 'border'); }
         });
-    }
+        window.saveMapState();
+        window.renderClasses();
+    };
 
-    function setQuickRadius(km, btn) { document.getElementById('searchRadiusSlider').value = km; updateSearchRadius(km); isGpsActive = true; renderClasses(); }
+    window.setQuickRadius = function(km, btn) { document.getElementById('searchRadiusSlider').value = km; window.updateSearchRadius(km); isGpsActive = true; window.renderClasses(); };
 
-    function requestGPSLocation() {
+    window.requestGPSLocation = function() {
         if (!navigator.geolocation) { alert('تحديد الموقع غير مدعوم.'); return; }
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const lat = position.coords.latitude; const lng = position.coords.longitude;
                 if (map && studentSearchMarker) {
                     studentSearchMarker.setLngLat([lng, lat]); studentLat = lat; studentLng = lng;
-                    map.flyTo({ center: [lng, lat], zoom: 14, speed: 1.5 }); updateSearchCircle();
+                    isGpsActive = true;
+                    map.flyTo({ center: [lng, lat], zoom: 14, speed: 1.5 }); 
+                    window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
                 }
             },
             () => { alert('فشل تحديد الموقع.'); },
             { enableHighAccuracy: true }
         );
-    }
+    };
 
-    function applyMapSearch() { isGpsActive = true; updateSearchCircle(); renderClasses(); document.getElementById('classesContainer').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    window.applyMapSearch = function() { isGpsActive = true; window.updateSearchCircle(); window.saveMapState(); window.renderClasses(); document.getElementById('classesContainer').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 
-    function updateGrades() {
+    window.updateGrades = function() {
         const stage = document.getElementById('stageSelect').value;
         const gradeSelect = document.getElementById('gradeSelect');
         gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف الدراسي...</option>';
         if (stage && EDUCATION_STRUCTURE[stage]) { EDUCATION_STRUCTURE[stage].grades.forEach(g => { gradeSelect.innerHTML += `<option value="${g}">${g}</option>`; }); gradeSelect.disabled = false; } 
         else { gradeSelect.disabled = true; }
-    }
+    };
 
-    function handleStudentLogin(e) {
+    window.handleStudentLogin = function(e) {
         e.preventDefault();
         const name = document.getElementById('studentName').value.trim();
         const phone = document.getElementById('studentPhone').value.trim();
@@ -334,55 +383,82 @@ input[type="radio"]:checked + .option-btn::after {
         if (!name || !phone || !grade) return alert('يرجى إكمال جميع البيانات.');
         studentProfile = { name, phone, gender, stage, grade };
         localStorage.setItem('current_student_profile', JSON.stringify(studentProfile));
-        setupStudentDashboard(); showView('searchView');
-    }
+        window.setupStudentDashboard(); window.showView('searchView');
+        window.fetchClassesFromFirebase();
+    };
 
-    function editStudentData() {
-        if (!studentProfile) { showView('loginView'); return; }
+    window.editStudentData = function() {
+        if (!studentProfile) { window.showView('loginView'); return; }
         document.getElementById('studentName').value = studentProfile.name || '';
         document.getElementById('studentPhone').value = studentProfile.phone || '';
         document.getElementById('stageSelect').value = studentProfile.stage || '';
-        updateGrades();
+        window.updateGrades();
         setTimeout(() => { document.getElementById('gradeSelect').value = studentProfile.grade || ''; }, 50);
         document.querySelector(`input[name="studentGender"][value="${studentProfile.gender || 'boy'}"]`).checked = true;
-        isGpsActive = false; showView('loginView');
-    }
+        isGpsActive = false; window.showView('loginView');
+    };
 
-    function clearAllData() {
+    window.clearAllData = function() {
         if (confirm('⚠️ سيتم مسح بياناتك. متأكد؟')) {
-            studentProfile = null; isGpsActive = false; localStorage.removeItem('current_student_profile');
+            studentProfile = null; isGpsActive = false; localStorage.removeItem('current_student_profile'); sessionStorage.removeItem('student_map_state');
             document.getElementById('studentName').value = ''; document.getElementById('studentPhone').value = ''; document.getElementById('stageSelect').value = '';
             document.getElementById('gradeSelect').innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>'; document.getElementById('gradeSelect').disabled = true;
             document.querySelector('input[name="studentGender"][value="boy"]').checked = true;
-            showView('loginView');
+            window.showView('loginView');
         }
-    }
+    };
 
-    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-        var R = 6371; var dLat = deg2rad(lat2 - lat1); var dLon = deg2rad(lon2 - lon1); 
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+    window.getDistanceFromLatLonInKm = function(lat1, lon1, lat2, lon2) {
+        var R = 6371; var dLat = window.deg2rad(lat2 - lat1); var dLon = window.deg2rad(lon2 - lon1); 
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(window.deg2rad(lat1)) * Math.cos(window.deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); return R * c;
-    }
-    function deg2rad(deg) { return deg * (Math.PI/180); }
+    };
+    window.deg2rad = function(deg) { return deg * (Math.PI/180); };
 
-    function setupStudentDashboard() {
+    window.setupStudentDashboard = function() {
         if (!studentProfile) return;
         const genderEmoji = studentProfile.gender === 'boy' ? '👦' : '👧';
         document.getElementById('displayStudentName').innerText = `${genderEmoji} ${studentProfile.name}`;
         document.getElementById('displayStudentGrade').innerText = `🎯 ${studentProfile.grade}`;
+        
+        // Setup Subjects Dropdown
         const subjectSelect = document.getElementById('filterSubject');
-        const currentSubject = subjectSelect.value;
         subjectSelect.innerHTML = '<option value="all">📚 كل المواد</option>';
         if (EDUCATION_STRUCTURE[studentProfile.stage]) { EDUCATION_STRUCTURE[studentProfile.stage].subjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
         const customSubjects = new Set();
-        classesDB.forEach(c => { if (c.grade === studentProfile.grade && (!EDUCATION_STRUCTURE[studentProfile.stage] || !EDUCATION_STRUCTURE[studentProfile.stage].subjects.includes(c.subject))) { customSubjects.add(c.subject); } });
+        window.classesDB.forEach(c => { if (c.grade === studentProfile.grade && (!EDUCATION_STRUCTURE[studentProfile.stage] || !EDUCATION_STRUCTURE[studentProfile.stage].subjects.includes(c.subject))) { customSubjects.add(c.subject); } });
         customSubjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">✏️ ${sub}</option>`; });
-        if (currentSubject) subjectSelect.value = currentSubject;
-    }
+        
+        // Restore Saved Filters
+        if (savedSubject) subjectSelect.value = savedSubject;
+        if (savedTeacher) {
+            let tRadio = document.querySelector(`input[name="filterTeacher"][value="${savedTeacher}"]`);
+            if (tRadio) tRadio.checked = true;
+        }
 
-    function setPlaceFilter(val, element) { currentPlaceFilter = val; document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active')); element.classList.add('active'); renderClasses(); }
+        // Restore Map Filters Visuals
+        document.getElementById('searchRadiusSlider').value = studentSearchRadiusKm;
+        document.getElementById('searchRadiusDisplay').innerText = studentSearchRadiusKm + ' كم';
+        document.querySelectorAll('.quick-radius-btn').forEach(b => {
+            if (parseFloat(b.dataset.radius) === studentSearchRadiusKm) { b.classList.add('bg-emerald-600', 'text-white'); b.classList.remove('bg-slate-100', 'text-slate-700', 'border'); } 
+            else { b.classList.remove('bg-emerald-600', 'text-white'); b.classList.add('bg-slate-100', 'text-slate-700', 'border'); }
+        });
+        
+        document.querySelectorAll('.filter-chip').forEach(el => {
+            el.classList.remove('active');
+            if (el.dataset.value === currentPlaceFilter) { el.classList.add('active'); }
+        });
+    };
 
-    function updateMapMarkers(filteredClasses) {
+    window.setPlaceFilter = function(val, element) { 
+        currentPlaceFilter = val; 
+        document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active')); 
+        element.classList.add('active'); 
+        window.saveMapState(); 
+        window.renderClasses(); 
+    };
+
+    window.updateMapMarkers = function(filteredClasses) {
         if (!map) return;
         teacherMarkersList.forEach(m => m.remove()); teacherMarkersList = [];
         const bounds = new mapboxgl.LngLatBounds(); let hasValidMarkers = false;
@@ -403,7 +479,7 @@ input[type="radio"]:checked + .option-btn::after {
             const popupHtml = `<div style="width: 200px; padding-bottom: 4px;">
                 <div style="font-size: 14px; color: #1E293B; margin-bottom: 4px; line-height: 1.3; font-weight: 900;">${cls.teacherTitle} ${cls.teacherName}</div>
                 <div style="font-size: 12px; color: #64748B; margin-bottom: 4px; font-weight: 800;">📚 ${cls.subject}</div>
-                <div style="font-size: 11px; color: #64748B; margin-bottom: 8px; font-weight: 800;">⏰ ${dateText} | ${formatTime(cls.startTime)}</div>
+                <div style="font-size: 11px; color: #64748B; margin-bottom: 8px; font-weight: 800;">⏰ ${dateText} | ${window.formatTime(cls.startTime)}</div>
                 <div style="display: flex; justify-content: space-between; align-items: center; background: #F1F5F9; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px;">
                     <span style="font-size: 11px; color: #475569; font-weight: 900;">المتاح:</span>
                     <span style="font-size: 13px; color: ${isFull ? '#E11D48' : '#059669'}; font-weight: 900;">${isFull ? 'مكتملة' : remaining + ' مكان'}</span>
@@ -416,14 +492,14 @@ input[type="radio"]:checked + .option-btn::after {
         });
 
         if (hasValidMarkers) { map.fitBounds(bounds, { padding: { top: 50, bottom: 50, left: 50, right: 50 }, maxZoom: 15, duration: 800 }); }
-    }
+    };
 
     window.focusOnMap = function(classId, lat, lng) {
         document.getElementById('studentMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
         if (map) { map.flyTo({ center: [lng, lat], zoom: 16, speed: 1.5 }); }
-    }
+    };
 
-    function getSubjectTheme(subject) {
+    window.getSubjectTheme = function(subject) {
         if (!subject) return 'theme-slate';
         const s = subject.toLowerCase();
         if (s.includes('عربية') || s.includes('تاريخ') || s.includes('دراسات') || s.includes('فلسفة')) return 'theme-royal';
@@ -433,14 +509,14 @@ input[type="radio"]:checked + .option-btn::after {
         if (s.includes('فرنسية')) return 'theme-cyan';
         if (s.includes('فيزياء') || s.includes('كيمياء')) return 'theme-rose';
         return 'theme-slate';
-    }
+    };
 
-    function renderClasses() {
+    window.renderClasses = function() {
         const container = document.getElementById('classesContainer'); container.innerHTML = '';
         const filterSubject = document.getElementById('filterSubject').value;
         const filterTeacher = document.querySelector('input[name="filterTeacher"]:checked').value;
 
-        let filteredClasses = classesDB.filter(c => {
+        let filteredClasses = window.classesDB.filter(c => {
             if (c.isActive === false) return false;
             if (c.grade !== studentProfile.grade) return false;
             if (c.gender === 'boys' && studentProfile.gender === 'girl') return false;
@@ -452,13 +528,13 @@ input[type="radio"]:checked + .option-btn::after {
         });
 
         if (isGpsActive && studentLat && studentLng) {
-            filteredClasses.forEach(c => { if (c.lat && c.lng) { c.calculatedDistance = getDistanceFromLatLonInKm(studentLat, studentLng, c.lat, c.lng); } else { c.calculatedDistance = 99999; } });
+            filteredClasses.forEach(c => { if (c.lat && c.lng) { c.calculatedDistance = window.getDistanceFromLatLonInKm(studentLat, studentLng, c.lat, c.lng); } else { c.calculatedDistance = 99999; } });
             filteredClasses = filteredClasses.filter(c => c.calculatedDistance <= studentSearchRadiusKm);
             filteredClasses.sort((a, b) => a.calculatedDistance - b.calculatedDistance);
         } else { filteredClasses.reverse(); }
 
         document.getElementById('resultCount').innerText = filteredClasses.length;
-        updateMapMarkers(filteredClasses);
+        window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
             container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
@@ -467,60 +543,63 @@ input[type="radio"]:checked + .option-btn::after {
         filteredClasses.forEach((cls, index) => {
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity;
-            const themeClass = getSubjectTheme(cls.subject);
-            let typeIcon = '🏫'; let typeText = 'سنتر'; if(cls.type === 'teacher_home') { typeIcon = '🏡'; typeText = 'بيت المستر'; } if(cls.type === 'student_home') { typeIcon = '🚗'; typeText = 'في منزلك'; }
-            let genderIcon = '👫'; let genderText = 'مختلط'; if(cls.gender === 'boys') { genderIcon = '👦'; genderText = 'ولاد فقط'; } if(cls.gender === 'girls') { genderIcon = '👧'; genderText = 'بنات فقط'; }
+            const themeClass = window.getSubjectTheme(cls.subject);
+            let typeIcon = '🏫'; let typeText = 'سنتر'; if(cls.type === 'teacher_home') { typeIcon = '🏡'; typeText = 'بيت'; } if(cls.type === 'student_home') { typeIcon = '🚗'; typeText = 'منزلك'; }
+            let genderIcon = '👫'; let genderText = 'مختلط'; if(cls.gender === 'boys') { genderIcon = '👦'; genderText = 'ولاد'; } if(cls.gender === 'girls') { genderIcon = '👧'; genderText = 'بنات'; }
             let dateText = cls.apptType === 'recurring' ? `🔁 كل ${cls.daysNames.join(' ')}` : `📅 يوم ${cls.date}`;
             
             let distanceHtml = '';
-            if (isGpsActive && cls.calculatedDistance !== 99999) { distanceHtml = `<div class="absolute -top-3 left-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md z-20">📍 ${cls.calculatedDistance.toFixed(2)} كم</div>`; }
+            if (isGpsActive && cls.calculatedDistance !== 99999) { distanceHtml = `<div class="absolute -top-2 left-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-20">📍 ${cls.calculatedDistance.toFixed(2)} كم</div>`; }
 
             const card = document.createElement('div');
-            card.className = `class-result-card colored ${themeClass} p-5 shadow-sm hover:shadow-lg relative mt-4 rounded-3xl`;
+            card.className = `class-result-card colored ${themeClass} p-3 shadow-sm hover:shadow-md relative mt-3 rounded-2xl`;
             
             card.innerHTML = `
                 ${distanceHtml}
-                <div class="flex justify-between items-start mb-4 relative z-10 pt-2">
-                    <div class="flex-1 pr-2">
-                        <h4 class="card-teacher-name leading-tight mb-2">${cls.teacherTitle} ${cls.teacherName}</h4>
-                        <span class="card-group-name">👥 ${cls.groupName}</span>
+                <div class="flex justify-between items-start mb-2 relative z-10">
+                    <div class="flex-1 pr-1">
+                        <h4 class="card-teacher-name text-[14px] leading-tight mb-1">${cls.teacherTitle} ${cls.teacherName}</h4>
+                        <span class="card-group-name !text-[10px] !padding-1">👥 ${cls.groupName}</span>
                     </div>
-                    <div class="flex items-stretch gap-2 h-11">
-                        <span class="card-subject-badge flex items-center justify-center font-black">📚 ${cls.subject}</span>
-                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-2 rounded-xl">🗺️</button>` : ''}
+                    <div class="flex items-stretch gap-1">
+                        <span class="card-subject-badge flex items-center justify-center font-black !text-[10px] !px-2 !py-1">📚 ${cls.subject}</span>
+                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️</button>` : ''}
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mb-4 relative z-10">
-                    <div class="flex items-center gap-2 bg-white border-2 border-slate-200 px-3 py-2 rounded-xl text-[12px] font-black"><span class="text-lg">${typeIcon}</span><span>${typeText}</span></div>
-                    <div class="flex items-center gap-2 bg-white border-2 border-slate-200 px-3 py-2 rounded-xl text-[12px] font-black"><span class="text-lg">${genderIcon}</span><span>${genderText}</span></div>
+                <div class="grid grid-cols-2 gap-1 mb-2 relative z-10">
+                    <div class="flex items-center gap-1 bg-white border border-slate-200 px-2 py-1 rounded-lg text-[10px] font-black"><span class="text-sm">${typeIcon}</span><span>${typeText}</span></div>
+                    <div class="flex items-center gap-1 bg-white border border-slate-200 px-2 py-1 rounded-lg text-[10px] font-black"><span class="text-sm">${genderIcon}</span><span>${genderText}</span></div>
                 </div>
-                <div class="card-info-box mb-4 space-y-3 relative z-10">
-                    <div class="flex items-start gap-2 text-[13px] font-bold text-slate-800"><span class="text-base pt-0.5">📍</span><span>${cls.location}</span></div>
-                    <div class="flex items-start gap-2 text-[13px] font-bold text-slate-800"><span class="text-base pt-0.5">⏰</span><span>${dateText} | ${formatTime(cls.startTime)}</span></div>
+                <div class="card-info-box !p-2 mb-2 space-y-1.5 relative z-10">
+                    <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">📍</span><span class="truncate">${cls.location}</span></div>
+                    <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">⏰</span><span>${dateText} | ${window.formatTime(cls.startTime)}</span></div>
                 </div>
-                <div class="flex items-stretch gap-2 relative z-10">
-                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !rounded-2xl ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 ${isFull ? 'مكتملة' : 'احجز'}</button>
-                    ${!isFull ? `<div class="card-avail-pill font-black px-4 rounded-2xl flex flex-col items-center justify-center"><span class="text-[10px]">متاح</span><span class="text-[18px]">${cls.maxCapacity - totalBooked}</span></div>` : ''}
+                <div class="flex items-stretch gap-1.5 relative z-10">
+                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[13px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 ${isFull ? 'مكتملة' : 'احجز'}</button>
+                    ${!isFull ? `<div class="card-avail-pill font-black px-2 rounded-xl flex flex-col items-center justify-center min-w-[50px]"><span class="text-[8px]">متاح</span><span class="text-[14px]">${cls.maxCapacity - totalBooked}</span></div>` : ''}
                 </div>
             `;
             container.appendChild(card);
         });
-    }
+    };
 
     window.bookClass = function(classId) {
-        const cls = classesDB.find(c => c.id === classId);
+        const cls = window.classesDB.find(c => c.id === classId);
         if(!cls) return;
         const msg = `السلام عليكم ${cls.teacherTitle} ${cls.teacherName}،\nأنا الطالب: ${studentProfile.name}\nحابب احجز معاك في مجموعة ( ${cls.groupName} ) لمادة ${cls.subject}.`;
         const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`;
         window.open(whatsappUrl, '_blank');
-    }
+    };
 
-    function formatTime(time) {
+    window.formatTime = function(time) {
         if(!time) return '';
         const [h, m] = time.split(':');
         const hour = parseInt(h);
         return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'م' : 'ص'}`;
-    }
+    };
+
+    // تشغيل مباشر
+    initApp();
 </script>
 </body>
 </html>
