@@ -150,7 +150,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 <div class="flex gap-2 mb-3">
                     <label class="flex-1"><input type="radio" name="filterTeacher" value="all" checked class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">الكل</div></label>
                     <label class="flex-1"><input type="radio" name="filterTeacher" value="مستر" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👨‍🏫 مستر</div></label>
-                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👩‍🏫 مس</div></label>
+                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👩‍‍🏫 مس</div></label>
                 </div>
 
                 <label class="field-label !text-sm">مكان الدرس</label>
@@ -206,7 +206,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
     let studentProfile = JSON.parse(localStorage.getItem('current_student_profile')) || null;
     window.classesDB = []; 
     
-    // استرجاع الإعدادات المحفوظة إن وجدت للحفاظ عليها عند التحديث
     let savedMapState = JSON.parse(sessionStorage.getItem('student_map_state')) || {};
     let currentPlaceFilter = savedMapState.place || 'all';
     let studentSearchRadiusKm = savedMapState.radius || 1.0;
@@ -253,7 +252,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             setTimeout(() => {
                 window.initMap();
                 if (map) map.resize();
-                // تفعيل التحديث التلقائي للموقع فقط إذا لم يكن هناك موقع محفوظ مسبقاً
                 if(!studentLat) {
                    window.autoDetectStudentLocation();
                 } else {
@@ -421,7 +419,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         document.getElementById('displayStudentName').innerText = `${genderEmoji} ${studentProfile.name}`;
         document.getElementById('displayStudentGrade').innerText = `🎯 ${studentProfile.grade}`;
         
-        // Setup Subjects Dropdown
         const subjectSelect = document.getElementById('filterSubject');
         subjectSelect.innerHTML = '<option value="all">📚 كل المواد</option>';
         if (EDUCATION_STRUCTURE[studentProfile.stage]) { EDUCATION_STRUCTURE[studentProfile.stage].subjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
@@ -429,14 +426,12 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.classesDB.forEach(c => { if (c.grade === studentProfile.grade && (!EDUCATION_STRUCTURE[studentProfile.stage] || !EDUCATION_STRUCTURE[studentProfile.stage].subjects.includes(c.subject))) { customSubjects.add(c.subject); } });
         customSubjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">✏️ ${sub}</option>`; });
         
-        // Restore Saved Filters
         if (savedSubject) subjectSelect.value = savedSubject;
         if (savedTeacher) {
             let tRadio = document.querySelector(`input[name="filterTeacher"][value="${savedTeacher}"]`);
             if (tRadio) tRadio.checked = true;
         }
 
-        // Restore Map Filters Visuals
         document.getElementById('searchRadiusSlider').value = studentSearchRadiusKm;
         document.getElementById('searchRadiusDisplay').innerText = studentSearchRadiusKm + ' كم';
         document.querySelectorAll('.quick-radius-btn').forEach(b => {
@@ -471,12 +466,16 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             if (cls.type === 'student_home') { emoji = '🚗'; typeClass = 'type-student_home'; }
             
             const el = document.createElement('div'); el.className = `mb-marker-teacher ${typeClass}`; el.innerHTML = emoji;
+            
+            // ✅ منع النقر على الأيقونة من ترحيل الدبوس الخاص بالطالب في الخريطة
+            el.addEventListener('click', (e) => e.stopPropagation());
+            el.addEventListener('touchstart', (e) => e.stopPropagation(), {passive: true});
+
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity; const remaining = cls.maxCapacity - totalBooked;
             
             let dateText = cls.apptType === 'recurring' ? `كل ${cls.daysNames.join(' ')}` : `يوم ${cls.date}`;
 
-            // الكود المسؤول عن إضافة الأزرار داخل النافذة المنبثقة للخريطة
             const popupHtml = `<div style="width: 210px; padding-bottom: 4px;">
                 <div style="font-size: 14px; color: #1E293B; margin-bottom: 4px; line-height: 1.3; font-weight: 900;">${cls.teacherTitle} ${cls.teacherName}</div>
                 <div style="font-size: 12px; color: #64748B; margin-bottom: 4px; font-weight: 800;">📚 ${cls.subject}</div>
@@ -541,10 +540,9 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
-            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
+            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
         }
 
-        // الكود المسؤول عن إضافة الأزرار داخل الكروت بالأسفل
         filteredClasses.forEach((cls, index) => {
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity;
@@ -604,7 +602,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'م' : 'ص'}`;
     };
 
-    // تشغيل مباشر
     initApp();
 </script>
 </body>
