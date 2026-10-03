@@ -11,10 +11,18 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
+<!-- ✅ MarkerCluster -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<!-- ✅ Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
 <style>
 :root{ --primary-950:#064E3B; --primary-900:#065F46; --primary-800:#047857; --primary-700:#059669; --primary-600:#10B981; --primary-500:#34D399; --primary-400:#6EE7B7; --primary-300:#A7F3D0; --primary-200:#D1FAE5; --primary-100:#ECFDF5; --primary-50:#F0FDF4; --gold-600:#D97706; --gold-500:#F59E0B; --gold-400:#FBBF24; --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#FFFFFF; --surface-2:#F8FAFC; }
 *{ font-weight:800; font-family:'Cairo',sans-serif; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body{ background: radial-gradient(1000px 600px at 50% -10%, var(--primary-100) 0%, transparent 80%), linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%); background-attachment:fixed; min-height:100vh; color:var(--ink); padding:20px 10px; font-size: 16px; }
+body{ background: radial-gradient(1000px 600px at 50% -10%, var(--primary-100) 0%, transparent 80%), linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%); background-attachment:fixed; min-height:100vh; color:var(--ink); padding:20px 10px; font-size: 16px; transition: background 0.3s ease, color 0.3s ease; }
 @media (max-width: 640px) { body { padding: 0; background: var(--surface-2); } .main-card { border-radius: 0 !important; border: none !important; box-shadow: none !important; padding: 15px !important; min-height: 100vh !important; max-width: 100% !important; } .app-header { margin: -15px -15px 20px !important; padding: calc(20px + env(safe-area-inset-top)) 15px 20px !important; border-radius: 0 0 24px 24px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; } }
 .main-card{ background:var(--surface); border:1px solid var(--line); border-radius:26px; box-shadow:0 30px 60px -30px rgba(6,78,59,.2), 0 6px 18px -10px rgba(6,78,59,.1); overflow:hidden; display:flex; flex-direction:column; min-height:640px; padding:20px; max-width:600px; margin:0 auto; }
 .app-header{ margin:-20px -20px 22px; padding:28px 20px 24px; background:radial-gradient(130% 150% at 50% -30%, var(--primary-500) 0%, var(--primary-700) 45%, var(--primary-950) 100%); color:#fff; text-align:center; position:relative; overflow:hidden; }
@@ -43,7 +51,7 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .filter-bar::-webkit-scrollbar { display: none; }
 .filter-chip { flex-shrink: 0; padding: 8px 16px; border-radius: 999px; background: #F1F5F9; border: 2px solid #E2E8F0; font-size: 14px; font-weight: 900; color: #475569; cursor: pointer; transition: all 0.2s; }
 .filter-chip.active { background: var(--primary-100); border-color: var(--primary-500); color: var(--primary-800); }
-#studentMap { width: 100%; height: 45vh; min-height: 350px; border-radius: 16px; border: 2px solid var(--line); z-index: 1; margin-bottom: 24px; box-shadow: 0 10px 25px -10px rgba(0,0,0,0.1); overflow: hidden; }
+#studentMap { width: 100%; height: 45vh; min-height: 350px; border-radius: 16px; border: 2px solid var(--line); z-index: 1; margin-bottom: 24px; box-shadow: 0 10px 25px -10px rgba(0,0,0,0.1); overflow: hidden; transition: height 0.3s ease; }
 
 /* أيقونات المعلمين */
 .leaflet-div-icon { background: transparent; border: none; }
@@ -87,7 +95,7 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .class-result-card.colored .card-map-btn:hover { background: var(--c-border); color: #fff; }
 
 /* ============================================ */
-/* ✅ الإضاءة الخضراء الصريحة المضيئة (Neon Green) */
+/* ✅ الإضاءة الخضراء الصريحة المضيئة */
 /* ============================================ */
 @keyframes greenNeonPulse {
     0% { 
@@ -127,7 +135,6 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
     box-shadow: 0 0 15px rgba(34, 197, 94, 0.9) !important;
 }
 
-/* ✅ إضاءة خضراء على أيقونة الخريطة النشطة */
 .mb-marker-teacher.marker-active {
     border-color: #22C55E !important;
     background: #DCFCE7 !important;
@@ -155,9 +162,220 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
 .filter-chip.active::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
 
+/* ============================================ */
+/* ✅ 16. الوضع الليلي (Dark Mode) */
+/* ============================================ */
+body.dark-mode {
+    --surface: #0F172A;
+    --surface-2: #1E293B;
+    --line: #334155;
+    --ink: #F1F5F9;
+    --muted: #94A3B8;
+    background: radial-gradient(1000px 600px at 50% -10%, #064E3B 0%, transparent 80%), 
+                linear-gradient(180deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #F1F5F9;
+}
+body.dark-mode .main-card { background: #0F172A; border-color: #334155; }
+body.dark-mode .app-header { background: radial-gradient(130% 150% at 50% -30%, #059669 0%, #065F46 45%, #022C22 100%); }
+body.dark-mode .input-base { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+body.dark-mode .input-base:focus { border-color: #10B981; box-shadow: 0 0 0 4px rgba(16,185,129,.2); }
+body.dark-mode .field-label { color: #6EE7B7; }
+body.dark-mode .option-btn { background: #1E293B; border-color: #334155; color: #CBD5E1; }
+body.dark-mode input[type="radio"]:checked + .option-btn { background: #064E3B; color: #A7F3D0; border-color: #10B981; }
+body.dark-mode .bg-slate-50, body.dark-mode .bg-white, body.dark-mode .bg-slate-100 { background: #1E293B !important; border-color: #334155 !important; }
+body.dark-mode .text-slate-800, body.dark-mode .text-slate-700, body.dark-mode .text-slate-600 { color: #E2E8F0 !important; }
+body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { color: #94A3B8 !important; }
+body.dark-mode .border-slate-200, body.dark-mode .border-slate-300 { border-color: #334155 !important; }
+body.dark-mode .filter-chip { background: #1E293B; border-color: #334155; color: #CBD5E1; }
+body.dark-mode .filter-chip.active { background: #064E3B; border-color: #10B981; color: #A7F3D0; }
+body.dark-mode .empty-state { background: #1E293B; border-color: #334155; color: #94A3B8; }
+body.dark-mode .class-result-card.colored { background: linear-gradient(160deg, #1E293B 0%, #0F172A 100%) !important; }
+body.dark-mode .class-result-card.colored .card-info-box { background: #0F172A !important; }
+body.dark-mode .class-result-card.colored .card-group-name { background: #334155 !important; color: #E2E8F0 !important; }
+body.dark-mode .class-result-card.colored .card-map-btn { background: #334155 !important; color: #E2E8F0 !important; }
+body.dark-mode .bg-gradient-to-l { background: linear-gradient(to left, #064E3B, #065F46) !important; }
+body.dark-mode .text-emerald-900, body.dark-mode .text-emerald-700 { color: #A7F3D0 !important; }
+body.dark-mode .border-emerald-200 { border-color: #047857 !important; }
+body.dark-mode .bg-emerald-50, body.dark-mode .bg-emerald-100 { background: #064E3B !important; color: #A7F3D0 !important; }
+
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+.dark-mode-toggle:active { transform: scale(0.9); }
+body.dark-mode .dark-mode-toggle { background: #1E293B; border-color: #334155; }
+@media (max-width: 640px) { .dark-mode-toggle { top: calc(15px + env(safe-area-inset-top)); left: 15px; width: 40px; height: 40px; } }
+
+/* ============================================ */
+/* ✅ 6. زر Toggle خريطة/قائمة */
+/* ============================================ */
+.view-toggle {
+    display: flex;
+    background: #F1F5F9;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+.view-toggle button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-weight: 900;
+    font-size: 13px;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.view-toggle button.active {
+    background: linear-gradient(135deg, #10B981, #047857);
+    color: #fff;
+    box-shadow: 0 4px 10px -3px rgba(16,185,129,0.6);
+}
+body.dark-mode .view-toggle { background: #1E293B; }
+body.dark-mode .view-toggle button { color: #94A3B8; }
+
+/* ============================================ */
+/* ✅ 11. البحث النصي */
+/* ============================================ */
+.search-box-wrapper { position: relative; margin-bottom: 12px; }
+.search-box-wrapper::before {
+    content: '🔍';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+    z-index: 2;
+}
+.search-box {
+    width: 100%;
+    padding: 12px 44px 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #E2E8F0;
+    background: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.search-box:focus { border-color: #10B981; box-shadow: 0 0 0 4px rgba(16,185,129,.15); }
+body.dark-mode .search-box { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+
+/* ============================================ */
+/* ✅ التقييمات (Rating Stars) */
+/* ============================================ */
+.rating-stars { display: inline-flex; gap: 1px; font-size: 12px; }
+.rating-stars .star-filled { color: #FBBF24; }
+.rating-stars .star-empty { color: #CBD5E1; }
+.rating-count { font-size: 10px; color: #64748B; font-weight: 700; margin-right: 2px; }
+body.dark-mode .rating-count { color: #94A3B8; }
+
+.rating-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+.rating-modal-overlay.active { opacity: 1; visibility: visible; }
+.rating-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4);
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.rating-modal-overlay.active .rating-modal { transform: scale(1); }
+body.dark-mode .rating-modal { background: #1E293B; color: #F1F5F9; }
+
+.star-picker { display: flex; justify-content: center; gap: 8px; margin: 16px 0; direction: ltr; }
+.star-picker .star {
+    font-size: 40px;
+    cursor: pointer;
+    color: #CBD5E1;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.star-picker .star:hover,
+.star-picker .star.hovered,
+.star-picker .star.selected {
+    color: #FBBF24;
+    transform: scale(1.2);
+    text-shadow: 0 0 15px rgba(251,191,36,0.6);
+}
+.rating-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #E2E8F0;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    resize: none;
+    outline: none;
+}
+.rating-textarea:focus { border-color: #FBBF24; }
+body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; color: #F1F5F9; }
+
+.class-result-card.card-hover-active {
+    border-color: #22C55E !important;
+    box-shadow: 0 0 20px 4px rgba(34,197,94,0.5) !important;
+    transform: translateY(-2px);
+}
+
+/* ============================================ */
+/* ✅ 1. MarkerCluster Custom Style */
+/* ============================================ */
+.marker-cluster-custom {
+    background: linear-gradient(135deg, #10B981, #047857);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(16,185,129,0.6);
+}
+.marker-cluster-custom.small { width: 36px; height: 36px; font-size: 12px; }
+.marker-cluster-custom.medium { width: 44px; height: 44px; font-size: 14px; }
+.marker-cluster-custom.large { width: 54px; height: 54px; font-size: 16px; }
+
 </style>
 </head>
 <body>
+
+<!-- ✅ زر الوضع الليلي -->
+<button class="dark-mode-toggle" onclick="window.toggleDarkMode()" title="تبديل الوضع الليلي">🌙</button>
 
 <div class="main-card relative">
     <header class="app-header">
@@ -211,6 +429,11 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             <h2 class="text-[18px] font-black text-slate-800 mb-3 flex items-center gap-2">🔍 ابحث عن مجموعتك</h2>
             
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+                <!-- ✅ مربع البحث النصي -->
+                <div class="search-box-wrapper">
+                    <input type="text" id="searchBox" class="search-box" placeholder="ابحث باسم المعلم، المادة، المكان..." oninput="window.debouncedRender()">
+                </div>
+
                 <label class="field-label !text-sm">المادة الدراسية</label>
                 <select id="filterSubject" class="input-base !py-2.5 !text-sm mb-3" onchange="window.saveMapState(); window.renderClasses();">
                     <option value="all">📚 كل المواد</option>
@@ -246,6 +469,13 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 </div>
             </div>
 
+            <!-- ✅ Toggle خريطة/قائمة -->
+            <div class="view-toggle">
+                <button type="button" onclick="window.setViewMode('both')" class="active" data-mode="both">🗺️ + 📋 الكل</button>
+                <button type="button" onclick="window.setViewMode('map')" data-mode="map">🗺️ خريطة</button>
+                <button type="button" onclick="window.setViewMode('list')" data-mode="list">📋 قائمة</button>
+            </div>
+
             <div id="studentMap"></div>
 
             <div class="flex items-center gap-2 mb-4 mt-2 border-b-2 border-slate-100 pb-2">
@@ -255,6 +485,29 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             </div>
 
             <div id="classesContainer" class="space-y-4 pb-10"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ نافذة التقييم -->
+<div class="rating-modal-overlay" id="ratingModal" onclick="if(event.target===this) window.closeRatingModal()">
+    <div class="rating-modal" onclick="event.stopPropagation()">
+        <div class="text-center">
+            <h3 class="text-lg font-black mb-1">قيّم تجربتك 🌟</h3>
+            <p class="text-xs text-slate-500 mb-3" id="ratingTeacherName">--</p>
+        </div>
+        <div class="star-picker" id="starPicker">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <p class="text-center text-sm font-black mb-3" id="ratingLabel" style="color:#94A3B8;">اختر تقييمك</p>
+        <textarea class="rating-textarea" id="ratingComment" placeholder="اكتب تعليقك (اختياري)..."></textarea>
+        <div class="flex gap-2 mt-4">
+            <button onclick="window.closeRatingModal()" class="flex-1 py-3 rounded-xl font-black text-sm bg-slate-100 text-slate-700">إلغاء</button>
+            <button onclick="window.submitRating()" class="flex-1 py-3 rounded-xl font-black text-sm text-white" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);">إرسال ⭐</button>
         </div>
     </div>
 </div>
@@ -284,7 +537,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
     let map = null; let studentSearchMarker = null; 
     let teacherMarkersLayerGroup = null; let searchCircleLayer = null;
 
-    // أيقونة الطالب الإفتراضية من Leaflet (الدبوس الأزرق)
     const defaultLeafletIcon = L.icon({
         iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -294,6 +546,58 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     });
+
+    // ============================================
+    // ✅ 16. الوضع الليلي
+    // ============================================
+    window.toggleDarkMode = function() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        document.querySelector('.dark-mode-toggle').innerText = isDark ? '☀️' : '🌙';
+    };
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        setTimeout(() => {
+            const btn = document.querySelector('.dark-mode-toggle');
+            if (btn) btn.innerText = '☀️';
+        }, 100);
+    }
+
+    // ============================================
+    // ✅ 6. Toggle Map/List
+    // ============================================
+    window.setViewMode = function(mode) {
+        document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.view-toggle button[data-mode="${mode}"]`).classList.add('active');
+
+        const mapEl = document.getElementById('studentMap');
+        const listEl = document.getElementById('classesContainer');
+
+        if (mode === 'map') {
+            mapEl.style.display = 'block';
+            mapEl.style.height = '75vh';
+            listEl.style.display = 'none';
+        } else if (mode === 'list') {
+            mapEl.style.display = 'none';
+            listEl.style.display = 'block';
+        } else {
+            mapEl.style.display = 'block';
+            mapEl.style.height = '45vh';
+            listEl.style.display = 'block';
+        }
+        if (map) setTimeout(() => map.invalidateSize(), 100);
+    };
+
+    // ============================================
+    // ✅ 11. البحث النصي
+    // ============================================
+    window._debounceTimer = null;
+    window.debouncedRender = function() {
+        clearTimeout(window._debounceTimer);
+        window._debounceTimer = setTimeout(() => window.renderClasses(), 300);
+    };
 
     window.saveMapState = function() {
         const subject = document.getElementById('filterSubject') ? document.getElementById('filterSubject').value : 'all';
@@ -317,6 +621,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const allGroups = await getAllGroups();
             window.classesDB = allGroups.filter(g => g.isActive !== false);
             window.renderClasses();
+            window.checkSharedClass();
         } catch (error) {
             console.error("خطأ في جلب المجموعات من السيرفر:", error);
         }
@@ -366,7 +671,24 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
         
-        teacherMarkersLayerGroup = L.layerGroup().addTo(map);
+        teacherMarkersLayerGroup = L.markerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                let size = 'small';
+                if (count >= 10) size = 'large';
+                else if (count >= 5) size = 'medium';
+                return L.divIcon({
+                    html: `<div class="marker-cluster-custom ${size}">${count}</div>`,
+                    className: 'marker-cluster-wrapper',
+                    iconSize: L.point(44, 44)
+                });
+            },
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            disableClusteringAtZoom: 16
+        }).addTo(map);
 
         studentSearchMarker = L.marker([startLat, startLng], { icon: defaultLeafletIcon, draggable: true }).addTo(map);
         
@@ -448,8 +770,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             { enableHighAccuracy: true }
         );
     };
-
-    window.applyMapSearch = function() { isGpsActive = true; window.updateSearchCircle(); window.saveMapState(); window.renderClasses(); document.getElementById('classesContainer').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 
     window.updateGrades = function() {
         const stage = document.getElementById('stageSelect').value;
@@ -541,30 +861,192 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.renderClasses(); 
     };
 
-    // ✅ دالة الإضاءة الخضراء الصريحة المضيئة - تستمر 6 ثوانٍ
     window.highlightCard = function(classId) {
         const cardId = 'class-card-' + classId;
         const cardElement = document.getElementById(cardId);
         if (!cardElement) return;
 
-        // إزالة أي إضاءة سابقة
         document.querySelectorAll('.highlight-glow').forEach(el => el.classList.remove('highlight-glow'));
 
-        // تمرير سلس للكارت
         cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // إضافة الإضاءة بعد التمرير
         setTimeout(() => {
             cardElement.classList.add('highlight-glow');
         }, 400);
 
-        // إزالة الإضاءة بعد 6 ثوانٍ
         clearTimeout(window._highlightTimer);
         window._highlightTimer = setTimeout(() => {
             cardElement.classList.remove('highlight-glow');
         }, 6000);
     };
 
+    // ============================================
+    // ✅ نظام التقييمات
+    // ============================================
+    let ratingState = { classId: null, stars: 0 };
+
+    window.openRatingModal = function(classId) {
+        const cls = window.classesDB.find(c => c.id === classId);
+        if (!cls) return;
+        ratingState = { classId, stars: 0 };
+        document.getElementById('ratingTeacherName').innerText = `${cls.teacherTitle} ${cls.teacherName} - ${cls.subject}`;
+        document.getElementById('ratingLabel').innerText = 'اختر تقييمك';
+        document.getElementById('ratingLabel').style.color = '#94A3B8';
+        document.getElementById('ratingComment').value = '';
+        document.querySelectorAll('#starPicker .star').forEach(s => s.classList.remove('selected', 'hovered'));
+        document.getElementById('ratingModal').classList.add('active');
+    };
+
+    window.closeRatingModal = function() {
+        document.getElementById('ratingModal').classList.remove('active');
+    };
+
+    window.submitRating = function() {
+        if (ratingState.stars === 0) {
+            document.getElementById('ratingLabel').innerText = '⚠️ اختر عدد النجوم أولاً';
+            document.getElementById('ratingLabel').style.color = '#E11D48';
+            return;
+        }
+
+        const ratings = JSON.parse(localStorage.getItem('teacher_ratings') || '{}');
+        const cls = window.classesDB.find(c => c.id === ratingState.classId);
+        const teacherKey = `${cls.teacherTitle}_${cls.teacherName}`;
+
+        if (!ratings[teacherKey]) ratings[teacherKey] = [];
+        ratings[teacherKey].push({
+            stars: ratingState.stars,
+            comment: document.getElementById('ratingComment').value.trim(),
+            studentName: studentProfile.name,
+            date: new Date().toISOString()
+        });
+
+        localStorage.setItem('teacher_ratings', JSON.stringify(ratings));
+        window.closeRatingModal();
+
+        if (window.confetti) {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FBBF24', '#10B981', '#3B82F6'] });
+        }
+
+        window.renderClasses();
+        window.showToast('✅ تم إرسال تقييمك، شكراً لك!');
+    };
+
+    window.getTeacherRating = function(cls) {
+        const ratings = JSON.parse(localStorage.getItem('teacher_ratings') || '{}');
+        const teacherKey = `${cls.teacherTitle}_${cls.teacherName}`;
+        const list = ratings[teacherKey] || [];
+        if (list.length === 0) return { avg: 0, count: 0 };
+        const sum = list.reduce((a, r) => a + r.stars, 0);
+        return { avg: (sum / list.length).toFixed(1), count: list.length };
+    };
+
+    window.renderStars = function(avg) {
+        const full = Math.round(avg);
+        let html = '<span class="rating-stars">';
+        for (let i = 1; i <= 5; i++) {
+            html += `<span class="${i <= full ? 'star-filled' : 'star-empty'}">★</span>`;
+        }
+        html += '</span>';
+        return html;
+    };
+
+    function initStarPicker() {
+        const stars = document.querySelectorAll('#starPicker .star');
+        const labels = ['', 'سيء 😞', 'مقبول 😐', 'جيد 🙂', 'جيد جداً 😃', 'ممتاز 🤩'];
+        const labelEl = document.getElementById('ratingLabel');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', () => {
+                const val = parseInt(star.dataset.value);
+                stars.forEach((s, i) => s.classList.toggle('hovered', i < val));
+                labelEl.innerText = labels[val];
+                labelEl.style.color = '#FBBF24';
+            });
+            star.addEventListener('click', () => {
+                const val = parseInt(star.dataset.value);
+                ratingState.stars = val;
+                stars.forEach((s, i) => {
+                    s.classList.toggle('selected', i < val);
+                    s.classList.remove('hovered');
+                });
+                labelEl.innerText = labels[val];
+                labelEl.style.color = '#FBBF24';
+            });
+        });
+        document.getElementById('starPicker').addEventListener('mouseleave', () => {
+            stars.forEach(s => s.classList.remove('hovered'));
+            if (ratingState.stars > 0) {
+                labelEl.innerText = labels[ratingState.stars];
+                labelEl.style.color = '#FBBF24';
+            } else {
+                labelEl.innerText = 'اختر تقييمك';
+                labelEl.style.color = '#94A3B8';
+            }
+        });
+    }
+
+    // ============================================
+    // ✅ 21. مشاركة المجموعة
+    // ============================================
+    window.shareClass = function(classId) {
+        const cls = window.classesDB.find(c => c.id === classId);
+        if (!cls) return;
+        const shareUrl = `${location.origin}${location.pathname}?class=${classId}`;
+        const shareData = {
+            title: `مجموعة ${cls.subject} - ${cls.teacherTitle} ${cls.teacherName}`,
+            text: `احجز مع ${cls.teacherTitle} ${cls.teacherName} - ${cls.subject} (${cls.groupName})`,
+            url: shareUrl
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                window.showToast('✅ تم نسخ رابط المجموعة');
+            }).catch(() => {
+                window.showToast('⚠️ فشل النسخ');
+            });
+        }
+    };
+
+    window.showToast = function(msg) {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px;
+            font-weight: 900; font-size: 14px; z-index: 10001; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease; opacity: 0;
+        `;
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => {
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            toast.style.opacity = '1';
+        });
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(50px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    };
+
+    window.checkSharedClass = function() {
+        const urlParams = new URLSearchParams(location.search);
+        const classId = urlParams.get('class');
+        if (classId && window.classesDB.length > 0) {
+            setTimeout(() => {
+                const cls = window.classesDB.find(c => c.id === classId);
+                if (cls) {
+                    window.highlightCard(classId);
+                    window.showToast(`✨ مجموعة ${cls.subject} - ${cls.teacherName}`);
+                }
+            }, 1500);
+        }
+    };
+
+    // ============================================
+    // ✅ تحديث أيقونات الخريطة
+    // ============================================
     window.updateMapMarkers = function(filteredClasses) {
         if (!map || !teacherMarkersLayerGroup) return;
         teacherMarkersLayerGroup.clearLayers();
@@ -592,9 +1074,15 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const isFull = totalBooked >= cls.maxCapacity; const remaining = cls.maxCapacity - totalBooked;
             let dateText = cls.apptType === 'recurring' ? `كل ${cls.daysNames.join(' ')}` : `يوم ${cls.date}`;
 
+            const rating = window.getTeacherRating(cls);
+            const ratingPopupHtml = rating.count > 0 
+                ? `<div style="font-size: 11px; color: #FBBF24; margin-bottom: 6px; font-weight: 900;">⭐ ${rating.avg} (${rating.count} تقييم)</div>` 
+                : '';
+
             const popupHtml = `<div style="width: 210px; padding-bottom: 4px;">
                 <div style="font-size: 14px; color: #1E293B; margin-bottom: 4px; line-height: 1.3; font-weight: 900;">${cls.teacherTitle} ${cls.teacherName}</div>
                 <div style="font-size: 12px; color: #64748B; margin-bottom: 4px; font-weight: 800;">📚 ${cls.subject}</div>
+                ${ratingPopupHtml}
                 <div style="font-size: 11px; color: #64748B; margin-bottom: 8px; font-weight: 800;">⏰ ${dateText} | ${window.formatTime(cls.startTime)}</div>
                 <div style="display: flex; justify-content: space-between; align-items: center; background: #F1F5F9; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px;">
                     <span style="font-size: 11px; color: #475569; font-weight: 900;">المتاح:</span>
@@ -609,12 +1097,10 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 240 });
             
-            // ✅ فتح الـ Popup عند الضغط
             marker.on('click', function(e) {
                 this.openPopup();
             });
 
-            // ✅ عند فتح الـ Popup: تمييز الأيقونة + إضاءة الكارت
             marker.on('popupopen', function(e) {
                 document.querySelectorAll('.mb-marker-teacher').forEach(el => el.classList.remove('marker-active'));
                 
@@ -626,13 +1112,19 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 }, 150);
             });
 
-            // ✅ عند إغلاق الـ Popup: إزالة التمييز
             marker.on('popupclose', function(e) {
                 const iconEl = e.target.getElement()?.querySelector('.mb-marker-teacher');
                 if (iconEl) iconEl.classList.remove('marker-active');
             });
 
-            marker.addTo(teacherMarkersLayerGroup);
+            marker.on('add', function() {
+                setTimeout(() => {
+                    const el = marker.getElement();
+                    if (el) el.setAttribute('data-class-id', cls.id);
+                }, 100);
+            });
+
+            teacherMarkersLayerGroup.addLayer(marker);
             bounds.extend([cls.lat, cls.lng]); 
             hasValidMarkers = true;
         });
@@ -657,10 +1149,14 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         return 'theme-slate';
     };
 
+    // ============================================
+    // ✅ renderClasses (بدون فلتر الأيام)
+    // ============================================
     window.renderClasses = function() {
         const container = document.getElementById('classesContainer'); container.innerHTML = '';
         const filterSubject = document.getElementById('filterSubject').value;
         const filterTeacher = document.querySelector('input[name="filterTeacher"]:checked').value;
+        const searchQuery = (document.getElementById('searchBox')?.value || '').trim().toLowerCase();
 
         let filteredClasses = window.classesDB.filter(c => {
             if (c.isActive === false) return false;
@@ -670,6 +1166,13 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             if (filterSubject !== 'all' && c.subject !== filterSubject) return false;
             if (filterTeacher !== 'all' && c.teacherTitle !== filterTeacher) return false;
             if (currentPlaceFilter !== 'all' && c.type !== currentPlaceFilter) return false;
+
+            // ✅ بحث نصي
+            if (searchQuery) {
+                const haystack = `${c.teacherName} ${c.teacherTitle} ${c.subject} ${c.location} ${c.groupName}`.toLowerCase();
+                if (!haystack.includes(searchQuery)) return false;
+            }
+
             return true;
         });
 
@@ -683,7 +1186,8 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
-            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
+            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات مطابقة</h3><p class="text-xs mt-2">جرّب توسيع نطاق البحث أو تغيير الفلاتر</p></div>`;
+            return;
         }
 
         filteredClasses.forEach((cls, index) => {
@@ -693,24 +1197,34 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             let typeIcon = '🏫'; let typeText = 'سنتر'; if(cls.type === 'teacher_home') { typeIcon = '🏡'; typeText = 'بيت'; } if(cls.type === 'student_home') { typeIcon = '🚗'; typeText = 'منزلك'; }
             let genderIcon = '👫'; let genderText = 'مختلط'; if(cls.gender === 'boys') { genderIcon = '👦'; genderText = 'ولاد'; } if(cls.gender === 'girls') { genderIcon = '👧'; genderText = 'بنات'; }
             let dateText = cls.apptType === 'recurring' ? `🔁 كل ${cls.daysNames.join(' ')}` : `📅 يوم ${cls.date}`;
-            
+
+            const rating = window.getTeacherRating(cls);
+            const ratingHtml = rating.count > 0
+                ? `<div class="flex items-center gap-1">${window.renderStars(rating.avg)}<span class="rating-count">(${rating.count})</span></div>`
+                : `<span class="text-[10px] text-slate-400 font-bold">لا تقييمات</span>`;
+
             let distanceHtml = '';
             if (isGpsActive && cls.calculatedDistance !== 99999) { distanceHtml = `<div class="absolute -top-2 left-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-20">📍 ${cls.calculatedDistance.toFixed(2)} كم</div>`; }
 
             const card = document.createElement('div');
             card.id = `class-card-${cls.id}`;
             card.className = `class-result-card colored ${themeClass} p-3 shadow-sm hover:shadow-md relative mt-3 rounded-2xl`;
-            
+            card.dataset.classId = cls.id;
+
             card.innerHTML = `
                 ${distanceHtml}
                 <div class="flex justify-between items-start mb-2 relative z-10">
                     <div class="flex-1 pr-1">
                         <h4 class="card-teacher-name text-[14px] leading-tight mb-1">${cls.teacherTitle} ${cls.teacherName}</h4>
-                        <span class="card-group-name !text-[10px] !padding-1">👥 ${cls.groupName}</span>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="card-group-name !text-[10px] !padding-1">👥 ${cls.groupName}</span>
+                            ${ratingHtml}
+                        </div>
                     </div>
                     <div class="flex items-stretch gap-1">
                         <span class="card-subject-badge flex items-center justify-center font-black !text-[10px] !px-2 !py-1">📚 ${cls.subject}</span>
-                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️</button>` : ''}
+                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]" title="عرض على الخريطة">🗺️</button>` : ''}
+                        <button onclick="window.shareClass('${cls.id}')" class="card-map-btn p-1.5 rounded-lg text-[10px]" title="شارك">🔗</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-1 mb-2 relative z-10">
@@ -724,9 +1238,22 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 <div class="flex items-stretch gap-1.5 relative z-10">
                     <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتساب</button>
                     <a href="tel:${cls.phone}" class="flex-1 btn-primary btn-call !mb-0 !p-2 !rounded-xl !text-[12px] flex justify-center items-center">📞 اتصال</a>
+                    <button onclick="window.openRatingModal('${cls.id}')" class="card-map-btn px-2 rounded-xl font-black flex items-center justify-center" title="قيّم المعلم" style="font-size:16px;">⭐</button>
                     ${!isFull ? `<div class="card-avail-pill font-black px-2 rounded-xl flex flex-col items-center justify-center min-w-[45px]"><span class="text-[8px]">متاح</span><span class="text-[14px]">${cls.maxCapacity - totalBooked}</span></div>` : ''}
                 </div>
             `;
+
+            card.addEventListener('mouseenter', () => {
+                const iconEl = document.querySelector(`.leaflet-marker-icon[data-class-id="${cls.id}"] .mb-marker-teacher`);
+                if (iconEl) iconEl.classList.add('marker-active');
+                card.classList.add('card-hover-active');
+            });
+            card.addEventListener('mouseleave', () => {
+                const iconEl = document.querySelector(`.leaflet-marker-icon[data-class-id="${cls.id}"] .mb-marker-teacher`);
+                if (iconEl) iconEl.classList.remove('marker-active');
+                card.classList.remove('card-hover-active');
+            });
+
             container.appendChild(card);
         });
     };
@@ -734,6 +1261,11 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
     window.bookClass = function(classId) {
         const cls = window.classesDB.find(c => c.id === classId);
         if(!cls) return;
+        
+        if (window.confetti) {
+            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 }, colors: ['#25D366', '#10B981'] });
+        }
+        
         const msg = `السلام عليكم ${cls.teacherTitle} ${cls.teacherName}،\nأنا الطالب: ${studentProfile.name}\nحابب احجز معاك في مجموعة ( ${cls.groupName} ) لمادة ${cls.subject}.`;
         const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`;
         window.open(whatsappUrl, '_blank');
@@ -746,6 +1278,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'م' : 'ص'}`;
     };
 
+    initStarPicker();
     initApp();
 </script>
 </body>
