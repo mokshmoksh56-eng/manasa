@@ -329,6 +329,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         });
         
         map.on('click', (e) => { 
+            // تأكيد تغيير موقع الطالب فقط عند النقر على الخريطة نفسها، وليس على الأيقونات
             studentLat = e.latlng.lat; studentLng = e.latlng.lng; 
             studentSearchMarker.setLatLng([studentLat, studentLng]); 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
@@ -548,11 +549,9 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 240 });
             
-            // ✅ الإصلاح: إيقاف انتقال حدث الضغط للخريطة وفتح النافذة برمجياً
+            // ✅ السماح لـ Leaflet بفتح الـ Popup بشكل طبيعي وإضاءة الكارت معها
             marker.on('click', function(e) {
-                L.DomEvent.stop(e); // يمنع النقر من الوصول للخريطة نهائياً
-                marker.openPopup(); // يفتح النافذة المنبثقة يدوياً
-                window.highlightCard(cls.id); // يضيء الكارت في الأسفل
+                window.highlightCard(cls.id);
             });
 
             marker.addTo(teacherMarkersLayerGroup);
