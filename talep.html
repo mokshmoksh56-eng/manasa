@@ -60,7 +60,7 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .mapboxgl-popup-close-button { font-size: 20px !important; color: #64748B !important; padding: 4px 8px !important; }
 .mapboxgl-ctrl-logo { display: none !important; }
 @keyframes slideUpCard { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.class-result-card { animation: slideUpCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+.class-result-card { animation: slideUpCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; transition: all 0.3s ease; }
 .theme-royal { --c-main:#1E40AF; --c-dark:#1E3A8A; --c-light:#DBEAFE; --c-lighter:#EFF6FF; --c-border:#93C5FD; --c-text:#1E3A8A; --c-header:#1E40AF; --c-header2:#3730A3; }
 .theme-purple { --c-main:#7C3AED; --c-dark:#5B21B6; --c-light:#EDE9FE; --c-lighter:#F5F3FF; --c-border:#C4B5FD; --c-text:#5B21B6; --c-header:#7C3AED; --c-header2:#5B21B6; }
 .theme-emerald { --c-main:#059669; --c-dark:#065F46; --c-light:#D1FAE5; --c-lighter:#ECFDF5; --c-border:#6EE7B7; --c-text:#065F46; --c-header:#059669; --c-header2:#047857; }
@@ -81,6 +81,22 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 .class-result-card.colored .card-avail-pill { background: linear-gradient(135deg, var(--c-main), var(--c-dark)); color: #fff; border: none; box-shadow: 0 4px 10px -3px var(--c-main); }
 .class-result-card.colored .card-map-btn { background: var(--c-light); color: var(--c-dark); border: 1.5px solid var(--c-border); }
 .class-result-card.colored .card-map-btn:hover { background: var(--c-border); color: #fff; }
+
+/* تأثير النبض الأخضر القوي لتمييز الكارت عند الضغط على الأيقونة في الخريطة */
+@keyframes pulseGreenGlow {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); transform: scale(1); border-color: #10B981 !important; }
+    50% { box-shadow: 0 0 25px 10px rgba(16, 185, 129, 0.5); transform: scale(1.02); border-color: #059669 !important; }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); transform: scale(1); border-color: #10B981 !important; }
+}
+.highlight-glow {
+    animation: pulseGreenGlow 1.5s ease-in-out 3 !important; /* يتكرر 3 مرات */
+    border: 3px solid #10B981 !important;
+    background: #ECFDF5 !important;
+    z-index: 50;
+}
+.highlight-glow::before {
+    background: linear-gradient(90deg, #10B981, #047857) !important;
+}
 
 input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
 .filter-chip.active::after { content: ' ✔'; color: var(--primary-700); font-size: 14px; margin-right: 6px; }
@@ -134,7 +150,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 </div>
                 <div class="flex gap-1.5 flex-shrink-0">
                     <button onclick="window.editStudentData()" class="bg-white text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">✏️ تعديل</button>
-                    <button onclick="window.clearAllData()" class="bg-white text-rose-600 border border-rose-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">🗑️ مسح</button>
+                    <button onclick="window.clearAllData()" class="bg-white text-rose-600 border border-rose-200 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all">🗑️️ مسح</button>
                 </div>
             </div>
 
@@ -453,6 +469,27 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.renderClasses(); 
     };
 
+    // الدالة المسؤولة عن تسليط الضوء الأخضر المضئ على الكارت
+    window.highlightCard = function(classId) {
+        const cardId = 'class-card-' + classId;
+        const cardElement = document.getElementById(cardId);
+        if (cardElement) {
+            // مسح أي تمييز سابق في كروت تانية
+            document.querySelectorAll('.highlight-glow').forEach(el => el.classList.remove('highlight-glow'));
+            
+            // النزول التلقائي السلس للكارت
+            cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // إضافة كلاس التمييز الأخضر
+            cardElement.classList.add('highlight-glow');
+            
+            // إزالة التمييز بعد 4.5 ثواني
+            setTimeout(() => {
+                cardElement.classList.remove('highlight-glow');
+            }, 4500);
+        }
+    };
+
     window.updateMapMarkers = function(filteredClasses) {
         if (!map) return;
         teacherMarkersList.forEach(m => m.remove()); teacherMarkersList = [];
@@ -489,12 +526,15 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const popup = new mapboxgl.Popup({ offset: 25, closeButton: true, maxWidth: '240px' }).setHTML(popupHtml);
             const marker = new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([cls.lng, cls.lat]).addTo(map);
             
-            // ✅ فتح النافذة برمجياً ومنع الخريطة من التحرك
+            // ✅ عند الضغط على الأيقونة: نمنع تحرك الخريطة + نفتح النافذة + نضيء الكارت بالأسفل
             el.addEventListener('click', (e) => {
                 e.stopPropagation(); 
                 const popups = document.querySelectorAll('.mapboxgl-popup');
                 popups.forEach(p => p.remove());
                 popup.addTo(map);
+                
+                // تفعيل إضاءة الكارت الخاص بالمجموعة أسفل الخريطة
+                window.highlightCard(cls.id);
             });
 
             el.addEventListener('touchstart', (e) => {
@@ -565,6 +605,8 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             if (isGpsActive && cls.calculatedDistance !== 99999) { distanceHtml = `<div class="absolute -top-2 left-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm z-20">📍 ${cls.calculatedDistance.toFixed(2)} كم</div>`; }
 
             const card = document.createElement('div');
+            // إعطاء ID مميز للكارت ليتم استهدافه بالإضاءة لاحقاً
+            card.id = `class-card-${cls.id}`;
             card.className = `class-result-card colored ${themeClass} p-3 shadow-sm hover:shadow-md relative mt-3 rounded-2xl`;
             
             card.innerHTML = `
@@ -576,7 +618,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                     </div>
                     <div class="flex items-stretch gap-1">
                         <span class="card-subject-badge flex items-center justify-center font-black !text-[10px] !px-2 !py-1">📚 ${cls.subject}</span>
-                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️️</button>` : ''}
+                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️</button>` : ''}
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-1 mb-2 relative z-10">
@@ -588,7 +630,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                     <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">⏰</span><span>${dateText} | ${window.formatTime(cls.startTime)}</span></div>
                 </div>
                 <div class="flex items-stretch gap-1.5 relative z-10">
-                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتس</button>
+                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتساب</button>
                     <a href="tel:${cls.phone}" class="flex-1 btn-primary btn-call !mb-0 !p-2 !rounded-xl !text-[12px] flex justify-center items-center">📞 اتصال</a>
                     ${!isFull ? `<div class="card-avail-pill font-black px-2 rounded-xl flex flex-col items-center justify-center min-w-[45px]"><span class="text-[8px]">متاح</span><span class="text-[14px]">${cls.maxCapacity - totalBooked}</span></div>` : ''}
                 </div>
