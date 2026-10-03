@@ -370,6 +370,16 @@ body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; co
 .marker-cluster-custom.medium { width: 44px; height: 44px; font-size: 14px; }
 .marker-cluster-custom.large { width: 54px; height: 54px; font-size: 16px; }
 
+/* ✅ اسم المعلم أسفل الكارت - نمط مميز */
+.card-teacher-bottom {
+    text-align: center;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    border-top: 2px dashed var(--c-border, #E2E8F0);
+    border-bottom: 2px dashed var(--c-border, #E2E8F0);
+}
+body.dark-mode .card-teacher-bottom { border-color: #334155 !important; }
+
 </style>
 </head>
 <body>
@@ -1150,7 +1160,7 @@ body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; co
     };
 
     // ============================================
-    // ✅ renderClasses (بدون فلتر الأيام)
+    // ✅ renderClasses (مع نقل اسم المستر للأسفل)
     // ============================================
     window.renderClasses = function() {
         const container = document.getElementById('classesContainer'); container.innerHTML = '';
@@ -1167,7 +1177,6 @@ body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; co
             if (filterTeacher !== 'all' && c.teacherTitle !== filterTeacher) return false;
             if (currentPlaceFilter !== 'all' && c.type !== currentPlaceFilter) return false;
 
-            // ✅ بحث نصي
             if (searchQuery) {
                 const haystack = `${c.teacherName} ${c.teacherTitle} ${c.subject} ${c.location} ${c.groupName}`.toLowerCase();
                 if (!haystack.includes(searchQuery)) return false;
@@ -1215,7 +1224,6 @@ body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; co
                 ${distanceHtml}
                 <div class="flex justify-between items-start mb-2 relative z-10">
                     <div class="flex-1 pr-1">
-                        <h4 class="card-teacher-name text-[14px] leading-tight mb-1">${cls.teacherTitle} ${cls.teacherName}</h4>
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="card-group-name !text-[10px] !padding-1">👥 ${cls.groupName}</span>
                             ${ratingHtml}
@@ -1234,6 +1242,12 @@ body.dark-mode .rating-textarea { background: #0F172A; border-color: #334155; co
                 <div class="card-info-box !p-2 mb-2 space-y-1.5 relative z-10">
                     <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">📍</span><span class="truncate">${cls.location}</span></div>
                     <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">⏰</span><span>${dateText} | ${window.formatTime(cls.startTime)}</span></div>
+                </div>
+                <!-- ✅ اسم المستر أسفل الكارت -->
+                <div class="card-teacher-bottom">
+                    <h4 class="card-teacher-name text-[15px] leading-tight font-black">
+                        🎓 ${cls.teacherTitle} ${cls.teacherName}
+                    </h4>
                 </div>
                 <div class="flex items-stretch gap-1.5 relative z-10">
                     <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتساب</button>
