@@ -150,7 +150,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                 <div class="flex gap-2 mb-3">
                     <label class="flex-1"><input type="radio" name="filterTeacher" value="all" checked class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">الكل</div></label>
                     <label class="flex-1"><input type="radio" name="filterTeacher" value="مستر" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👨‍🏫 مستر</div></label>
-                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👩‍‍🏫 مس</div></label>
+                    <label class="flex-1"><input type="radio" name="filterTeacher" value="مس" class="hidden" onchange="window.saveMapState(); window.renderClasses();"><div class="option-btn !py-2 !text-xs !flex-row">👩‍🏫 مس</div></label>
                 </div>
 
                 <label class="field-label !text-sm">مكان الدرس</label>
@@ -467,10 +467,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             
             const el = document.createElement('div'); el.className = `mb-marker-teacher ${typeClass}`; el.innerHTML = emoji;
             
-            // ✅ منع النقر على الأيقونة من ترحيل الدبوس الخاص بالطالب في الخريطة
-            el.addEventListener('click', (e) => e.stopPropagation());
-            el.addEventListener('touchstart', (e) => e.stopPropagation(), {passive: true});
-
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity; const remaining = cls.maxCapacity - totalBooked;
             
@@ -489,8 +485,22 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                     <a href="tel:${cls.phone}" style="flex:1; background: linear-gradient(135deg,#3B82F6 0%, #1D4ED8 100%); color: white; text-decoration: none; padding: 8px 0; border-radius: 8px; font-weight: 900; font-size: 12px; display: flex; justify-content: center; gap: 4px; align-items: center; box-shadow: 0 4px 6px rgba(59,130,246,0.2);">📞 اتصال</a>
                 </div>
             </div>`;
+            
             const popup = new mapboxgl.Popup({ offset: 25, closeButton: true, maxWidth: '240px' }).setHTML(popupHtml);
-            const marker = new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([cls.lng, cls.lat]).setPopup(popup).addTo(map);
+            const marker = new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([cls.lng, cls.lat]).addTo(map);
+            
+            // ✅ فتح النافذة برمجياً ومنع الخريطة من التحرك
+            el.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                const popups = document.querySelectorAll('.mapboxgl-popup');
+                popups.forEach(p => p.remove());
+                popup.addTo(map);
+            });
+
+            el.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            }, {passive: true});
+
             teacherMarkersList.push(marker); bounds.extend([cls.lng, cls.lat]); hasValidMarkers = true;
         });
 
@@ -540,7 +550,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.updateMapMarkers(filteredClasses);
 
         if (filteredClasses.length === 0) {
-            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
+            container.innerHTML = `<div class="empty-state"><span>🕵️‍♂️</span><h3 class="font-black text-lg mb-1">لا توجد مجموعات</h3></div>`; return;
         }
 
         filteredClasses.forEach((cls, index) => {
@@ -566,7 +576,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                     </div>
                     <div class="flex items-stretch gap-1">
                         <span class="card-subject-badge flex items-center justify-center font-black !text-[10px] !px-2 !py-1">📚 ${cls.subject}</span>
-                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️</button>` : ''}
+                        ${cls.lat ? `<button onclick="window.focusOnMap('${cls.id}', ${cls.lat},${cls.lng})" class="card-map-btn p-1.5 rounded-lg text-[10px]">🗺️️</button>` : ''}
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-1 mb-2 relative z-10">
@@ -578,7 +588,7 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
                     <div class="flex items-start gap-1.5 text-[11px] font-bold text-slate-800"><span class="text-xs pt-0.5">⏰</span><span>${dateText} | ${window.formatTime(cls.startTime)}</span></div>
                 </div>
                 <div class="flex items-stretch gap-1.5 relative z-10">
-                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتساب</button>
+                    <button onclick="window.bookClass('${cls.id}')" class="flex-1 btn-primary btn-whatsapp !mb-0 !p-2 !rounded-xl !text-[12px] ${isFull ? 'opacity-50 grayscale' : ''}" ${isFull ? 'disabled' : ''}>💬 واتس</button>
                     <a href="tel:${cls.phone}" class="flex-1 btn-primary btn-call !mb-0 !p-2 !rounded-xl !text-[12px] flex justify-center items-center">📞 اتصال</a>
                     ${!isFull ? `<div class="card-avail-pill font-black px-2 rounded-xl flex flex-col items-center justify-center min-w-[45px]"><span class="text-[8px]">متاح</span><span class="text-[14px]">${cls.maxCapacity - totalBooked}</span></div>` : ''}
                 </div>
