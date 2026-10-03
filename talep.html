@@ -47,11 +47,19 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
 
 /* أيقونات المعلمين */
 .leaflet-div-icon { background: transparent; border: none; }
-.mb-marker-teacher { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: #fff; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.35); border: 3px solid var(--primary-600); cursor: pointer; transition: transform 0.2s ease; margin-left: -22px; margin-top: -22px; }
+.mb-marker-teacher { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: #fff; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.35); border: 3px solid var(--primary-600); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; margin-left: -22px; margin-top: -22px; }
 .mb-marker-teacher:hover { transform: scale(1.15); }
 .mb-marker-teacher.type-center { border-color: #2563EB; }
 .mb-marker-teacher.type-teacher_home { border-color: #D97706; }
 .mb-marker-teacher.type-student_home { border-color: #10B981; }
+
+/* ✅ تمييز الأيقونة النشطة على الخريطة */
+.mb-marker-teacher.marker-active {
+    border-color: #10B981 !important;
+    box-shadow: 0 0 0 5px rgba(16,185,129,.45), 0 6px 16px rgba(0,0,0,.4);
+    transform: scale(1.2);
+    z-index: 1000;
+}
 
 /* تنسيقات نافذة Leaflet */
 .leaflet-popup-content-wrapper { border-radius: 14px !important; font-family: 'Cairo', sans-serif !important; font-weight: bold !important; box-shadow: 0 10px 30px rgba(0,0,0,0.25) !important; padding: 0 !important; }
@@ -329,7 +337,6 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         });
         
         map.on('click', (e) => { 
-            // تأكيد تغيير موقع الطالب فقط عند النقر على الخريطة نفسها، وليس على الأيقونات
             studentLat = e.latlng.lat; studentLng = e.latlng.lng; 
             studentSearchMarker.setLatLng([studentLat, studentLng]); 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
@@ -492,17 +499,28 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
         window.renderClasses(); 
     };
 
+    // ✅ تحسين دالة الإضاءة - تتبع Timer + تأخير التمرير
     window.highlightCard = function(classId) {
         const cardId = 'class-card-' + classId;
         const cardElement = document.getElementById(cardId);
-        if (cardElement) {
-            document.querySelectorAll('.highlight-glow').forEach(el => el.classList.remove('highlight-glow'));
-            cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!cardElement) return;
+
+        // إزالة أي إضاءة سابقة
+        document.querySelectorAll('.highlight-glow').forEach(el => el.classList.remove('highlight-glow'));
+
+        // تمرير سلس للكارت
+        cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // إضافة الإضاءة بعد التمرير
+        setTimeout(() => {
             cardElement.classList.add('highlight-glow');
-            setTimeout(() => {
-                cardElement.classList.remove('highlight-glow');
-            }, 4500);
-        }
+        }, 350);
+
+        // إزالة الإضاءة بعد 4.5 ثانية مع تتبع الـ Timer
+        clearTimeout(window._highlightTimer);
+        window._highlightTimer = setTimeout(() => {
+            cardElement.classList.remove('highlight-glow');
+        }, 4500);
     };
 
     window.updateMapMarkers = function(filteredClasses) {
@@ -549,9 +567,30 @@ input[type="radio"]:checked + .option-btn::after { content: ' ✔'; color: var(-
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 240 });
             
-            // ✅ السماح لـ Leaflet بفتح الـ Popup بشكل طبيعي وإضاءة الكارت معها
+            // ✅ فتح الـ Popup أولاً عند الضغط على الأيقونة
             marker.on('click', function(e) {
-                window.highlightCard(cls.id);
+                this.openPopup();
+            });
+
+            // ✅ عند فتح الـ Popup: تمييز الأيقونة + إضاءة الكارت بعد تأخير بسيط
+            marker.on('popupopen', function(e) {
+                // إزالة التمييز من كل الأيقونات السابقة
+                document.querySelectorAll('.mb-marker-teacher').forEach(el => el.classList.remove('marker-active'));
+                
+                // تمييز أيقونة المعلم الحالي على الخريطة
+                const iconEl = e.target.getElement()?.querySelector('.mb-marker-teacher');
+                if (iconEl) iconEl.classList.add('marker-active');
+                
+                // إضاءة الكارت بعد فتح الـ Popup
+                setTimeout(() => {
+                    window.highlightCard(cls.id);
+                }, 150);
+            });
+
+            // ✅ عند إغلاق الـ Popup: إزالة تمييز الأيقونة
+            marker.on('popupclose', function(e) {
+                const iconEl = e.target.getElement()?.querySelector('.mb-marker-teacher');
+                if (iconEl) iconEl.classList.remove('marker-active');
             });
 
             marker.addTo(teacherMarkersLayerGroup);
