@@ -963,6 +963,54 @@ body.dark-mode .address-badge-full {
     opacity: 0.9;
 }
 
+/* ✅ شارة حالة السحابة */
+.cloud-badge {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    z-index: 9998;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.cloud-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94A3B8;
+    transition: 0.3s;
+}
+.cloud-badge.online .dot {
+    background: #22C55E;
+    box-shadow: 0 0 8px #22C55E;
+    animation: pulseDot 1.5s infinite;
+}
+.cloud-badge.offline .dot {
+    background: #DC2626;
+    box-shadow: 0 0 8px #DC2626;
+}
+@keyframes pulseDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+@media (max-width: 640px) { 
+    .cloud-badge { 
+        top: calc(12px + env(safe-area-inset-top)); 
+        right: 12px; 
+        padding: 5px 11px;
+        font-size: 10px;
+    } 
+}
+
 @media (max-width: 640px) {
     .class-result-card { 
         padding: 12px !important; 
@@ -1040,7 +1088,6 @@ body.dark-mode .address-badge-full {
     .card-address-btn { font-size: 10.5px !important; }
     .card-teacher-bottom .card-teacher-name { font-size: 12.5px !important; }
 }
-
 </style>
 </head>
 <body>
@@ -1050,6 +1097,12 @@ body.dark-mode .address-badge-full {
     <div class="security-spinner"></div>
     <h2>جاري التحقق من الجهاز...</h2>
     <p>منصة احجزلي تحمي حسابك</p>
+</div>
+
+<!-- ✅ شارة حالة السحابة -->
+<div class="cloud-badge" id="cloudBadge">
+    <span class="dot"></span>
+    <span id="cloudText">جاري الاتصال...</span>
 </div>
 
 <!-- ✅ سكريبت حماية الجهاز -->
@@ -1073,7 +1126,6 @@ body.dark-mode .address-badge-full {
                 window.location.href = 'student-login.html';
                 return;
             }
-            // ✅ كل تمام، أخفي شاشة الحماية
             overlay.classList.add('hide');
             setTimeout(() => overlay.remove(), 300);
         } catch (e) {
@@ -1111,10 +1163,6 @@ body.dark-mode .address-badge-full {
                 <label class="field-label">أنت في أي مرحلة؟ <span class="text-rose-500">*</span></label>
                 <select id="stageSelect" class="input-base" required onchange="window.updateGrades()">
                     <option value="" disabled selected>اختر المرحلة...</option>
-                    <option value="kg">رياض الأطفال (KG)</option>
-                    <option value="primary">المرحلة الابتدائية</option>
-                    <option value="prep">المرحلة الإعدادية</option>
-                    <option value="secondary">المرحلة الثانوية</option>
                 </select>
                 <label class="field-label">الصف الدراسي <span class="text-rose-500">*</span></label>
                 <select id="gradeSelect" class="input-base" required disabled>
@@ -1220,17 +1268,134 @@ body.dark-mode .address-badge-full {
 </div>
 
 <script type="module">
-    import { getAllGroups } from './firebase-config.js';
+    import { getAllGroups, getCurriculumSettings, subscribeCurriculum } from './firebase-config.js';
 
-    const EDUCATION_STRUCTURE = {
+    // ═══════════════════════════════════════════════════════════
+    // ✅ حالة السحابة
+    // ═══════════════════════════════════════════════════════════
+    window.setCloudStatus = function(status, text) {
+        const badge = document.getElementById('cloudBadge');
+        const txt = document.getElementById('cloudText');
+        if (!badge) return;
+        badge.classList.remove('online', 'offline');
+        if (status) badge.classList.add(status);
+        txt.textContent = text;
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    // ✅ EDUCATION_STRUCTURE - يُبنى ديناميكياً من السحابة
+    // ═══════════════════════════════════════════════════════════
+    let EDUCATION_STRUCTURE = {
         kg: { grades: ['KG 1', 'KG 2'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','لغة فرنسية'] },
         primary: { grades: ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية'] },
         prep: { grades: ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية'] },
         secondary: { grades: ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'], subjects: ['لغة عربية','لغة إنجليزية','لغة فرنسية','تاريخ','جغرافيا','فيزياء','كيمياء','أحياء','رياضيات','فلسفة ومنطق','إحصاء'] }
     };
 
+    // ✅ تحويل مناهج Firestore إلى شكل EDUCATION_STRUCTURE
+    function buildEducationStructureFromCurriculum(curriculum) {
+        if (!curriculum) return;
+        const newStructure = {};
+
+        const stageOrder = ['kg', 'primary', 'prep', 'secondary'];
+        stageOrder.forEach(stageId => {
+            if (curriculum[stageId]) {
+                const stage = curriculum[stageId];
+                const allSubjects = new Set();
+                (stage.grades || []).forEach(g => {
+                    (g.subjects || []).forEach(s => allSubjects.add(s));
+                });
+                newStructure[stageId] = {
+                    grades: (stage.grades || []).map(g => g.name),
+                    subjects: Array.from(allSubjects)
+                };
+            }
+        });
+
+        EDUCATION_STRUCTURE = newStructure;
+        console.log('✅ EDUCATION_STRUCTURE محدّث:', EDUCATION_STRUCTURE);
+    }
+
+    // ✅ تحديث قائمة المراحل والصفوف في نموذج التسجيل
+    function refreshGradeDropdowns() {
+        const stageSelect = document.getElementById('stageSelect');
+        const gradeSelect = document.getElementById('gradeSelect');
+        if (!stageSelect || !gradeSelect) return;
+
+        const currentStage = stageSelect.value;
+        const currentGrade = gradeSelect.value;
+
+        const stageNames = {
+            kg: 'رياض الأطفال (KG)',
+            primary: 'المرحلة الابتدائية',
+            prep: 'المرحلة الإعدادية',
+            secondary: 'المرحلة الثانوية'
+        };
+
+        stageSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة...</option>';
+        Object.keys(EDUCATION_STRUCTURE).forEach(stageId => {
+            const opt = document.createElement('option');
+            opt.value = stageId;
+            opt.textContent = stageNames[stageId] || stageId;
+            stageSelect.appendChild(opt);
+        });
+
+        if (currentStage && EDUCATION_STRUCTURE[currentStage]) {
+            stageSelect.value = currentStage;
+            gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف...</option>';
+            EDUCATION_STRUCTURE[currentStage].grades.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                gradeSelect.appendChild(opt);
+            });
+            gradeSelect.disabled = false;
+            if (currentGrade && EDUCATION_STRUCTURE[currentStage].grades.includes(currentGrade)) {
+                gradeSelect.value = currentGrade;
+            }
+        } else {
+            gradeSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
+            gradeSelect.disabled = true;
+        }
+    }
+
+    // ✅ تحديث فلتر المواد
+    function refreshSubjectFilter() {
+        const subjectSelect = document.getElementById('filterSubject');
+        if (!subjectSelect) return;
+
+        const currentVal = subjectSelect.value;
+        subjectSelect.innerHTML = '<option value="all">📚 كل المواد</option>';
+
+        if (studentProfile && studentProfile.stage && EDUCATION_STRUCTURE[studentProfile.stage]) {
+            EDUCATION_STRUCTURE[studentProfile.stage].subjects.forEach(sub => {
+                subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+            });
+        }
+
+        // إضافة المواد المخصصة من المجموعات
+        const customSubjects = new Set();
+        window.classesDB.forEach(c => {
+            if (c.grade === studentProfile?.grade && 
+                (!EDUCATION_STRUCTURE[studentProfile.stage] || 
+                 !EDUCATION_STRUCTURE[studentProfile.stage].subjects.includes(c.subject))) {
+                customSubjects.add(c.subject);
+            }
+        });
+        customSubjects.forEach(sub => {
+            subjectSelect.innerHTML += `<option value="${sub}">✏️ ${sub}</option>`;
+        });
+
+        if (currentVal && Array.from(subjectSelect.options).some(o => o.value === currentVal)) {
+            subjectSelect.value = currentVal;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ✅ متغيرات الطالب
+    // ═══════════════════════════════════════════════════════════
     let studentProfile = JSON.parse(localStorage.getItem('current_student_profile')) || null;
-    window.classesDB = []; 
+    window.classesDB = [];
     
     let savedMapState = JSON.parse(sessionStorage.getItem('student_map_state')) || {};
     let currentPlaceFilter = savedMapState.place || 'all';
@@ -1305,46 +1470,38 @@ body.dark-mode .address-badge-full {
         }));
     };
 
-    // ✅ دالة تعبئة بيانات الطالب مسبقاً (الاسم والتليفون مفتوحين للتعديل)
     window.prefillStudentData = function() {
         if (!studentProfile) return;
-        
-        // ✅ تحديث النص الترحيبي
         const welcomeEl = document.getElementById('welcomeName');
         if (welcomeEl && studentProfile.name) {
             welcomeEl.textContent = studentProfile.name.split(' ')[0];
         }
-        
-        // ✅ تعبئة الاسم (مفتوح للتعديل)
         const nameInput = document.getElementById('studentName');
-        if (nameInput && studentProfile.name) {
-            nameInput.value = studentProfile.name;
-        }
-        
-        // ✅ تعبئة التليفون (مفتوح للتعديل)
+        if (nameInput && studentProfile.name) nameInput.value = studentProfile.name;
         const phoneInput = document.getElementById('studentPhone');
-        if (phoneInput && studentProfile.phone) {
-            phoneInput.value = studentProfile.phone;
-        }
+        if (phoneInput && studentProfile.phone) phoneInput.value = studentProfile.phone;
     };
 
     async function initApp() {
-        // ✅ لو الطالب عنده بيانات كاملة (id + name + phone + grade + stage) → روح مباشرة للبحث
-        // ✅ لو عنده بيانات دخول بس (id + name + phone) → اعرض نموذج إكمال البيانات
+        // ✅ تحديث القوائم من المناهج السحابية
+        try {
+            const curriculum = await getCurriculumSettings();
+            buildEducationStructureFromCurriculum(curriculum);
+        } catch(e) {
+            console.warn('فشل تحميل المناهج:', e);
+        }
+        refreshGradeDropdowns();
+
         if (studentProfile && studentProfile.id && studentProfile.name && studentProfile.phone) {
             if (studentProfile.grade && studentProfile.stage) {
-                // عنده كل حاجة → روح للبحث
                 window.setupStudentDashboard(); 
                 window.showView('searchView'); 
                 await window.fetchClassesFromFirebase();
             } else {
-                // عنده بيانات الدخول فقط → اعرض النموذج مع تعبئة الاسم والتليفون
                 window.showView('loginView');
                 window.prefillStudentData();
             }
-        } 
-        else { 
-            // مفيش تسجيل دخول → روح لصفحة تسجيل الدخول
+        } else { 
             window.location.href = 'student-login.html';
         }
     }
@@ -1444,16 +1601,10 @@ body.dark-mode .address-badge-full {
 
     window.updateSearchCircle = function() {
         if (!map || !studentLat || !studentLng) return;
-        if (searchCircleLayer) {
-            map.removeLayer(searchCircleLayer);
-        }
+        if (searchCircleLayer) map.removeLayer(searchCircleLayer);
         searchCircleLayer = L.circle([studentLat, studentLng], {
-            color: '#10B981',
-            fillColor: '#10B981',
-            fillOpacity: 0.15,
-            weight: 2,
-            dashArray: '4, 4',
-            radius: studentSearchRadiusKm * 1000
+            color: '#10B981', fillColor: '#10B981', fillOpacity: 0.15,
+            weight: 2, dashArray: '4, 4', radius: studentSearchRadiusKm * 1000
         }).addTo(map);
     };
 
@@ -1508,19 +1659,22 @@ body.dark-mode .address-badge-full {
         const stage = document.getElementById('stageSelect').value;
         const gradeSelect = document.getElementById('gradeSelect');
         gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف الدراسي...</option>';
-        if (stage && EDUCATION_STRUCTURE[stage]) { EDUCATION_STRUCTURE[stage].grades.forEach(g => { gradeSelect.innerHTML += `<option value="${g}">${g}</option>`; }); gradeSelect.disabled = false; } 
-        else { gradeSelect.disabled = true; }
+        if (stage && EDUCATION_STRUCTURE[stage]) {
+            EDUCATION_STRUCTURE[stage].grades.forEach(g => {
+                gradeSelect.innerHTML += `<option value="${g}">${g}</option>`;
+            });
+            gradeSelect.disabled = false;
+        } else {
+            gradeSelect.disabled = true;
+        }
     };
 
     window.handleStudentLogin = function(e) {
         e.preventDefault();
-        
-        // ✅ ناخد الاسم والتليفون من الـ input (مفتوحين للتعديل)
         const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         const name = document.getElementById('studentName').value.trim();
         const phone = document.getElementById('studentPhone').value.trim();
         const accountKey = existingProfile.id || null;
-        
         const gender = document.querySelector('input[name="studentGender"]:checked').value;
         const stage = document.getElementById('stageSelect').value;
         const grade = document.getElementById('gradeSelect').value;
@@ -1529,14 +1683,7 @@ body.dark-mode .address-badge-full {
         if (name.length < 3) return alert('الاسم يجب أن يكون 3 أحرف على الأقل.');
         if (!/^01[0125][0-9]{8}$/.test(phone)) return alert('يرجى إدخال رقم هاتف مصري صحيح (010, 011, 012, 015).');
         
-        studentProfile = { 
-            id: accountKey,
-            name, 
-            phone, 
-            gender, 
-            stage, 
-            grade 
-        };
+        studentProfile = { id: accountKey, name, phone, gender, stage, grade };
         localStorage.setItem('current_student_profile', JSON.stringify(studentProfile));
         window.setupStudentDashboard(); 
         window.showView('searchView');
@@ -1545,29 +1692,19 @@ body.dark-mode .address-badge-full {
 
     window.editStudentData = function() {
         if (!studentProfile) { window.showView('loginView'); return; }
-        
-        // ✅ نعبي الاسم والتليفون
         document.getElementById('studentName').value = studentProfile.name || '';
         document.getElementById('studentPhone').value = studentProfile.phone || '';
-        
-        // ✅ نعبي المرحلة والصف
         document.getElementById('stageSelect').value = studentProfile.stage || '';
         window.updateGrades();
         setTimeout(() => { document.getElementById('gradeSelect').value = studentProfile.grade || ''; }, 50);
-        
-        // ✅ النوع
         document.querySelector(`input[name="studentGender"][value="${studentProfile.gender || 'boy'}"]`).checked = true;
-        
-        // ✅ نعبي البيانات (مفتوحة للتعديل)
         window.prefillStudentData();
-        
         isGpsActive = false; 
         window.showView('loginView');
     };
 
     window.clearAllData = function() {
         if (confirm('⚠️ سيتم مسح بياناتك الحالية والبدء من جديد.\n(ملاحظة: حسابك محفوظ، فقط ستحتاج تدخل بياناتك مرة أخرى)')) {
-            // ✅ نحافظ على id و phone و name (بيانات الحساب)
             const accountData = {
                 id: studentProfile.id,
                 name: studentProfile.name,
@@ -1579,8 +1716,6 @@ body.dark-mode .address-badge-full {
             studentProfile = accountData;
             localStorage.setItem('current_student_profile', JSON.stringify(accountData));
             sessionStorage.removeItem('student_map_state');
-            
-            // ✅ نرجع للصفحة الرئيسية
             window.location.href = 'student-login.html';
         }
     };
@@ -1598,14 +1733,14 @@ body.dark-mode .address-badge-full {
         document.getElementById('displayStudentName').innerText = `${genderEmoji} ${studentProfile.name}`;
         document.getElementById('displayStudentGrade').innerText = `🎯 ${studentProfile.grade}`;
         
-        const subjectSelect = document.getElementById('filterSubject');
-        subjectSelect.innerHTML = '<option value="all">📚 كل المواد</option>';
-        if (EDUCATION_STRUCTURE[studentProfile.stage]) { EDUCATION_STRUCTURE[studentProfile.stage].subjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
-        const customSubjects = new Set();
-        window.classesDB.forEach(c => { if (c.grade === studentProfile.grade && (!EDUCATION_STRUCTURE[studentProfile.stage] || !EDUCATION_STRUCTURE[studentProfile.stage].subjects.includes(c.subject))) { customSubjects.add(c.subject); } });
-        customSubjects.forEach(sub => { subjectSelect.innerHTML += `<option value="${sub}">✏️ ${sub}</option>`; });
+        refreshSubjectFilter();
         
-        if (savedSubject) subjectSelect.value = savedSubject;
+        if (savedSubject) {
+            const subjectSelect = document.getElementById('filterSubject');
+            if (Array.from(subjectSelect.options).some(o => o.value === savedSubject)) {
+                subjectSelect.value = savedSubject;
+            }
+        }
         if (savedTeacher) {
             let tRadio = document.querySelector(`input[name="filterTeacher"][value="${savedTeacher}"]`);
             if (tRadio) tRadio.checked = true;
@@ -1636,41 +1771,25 @@ body.dark-mode .address-badge-full {
         const cardId = 'class-card-' + classId;
         const cardElement = document.getElementById(cardId);
         if (!cardElement) return;
-
         document.querySelectorAll('.highlight-glow').forEach(el => el.classList.remove('highlight-glow'));
-
         cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        setTimeout(() => {
-            cardElement.classList.add('highlight-glow');
-        }, 400);
-
+        setTimeout(() => cardElement.classList.add('highlight-glow'), 400);
         clearTimeout(window._highlightTimer);
-        window._highlightTimer = setTimeout(() => {
-            cardElement.classList.remove('highlight-glow');
-        }, 6000);
+        window._highlightTimer = setTimeout(() => cardElement.classList.remove('highlight-glow'), 6000);
     };
 
     window.copyLocation = function(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            window.showToast('✅ تم نسخ العنوان');
-        }).catch(() => {
-            window.showToast('⚠️ فشل النسخ');
-        });
+        navigator.clipboard.writeText(text).then(() => window.showToast('✅ تم نسخ العنوان')).catch(() => window.showToast('⚠️ فشل النسخ'));
     };
 
     window.copyAddressSmart = function(buttonEl) {
         const address = buttonEl.getAttribute('data-address') || '';
         const cleanAddress = address.replace(/\\n/g, '\n');
-        
         const showSuccess = () => {
             buttonEl.classList.add('copied');
-            setTimeout(() => {
-                buttonEl.classList.remove('copied');
-            }, 1200);
+            setTimeout(() => buttonEl.classList.remove('copied'), 1200);
             window.showToast('✅ تم نسخ العنوان والإحداثيات');
         };
-
         navigator.clipboard.writeText(cleanAddress).then(showSuccess).catch(() => {
             const textarea = document.createElement('textarea');
             textarea.value = cleanAddress;
@@ -1678,12 +1797,7 @@ body.dark-mode .address-badge-full {
             textarea.style.opacity = '0';
             document.body.appendChild(textarea);
             textarea.select();
-            try {
-                document.execCommand('copy');
-                showSuccess();
-            } catch (e) {
-                window.showToast('⚠️ فشل النسخ');
-            }
+            try { document.execCommand('copy'); showSuccess(); } catch (e) { window.showToast('⚠️ فشل النسخ'); }
             document.body.removeChild(textarea);
         });
     };
@@ -1692,10 +1806,7 @@ body.dark-mode .address-badge-full {
         let rows = '';
         const addressText = cls.address || cls.location || 'غير محدد';
         const detailedAddress = cls.detailedAddress || '';
-        
-        const fullText = detailedAddress 
-            ? `${addressText} - ${detailedAddress}` 
-            : addressText;
+        const fullText = detailedAddress ? `${addressText} - ${detailedAddress}` : addressText;
         const fullTextEscaped = fullText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
         const locationHtml = detailedAddress 
@@ -1708,34 +1819,29 @@ body.dark-mode .address-badge-full {
 
         if (cls.apptType === 'recurring' && cls.daysNames && cls.daysNames.length > 0) {
             cls.daysNames.forEach(day => {
-                rows += `
-                    <div class="schedule-row">
-                        <div class="schedule-row-header">
-                            <span class="schedule-day-badge">📅 ${day}</span>
-                            <span class="schedule-time">⏰ ${window.formatTime(cls.startTime)}${cls.endTime ? ' - ' + window.formatTime(cls.endTime) : ''}</span>
-                        </div>
-                        <div class="schedule-location" onclick="window.copyLocation('${fullTextEscaped}')" title="اضغط للنسخ">
-                            <span class="loc-icon">📍</span>
-                            <span class="loc-text">${locationHtml}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            rows += `
-                <div class="schedule-row">
+                rows += `<div class="schedule-row">
                     <div class="schedule-row-header">
-                        <span class="schedule-day-badge">📅 ${cls.date || 'موعد محدد'}</span>
+                        <span class="schedule-day-badge">📅 ${day}</span>
                         <span class="schedule-time">⏰ ${window.formatTime(cls.startTime)}${cls.endTime ? ' - ' + window.formatTime(cls.endTime) : ''}</span>
                     </div>
                     <div class="schedule-location" onclick="window.copyLocation('${fullTextEscaped}')" title="اضغط للنسخ">
                         <span class="loc-icon">📍</span>
                         <span class="loc-text">${locationHtml}</span>
                     </div>
+                </div>`;
+            });
+        } else {
+            rows += `<div class="schedule-row">
+                <div class="schedule-row-header">
+                    <span class="schedule-day-badge">📅 ${cls.date || 'موعد محدد'}</span>
+                    <span class="schedule-time">⏰ ${window.formatTime(cls.startTime)}${cls.endTime ? ' - ' + window.formatTime(cls.endTime) : ''}</span>
                 </div>
-            `;
+                <div class="schedule-location" onclick="window.copyLocation('${fullTextEscaped}')" title="اضغط للنسخ">
+                    <span class="loc-icon">📍</span>
+                    <span class="loc-text">${locationHtml}</span>
+                </div>
+            </div>`;
         }
-
         return rows;
     };
 
@@ -1763,11 +1869,9 @@ body.dark-mode .address-badge-full {
             document.getElementById('ratingLabel').style.color = '#E11D48';
             return;
         }
-
         const ratings = JSON.parse(localStorage.getItem('teacher_ratings') || '{}');
         const cls = window.classesDB.find(c => c.id === ratingState.classId);
         const teacherKey = `${cls.teacherTitle}_${cls.teacherName}`;
-
         if (!ratings[teacherKey]) ratings[teacherKey] = [];
         ratings[teacherKey].push({
             stars: ratingState.stars,
@@ -1775,14 +1879,9 @@ body.dark-mode .address-badge-full {
             studentName: studentProfile.name,
             date: new Date().toISOString()
         });
-
         localStorage.setItem('teacher_ratings', JSON.stringify(ratings));
         window.closeRatingModal();
-
-        if (window.confetti) {
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FBBF24', '#10B981', '#3B82F6'] });
-        }
-
+        if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FBBF24', '#10B981', '#3B82F6'] });
         window.renderClasses();
         window.showToast('✅ تم إرسال تقييمك، شكراً لك!');
     };
@@ -1850,26 +1949,13 @@ body.dark-mode .address-badge-full {
             text: `احجز مع ${cls.teacherTitle} ${cls.teacherName} - ${cls.subject} (${cls.groupName})`,
             url: shareUrl
         };
-
-        if (navigator.share) {
-            navigator.share(shareData).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                window.showToast('✅ تم نسخ رابط المجموعة');
-            }).catch(() => {
-                window.showToast('⚠️ فشل النسخ');
-            });
-        }
+        if (navigator.share) navigator.share(shareData).catch(() => {});
+        else navigator.clipboard.writeText(shareUrl).then(() => window.showToast('✅ تم نسخ رابط المجموعة')).catch(() => window.showToast('⚠️ فشل النسخ'));
     };
 
     window.showToast = function(msg) {
         const toast = document.createElement('div');
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px;
-            font-weight: 900; font-size: 14px; z-index: 10001; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s ease; opacity: 0;
-        `;
+        toast.style.cssText = `position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(50px); background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 900; font-size: 14px; z-index: 10001; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; opacity: 0;`;
         toast.innerText = msg;
         document.body.appendChild(toast);
         requestAnimationFrame(() => {
@@ -1902,8 +1988,7 @@ body.dark-mode .address-badge-full {
         teacherMarkersLayerGroup.clearLayers();
         const bounds = L.latLngBounds(); 
         let hasValidMarkers = false;
-        
-        if (studentLat && studentLng) { bounds.extend([studentLat, studentLng]); }
+        if (studentLat && studentLng) bounds.extend([studentLat, studentLng]);
 
         filteredClasses.forEach(cls => {
             if (!cls.lat || !cls.lng) return;
@@ -1912,22 +1997,14 @@ body.dark-mode .address-badge-full {
             if (cls.type === 'student_home') { emoji = '🚗'; typeClass = 'type-student_home'; }
             
             const iconHtml = `<div class="mb-marker-teacher ${typeClass}">${emoji}</div>`;
-            const teacherIcon = L.divIcon({
-                className: '',
-                html: iconHtml,
-                iconSize: [42, 42],
-                iconAnchor: [21, 21],
-                popupAnchor: [0, -21]
-            });
+            const teacherIcon = L.divIcon({ className: '', html: iconHtml, iconSize: [42, 42], iconAnchor: [21, 21], popupAnchor: [0, -21] });
 
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity; const remaining = cls.maxCapacity - totalBooked;
             let dateText = cls.apptType === 'recurring' ? `كل ${cls.daysNames.join(' ')}` : `يوم ${cls.date}`;
 
             const rating = window.getTeacherRating(cls);
-            const ratingPopupHtml = rating.count > 0 
-                ? `<div style="font-size: 12px; color: #FBBF24; margin-bottom: 6px; font-weight: 900;">⭐ ${rating.avg} (${rating.count} تقييم)</div>` 
-                : '';
+            const ratingPopupHtml = rating.count > 0 ? `<div style="font-size: 12px; color: #FBBF24; margin-bottom: 6px; font-weight: 900;">⭐ ${rating.avg} (${rating.count} تقييم)</div>` : '';
 
             const addressMain = cls.address || cls.location || '';
             const detailed = cls.detailedAddress || '';
@@ -1949,34 +2026,25 @@ body.dark-mode .address-badge-full {
                     <span style="font-size: 13px; color: ${isFull ? '#E11D48' : '#059669'}; font-weight: 900;">${isFull ? 'مكتملة' : remaining + ' مكان'}</span>
                 </div>
                 <div style="display: flex; gap: 5px;">
-                    <button onclick="window.bookClass('${cls.id}')" style="flex:1; background: linear-gradient(135deg,#25D366 0%, #128C7E 100%); color: white; border: none; padding: 9px 0; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 12px; display: flex; justify-content: center; gap: 4px; align-items: center; box-shadow: 0 4px 6px rgba(37,211,102,0.2);" ${isFull ? 'disabled' : ''}>💬 واتس</button>
-                    <a href="tel:${cls.phone}" style="flex:1; background: linear-gradient(135deg,#3B82F6 0%, #1D4ED8 100%); color: white; text-decoration: none; padding: 9px 0; border-radius: 8px; font-weight: 900; font-size: 12px; display: flex; justify-content: center; gap: 4px; align-items: center; box-shadow: 0 4px 6px rgba(59,130,246,0.2);">📞 اتصال</a>
+                    <button onclick="window.bookClass('${cls.id}')" style="flex:1; background: linear-gradient(135deg,#25D366 0%, #128C7E 100%); color: white; border: none; padding: 9px 0; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 12px; display: flex; justify-content: center; gap: 4px; align-items: center;" ${isFull ? 'disabled' : ''}>💬 واتس</button>
+                    <a href="tel:${cls.phone}" style="flex:1; background: linear-gradient(135deg,#3B82F6 0%, #1D4ED8 100%); color: white; text-decoration: none; padding: 9px 0; border-radius: 8px; font-weight: 900; font-size: 12px; display: flex; justify-content: center; gap: 4px; align-items: center;">📞 اتصال</a>
                 </div>
             </div>`;
             
             const marker = L.marker([cls.lat, cls.lng], { icon: teacherIcon });
             marker.bindPopup(popupHtml, { maxWidth: 270 });
             
-            marker.on('click', function(e) {
-                this.openPopup();
-            });
-
+            marker.on('click', function() { this.openPopup(); });
             marker.on('popupopen', function(e) {
                 document.querySelectorAll('.mb-marker-teacher').forEach(el => el.classList.remove('marker-active'));
-                
                 const iconEl = e.target.getElement()?.querySelector('.mb-marker-teacher');
                 if (iconEl) iconEl.classList.add('marker-active');
-                
-                setTimeout(() => {
-                    window.highlightCard(cls.id);
-                }, 150);
+                setTimeout(() => window.highlightCard(cls.id), 150);
             });
-
             marker.on('popupclose', function(e) {
                 const iconEl = e.target.getElement()?.querySelector('.mb-marker-teacher');
                 if (iconEl) iconEl.classList.remove('marker-active');
             });
-
             marker.on('add', function() {
                 setTimeout(() => {
                     const el = marker.getElement();
@@ -1989,12 +2057,12 @@ body.dark-mode .address-badge-full {
             hasValidMarkers = true;
         });
 
-        if (hasValidMarkers) { map.flyToBounds(bounds, { padding: [50, 50], maxZoom: 15, duration: 0.8 }); }
+        if (hasValidMarkers) map.flyToBounds(bounds, { padding: [50, 50], maxZoom: 15, duration: 0.8 });
     };
 
     window.focusOnMap = function(classId, lat, lng) {
         document.getElementById('studentMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (map) { map.flyTo([lat, lng], 16, { animate: true, duration: 1.5 }); }
+        if (map) map.flyTo([lat, lng], 16, { animate: true, duration: 1.5 });
     };
 
     window.getSubjectTheme = function(subject) {
@@ -2023,12 +2091,10 @@ body.dark-mode .address-badge-full {
             if (filterSubject !== 'all' && c.subject !== filterSubject) return false;
             if (filterTeacher !== 'all' && c.teacherTitle !== filterTeacher) return false;
             if (currentPlaceFilter !== 'all' && c.type !== currentPlaceFilter) return false;
-
             if (searchQuery) {
                 const haystack = `${c.teacherName} ${c.teacherTitle} ${c.subject} ${c.location} ${c.groupName} ${c.detailedAddress || ''}`.toLowerCase();
                 if (!haystack.includes(searchQuery)) return false;
             }
-
             return true;
         });
 
@@ -2046,7 +2112,7 @@ body.dark-mode .address-badge-full {
             return;
         }
 
-        filteredClasses.forEach((cls, index) => {
+        filteredClasses.forEach((cls) => {
             const totalBooked = (cls.bookedBoys || 0) + (cls.bookedGirls || 0);
             const isFull = totalBooked >= cls.maxCapacity;
             const themeClass = window.getSubjectTheme(cls.subject);
@@ -2105,23 +2171,12 @@ body.dark-mode .address-badge-full {
                             class="card-address-btn card-address-copy" 
                             data-address="${(cls.lat && cls.lng ? fullAddr + '\n📍 الإحداثيات: ' + cls.lat + ', ' + cls.lng : fullAddr).replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n')}"
                             onclick="window.copyAddressSmart(this)"
-                        >
-                            📋 نسخ العنوان
-                        </button>
-                        <a 
-                            class="card-address-btn card-address-maps" 
-                            href="${cls.lat && cls.lng ? 'https://www.google.com/maps/search/?api=1&query=' + cls.lat + ',' + cls.lng : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(fullAddr)}" 
-                            target="_blank" 
-                            rel="noopener"
-                        >
-                            🗺️ فتح في الخرائط
-                        </a>
+                        >📋 نسخ العنوان</button>
+                        <a class="card-address-btn card-address-maps" href="${cls.lat && cls.lng ? 'https://www.google.com/maps/search/?api=1&query=' + cls.lat + ',' + cls.lng : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(fullAddr)}" target="_blank" rel="noopener">🗺️ فتح في الخرائط</a>
                     </div>
                 </div>
 
-                <div class="schedule-table">
-                    ${window.buildScheduleRows(cls)}
-                </div>
+                <div class="schedule-table">${window.buildScheduleRows(cls)}</div>
 
                 <div class="card-teacher-bottom">
                     <h4 class="card-teacher-name">🎓 ${cls.teacherTitle} ${cls.teacherName}</h4>
@@ -2152,11 +2207,7 @@ body.dark-mode .address-badge-full {
     window.bookClass = function(classId) {
         const cls = window.classesDB.find(c => c.id === classId);
         if(!cls) return;
-        
-        if (window.confetti) {
-            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 }, colors: ['#25D366', '#10B981'] });
-        }
-        
+        if (window.confetti) confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 }, colors: ['#25D366', '#10B981'] });
         const msg = `السلام عليكم ${cls.teacherTitle} ${cls.teacherName}،\nأنا الطالب: ${studentProfile.name}\nحابب احجز معاك في مجموعة ( ${cls.groupName} ) لمادة ${cls.subject}.`;
         const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`;
         window.open(whatsappUrl, '_blank');
@@ -2169,6 +2220,31 @@ body.dark-mode .address-badge-full {
         return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'م' : 'ص'}`;
     };
 
+    // ═══════════════════════════════════════════════════════════
+    // ✅ الاستماع اللحظي للمناهج من السحابة
+    // ═══════════════════════════════════════════════════════════
+    let isFirstCurriculumLoad = true;
+
+    subscribeCurriculum((curriculum) => {
+        buildEducationStructureFromCurriculum(curriculum);
+        window.setCloudStatus('online', 'متصل ☁️');
+        
+        if (isFirstCurriculumLoad) {
+            refreshGradeDropdowns();
+            if (studentProfile && studentProfile.stage) refreshSubjectFilter();
+            isFirstCurriculumLoad = false;
+        } else {
+            refreshGradeDropdowns();
+            if (studentProfile && studentProfile.stage) {
+                refreshSubjectFilter();
+                if (window.renderClasses) window.renderClasses();
+            }
+        }
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // ✅ التهيئة
+    // ═══════════════════════════════════════════════════════════
     initStarPicker();
     initApp();
 </script>
