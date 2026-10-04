@@ -43,23 +43,6 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .cloud-status.offline .dot{background:#DC2626;box-shadow:0 0 8px #DC2626}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ✅ شارة "يوجد تعديلات غير محفوظة" */
-.unsaved-badge{
-  position:fixed;bottom:20px;left:20px;
-  background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;
-  padding:10px 18px;border-radius:24px;font-size:12px;font-weight:900;
-  box-shadow:0 8px 20px rgba(217,119,6,.4);z-index:99998;
-  display:none;align-items:center;gap:8px;
-  animation:bounceIn .4s ease
-}
-.unsaved-badge.show{display:flex}
-.unsaved-badge .pulse-dot{
-  width:10px;height:10px;border-radius:50%;background:#fff;
-  animation:pingPong 1.2s infinite
-}
-@keyframes pingPong{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
-@keyframes bounceIn{from{transform:translateY(20px) scale(.9);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-
 .tabs{display:flex;gap:8px;background:#F1F5F9;padding:6px;border-radius:14px;margin-bottom:16px}
 .tab{flex:1;padding:12px;border-radius:10px;border:none;background:transparent;font-weight:900;font-size:14px;color:var(--muted);cursor:pointer;transition:.2s;font-family:'Cairo'}
 .tab.active{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
@@ -99,101 +82,36 @@ tr.locked td{background:#FEF2F2}
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
 
-/* ✅ هيدر المرحلة - الآن بلون قابل للتخصيص */
-.stage-card{
-  background:#fff;border:2px solid var(--line);border-radius:14px;
-  margin-bottom:12px;overflow:hidden;
-  border-right-width:6px;border-right-style:solid;
-  border-right-color:var(--stage-color, #CBD5E1);
-  transition:box-shadow .2s
-}
-.stage-card:hover{box-shadow:0 4px 12px -4px rgba(0,0,0,.1)}
-
-.stage-card-header{
-  padding:14px 16px;
-  background:var(--stage-header-bg, #F8FAFC);
-  border-bottom:2px solid var(--line);
-  display:flex;justify-content:space-between;align-items:center;
-  cursor:pointer;transition:filter .2s
-}
-.stage-card-header:hover{filter:brightness(.97)}
-.stage-card-header h3{
-  margin:0;font-size:16px;font-weight:900;
-  color:var(--stage-header-text, var(--primary-dark));
-  display:flex;align-items:center;gap:8px
-}
+/* ✅ هيدر المرحلة - مغلق افتراضياً */
+.stage-card{background:#fff;border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.stage-card-header{padding:14px 16px;background:#F8FAFC;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s;gap:8px}
+.stage-card-header:hover{background:#ECFDF5}
+.stage-card-header h3{margin:0;font-size:16px;font-weight:900;color:var(--primary-dark);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .stage-card-header .stage-arrow{
   width:24px;height:24px;display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--stage-header-text, var(--muted));
-  transition:transform .3s ease
+  font-size:14px;color:var(--muted);transition:transform .3s ease;flex-shrink:0
 }
 .stage-card.open .stage-card-header .stage-arrow{transform:rotate(180deg)}
 .stage-card-body{padding:14px;display:none}
 .stage-card.open .stage-card-body{display:block}
 
-/* ✅ أزرار التحكم في المرحلة */
 .stage-actions{
-  display:flex;gap:6px;align-items:center;margin-right:auto;flex-wrap:wrap
+  display:flex;gap:6px;align-items:center;margin-right:auto;flex-shrink:0
 }
 .stage-action-btn{
   padding:5px 10px;border-radius:6px;border:none;font-size:11px;font-weight:900;
-  cursor:pointer;transition:.2s;font-family:'Cairo';display:flex;align-items:center;gap:4px
+  cursor:pointer;transition:.2s;font-family:'Cairo'
 }
-.stage-action-btn.rename-stage{background:#DBEAFE;color:#1E40AF}
-.stage-action-btn.rename-stage:hover{background:#BFDBFE}
+.stage-action-btn.edit-stage{background:#DBEAFE;color:#1E40AF}
+.stage-action-btn.edit-stage:hover{background:#BFDBFE}
 .stage-action-btn.delete-stage{background:#FEE2E2;color:#991B1B}
 .stage-action-btn.delete-stage:hover{background:#FECACA}
 
-/* ✅ Color picker للهيدر */
-.stage-color-picker{
-  width:30px;height:30px;border:2px solid rgba(255,255,255,.6);
-  border-radius:8px;cursor:pointer;padding:0;background:transparent;
-  -webkit-appearance:none;appearance:none;
-  box-shadow:0 2px 6px rgba(0,0,0,.15)
-}
-.stage-color-picker::-webkit-color-swatch-wrapper{padding:2px}
-.stage-color-picker::-webkit-color-swatch{border:none;border-radius:5px}
-.stage-color-picker::-moz-color-swatch{border:none;border-radius:5px}
-
-/* ✅ لوحة ألوان سريعة للمرحلة */
-.stage-quick-colors{
-  display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;padding:8px;
-  background:#fff;border-radius:8px;border:1px dashed #CBD5E1
-}
-.stage-quick-colors .qc-btn{
-  width:26px;height:26px;border-radius:50%;border:2px solid #fff;
-  cursor:pointer;box-shadow:0 0 0 1.5px rgba(0,0,0,.15);
-  transition:transform .15s;padding:0
-}
-.stage-quick-colors .qc-btn:hover{transform:scale(1.15)}
-.stage-quick-colors .qc-btn:active{transform:scale(.9)}
-
-/* ✅ الصف */
 .grade-block{background:#F8FAFC;border:1.5px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
 .grade-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
-.grade-block-header h4{margin:0;font-size:14px;font-weight:900;color:var(--primary-dark);display:flex;align-items:center;gap:6px}
-
-/* ✅ أزرار الترتيب ▲▼ */
-.grade-order-controls{display:flex;flex-direction:column;gap:2px}
-.order-btn{
-  width:24px;height:20px;border:none;border-radius:4px;
-  font-size:10px;font-weight:900;cursor:pointer;
-  background:#E2E8F0;color:#475569;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .15s;font-family:'Cairo';padding:0
-}
-.order-btn:hover:not(:disabled){background:#CBD5E1;color:var(--primary-dark)}
-.order-btn:active:not(:disabled){transform:scale(.9)}
-.order-btn:disabled{opacity:.3;cursor:not-allowed}
-
-.grade-actions-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-
+.grade-block-header h4{margin:0;font-size:14px;font-weight:900;color:var(--primary-dark)}
 .subjects-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.subject-tag{
-  background:var(--primary-light);color:var(--primary-dark);
-  padding:5px 10px;border-radius:6px;font-size:12px;font-weight:900;
-  display:inline-flex;align-items:center;gap:5px;border:1px solid #A7F3D0
-}
+.subject-tag{background:var(--primary-light);color:var(--primary-dark);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:5px;border:1px solid #A7F3D0}
 .subject-tag button{background:none;border:none;color:var(--danger);font-size:14px;cursor:pointer;padding:0;font-weight:900}
 .inline-input{flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-family:'Cairo';font-weight:800;font-size:13px;outline:none;min-width:0}
 .inline-input:focus{border-color:var(--primary)}
@@ -221,6 +139,35 @@ tr.locked td{background:#FEF2F2}
 }
 .add-stage-inputs button:hover{transform:translateY(-2px)}
 .add-stage-inputs button:active{transform:translateY(0) scale(.98)}
+
+/* ✅ مكتبة الأيقونات */
+.icon-library{
+  margin-top:14px;background:#fff;border:1.5px solid #A7F3D0;
+  border-radius:12px;padding:12px;max-height:420px;overflow-y:auto
+}
+.icon-category{margin-bottom:14px}
+.icon-category:last-child{margin-bottom:0}
+.icon-cat-title{
+  font-size:12px;font-weight:900;color:var(--primary-dark);
+  margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #D1FAE5
+}
+.icon-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px
+}
+.icon-btn{
+  width:100%;aspect-ratio:1;border:2px solid var(--line);background:#fff;
+  border-radius:10px;font-size:22px;cursor:pointer;transition:.15s;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  -webkit-tap-highlight-color:transparent
+}
+.icon-btn:hover{
+  border-color:var(--primary);background:#ECFDF5;transform:translateY(-2px) scale(1.05)
+}
+.icon-btn:active{transform:scale(.9)}
+.icon-btn.selected{
+  border-color:var(--primary);background:#D1FAE5;box-shadow:0 0 0 3px rgba(16,185,129,.3)
+}
+.icon-category.hidden{display:none}
 
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:900}
 .badge-active{background:#D1FAE5;color:#065F46}
@@ -254,20 +201,15 @@ tr.locked td{background:#FEF2F2}
   <p>إدارة شاملة للمعلمين والطلاب والمحتوى التعليمي — مزامنة سحابية لحظية</p>
 </div>
 
-<!-- ✅ شارة "يوجد تعديلات غير محفوظة" -->
-<div class="unsaved-badge" id="unsavedBadge">
-  <span class="pulse-dot"></span>
-  <span>يوجد تعديلات غير محفوظة — لا تنسَ الحفظ!</span>
-</div>
-
 <!-- Tabs -->
 <div class="tabs">
   <button class="tab active" data-page="page-users">👥 إدارة المستخدمين</button>
   <button class="tab" data-page="page-curriculum">📚 إدارة المواد والصفوف</button>
 </div>
 
-<!-- ============ الصفحة الأولى ============ -->
+<!-- ============ الصفحة الأولى: المستخدمين ============ -->
 <div id="page-users" class="page active">
+
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-num" id="statTeachers">0</div><div class="stat-label">👨‍🏫 إجمالي المعلمين</div></div>
     <div class="stat-box blue"><div class="stat-num" id="statMester">0</div><div class="stat-label">👨‍🏫 مستر</div></div>
@@ -279,6 +221,11 @@ tr.locked td{background:#FEF2F2}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
+      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
+        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
+        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">🟡 طالب</span>
+        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
+      </div>
     </div>
     <div id="adminMap"></div>
   </div>
@@ -334,7 +281,7 @@ tr.locked td{background:#FEF2F2}
   </div>
 </div>
 
-<!-- ============ الصفحة الثانية ============ -->
+<!-- ============ الصفحة الثانية: المواد والصفوف ============ -->
 <div id="page-curriculum" class="page">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
@@ -343,10 +290,7 @@ tr.locked td{background:#FEF2F2}
           📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span>
         </h2>
         <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">
-          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b>
-        </p>
-        <p style="margin:4px 0 0;font-size:11px;color:var(--primary)">
-          ✨ يمكنك تلوين الهيدر 🎨 وترتيب الصفوف بالأسهم ▲▼
+          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b> التي تفتح mester1.html و talep.html
         </p>
       </div>
     </div>
@@ -356,13 +300,158 @@ tr.locked td{background:#FEF2F2}
     <!-- ✅ مربع إضافة مرحلة جديدة -->
     <div class="add-stage-box">
       <h4><span>➕</span> إضافة مرحلة جديدة</h4>
+
       <div class="add-stage-inputs">
-        <input type="text" id="newStageName" placeholder="اسم المرحلة (مثال: المرحلة الجامعية)" maxlength="50" onkeydown="if(event.key==='Enter')window.addStage()">
+        <input type="text" id="newStageIcon" placeholder="🏫" maxlength="8"
+               style="max-width:80px;text-align:center;font-size:26px;flex:0 0 80px;padding:8px;transition:transform .2s">
+        <input type="text" id="newStageName" placeholder="اسم المرحلة (مثال: المرحلة الجامعية)"
+               maxlength="50" onkeydown="if(event.key==='Enter')window.addStage()">
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
-      <p style="margin:8px 0 0;font-size:11px;color:var(--muted);font-weight:800">
-        💡 سيتم إنشاء المرحلة فارغة بدون صفوف
-      </p>
+
+      <!-- 🎨 مكتبة الأيقونات -->
+      <div class="icon-library">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <span style="font-size:12px;color:var(--primary-dark);font-weight:900">🎨 اختار أيقونة من المكتبة:</span>
+          <input type="text" id="iconSearch" placeholder="🔍 ابحث..."
+                 style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--line);font-family:'Cairo';font-weight:800;font-size:12px;width:160px;outline:none"
+                 oninput="window.filterIcons(this.value)">
+        </div>
+
+        <!-- تصنيف: المراحل المدرسية -->
+        <div class="icon-category" data-cat="مدارس">
+          <div class="icon-cat-title">🏫 المراحل المدرسية</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏫', event)" title="مدرسة">🏫</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏛️', event)" title="إعدادي">🏛️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎒', event)" title="ابتدائي">🎒</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📚', event)" title="عام">📚</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📖', event)" title="قراءة">📖</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📝', event)" title="امتحانات">📝</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('✏️', event)" title="كتابة">✏️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🖍️', event)" title="تلوين">🖍️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📐', event)" title="رياضيات">📐</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🔬', event)" title="علوم">🔬</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🧪', event)" title="كيمياء">🧪</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🌍', event)" title="جغرافيا">🌍</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: الثانوية والجامعة -->
+        <div class="icon-category" data-cat="جامعات">
+          <div class="icon-cat-title">🎓 الثانوية والجامعات</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎓', event)" title="تخرج">🎓</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎯', event)" title="ثانوية">🎯</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏛️', event)" title="كلية">🏛️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏢', event)" title="مبنى جامعي">🏢</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏗️', event)" title="هندسة">🏗️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⚕️', event)" title="طب">⚕️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💊', event)" title="صيدلة">💊</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🦷', event)" title="أسنان">🦷</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⚖️', event)" title="حقوق">⚖️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💼', event)" title="تجارة">💼</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📊', event)" title="إحصاء">📊</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💻', event)" title="حاسبات">💻</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🖥️', event)" title="IT">🖥️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🧠', event)" title="ذكاء اصطناعي">🧠</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎨', event)" title="فنون جميلة">🎨</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎭', event)" title="تربية فنية">🎭</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎼', event)" title="موسيقى">🎼</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏃', event)" title="رياضة">🏃</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🌾', event)" title="زراعة">🌾</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🐾', event)" title="بيطري">🐾</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: المعاهد والكورسات -->
+        <div class="icon-category" data-cat="كورسات">
+          <div class="icon-cat-title">💻 المعاهد والكورسات</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💻', event)" title="برمجة">💻</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📱', event)" title="موبايل">📱</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🔐', event)" title="أمن سيبراني">🔐</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('☁️', event)" title="سحابة">☁️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🤖', event)" title="روبوتات">🤖</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📈', event)" title="تسويق">📈</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎬', event)" title="مونتاج">🎬</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📷', event)" title="تصوير">📷</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🗣️', event)" title="لغات">🗣️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🌐', event)" title="إنترنت">🌐</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: الديانات -->
+        <div class="icon-category" data-cat="أديان">
+          <div class="icon-cat-title">🕌⛪ الديانات</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕌', event)" title="إسلامي">🕌</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📿', event)" title="قرآن">📿</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('☪️', event)" title="إسلام">☪️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕋', event)" title="حج">🕋</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('✝️', event)" title="مسيحي">✝️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⛪', event)" title="كنيسة">⛪</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('☦️', event)" title="أرثوذكسي">☦️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕊️', event)" title="سلام">🕊️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🙏', event)" title="صلاة">🙏</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('👼', event)" title="ملاك">👼</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕯️', event)" title="شمعة">🕯️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⭐', event)" title="نجمة">⭐</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🐟', event)" title="سمكة">🐟</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕎', event)" title="يهودي">🕎</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('☸️', event)" title="بوذي">☸️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🕉️', event)" title="هندوسي">🕉️</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: أطفال وحضانة -->
+        <div class="icon-category" data-cat="أطفال">
+          <div class="icon-cat-title">🧸 الحضانة والأطفال</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🧸', event)" title="حضانة">🧸</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('👶', event)" title="أطفال">👶</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎈', event)" title="مرح">🎈</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎠', event)" title="ترفيه">🎠</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🌈', event)" title="ألوان">🌈</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎪', event)" title="سيرك">🎪</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🦁', event)" title="حيوانات">🦁</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: رياضة وفنون -->
+        <div class="icon-category" data-cat="رياضة">
+          <div class="icon-cat-title">⚽ الرياضة والفنون</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⚽', event)" title="كرة قدم">⚽</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏀', event)" title="سلة">🏀</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏊', event)" title="سباحة">🏊</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🥋', event)" title="كاراتيه">🥋</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎾', event)" title="تنس">🎾</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎨', event)" title="رسم">🎨</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎭', event)" title="تمثيل">🎭</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎼', event)" title="موسيقى">🎼</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎤', event)" title="غناء">🎤</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🩰', event)" title="باليه">🩰</button>
+          </div>
+        </div>
+
+        <!-- تصنيف: متنوع -->
+        <div class="icon-category" data-cat="متنوع">
+          <div class="icon-cat-title">✨ أيقونات متنوعة</div>
+          <div class="icon-grid">
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🏆', event)" title="تفوق">🏆</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💡', event)" title="أفكار">💡</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🚀', event)" title="تقدم">🚀</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🌟', event)" title="مميز">🌟</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🔥', event)" title="قوي">🔥</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('💎', event)" title="متميز">💎</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('👑', event)" title="ملكي">👑</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('🎖️', event)" title="ميدالية">🎖️</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('📌', event)" title="مثبت">📌</button>
+            <button type="button" class="icon-btn" onclick="window.pickIcon('⚡', event)" title="سريع">⚡</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
@@ -416,32 +505,6 @@ window.toast = function(msg, color = '#0F172A') {
   window._toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 };
 
-// ============ Unsaved Changes Flag ============
-window._hasUnsavedChanges = false;
-
-function markAsChanged() {
-  if (!window._hasUnsavedChanges) {
-    window._hasUnsavedChanges = true;
-    const badge = document.getElementById('unsavedBadge');
-    if (badge) badge.classList.add('show');
-  }
-}
-
-function clearChanged() {
-  window._hasUnsavedChanges = false;
-  const badge = document.getElementById('unsavedBadge');
-  if (badge) badge.classList.remove('show');
-}
-
-// ✅ تحذير عند محاولة إغلاق الصفحة
-window.addEventListener('beforeunload', (e) => {
-  if (window._hasUnsavedChanges) {
-    e.preventDefault();
-    e.returnValue = 'يوجد تعديلات غير محفوظة! هل تريد الخروج فعلاً؟';
-    return e.returnValue;
-  }
-});
-
 // ============ Data Stores ============
 let allTeachers = [];
 let allStudents = [];
@@ -451,48 +514,6 @@ let unsubCurriculum = null;
 let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
-
-// ✅ ألوان جاهزة
-const QUICK_COLORS = [
-  '#D81B60', // وردي - KG
-  '#2E7D32', // أخضر - ابتدائي
-  '#1565C0', // أزرق - إعدادي
-  '#E65100', // برتقالي - ثانوي
-  '#7C3AED', // بنفسجي - جامعي
-  '#047857', '#059669', '#10B981', '#22C55E', '#84CC16',
-  '#EAB308', '#F59E0B', '#F97316', '#EF4444', '#DC2626',
-  '#EC4899', '#D946EF', '#A855F7', '#8B5CF6', '#6366F1',
-  '#3B82F6', '#0EA5E9', '#06B6D4', '#14B8A6', '#64748B'
-];
-
-// ✅ الألوان الافتراضية للمراحل المعروفة
-const DEFAULT_STAGE_COLORS = {
-  kg: '#D81B60',
-  primary: '#2E7D32',
-  prep: '#1565C0',
-  secondary: '#E65100'
-};
-
-// ✅ تحويل HEX إلى RGB مع شفافية
-function hexToRgba(hex, alpha) {
-  hex = hex.replace('#', '');
-  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-// ✅ تحديد إذا كان اللون فاتح (لتغيير لون النص)
-function isLightColor(hex) {
-  hex = hex.replace('#', '');
-  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness > 155;
-}
 
 // ============ Render Stats ============
 function renderStats() {
@@ -589,11 +610,11 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock ============
+// ============ Lock/Unlock (Firestore) ============
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل المعلم' : '🔓 تم فتح المعلم', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل المعلم سحابياً' : '🔓 تم فتح المعلم سحابياً', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -603,7 +624,7 @@ window.toggleLockTeacher = async function(phone, lockValue) {
 window.toggleLockStudent = async function(id, lockValue) {
   try {
     await setStudentLock(id, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 تم فتح الطالب', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل الطالب سحابياً' : '🔓 تم فتح الطالب سحابياً', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -612,7 +633,7 @@ window.toggleLockStudent = async function(id, lockValue) {
 
 // ============ Delete ============
 window.deleteTeacher = async function(phone, name) {
-  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً.\n\nهل أنت متأكد؟`)) return;
+  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
   try {
     const result = await deleteTeacherAccount(phone);
     window.toast(`🗑 تم حذف المعلم و ${result.deletedGroups} مجموعة`, '#DC2626');
@@ -623,7 +644,7 @@ window.deleteTeacher = async function(phone, name) {
 };
 
 window.deleteStudent = async function(id, name) {
-  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً.`)) return;
+  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
   try {
     await deleteStudentAccount(id);
     window.toast('🗑 تم حذف الطالب', '#DC2626');
@@ -692,6 +713,10 @@ function renderMap() {
       <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
         <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${s.name||''}</div>
         <div style="font-size:12px;color:#64748B;margin:4px 0">${s.grade||''}</div>
+        <div style="display:flex;gap:4px;margin-top:6px">
+          ${s.phone ? `<a href="https://wa.me/2${s.phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
+          ${s.phone ? `<a href="tel:${s.phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
+        </div>
       </div>
     `);
     markersLayer.addLayer(m);
@@ -705,7 +730,8 @@ function renderMap() {
 }
 
 // ==========================================================
-// ✅ Curriculum Management - مع تلوين الهيدر
+// ✅ Curriculum Management (مع الأيقونات - بدون موجات)
+// ✅ الهيدر مقفول افتراضياً - يتم فتحه بالنقر
 // ==========================================================
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
@@ -717,86 +743,49 @@ window.renderCurriculum = function() {
     const gradesCount = (stage.grades || []).length;
     const subjectsCount = (stage.grades || []).reduce((sum, g) => sum + ((g.subjects || []).length), 0);
 
-    // ✅ لون المرحلة (من البيانات أو الافتراضي حسب ID)
-    const stageColor = stage.color || DEFAULT_STAGE_COLORS[stageId] || '#7C3AED';
-    const headerBg = hexToRgba(stageColor, 0.15); // خلفية شفافة
-    const headerTextColor = stageColor; // لون النص = اللون الأساسي
-    const lightText = isLightColor(stageColor);
-
     html += `
-      <div class="stage-card" 
-           data-stage="${stageId}"
-           style="--stage-color:${stageColor}; --stage-header-bg:${headerBg}; --stage-header-text:${headerTextColor}">
+      <div class="stage-card" data-stage="${stageId}">
         <div class="stage-card-header" onclick="window.toggleStageHeader(event, '${stageId}')">
           <h3>
+            <span style="font-size:24px;line-height:1">${stage.icon || '🏫'}</span>
             <span>${stage.name}</span>
-            <span style="font-size:11px;background:${hexToRgba(stageColor, 0.2)};color:${stageColor};padding:2px 8px;border-radius:6px;border:1px solid ${hexToRgba(stageColor, 0.3)}">
+            <span style="font-size:11px;background:var(--primary-light);color:var(--primary-dark);padding:2px 8px;border-radius:6px">
               ${gradesCount} صف • ${subjectsCount} مادة
             </span>
           </h3>
           <div class="stage-actions" onclick="event.stopPropagation()">
-            <!-- ✅ Color picker للهيدر -->
-            <input type="color" 
-                   class="stage-color-picker" 
-                   value="${stageColor}" 
-                   onchange="window.changeStageColor('${stageId}', this.value)"
-                   title="اختر لون الهيدر">
-            <button class="stage-action-btn rename-stage" onclick="window.renameStage('${stageId}')" title="تعديل اسم المرحلة">✏️ تعديل</button>
-            <button class="stage-action-btn delete-stage" onclick="window.deleteStage('${stageId}')" title="حذف المرحلة">🗑 حذف</button>
+            <button class="stage-action-btn edit-stage" onclick="window.editStage('${stageId}')" title="تعديل">✏️ تعديل</button>
+            <button class="stage-action-btn delete-stage" onclick="window.deleteStage('${stageId}')" title="حذف">🗑 حذف</button>
           </div>
           <div class="stage-arrow">▼</div>
         </div>
         <div class="stage-card-body">
-          <!-- ✅ لوحة ألوان سريعة -->
-          <div class="stage-quick-colors" onclick="event.stopPropagation()">
-            <span style="font-size:11px;font-weight:900;color:#64748B;align-self:center;margin-left:6px">ألوان سريعة:</span>
-            ${QUICK_COLORS.map(c => `
-              <button class="qc-btn" 
-                      style="background:${c}" 
-                      onclick="window.changeStageColor('${stageId}', '${c}')" 
-                      title="${c}"></button>
-            `).join('')}
-          </div>
-
-          <!-- ✅ الصفوف -->
-          ${(stage.grades || []).map((g, gi) => {
-            const totalGrades = stage.grades.length;
-            return `
-              <div class="grade-block" style="border-right:4px solid ${stageColor}30">
-                <div class="grade-block-header">
-                  <h4>
-                    <span style="width:10px;height:10px;border-radius:50%;background:${stageColor};display:inline-block"></span>
-                    📖 ${g.name}
-                  </h4>
-                  <div class="grade-actions-row">
-                    <div class="grade-order-controls">
-                      <button class="order-btn" onclick="window.moveGradeUp('${stageId}', ${gi})" ${gi === 0 ? 'disabled' : ''} title="تحريك لأعلى">▲</button>
-                      <button class="order-btn" onclick="window.moveGradeDown('${stageId}', ${gi})" ${gi === totalGrades - 1 ? 'disabled' : ''} title="تحريك لأسفل">▼</button>
-                    </div>
-                    <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
-                    <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
-                  </div>
-                </div>
-                <div class="subjects-list">
-                  ${(g.subjects || []).map((s, si) => `
-                    <span class="subject-tag" style="background:${hexToRgba(stageColor, 0.12)}; color:${stageColor}; border-color:${hexToRgba(stageColor, 0.3)}">
-                      ${s}
-                      <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
-                    </span>
-                  `).join('')}
-                </div>
-                <div style="display:flex;gap:6px;margin-top:8px">
-                  <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
-                  <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${stageColor},${stageColor}CC)" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
+          ${(stage.grades || []).map((g, gi) => `
+            <div class="grade-block">
+              <div class="grade-block-header">
+                <h4>📖 ${g.name}</h4>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
+                  <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
                 </div>
               </div>
-            `;
-          }).join('')}
-
-          <!-- ✅ إضافة صف جديد -->
+              <div class="subjects-list">
+                ${(g.subjects || []).map((s, si) => `
+                  <span class="subject-tag">
+                    ${s}
+                    <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
+                  </span>
+                `).join('')}
+              </div>
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
+                <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
+              </div>
+            </div>
+          `).join('')}
           <div style="display:flex;gap:6px;margin-top:8px">
             <input type="text" class="inline-input" id="addGrade-${stageId}" placeholder="أضف صف جديد لهذه المرحلة..." onkeydown="if(event.key==='Enter')window.addGrade('${stageId}')">
-            <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${stageColor},${stageColor}CC)" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
+            <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
           </div>
         </div>
       </div>
@@ -811,91 +800,75 @@ window.toggleStageHeader = function(event, stageId) {
   if (card) card.classList.toggle('open');
 };
 
-// ✅ تغيير لون الهيدر (تلوين المرحلة)
-window.changeStageColor = function(stageId, color) {
-  window.curriculum[stageId].color = color;
-  window.renderCurriculum();
-  // إعادة فتح المرحلة بعد التحديث
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
-  window.toast('🎨 تم تغيير لون المرحلة — لا تنسَ الحفظ', '#2563EB');
+// ✅ اختيار أيقونة
+window.pickIcon = function(icon, event) {
+  const input = document.getElementById('newStageIcon');
+  if (input) {
+    input.value = icon;
+    input.style.transform = 'scale(1.3)';
+    setTimeout(() => input.style.transform = 'scale(1)', 200);
+  }
+  document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('selected'));
+  if (event?.target) event.target.classList.add('selected');
 };
 
-// ✅ تعديل اسم المرحلة
-window.renameStage = function(stageId) {
-  const old = window.curriculum[stageId].name;
-  const nw = prompt('الاسم الجديد للمرحلة:', old);
-  if (!nw || nw.trim() === '' || nw === old) return;
-  window.curriculum[stageId].name = nw.trim();
-  window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
-  window.toast('✅ تم تعديل اسم المرحلة — لا تنسَ الحفظ', '#2563EB');
-};
+// ✅ فلترة الأيقونات بالبحث
+window.filterIcons = function(query) {
+  const q = query.trim().toLowerCase();
+  const cats = document.querySelectorAll('.icon-category');
 
-// ✅ تحريك الصف لأعلى
-window.moveGradeUp = function(stageId, gradeIdx) {
-  if (gradeIdx <= 0) return;
-  const grades = window.curriculum[stageId].grades;
-  [grades[gradeIdx - 1], grades[gradeIdx]] = [grades[gradeIdx], grades[gradeIdx - 1]];
-  window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
-  window.toast('✅ تم تحريك الصف لأعلى — لا تنسَ الحفظ', '#2563EB');
-};
-
-// ✅ تحريك الصف لأسفل
-window.moveGradeDown = function(stageId, gradeIdx) {
-  const grades = window.curriculum[stageId].grades;
-  if (gradeIdx >= grades.length - 1) return;
-  [grades[gradeIdx], grades[gradeIdx + 1]] = [grades[gradeIdx + 1], grades[gradeIdx]];
-  window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
-  window.toast('✅ تم تحريك الصف لأسفل — لا تنسَ الحفظ', '#2563EB');
-};
-
-// ✅ إضافة مرحلة جديدة
-window.addStage = function() {
-  const input = document.getElementById('newStageName');
-  const name = input.value.trim();
-  if (!name) {
-    return window.toast('⚠️ اكتب اسم المرحلة أولاً', '#D97706');
+  if (!q) {
+    cats.forEach(c => c.classList.remove('hidden'));
+    document.querySelectorAll('.icon-btn').forEach(b => b.style.display = '');
+    return;
   }
 
-  let stageId = 'stage_' + Date.now();
-  
+  cats.forEach(cat => {
+    const catName = (cat.dataset.cat || '').toLowerCase();
+    const catTitle = cat.querySelector('.icon-cat-title')?.textContent.toLowerCase() || '';
+    const catMatch = catName.includes(q) || catTitle.includes(q);
+
+    let hasVisible = false;
+    cat.querySelectorAll('.icon-btn').forEach(btn => {
+      const title = (btn.title || '').toLowerCase();
+      const icon = btn.textContent.trim();
+      const match = catMatch || title.includes(q) || icon === query.trim();
+      btn.style.display = match ? '' : 'none';
+      if (match) hasVisible = true;
+    });
+
+    cat.classList.toggle('hidden', !hasVisible);
+  });
+};
+
+// ✅ إضافة مرحلة جديدة مع أيقونة
+window.addStage = function() {
+  const input = document.getElementById('newStageName');
+  const iconInput = document.getElementById('newStageIcon');
+  const name = input.value.trim();
+  const icon = (iconInput?.value || '🏫').trim();
+
+  if (!name) return window.toast('⚠️ اكتب اسم المرحلة أولاً', '#D97706');
+
   for (const sid in window.curriculum) {
     if (window.curriculum[sid].name === name) {
       return window.toast('⚠️ هذه المرحلة موجودة بالفعل', '#D97706');
     }
   }
 
-  // ✅ لون افتراضي عشوائي للمرحلة الجديدة
-  const randomColor = QUICK_COLORS[Math.floor(Math.random() * QUICK_COLORS.length)];
-
-  window.curriculum[stageId] = {
-    name: name,
-    color: randomColor,
-    grades: []
+  const stageId = 'stage_' + Date.now();
+  window.curriculum[stageId] = { 
+    name: name, 
+    icon: icon || '🏫',
+    grades: [] 
   };
 
   input.value = '';
+  if (iconInput) iconInput.value = '';
+  document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('selected'));
+
   window.renderCurriculum();
-  markAsChanged();
-  window.toast('✅ أضيفت المرحلة — لا تنسَ الحفظ', '#2563EB');
+  window.toast(`✅ أضيفت المرحلة ${icon} — لا تنسَ الحفظ السحابي`, '#2563EB');
 };
 
 // ✅ حذف مرحلة
@@ -906,10 +879,28 @@ window.deleteStage = function(stageId) {
   if (!confirm(`⚠️ سيتم حذف المرحلة "${stage.name}" و ${gradesCount} صف مع كل مواده.\n\nهل أنت متأكد؟`)) return;
   delete window.curriculum[stageId];
   window.renderCurriculum();
-  markAsChanged();
-  window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ', '#2563EB');
+  window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ السحابي', '#2563EB');
 };
 
+// ✅ تعديل أيقونة واسم المرحلة
+window.editStage = function(stageId) {
+  const stage = window.curriculum[stageId];
+  if (!stage) return;
+
+  const newIcon = prompt('أدخل الأيقونة الجديدة (إيموجي):', stage.icon || '🏫');
+  if (newIcon === null) return;
+
+  const newName = prompt('الاسم الجديد للمرحلة:', stage.name);
+  if (newName === null) return;
+
+  if (newIcon.trim()) stage.icon = newIcon.trim();
+  if (newName.trim()) stage.name = newName.trim();
+
+  window.renderCurriculum();
+  window.toast('✅ تم التعديل — لا تنسَ الحفظ', '#2563EB');
+};
+
+// ✅ إضافة مادة
 window.addSubject = function(stageId, gradeIdx) {
   const input = document.getElementById(`addSubj-${stageId}-${gradeIdx}`);
   const val = input.value.trim();
@@ -919,26 +910,18 @@ window.addSubject = function(stageId, gradeIdx) {
   }
   window.curriculum[stageId].grades[gradeIdx].subjects.push(val);
   window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
   window.toast('✅ أضيفت — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حذف مادة
 window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
   if (!confirm('حذف هذه المادة؟')) return;
   window.curriculum[stageId].grades[gradeIdx].subjects.splice(subjIdx, 1);
   window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
   window.toast('🗑 محذوفة — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ إضافة صف
 window.addGrade = function(stageId) {
   const input = document.getElementById(`addGrade-${stageId}`);
   const val = input.value.trim();
@@ -948,47 +931,34 @@ window.addGrade = function(stageId) {
   }
   window.curriculum[stageId].grades.push({ name: val, subjects: [] });
   window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
   window.toast('✅ أضيف — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ تعديل اسم صف
 window.renameGrade = function(stageId, gradeIdx) {
   const old = window.curriculum[stageId].grades[gradeIdx].name;
   const nw = prompt('الاسم الجديد للصف:', old);
   if (!nw || nw.trim() === '' || nw === old) return;
   window.curriculum[stageId].grades[gradeIdx].name = nw.trim();
   window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
   window.toast('✅ تم تعديل الاسم — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حذف صف
 window.deleteGrade = function(stageId, gradeIdx) {
   if (!confirm('⚠️ حذف هذا الصف وكل مواده؟')) return;
   window.curriculum[stageId].grades.splice(gradeIdx, 1);
   window.renderCurriculum();
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  markAsChanged();
   window.toast('🗑 محذوف — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حفظ سحابي
 window.saveCurriculum = async function() {
   const btn = document.getElementById('saveCurriculumBtn');
   btn.disabled = true;
   btn.textContent = '⏳ جاري الحفظ السحابي...';
   try {
     await saveCurriculumSettings(window.curriculum, 'admin');
-    clearChanged();
     window.toast('☁️ تم الحفظ والمزامنة سحابياً! سيظهر فوراً على كل الأجهزة', '#047857');
   } catch(e) {
     console.error(e);
@@ -1000,25 +970,35 @@ window.saveCurriculum = async function() {
 };
 
 // ==========================================================
-// ✅ INIT
+// 🔄 ترحيل البيانات القديمة (إضافة icon لو مش موجود)
+// ==========================================================
+function migrateCurriculum(cur) {
+  if (!cur) return cur;
+  for (const sid in cur) {
+    if (!cur[sid].icon) cur[sid].icon = '🏫';
+    if (!cur[sid].grades) cur[sid].grades = [];
+  }
+  return cur;
+}
+
+// ==========================================================
+// ✅ INIT - التهيئة مع المزامنة السحابية
 // ==========================================================
 async function init() {
   try {
     window.setCloudStatus(null, 'جاري الاتصال...');
 
     try {
-      window.curriculum = await getCurriculumSettings();
+      window.curriculum = migrateCurriculum(await getCurriculumSettings());
       window.renderCurriculum();
     } catch(e) {
-      console.warn('فشل تحميل المناهج:', e);
-      window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
+      console.warn('فشل تحميل المناهج، استخدام الافتراضي:', e);
+      window.curriculum = migrateCurriculum(JSON.parse(JSON.stringify(DEFAULT_CURRICULUM)));
       window.renderCurriculum();
     }
 
     unsubCurriculum = subscribeCurriculum((newCurriculum) => {
-      // ✅ لا نحدّث إذا كان هناك تعديلات غير محفوظة
-      if (window._hasUnsavedChanges) return;
-      window.curriculum = newCurriculum;
+      window.curriculum = migrateCurriculum(newCurriculum);
       window.renderCurriculum();
       window.setCloudStatus('online', 'متصل ☁️');
     });
