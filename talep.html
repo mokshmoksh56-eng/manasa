@@ -1011,6 +1011,26 @@ body.dark-mode .address-badge-full {
     } 
 }
 
+/* ✅ Loading state للمرحلة */
+.loading-stages {
+    padding: 15px;
+    text-align: center;
+    color: #64748B;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.loading-stages .mini-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    border-top-color: #10B981;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
 @media (max-width: 640px) {
     .class-result-card { 
         padding: 12px !important; 
@@ -1286,34 +1306,48 @@ body.dark-mode .address-badge-full {
     // ✅ EDUCATION_STRUCTURE - يُبنى ديناميكياً من السحابة
     // ═══════════════════════════════════════════════════════════
     let EDUCATION_STRUCTURE = {
-        kg: { grades: ['KG 1', 'KG 2'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','لغة فرنسية'] },
-        primary: { grades: ['الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي', 'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية'] },
-        prep: { grades: ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'], subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية'] },
-        secondary: { grades: ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'], subjects: ['لغة عربية','لغة إنجليزية','لغة فرنسية','تاريخ','جغرافيا','فيزياء','كيمياء','أحياء','رياضيات','فلسفة ومنطق','إحصاء'] }
+        kg: { name: '🧸 رياض الأطفال', grades: ['KG 1', 'KG 2'], subjects: [] },
+        primary: { name: '📗 المرحلة الابتدائية', grades: [], subjects: [] },
+        prep: { name: '📘 المرحلة الإعدادية', grades: [], subjects: [] },
+        secondary: { name: '📙 المرحلة الثانوية', grades: [], subjects: [] }
     };
 
-    // ✅ تحويل مناهج Firestore إلى شكل EDUCATION_STRUCTURE
+    // ✅ تحويل مناهج Firestore إلى EDUCATION_STRUCTURE
     function buildEducationStructureFromCurriculum(curriculum) {
         if (!curriculum) return;
         const newStructure = {};
 
-        const stageOrder = ['kg', 'primary', 'prep', 'secondary'];
-        stageOrder.forEach(stageId => {
-            if (curriculum[stageId]) {
-                const stage = curriculum[stageId];
-                const allSubjects = new Set();
-                (stage.grades || []).forEach(g => {
-                    (g.subjects || []).forEach(s => allSubjects.add(s));
-                });
-                newStructure[stageId] = {
-                    grades: (stage.grades || []).map(g => g.name),
-                    subjects: Array.from(allSubjects)
-                };
+        const knownOrder = ['kg', 'primary', 'prep', 'secondary'];
+        const allStageIds = [];
+
+        // المراحل المعروفة أولاً
+        knownOrder.forEach(id => {
+            if (curriculum[id]) allStageIds.push(id);
+        });
+
+        // ثم المراحل الجديدة
+        Object.keys(curriculum).forEach(id => {
+            if (!knownOrder.includes(id) && curriculum[id]) {
+                allStageIds.push(id);
             }
         });
 
+        allStageIds.forEach(stageId => {
+            const stage = curriculum[stageId];
+            const allSubjects = new Set();
+            (stage.grades || []).forEach(g => {
+                (g.subjects || []).forEach(s => allSubjects.add(s));
+            });
+            newStructure[stageId] = {
+                name: stage.name || stageId,
+                color: stage.color || null,
+                grades: (stage.grades || []).map(g => g.name),
+                subjects: Array.from(allSubjects)
+            };
+        });
+
         EDUCATION_STRUCTURE = newStructure;
-        console.log('✅ EDUCATION_STRUCTURE محدّث:', EDUCATION_STRUCTURE);
+        console.log('✅ EDUCATION_STRUCTURE محدّث:', Object.keys(EDUCATION_STRUCTURE));
     }
 
     // ✅ تحديث قائمة المراحل والصفوف في نموذج التسجيل
@@ -1325,18 +1359,15 @@ body.dark-mode .address-badge-full {
         const currentStage = stageSelect.value;
         const currentGrade = gradeSelect.value;
 
-        const stageNames = {
-            kg: 'رياض الأطفال (KG)',
-            primary: 'المرحلة الابتدائية',
-            prep: 'المرحلة الإعدادية',
-            secondary: 'المرحلة الثانوية'
-        };
-
+        // ✅ نبني المراحل من EDUCATION_STRUCTURE (الذي يحتوي أسماء المراحل من Firestore)
         stageSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة...</option>';
+
         Object.keys(EDUCATION_STRUCTURE).forEach(stageId => {
+            const stageMeta = EDUCATION_STRUCTURE[stageId];
             const opt = document.createElement('option');
             opt.value = stageId;
-            opt.textContent = stageNames[stageId] || stageId;
+            // ✅ استخدام اسم المرحلة من Firestore (يشمل المراحل الجديدة)
+            opt.textContent = stageMeta.name || stageId;
             stageSelect.appendChild(opt);
         });
 
@@ -1373,7 +1404,6 @@ body.dark-mode .address-badge-full {
             });
         }
 
-        // إضافة المواد المخصصة من المجموعات
         const customSubjects = new Set();
         window.classesDB.forEach(c => {
             if (c.grade === studentProfile?.grade && 
@@ -1483,13 +1513,15 @@ body.dark-mode .address-badge-full {
     };
 
     async function initApp() {
-        // ✅ تحديث القوائم من المناهج السحابية
+        // ✅ تحميل المناهج من السحابة أولاً
         try {
             const curriculum = await getCurriculumSettings();
             buildEducationStructureFromCurriculum(curriculum);
         } catch(e) {
             console.warn('فشل تحميل المناهج:', e);
         }
+        
+        // ✅ تحديث القوائم
         refreshGradeDropdowns();
 
         if (studentProfile && studentProfile.id && studentProfile.name && studentProfile.phone) {
@@ -1692,11 +1724,26 @@ body.dark-mode .address-badge-full {
 
     window.editStudentData = function() {
         if (!studentProfile) { window.showView('loginView'); return; }
+        
+        // ✅ نتحقق أن المرحلة موجودة
+        if (!EDUCATION_STRUCTURE[studentProfile.stage]) {
+            // المرحلة اتحذفت - نظهر تحذير
+            alert('⚠️ المرحلة القديمة تم حذفها. يرجى اختيار مرحلة جديدة.');
+            document.getElementById('stageSelect').value = '';
+            document.getElementById('gradeSelect').innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
+            document.getElementById('gradeSelect').disabled = true;
+        } else {
+            document.getElementById('stageSelect').value = studentProfile.stage;
+            window.updateGrades();
+            setTimeout(() => { 
+                if (EDUCATION_STRUCTURE[studentProfile.stage].grades.includes(studentProfile.grade)) {
+                    document.getElementById('gradeSelect').value = studentProfile.grade;
+                }
+            }, 50);
+        }
+        
         document.getElementById('studentName').value = studentProfile.name || '';
         document.getElementById('studentPhone').value = studentProfile.phone || '';
-        document.getElementById('stageSelect').value = studentProfile.stage || '';
-        window.updateGrades();
-        setTimeout(() => { document.getElementById('gradeSelect').value = studentProfile.grade || ''; }, 50);
         document.querySelector(`input[name="studentGender"][value="${studentProfile.gender || 'boy'}"]`).checked = true;
         window.prefillStudentData();
         isGpsActive = false; 
@@ -1704,14 +1751,12 @@ body.dark-mode .address-badge-full {
     };
 
     window.clearAllData = function() {
-        if (confirm('⚠️ سيتم مسح بياناتك الحالية والبدء من جديد.\n(ملاحظة: حسابك محفوظ، فقط ستحتاج تدخل بياناتك مرة أخرى)')) {
+        if (confirm('⚠️ سيتم مسح بياناتك الحالية والبدء من جديد.')) {
             const accountData = {
                 id: studentProfile.id,
                 name: studentProfile.name,
                 phone: studentProfile.phone,
-                gender: null,
-                stage: null,
-                grade: null
+                gender: null, stage: null, grade: null
             };
             studentProfile = accountData;
             localStorage.setItem('current_student_profile', JSON.stringify(accountData));
@@ -2229,16 +2274,20 @@ body.dark-mode .address-badge-full {
         buildEducationStructureFromCurriculum(curriculum);
         window.setCloudStatus('online', 'متصل ☁️');
         
+        // ✅ تحديث القوائم في كل مرة (سواء أول مرة أو تحديث لحظي)
+        refreshGradeDropdowns();
+        
+        // إذا كان الطالب معبّأ بياناته، حدّث فلتر المواد
+        if (studentProfile && studentProfile.stage) {
+            refreshSubjectFilter();
+            if (window.renderClasses && studentProfile.grade) window.renderClasses();
+        }
+        
         if (isFirstCurriculumLoad) {
-            refreshGradeDropdowns();
-            if (studentProfile && studentProfile.stage) refreshSubjectFilter();
             isFirstCurriculumLoad = false;
+            console.log('✅ تم تحميل المناهج من السحابة (talep.html)');
         } else {
-            refreshGradeDropdowns();
-            if (studentProfile && studentProfile.stage) {
-                refreshSubjectFilter();
-                if (window.renderClasses) window.renderClasses();
-            }
+            console.log('🔄 تحديث لحظي للمناهج');
         }
     });
 
