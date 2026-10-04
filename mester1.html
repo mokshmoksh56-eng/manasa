@@ -21,6 +21,7 @@
             --prep-color: #1565c0; 
             --secondary-color: #e65100; 
             --custom-color: #7C3AED;
+            --azhar-color: #059669; /* ✅ لون مرحلة الأزهر */
         }
 
         * {
@@ -281,6 +282,10 @@
             box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15); 
         }
 
+        /* ✅ لون مرحلة الأزهر (لو موجودة بمعرف stage_azhar) */
+        #stage-azhar, #stage-azhar_secondary { border-right-color: var(--azhar-color); }
+        #stage-azhar.active, #stage-azhar_secondary.active { border-color: var(--azhar-color); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15); }
+
         .stage-header {
             padding: 10px 14px;
             display: flex;
@@ -317,6 +322,10 @@
         .stage-item[data-custom="true"] .badge-grade { background: var(--custom-color); }
         .stage-item[data-custom="true"] .badge { background: #5B21B6; }
 
+        /* ✅ ألوان الأزهر */
+        #stage-azhar .badge-grade, #stage-azhar_secondary .badge-grade { background: var(--azhar-color); }
+        #stage-azhar .badge, #stage-azhar_secondary .badge { background: #047857; }
+
         .badge-grade, .badge {
             color: var(--white) !important;
             font-size: 11px;
@@ -344,6 +353,7 @@
         #stage-prep.active .arrow { border-top-color: var(--prep-color); }
         #stage-secondary.active .arrow { border-top-color: var(--secondary-color); }
         .stage-item[data-custom="true"].active .arrow { border-top-color: var(--custom-color); }
+        #stage-azhar.active .arrow, #stage-azhar_secondary.active .arrow { border-top-color: var(--azhar-color); }
 
         .stage-content { display: none; padding: 4px 10px 12px; }
         .stage-item.active .stage-content { display: block; }
@@ -365,12 +375,14 @@
         #stage-prep .grade-btn:hover { border-color: var(--prep-color); color: var(--prep-color); }
         #stage-secondary .grade-btn:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
         .stage-item[data-custom="true"] .grade-btn:hover { border-color: var(--custom-color); color: var(--custom-color); }
+        #stage-azhar .grade-btn:hover, #stage-azhar_secondary .grade-btn:hover { border-color: var(--azhar-color); color: var(--azhar-color); }
 
         #stage-kg .grade-btn.selected { background: var(--kg-color); border-color: #ad1457; color: white; box-shadow: 0 2px 6px rgba(216, 27, 96, 0.25); }
         #stage-primary .grade-btn.selected { background: var(--primary-color); border-color: #1b5e20; color: white; box-shadow: 0 2px 6px rgba(46, 125, 50, 0.25); }
         #stage-prep .grade-btn.selected { background: var(--prep-color); border-color: #0d47a1; color: white; box-shadow: 0 2px 6px rgba(21, 101, 192, 0.25); }
         #stage-secondary .grade-btn.selected { background: var(--secondary-color); border-color: #bf360c; color: white; box-shadow: 0 2px 6px rgba(230, 81, 0, 0.25); }
         .stage-item[data-custom="true"] .grade-btn.selected { background: var(--custom-color); border-color: #5B21B6; color: white; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25); }
+        #stage-azhar .grade-btn.selected, #stage-azhar_secondary .grade-btn.selected { background: var(--azhar-color); border-color: #047857; color: white; box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25); }
 
         .subjects-section {
             background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px;
@@ -382,6 +394,7 @@
         #stage-prep .subjects-section { border-color: var(--prep-color); }
         #stage-secondary .subjects-section { border-color: var(--secondary-color); }
         .stage-item[data-custom="true"] .subjects-section { border-color: var(--custom-color); }
+        #stage-azhar .subjects-section, #stage-azhar_secondary .subjects-section { border-color: var(--azhar-color); }
 
         .subjects-section.open { display: block; }
 
@@ -395,6 +408,7 @@
         #stage-prep .subjects-title { color: var(--prep-color); border-bottom-color: var(--prep-color); }
         #stage-secondary .subjects-title { color: var(--secondary-color); border-bottom-color: var(--secondary-color); }
         .stage-item[data-custom="true"] .subjects-title { color: var(--custom-color); border-bottom-color: var(--custom-color); }
+        #stage-azhar .subjects-title, #stage-azhar_secondary .subjects-title { color: var(--azhar-color); border-bottom-color: var(--azhar-color); }
 
         .subjects-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 6px;
@@ -423,6 +437,8 @@
 
         .stage-item[data-custom="true"] .subject-btn:hover { border-color: var(--custom-color); color: var(--custom-color); }
         .stage-item[data-custom="true"] .subject-btn.selected { background: var(--custom-color); border-color: #5B21B6; color: white; }
+        #stage-azhar .subject-btn:hover, #stage-azhar_secondary .subject-btn:hover { border-color: var(--azhar-color); color: var(--azhar-color); }
+        #stage-azhar .subject-btn.selected, #stage-azhar_secondary .subject-btn.selected { background: var(--azhar-color); border-color: #047857; color: white; }
 
         .subject-btn.selected::before { content: '✓ '; font-weight: bold; margin-left: 2px; }
 
@@ -447,6 +463,8 @@
 
         .stage-item[data-custom="true"] .btn-save-inline { background: var(--custom-color); box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2); }
         .stage-item[data-custom="true"] .btn-save-inline:hover { background: #5B21B6; }
+        #stage-azhar .btn-save-inline, #stage-azhar_secondary .btn-save-inline { background: var(--azhar-color); box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2); }
+        #stage-azhar .btn-save-inline:hover, #stage-azhar_secondary .btn-save-inline:hover { background: #047857; }
 
         .btn-save-inline:hover { transform: translateY(-1px); }
         .btn-save-inline:active { transform: scale(0.96); }
@@ -625,6 +643,7 @@
 
         // ==========================================================
         // ✅ 2) هيكل المراحل (ديناميكي بالكامل - يدعم المراحل الجديدة)
+        // ✅ يدعم حقل icon من السحابة
         // ==========================================================
         let dynamicStages = [];
         let subjectsData = {};
@@ -651,6 +670,7 @@
 
         // ✅ تحويل المناهج السحابية إلى شكل قابل للاستخدام
         // ✅ يدعم أي مرحلة جديدة + يرتب المراحل المعروفة أولاً
+        // ✅ يستخرج الأيقونة من حقل icon أو من الاسم
         function applyCurriculum(curriculum) {
             if (!curriculum) return;
             dynamicStages = [];
@@ -675,9 +695,31 @@
             // ✅ نبني dynamicStages من كل المراحل
             allStageIds.forEach(stageId => {
                 const s = curriculum[stageId];
+                
+                // ✅ استخرج الأيقونة
+                let icon = s.icon || null;
+                let cleanName = s.name || stageId;
+                
+                // لو مفيش icon، حاول تستخرج من الاسم
+                if (!icon) {
+                    const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
+                    if (emojiMatch) {
+                        icon = emojiMatch[1];
+                        cleanName = emojiMatch[2];
+                    } else {
+                        icon = '📚';
+                    }
+                } else {
+                    // لو فيه icon في السحابة، شيل أي إيموجي من الاسم
+                    const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
+                    if (emojiMatch) cleanName = emojiMatch[2];
+                }
+
                 dynamicStages.push({
                     id: stageId,
-                    name: s.name || stageId,
+                    name: cleanName,
+                    icon: icon,
+                    color: s.color || null,
                     grades: (s.grades || []).map(g => g.name)
                 });
                 (s.grades || []).forEach(g => {
@@ -688,7 +730,7 @@
             // ✅ نعيد بناء selections للمراحل الجديدة
             initSelectionsFromStages();
             
-            console.log('✅ المراحل المحمّلة:', dynamicStages.map(s => s.name));
+            console.log('✅ المراحل المحمّلة:', dynamicStages.map(s => `${s.icon} ${s.name}`));
         }
 
         const MESTER1_SAVE_KEY = 'mester1_selections';
@@ -719,7 +761,7 @@
         }
 
         // ==========================================================
-        // ✅ 4) بناء واجهة المراحل (يدعم المراحل الجديدة)
+        // ✅ 4) بناء واجهة المراحل (يدعم المراحل الجديدة + الأيقونات)
         // ==========================================================
         function buildStagesUI() {
             const container = document.getElementById('stagesContainer');
@@ -742,18 +784,25 @@
                 stageEl.className = 'stage-item';
                 stageEl.id = `stage-${stage.id}`;
 
-                // ✅ وضع علامة data-custom للمراحل الجديدة
+                // ✅ وضع علامة data-custom للمراحل الجديدة (غير المعروفة)
                 if (!knownOrder.includes(stage.id)) {
                     stageEl.setAttribute('data-custom', 'true');
+                }
+
+                // ✅ إضافة اللون المخصص (لو موجود في السحابة)
+                if (stage.color) {
+                    stageEl.style.borderRightColor = stage.color;
                 }
 
                 const gradesHtml = stage.grades.map(g => 
                     `<button class="grade-btn" onclick="window.selectGrade('${g.replace(/'/g, "\\'")}', '${stage.id}', this)">${g}</button>`
                 ).join('');
 
+                // ✅ عرض الأيقونة + الاسم
                 stageEl.innerHTML = `
                     <div class="stage-header" onclick="window.toggleStage(event, this)">
                         <div class="stage-title">
+                            <span style="font-size:20px;line-height:1">${stage.icon}</span>
                             <span>${stage.name}</span>
                             <div class="stage-badges" id="badges-${stage.id}"></div>
                         </div>
@@ -925,7 +974,7 @@
             });
         }
 
-        // ✅ ملخص الاختيارات - يستخدم أسماء المراحل الديناميكية
+        // ✅ ملخص الاختيارات - يستخدم أسماء المراحل الديناميكية + الأيقونات
         function updateSummary() {
             const summaryContent = document.getElementById('summary-content');
             let html = '';
@@ -934,14 +983,15 @@
             for (const stageId in selections) {
                 const { grade, subjects } = selections[stageId];
                 if (subjects.length > 0) {
-                    // ✅ نجيب اسم المرحلة من dynamicStages
+                    // ✅ نجيب بيانات المرحلة من dynamicStages
                     const stageMeta = dynamicStages.find(s => s.id === stageId);
+                    const stageIcon = stageMeta ? stageMeta.icon : '📚';
                     const stageName = stageMeta ? stageMeta.name : stageId;
                     
                     const parts = [];
                     if (grade) parts.push(`الصف: ${grade}`);
                     parts.push(`المواد: ${subjects.join(' - ')}`);
-                    html += `<div>• <strong>${stageName}:</strong> ${parts.join(' | ')}</div>`;
+                    html += `<div>• <strong>${stageIcon} ${stageName}:</strong> ${parts.join(' | ')}</div>`;
                     total += subjects.length;
                 }
             }
