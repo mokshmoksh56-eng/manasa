@@ -106,11 +106,55 @@ tr.locked td{background:#FEF2F2}
 .stage-action-btn.delete-stage{background:#FEE2E2;color:#991B1B}
 .stage-action-btn.delete-stage:hover{background:#FECACA}
 
-.grade-block{background:#F8FAFC;border:1.5px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+/* ✅ الصف - مع إمكانية التلوين والترتيب */
+.grade-block{
+  background:#F8FAFC;border:1.5px solid var(--line);border-radius:10px;
+  padding:12px;margin-bottom:10px;position:relative;transition:all .2s;
+  border-right-width:5px;border-right-style:solid;border-right-color:var(--grade-color, #CBD5E1)
+}
 .grade-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
-.grade-block-header h4{margin:0;font-size:14px;font-weight:900;color:var(--primary-dark)}
+.grade-block-header h4{
+  margin:0;font-size:14px;font-weight:900;
+  color:var(--grade-color, var(--primary-dark));
+  display:flex;align-items:center;gap:6px
+}
+
+/* ✅ أزرار الترتيب ▲▼ */
+.grade-order-controls{
+  display:flex;flex-direction:column;gap:2px;
+}
+.order-btn{
+  width:24px;height:20px;border:none;border-radius:4px;
+  font-size:10px;font-weight:900;cursor:pointer;
+  background:#E2E8F0;color:#475569;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-family:'Cairo';padding:0
+}
+.order-btn:hover:not(:disabled){background:#CBD5E1;color:var(--primary-dark)}
+.order-btn:active:not(:disabled){transform:scale(.9)}
+.order-btn:disabled{opacity:.3;cursor:not-allowed}
+
+/* ✅ زر اختيار اللون */
+.color-picker-wrapper{
+  position:relative;display:inline-block;width:32px;height:32px
+}
+.color-picker-wrapper input[type="color"]{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:2px solid #CBD5E1;border-radius:8px;cursor:pointer;padding:0;
+  background:transparent;-webkit-appearance:none;appearance:none
+}
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper{padding:2px}
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch{border:none;border-radius:5px}
+.color-picker-wrapper input[type="color"]::-moz-color-swatch{border:none;border-radius:5px}
+
+.grade-actions-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
 .subjects-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.subject-tag{background:var(--primary-light);color:var(--primary-dark);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:5px;border:1px solid #A7F3D0}
+.subject-tag{
+  background:var(--primary-light);color:var(--primary-dark);
+  padding:5px 10px;border-radius:6px;font-size:12px;font-weight:900;
+  display:inline-flex;align-items:center;gap:5px;border:1px solid #A7F3D0
+}
 .subject-tag button{background:none;border:none;color:var(--danger);font-size:14px;cursor:pointer;padding:0;font-weight:900}
 .inline-input{flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-family:'Cairo';font-weight:800;font-size:13px;outline:none;min-width:0}
 .inline-input:focus{border-color:var(--primary)}
@@ -145,12 +189,32 @@ tr.locked td{background:#FEF2F2}
 .badge-boy{background:#DBEAFE;color:#1E40AF}
 .badge-girl{background:#FCE7F3;color:#9D174D}
 
+/* ✅ عينة اللون بجانب اسم الصف */
+.grade-color-dot{
+  width:14px;height:14px;border-radius:50%;
+  display:inline-block;border:2px solid #fff;
+  box-shadow:0 0 0 1.5px rgba(0,0,0,.1);flex-shrink:0
+}
+
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0F172A;color:#fff;padding:12px 24px;border-radius:12px;font-weight:900;font-size:13px;z-index:99999;opacity:0;transition:.3s;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 .page{display:none}.page.active{display:block}
 .empty-state{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .sync-badge{font-size:10px;background:#D1FAE5;color:#065F46;padding:2px 6px;border-radius:4px;margin-right:4px}
+
+/* ✅ لوحة الألوان السريعة */
+.quick-colors{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;padding:8px;
+  background:#fff;border-radius:8px;border:1px solid var(--line)
+}
+.quick-colors .quick-color-btn{
+  width:24px;height:24px;border-radius:50%;border:2px solid #fff;
+  cursor:pointer;box-shadow:0 0 0 1.5px rgba(0,0,0,.15);
+  transition:transform .15s;padding:0
+}
+.quick-colors .quick-color-btn:hover{transform:scale(1.2)}
+.quick-colors .quick-color-btn:active{transform:scale(.9)}
 </style>
 </head>
 <body>
@@ -177,9 +241,8 @@ tr.locked td{background:#FEF2F2}
   <button class="tab" data-page="page-curriculum">📚 إدارة المواد والصفوف</button>
 </div>
 
-<!-- ============ الصفحة الأولى: المستخدمين ============ -->
+<!-- ============ الصفحة الأولى ============ -->
 <div id="page-users" class="page active">
-
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-num" id="statTeachers">0</div><div class="stat-label">👨‍🏫 إجمالي المعلمين</div></div>
     <div class="stat-box blue"><div class="stat-num" id="statMester">0</div><div class="stat-label">👨‍🏫 مستر</div></div>
@@ -251,7 +314,7 @@ tr.locked td{background:#FEF2F2}
   </div>
 </div>
 
-<!-- ============ الصفحة الثانية: المواد والصفوف ============ -->
+<!-- ============ الصفحة الثانية ============ -->
 <div id="page-curriculum" class="page">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
@@ -260,7 +323,10 @@ tr.locked td{background:#FEF2F2}
           📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span>
         </h2>
         <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">
-          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b> التي تفتح mester1.html و talep.html
+          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b>
+        </p>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--primary)">
+          ✨ يمكنك ترتيب الصفوف بالأسهم ▲▼ وتخصيص لون لكل صف 🎨
         </p>
       </div>
     </div>
@@ -339,6 +405,14 @@ let unsubCurriculum = null;
 let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
+
+// ✅ ألوان جاهزة للاختيار السريع
+const QUICK_COLORS = [
+  '#047857', '#059669', '#10B981', '#22C55E', '#84CC16',
+  '#EAB308', '#F59E0B', '#F97316', '#EF4444', '#DC2626',
+  '#EC4899', '#D946EF', '#A855F7', '#8B5CF6', '#6366F1',
+  '#3B82F6', '#0EA5E9', '#06B6D4', '#14B8A6', '#64748B'
+];
 
 // ============ Render Stats ============
 function renderStats() {
@@ -435,11 +509,11 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock (Firestore) ============
+// ============ Lock/Unlock ============
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل المعلم سحابياً' : '🔓 تم فتح المعلم سحابياً', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل المعلم' : '🔓 تم فتح المعلم', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -449,7 +523,7 @@ window.toggleLockTeacher = async function(phone, lockValue) {
 window.toggleLockStudent = async function(id, lockValue) {
   try {
     await setStudentLock(id, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل الطالب سحابياً' : '🔓 تم فتح الطالب سحابياً', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 فتح الطالب', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -458,7 +532,7 @@ window.toggleLockStudent = async function(id, lockValue) {
 
 // ============ Delete ============
 window.deleteTeacher = async function(phone, name) {
-  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
+  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً.\n\nهل أنت متأكد؟`)) return;
   try {
     const result = await deleteTeacherAccount(phone);
     window.toast(`🗑 تم حذف المعلم و ${result.deletedGroups} مجموعة`, '#DC2626');
@@ -469,7 +543,7 @@ window.deleteTeacher = async function(phone, name) {
 };
 
 window.deleteStudent = async function(id, name) {
-  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
+  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً.`)) return;
   try {
     await deleteStudentAccount(id);
     window.toast('🗑 تم حذف الطالب', '#DC2626');
@@ -538,10 +612,6 @@ function renderMap() {
       <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
         <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${s.name||''}</div>
         <div style="font-size:12px;color:#64748B;margin:4px 0">${s.grade||''}</div>
-        <div style="display:flex;gap:4px;margin-top:6px">
-          ${s.phone ? `<a href="https://wa.me/2${s.phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
-          ${s.phone ? `<a href="tel:${s.phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
-        </div>
       </div>
     `);
     markersLayer.addLayer(m);
@@ -555,8 +625,7 @@ function renderMap() {
 }
 
 // ==========================================================
-// ✅ Curriculum Management (Firestore Sync)
-// ✅ الهيدر مقفول افتراضياً - يتم فتحه بالنقر
+// ✅ Curriculum Management (مع ترتيب وتلوين)
 // ==========================================================
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
@@ -583,29 +652,52 @@ window.renderCurriculum = function() {
           <div class="stage-arrow">▼</div>
         </div>
         <div class="stage-card-body">
-          ${(stage.grades || []).map((g, gi) => `
-            <div class="grade-block">
-              <div class="grade-block-header">
-                <h4>📖 ${g.name}</h4>
-                <div style="display:flex;gap:6px">
-                  <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
-                  <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
+          ${(stage.grades || []).map((g, gi) => {
+            const gradeColor = g.color || '#CBD5E1';
+            const totalGrades = stage.grades.length;
+            return `
+              <div class="grade-block" style="--grade-color: ${gradeColor}; background: linear-gradient(135deg, ${gradeColor}10 0%, #F8FAFC 100%)">
+                <div class="grade-block-header">
+                  <h4>
+                    <span class="grade-color-dot" style="background:${gradeColor}"></span>
+                    📖 ${g.name}
+                  </h4>
+                  <div class="grade-actions-row">
+                    <!-- ✅ أزرار الترتيب ▲▼ -->
+                    <div class="grade-order-controls">
+                      <button class="order-btn" onclick="window.moveGradeUp('${stageId}', ${gi})" ${gi === 0 ? 'disabled' : ''} title="تحريك لأعلى">▲</button>
+                      <button class="order-btn" onclick="window.moveGradeDown('${stageId}', ${gi})" ${gi === totalGrades - 1 ? 'disabled' : ''} title="تحريك لأسفل">▼</button>
+                    </div>
+                    <!-- ✅ زر اختيار اللون -->
+                    <div class="color-picker-wrapper">
+                      <input type="color" value="${gradeColor}" onchange="window.changeGradeColor('${stageId}', ${gi}, this.value)" title="اختر لون الصف">
+                    </div>
+                    <!-- ✅ أزرار التعديل والحذف -->
+                    <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
+                    <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
+                  </div>
+                </div>
+                <!-- ✅ لوحة الألوان السريعة -->
+                <div class="quick-colors">
+                  ${QUICK_COLORS.map(c => `
+                    <button class="quick-color-btn" style="background:${c}" onclick="window.changeGradeColor('${stageId}', ${gi}, '${c}')" title="${c}"></button>
+                  `).join('')}
+                </div>
+                <div class="subjects-list">
+                  ${(g.subjects || []).map((s, si) => `
+                    <span class="subject-tag" style="background:${gradeColor}20; color:${gradeColor}; border-color:${gradeColor}40">
+                      ${s}
+                      <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
+                    </span>
+                  `).join('')}
+                </div>
+                <div style="display:flex;gap:6px;margin-top:8px">
+                  <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
+                  <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${gradeColor},${gradeColor}CC)" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
                 </div>
               </div>
-              <div class="subjects-list">
-                ${(g.subjects || []).map((s, si) => `
-                  <span class="subject-tag">
-                    ${s}
-                    <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
-                  </span>
-                `).join('')}
-              </div>
-              <div style="display:flex;gap:6px;margin-top:8px">
-                <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
-                <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
-              </div>
-            </div>
-          `).join('')}
+            `;
+          }).join('')}
           <div style="display:flex;gap:6px;margin-top:8px">
             <input type="text" class="inline-input" id="addGrade-${stageId}" placeholder="أضف صف جديد لهذه المرحلة..." onkeydown="if(event.key==='Enter')window.addGrade('${stageId}')">
             <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
@@ -623,6 +715,45 @@ window.toggleStageHeader = function(event, stageId) {
   if (card) card.classList.toggle('open');
 };
 
+// ✅ تحريك الصف لأعلى
+window.moveGradeUp = function(stageId, gradeIdx) {
+  if (gradeIdx <= 0) return;
+  const grades = window.curriculum[stageId].grades;
+  [grades[gradeIdx - 1], grades[gradeIdx]] = [grades[gradeIdx], grades[gradeIdx - 1]];
+  window.renderCurriculum();
+  // إعادة فتح المرحلة بعد التحديث
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
+  window.toast('✅ تم تحريك الصف لأعلى — لا تنسَ الحفظ', '#2563EB');
+};
+
+// ✅ تحريك الصف لأسفل
+window.moveGradeDown = function(stageId, gradeIdx) {
+  const grades = window.curriculum[stageId].grades;
+  if (gradeIdx >= grades.length - 1) return;
+  [grades[gradeIdx], grades[gradeIdx + 1]] = [grades[gradeIdx + 1], grades[gradeIdx]];
+  window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
+  window.toast('✅ تم تحريك الصف لأسفل — لا تنسَ الحفظ', '#2563EB');
+};
+
+// ✅ تغيير لون الصف
+window.changeGradeColor = function(stageId, gradeIdx, color) {
+  window.curriculum[stageId].grades[gradeIdx].color = color;
+  window.renderCurriculum();
+  // إعادة فتح المرحلة بعد التحديث
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
+  window.toast('🎨 تم تغيير اللون — لا تنسَ الحفظ', '#2563EB');
+};
+
 // ✅ إضافة مرحلة جديدة
 window.addStage = function() {
   const input = document.getElementById('newStageName');
@@ -631,17 +762,14 @@ window.addStage = function() {
     return window.toast('⚠️ اكتب اسم المرحلة أولاً', '#D97706');
   }
 
-  // توليد ID فريد للمرحلة (بدون مسافات)
   let stageId = 'stage_' + Date.now();
   
-  // نتحقق أن الاسم غير مكرر
   for (const sid in window.curriculum) {
     if (window.curriculum[sid].name === name) {
       return window.toast('⚠️ هذه المرحلة موجودة بالفعل', '#D97706');
     }
   }
 
-  // إضافة المرحلة فارغة بدون صفوف
   window.curriculum[stageId] = {
     name: name,
     grades: []
@@ -649,7 +777,7 @@ window.addStage = function() {
 
   input.value = '';
   window.renderCurriculum();
-  window.toast('✅ أضيفت المرحلة — لا تنسَ الحفظ السحابي', '#2563EB');
+  window.toast('✅ أضيفت المرحلة — لا تنسَ الحفظ', '#2563EB');
 };
 
 // ✅ حذف مرحلة
@@ -660,7 +788,7 @@ window.deleteStage = function(stageId) {
   if (!confirm(`⚠️ سيتم حذف المرحلة "${stage.name}" و ${gradesCount} صف مع كل مواده.\n\nهل أنت متأكد؟`)) return;
   delete window.curriculum[stageId];
   window.renderCurriculum();
-  window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ السحابي', '#2563EB');
+  window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ', '#2563EB');
 };
 
 window.addSubject = function(stageId, gradeIdx) {
@@ -672,6 +800,10 @@ window.addSubject = function(stageId, gradeIdx) {
   }
   window.curriculum[stageId].grades[gradeIdx].subjects.push(val);
   window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
   window.toast('✅ أضيفت — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -679,6 +811,10 @@ window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
   if (!confirm('حذف هذه المادة؟')) return;
   window.curriculum[stageId].grades[gradeIdx].subjects.splice(subjIdx, 1);
   window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
   window.toast('🗑 محذوفة — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -689,8 +825,18 @@ window.addGrade = function(stageId) {
   if (window.curriculum[stageId].grades.some(g => g.name === val)) {
     return window.toast('⚠️ الصف موجود بالفعل', '#D97706');
   }
-  window.curriculum[stageId].grades.push({ name: val, subjects: [] });
+  // ✅ إضافة لون افتراضي عشوائي للصف الجديد
+  const randomColor = QUICK_COLORS[Math.floor(Math.random() * QUICK_COLORS.length)];
+  window.curriculum[stageId].grades.push({ 
+    name: val, 
+    subjects: [],
+    color: randomColor
+  });
   window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
   window.toast('✅ أضيف — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -700,6 +846,10 @@ window.renameGrade = function(stageId, gradeIdx) {
   if (!nw || nw.trim() === '' || nw === old) return;
   window.curriculum[stageId].grades[gradeIdx].name = nw.trim();
   window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
   window.toast('✅ تم تعديل الاسم — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -707,6 +857,10 @@ window.deleteGrade = function(stageId, gradeIdx) {
   if (!confirm('⚠️ حذف هذا الصف وكل مواده؟')) return;
   window.curriculum[stageId].grades.splice(gradeIdx, 1);
   window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
   window.toast('🗑 محذوف — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -727,30 +881,27 @@ window.saveCurriculum = async function() {
 };
 
 // ==========================================================
-// ✅ INIT - التهيئة مع المزامنة السحابية
+// ✅ INIT
 // ==========================================================
 async function init() {
   try {
     window.setCloudStatus(null, 'جاري الاتصال...');
 
-    // ✅ 1) تحميل المناهج أولاً (مرة واحدة)
     try {
       window.curriculum = await getCurriculumSettings();
       window.renderCurriculum();
     } catch(e) {
-      console.warn('فشل تحميل المناهج، استخدام الافتراضي:', e);
+      console.warn('فشل تحميل المناهج:', e);
       window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
       window.renderCurriculum();
     }
 
-    // ✅ 2) الاشتراك اللحظي في المناهج (Live Sync)
     unsubCurriculum = subscribeCurriculum((newCurriculum) => {
       window.curriculum = newCurriculum;
       window.renderCurriculum();
       window.setCloudStatus('online', 'متصل ☁️');
     });
 
-    // ✅ 3) الاشتراك اللحظي في المعلمين
     unsubTeachers = subscribeTeachers((teachers) => {
       allTeachers = teachers;
       renderStats();
@@ -759,7 +910,6 @@ async function init() {
       window.setCloudStatus('online', 'متصل ☁️');
     });
 
-    // ✅ 4) الاشتراك اللحظي في الطلاب
     unsubStudents = subscribeStudents((students) => {
       allStudents = students;
       renderStats();
@@ -767,7 +917,6 @@ async function init() {
       renderMap();
     });
 
-    // ✅ 5) الاشتراك اللحظي في المجموعات
     unsubGroups = subscribeGroups((groups) => {
       allGroups = groups;
       renderStats();
@@ -775,7 +924,6 @@ async function init() {
       renderMap();
     });
 
-    // إخفاء الـ loader بعد 2 ثانية
     setTimeout(() => {
       const loader = document.getElementById('loader');
       if (loader) loader.style.display = 'none';
@@ -791,7 +939,6 @@ async function init() {
   }
 }
 
-// تنظيف الاشتراكات عند الخروج
 window.addEventListener('beforeunload', () => {
   if (unsubCurriculum) unsubCurriculum();
   if (unsubTeachers) unsubTeachers();
