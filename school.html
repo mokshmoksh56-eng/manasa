@@ -64,6 +64,8 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
 #adminMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
+#studentsMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
+
 .marker-admin{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3);border:3px solid var(--primary);margin-left:-19px;margin-top:-19px}
 .marker-admin.teacher{border-color:#2563EB}
 .marker-admin.student{border-color:#F59E0B}
@@ -90,14 +92,12 @@ tr.locked td{background:#FEF2F2}
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
 
-/* ✅ شارات الإحصائيات */
 .wa-clicks-badge{background:#DCFCE7;color:#166534;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .booking-badge{background:#CFFAFE;color:#155E75;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .address-cell{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
 .address-link{font-size:11px;color:#047857;text-decoration:none;cursor:pointer;font-weight:900}
 .address-link:hover{text-decoration:underline}
 
-/* ✅ أزرار الألوان */
 .color-btn{
   width:38px;height:38px;border-radius:50%;border:3px solid transparent;
   cursor:pointer;transition:.2s;padding:0;
@@ -111,7 +111,6 @@ tr.locked td{background:#FEF2F2}
   transform:scale(1.1)
 }
 
-/* ✅ شارات النوع - ألوان قوية وواضحة */
 .badge-boy{
   background:linear-gradient(135deg,#3B82F6,#1D4ED8);
   color:#fff !important;
@@ -139,7 +138,6 @@ tr.locked td{background:#FEF2F2}
   white-space:nowrap;
 }
 
-/* ✅ شارة الصف */
 .grade-tag{
   background:linear-gradient(135deg,#ECFDF5,#D1FAE5);
   color:#065F46;
@@ -159,7 +157,6 @@ tr.locked td{background:#FEF2F2}
   border-color:#E2E8F0;
 }
 
-/* ✅ لون ديناميكي لكل مرحلة */
 .stage-card{
   border-right:6px solid var(--stage-color, #047857) !important;
   background:#fff;
@@ -273,7 +270,6 @@ tr.locked td{background:#FEF2F2}
 .empty-state{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .sync-badge{font-size:10px;background:#D1FAE5;color:#065F46;padding:2px 6px;border-radius:4px;margin-right:4px}
 
-/* ✅ نافذة تعديل المرحلة */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(15,23,42,.6);
   backdrop-filter:blur(4px);z-index:99998;
@@ -366,6 +362,7 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box cyan"><div class="stat-num" id="statBookings">0</div><div class="stat-label">📅 الحصص المحجوزة</div></div>
   </div>
 
+  <!-- 🗺️ خريطة المعلمين -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
@@ -376,6 +373,20 @@ tr.locked td{background:#FEF2F2}
       </div>
     </div>
     <div id="adminMap"></div>
+  </div>
+
+  <!-- 🎓 خريطة الطلاب فقط -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🎓 خريطة الطلاب فقط</h2>
+      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
+        <span style="background:#FCE7F3;color:#9D174D;padding:4px 8px;border-radius:6px;font-weight:900">👧 بنت</span>
+        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">👦 ولد</span>
+        <button class="btn btn-ghost" onclick="window.fitStudentsMap()" style="font-size:11px">🔍 عرض الكل</button>
+        <span id="studentsMapCount" style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">0</span>
+      </div>
+    </div>
+    <div id="studentsMap"></div>
   </div>
 
   <div class="card">
@@ -459,7 +470,6 @@ tr.locked td{background:#FEF2F2}
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
 
-      <!-- ✅ مكتبة الألوان -->
       <div style="margin-top:14px">
         <div style="font-size:12px;font-weight:900;color:var(--primary-dark);margin-bottom:8px">🎨 اختر لون المرحلة:</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -672,7 +682,7 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ==========================================================
-// ✅ Tabs — محفوظة في hash الرابط
+// ✅ Tabs
 // ==========================================================
 function switchTab(pageId) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -682,8 +692,9 @@ function switchTab(pageId) {
   if (tab && page) {
     tab.classList.add('active');
     page.classList.add('active');
-    if (pageId === 'page-users' && window._map) {
-      setTimeout(() => window._map.invalidateSize(), 100);
+    if (pageId === 'page-users') {
+      if (window._map) setTimeout(() => window._map.invalidateSize(), 100);
+      if (window._studentsMap) setTimeout(() => window._studentsMap.invalidateSize(), 150);
     }
   }
 }
@@ -802,7 +813,7 @@ function renderTeachersTable() {
   }).join('');
 }
 
-// ============ Students Table (مع إصلاح الصف + ألوان النوع) ============
+// ============ Students Table ============
 function renderStudentsTable() {
   const tbody = document.getElementById('studentsBody');
   document.getElementById('studentsCount').textContent = `${allStudents.length} طالب`;
@@ -813,19 +824,15 @@ function renderStudentsTable() {
   tbody.innerHTML = allStudents.map(s => {
     const locked = s.isLocked === true;
     
-    // ✅ النوع: أزرق لولد، وردي لبنت
     const genderBadge = (s.gender === 'girl' || s.gender === 'بنت' || s.gender === 'أنثى' || s.gender === 'female')
       ? '<span class="badge-girl">👧 بنت</span>' 
       : '<span class="badge-boy">👦 ولد</span>';
     
-    // ✅ الصف: نبحث في كل الأسماء المحتملة
     const grade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || 
                   s.الصف || s.صف || s.gradeName || s.level || '—';
     
-    // ✅ الاسم: نبحث في كل الأسماء المحتملة
     const name = s.name || s.studentName || s.fullName || s.الاسم || '—';
     
-    // ✅ الهاتف: نبحث في كل الأسماء المحتملة
     const phone = s.phone || s.studentPhone || s.mobile || s.phoneNumber || 
                   s.الهاتف || s.whatsapp || '—';
     
@@ -862,7 +869,7 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock (Firestore) ============
+// ============ Lock/Unlock ============
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
@@ -906,7 +913,7 @@ window.deleteStudent = async function(id, name) {
   }
 };
 
-// ============ Map ============
+// ============ Map (المعلمين + الطلاب) ============
 window._map = null;
 let markersLayer = null;
 window._mapMarkers = {};
@@ -1044,6 +1051,99 @@ window.focusTeacherOnMap = function(phone) {
     window._map.flyTo([ref.lat, ref.lng], 15, { duration: 0.8 });
     setTimeout(() => ref.marker.openPopup(), 900);
   }, 200);
+};
+
+// ==========================================================
+// 🎓 خريطة الطلاب المستقلة
+// ==========================================================
+window._studentsMap = null;
+let studentsMapLayer = null;
+window._studentsMapMarkers = {};
+
+function renderStudentsMap() {
+  if (!window._studentsMap) {
+    window._studentsMap = L.map('studentsMap').setView([26.8206, 30.8025], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(window._studentsMap);
+    
+    studentsMapLayer = L.markerClusterGroup({
+      iconCreateFunction: (cluster) => {
+        const c = cluster.getChildCount();
+        return L.divIcon({
+          html: `<div style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3)">${c}</div>`,
+          className: '', iconSize: [40, 40]
+        });
+      }
+    }).addTo(window._studentsMap);
+  }
+  
+  studentsMapLayer.clearLayers();
+  window._studentsMapMarkers = {};
+  const bounds = L.latLngBounds();
+  let count = 0;
+
+  allStudents.forEach(s => {
+    if (!s.lat || !s.lng) return;
+    
+    const locked = s.isLocked === true;
+    const sName = s.name || s.studentName || s.fullName || '—';
+    const sGrade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || '—';
+    const sPhone = s.phone || s.studentPhone || s.mobile || '';
+    const sStage = s.stage || '';
+    const sGender = s.gender || 'boy';
+    
+    const isGirl = (sGender === 'girl' || sGender === 'بنت' || sGender === 'أنثى' || sGender === 'female');
+    const genderIcon = isGirl ? '👧' : '👦';
+    const borderColor = isGirl ? '#EC4899' : '#F59E0B';
+    const bgColor = isGirl ? '#FCE7F3' : '#FEF3C7';
+    
+    const iconHtml = `<div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;background:${bgColor};border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3);border:3px solid ${borderColor};margin-left:-19px;margin-top:-19px;${locked ? 'opacity:.6;' : ''}">${genderIcon}</div>`;
+    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
+    
+    const m = L.marker([s.lat, s.lng], { icon });
+    m.bindPopup(`
+      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:180px">
+        <div style="font-weight:900;font-size:14px;color:${borderColor}">
+          ${genderIcon} ${sName}
+        </div>
+        <div style="font-size:12px;color:#64748B;margin:6px 0">
+          📖 ${sStage ? sStage + ' — ' : ''}${sGrade}
+        </div>
+        ${sPhone ? `
+        <div style="font-size:11px;color:#64748B;margin-bottom:6px">📱 ${sPhone}</div>
+        <div style="display:flex;gap:4px;margin-top:6px">
+          <a href="https://wa.me/2${sPhone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
+          <a href="tel:${sPhone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
+        </div>` : ''}
+        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🔒 مقفول</div>' : ''}
+      </div>
+    `);
+    
+    studentsMapLayer.addLayer(m);
+    window._studentsMapMarkers[s.id] = { marker: m, lat: s.lat, lng: s.lng };
+    bounds.extend([s.lat, s.lng]);
+    count++;
+  });
+
+  const countEl = document.getElementById('studentsMapCount');
+  if (countEl) countEl.textContent = `${count} طالب على الخريطة`;
+
+  if (count > 0 && bounds.isValid()) {
+    setTimeout(() => {
+      if (window._studentsMap) {
+        window._studentsMap.invalidateSize();
+        window._studentsMap.flyToBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+      }
+    }, 200);
+  }
+}
+
+window.fitStudentsMap = function() {
+  if (!window._studentsMap) return;
+  const points = Object.values(window._studentsMapMarkers).map(x => [x.lat, x.lng]);
+  if (points.length === 0) return window.toast('📍 لا يوجد طلاب بمواقع محفوظة', '#D97706');
+  window._studentsMap.flyToBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 14 });
 };
 
 // ==========================================================
@@ -1206,9 +1306,6 @@ window.deleteStage = function(stageId) {
   window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ السحابي', '#2563EB');
 };
 
-// ==========================================================
-// ✅ Modal تعديل المرحلة (اسم + لون)
-// ==========================================================
 window._editingStageId = null;
 
 window.editStage = function(stageId) {
@@ -1392,6 +1489,7 @@ async function init() {
       renderStats();
       renderStudentsTable();
       renderMap();
+      renderStudentsMap();
     });
 
     unsubGroups = subscribeGroups((groups) => {
