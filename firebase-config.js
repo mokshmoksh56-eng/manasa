@@ -95,6 +95,20 @@ export async function deleteStudentByKey(key) {
     await deleteDoc(doc(db, "students", key));
 }
 
+// ✅ دالة جديدة: تحديث بيانات الطالب (الاسم، النوع، المرحلة، الصف، الموقع)
+export async function updateStudentProfile(accountKey, data) {
+    const allowed = ['name', 'gender', 'stage', 'grade', 'phone', 'lat', 'lng', 'address'];
+    const updates = {};
+    for (const k of allowed) {
+        if (data[k] !== undefined && data[k] !== null && data[k] !== '') {
+            updates[k] = data[k];
+        }
+    }
+    if (Object.keys(updates).length === 0) return;
+    updates.updatedAt = new Date().toISOString();
+    await updateDoc(doc(db, "students", accountKey), updates);
+}
+
 // ============ دوال المجموعات ============
 export async function publishGroup(group) {
     const ref = doc(collection(db, "groups"));
@@ -186,7 +200,7 @@ export async function getWhatsappClicks() {
     return snap.exists() ? (snap.data().count || 0) : 0;
 }
 
-// ============ ✅ دوال Single Device Login ============
+// ============ دوال Single Device Login ============
 export function generateDeviceId() {
     let deviceId = localStorage.getItem('device_id');
     if (!deviceId) {
@@ -214,10 +228,32 @@ export async function updateTeacherDevice(phone) {
     return deviceId;
 }
 
+// ✅ محدّثة: مع مزامنة بيانات localStorage مع Firestore تلقائياً
 export async function checkStudentDevice(accountKey) {
     const student = await getStudentByKey(accountKey);
     if (!student) return { ok: false, reason: 'not_found' };
+    
     const currentDeviceId = generateDeviceId();
+    
+    // ✅ مزامنة بيانات localStorage مع Firestore (للحسابات القديمة)
+    try {
+        const profile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+        if (profile.id === accountKey) {
+            const updates = {};
+            if (profile.grade && student.grade !== profile.grade) updates.grade = profile.grade;
+            if (profile.stage && student.stage !== profile.stage) updates.stage = profile.stage;
+            if (profile.gender && student.gender !== profile.gender) updates.gender = profile.gender;
+            if (profile.name && student.name !== profile.name) updates.name = profile.name;
+            
+            if (Object.keys(updates).length > 0) {
+                await updateDoc(doc(db, "students", accountKey), updates);
+                console.log('✅ تمت مزامنة بيانات الطالب مع Firestore');
+            }
+        }
+    } catch (e) {
+        console.warn('⚠️ فشل المزامنة (تم تجاهله):', e);
+    }
+    
     if (!student.activeDeviceId) return { ok: true, isFirst: true, student };
     if (student.activeDeviceId === currentDeviceId) return { ok: true, isSame: true, student };
     return { ok: false, reason: 'different_device', student };
@@ -233,12 +269,11 @@ export async function updateStudentDevice(accountKey) {
 }
 
 // ==========================================================
-// ✅✅✅ دوال المزامنة السحابية (school.html + mester1.html) ✅✅✅
+// دوال المزامنة السحابية (school.html + mester1.html)
 // ==========================================================
 
 const SETTINGS_COLLECTION = "settings";
 
-// ✅ البيانات الافتراضية للمواد والصفوف
 export const DEFAULT_CURRICULUM = {
     kg: {
         name: '🧸 رياض الأطفال',
@@ -276,7 +311,6 @@ export const DEFAULT_CURRICULUM = {
     }
 };
 
-// ✅ قراءة المناهج من Firestore
 export async function getCurriculumSettings() {
     try {
         const snap = await getDoc(doc(db, SETTINGS_COLLECTION, "curriculum"));
@@ -290,7 +324,6 @@ export async function getCurriculumSettings() {
     }
 }
 
-// ✅ حفظ المناهج في Firestore
 export async function saveCurriculumSettings(curriculum, adminName = "admin") {
     await setDoc(doc(db, SETTINGS_COLLECTION, "curriculum"), {
         data: curriculum,
@@ -300,7 +333,6 @@ export async function saveCurriculumSettings(curriculum, adminName = "admin") {
     });
 }
 
-// ✅ الاستماع اللحظي (Real-time) لتغييرات المناهج
 export function subscribeCurriculum(callback) {
     return onSnapshot(doc(db, SETTINGS_COLLECTION, "curriculum"), (snap) => {
         if (snap.exists()) {
@@ -314,7 +346,6 @@ export function subscribeCurriculum(callback) {
     });
 }
 
-// ✅ قفل/فتح معلم (مزامنة سحابية)
 export async function setTeacherLock(phone, isLocked) {
     await updateDoc(doc(db, "teachers", phone), {
         isLocked: isLocked,
@@ -322,7 +353,6 @@ export async function setTeacherLock(phone, isLocked) {
     });
 }
 
-// ✅ قفل/فتح طالب (مزامنة سحابية)
 export async function setStudentLock(studentId, isLocked) {
     await updateDoc(doc(db, "students", studentId), {
         isLocked: isLocked,
@@ -330,7 +360,6 @@ export async function setStudentLock(studentId, isLocked) {
     });
 }
 
-// ✅ حذف معلم مع كل مجموعاته
 export async function deleteTeacherAccount(phone) {
     const groups = await getGroupsByTeacher(phone);
     for (const g of groups) {
@@ -340,12 +369,10 @@ export async function deleteTeacherAccount(phone) {
     return { deletedGroups: groups.length };
 }
 
-// ✅ حذف طالب
 export async function deleteStudentAccount(studentId) {
     await deleteDoc(doc(db, "students", studentId));
 }
 
-// ✅ الاستماع اللحظي للمعلمين
 export function subscribeTeachers(callback) {
     return onSnapshot(collection(db, "teachers"), (snap) => {
         callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -355,7 +382,6 @@ export function subscribeTeachers(callback) {
     });
 }
 
-// ✅ الاستماع اللحظي للطلاب
 export function subscribeStudents(callback) {
     return onSnapshot(collection(db, "students"), (snap) => {
         callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -365,7 +391,6 @@ export function subscribeStudents(callback) {
     });
 }
 
-// ✅ الاستماع اللحظي للمجموعات
 export function subscribeGroups(callback) {
     return onSnapshot(collection(db, "groups"), (snap) => {
         callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -376,7 +401,7 @@ export function subscribeGroups(callback) {
 }
 
 // ==========================================================
-// ✅✅✅ التصدير النهائي — مع كل الدوال المطلوبة ✅✅✅
+// التصدير النهائي
 // ==========================================================
 export { 
     app, db, auth, analytics,
