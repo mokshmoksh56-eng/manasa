@@ -480,7 +480,6 @@
         document.getElementById('successMsg').classList.remove('show');
     };
 
-    // ✅ دالة تسجيل الخروج
     window.handleLogout = function() {
         const savedProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         
@@ -589,8 +588,15 @@
                     phone: phone,
                     pin: pin,
                     role: 'student',
+                    // ✅ حقول إضافية لتظهر في school.html
+                    gender: null,
+                    stage: null,
+                    grade: null,
+                    lat: null,
+                    lng: null,
                     activeDeviceId: deviceId,
-                    lastLoginAt: new Date().toISOString()
+                    lastLoginAt: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
                 };
 
                 const savedKey = await saveStudent(studentData);
@@ -606,7 +612,6 @@
                     return;
                 }
 
-                // ✅ نجيب الطالب
                 let studentData = null;
                 try {
                     studentData = await getStudent(phone, pin);
@@ -632,7 +637,6 @@
                     return;
                 }
 
-                // ✅ التحقق من الجهاز
                 try {
                     const deviceCheck = await checkStudentDevice(accountKey);
 
@@ -663,7 +667,6 @@
             console.error("❌ خطأ عام:", error);
             window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
         } finally {
-            // ✅ الزر يرجع دايماً مهما حصل
             btn.disabled = false;
             btnText.textContent = originalText;
         }
