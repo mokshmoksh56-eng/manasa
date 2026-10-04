@@ -213,7 +213,6 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
     transition: height 0.3s ease; 
 }
 
-/* ✅ زر تأكيد الموقع */
 .confirm-location-box{
     background: linear-gradient(160deg, #ECFDF5 0%, #D1FAE5 100%);
     border: 2px solid #6EE7B7;
@@ -998,7 +997,6 @@ body.dark-mode .address-badge-full {
     color: #FEF3C7;
 }
 
-/* ✅ شاشة حماية أولية */
 .security-overlay {
     position: fixed;
     inset: 0;
@@ -1036,7 +1034,6 @@ body.dark-mode .address-badge-full {
     opacity: 0.9;
 }
 
-/* ✅ شارة حالة السحابة */
 .cloud-badge {
     position: fixed;
     top: 20px;
@@ -1083,10 +1080,6 @@ body.dark-mode .address-badge-full {
         font-size: 10px;
     } 
 }
-
-/* ═══════════════════════════════════════════════════════ */
-/* ✅✅✅ كروت المراحل التفاعلية ✅✅✅ */
-/* ═══════════════════════════════════════════════════════ */
 
 .stages-cards-container{
     display:grid;
@@ -1491,7 +1484,6 @@ body.dark-mode .address-badge-full {
 
             <div id="studentMap"></div>
 
-            <!-- ✅✅✅ زر تأكيد الموقع الجديد ✅✅✅ -->
             <div class="confirm-location-box">
                 <div class="confirm-location-header">
                     <span class="confirm-location-label">
@@ -1548,7 +1540,12 @@ body.dark-mode .address-badge-full {
 </div>
 
 <script type="module">
-    import { getAllGroups, getCurriculumSettings, subscribeCurriculum } from './firebase-config.js';
+    import { 
+        getAllGroups, 
+        getCurriculumSettings, 
+        subscribeCurriculum,
+        updateStudentProfile
+    } from './firebase-config.js';
 
     // ═══════════════════════════════════════════════════════════
     // ✅ حالة السحابة
@@ -1978,6 +1975,11 @@ body.dark-mode .address-badge-full {
             studentLat = pos.lat; studentLng = pos.lng; 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
             window.updateLocationStatus('manual', studentLat, studentLng);
+            // ✅ رفع الموقع لـ Firestore
+            if (studentProfile && studentProfile.id) {
+                updateStudentProfile(studentProfile.id, { lat: studentLat, lng: studentLng })
+                    .catch(e => console.warn('⚠️ فشل رفع الموقع:', e));
+            }
         });
         
         map.on('click', (e) => { 
@@ -1985,6 +1987,11 @@ body.dark-mode .address-badge-full {
             studentSearchMarker.setLatLng([studentLat, studentLng]); 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
             window.updateLocationStatus('manual', studentLat, studentLng);
+            // ✅ رفع الموقع لـ Firestore
+            if (studentProfile && studentProfile.id) {
+                updateStudentProfile(studentProfile.id, { lat: studentLat, lng: studentLng })
+                    .catch(e => console.warn('⚠️ فشل رفع الموقع:', e));
+            }
         });
         
         window.updateSearchCircle();
@@ -1999,7 +2006,6 @@ body.dark-mode .address-badge-full {
         }).addTo(map);
     };
 
-    // ✅ تحديث حالة الموقع في البوكس الجديد
     window.updateLocationStatus = function(type, lat, lng) {
         const status = document.getElementById('currentLocationStatus');
         const btn = document.getElementById('confirmLocationBtn');
@@ -2033,7 +2039,6 @@ body.dark-mode .address-badge-full {
         }
     };
 
-    // ✅✅✅ زر تأكيد الموقع للطالب ✅✅✅
     window.confirmMyLocation = function() {
         const btn = document.getElementById('confirmLocationBtn');
         const status = document.getElementById('currentLocationStatus');
@@ -2073,6 +2078,12 @@ body.dark-mode .address-badge-full {
                 
                 window.saveMapState();
                 window.renderClasses();
+                
+                // ✅ رفع الموقع لـ Firestore
+                if (studentProfile && studentProfile.id) {
+                    updateStudentProfile(studentProfile.id, { lat: lat, lng: lng })
+                        .catch(e => console.warn('⚠️ فشل رفع الموقع:', e));
+                }
                 
                 status.textContent = `✅ ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
                 status.style.color = '#059669';
@@ -2120,6 +2131,11 @@ body.dark-mode .address-badge-full {
                     map.flyTo([lat, lng], 14, { animate: true, duration: 1.5 });
                     isGpsActive = true; window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
                     window.updateLocationStatus('success', lat, lng);
+                    // ✅ رفع الموقع لـ Firestore
+                    if (studentProfile && studentProfile.id) {
+                        updateStudentProfile(studentProfile.id, { lat: lat, lng: lng })
+                            .catch(e => console.warn('⚠️ فشل رفع الموقع:', e));
+                    }
                 }
             },
             () => { isGpsActive = true; window.renderClasses(); },
@@ -2152,6 +2168,11 @@ body.dark-mode .address-badge-full {
                     map.flyTo([lat, lng], 14, { animate: true, duration: 1.5 }); 
                     window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
                     window.updateLocationStatus('success', lat, lng);
+                    // ✅ رفع الموقع لـ Firestore
+                    if (studentProfile && studentProfile.id) {
+                        updateStudentProfile(studentProfile.id, { lat: lat, lng: lng })
+                            .catch(e => console.warn('⚠️ فشل رفع الموقع:', e));
+                    }
                 }
             },
             () => { alert('فشل تحديد الموقع.'); },
@@ -2159,7 +2180,8 @@ body.dark-mode .address-badge-full {
         );
     };
 
-    window.handleStudentLogin = function(e) {
+    // ✅ معدّلة: ترفع البيانات لـ Firestore بعد الحفظ المحلي
+    window.handleStudentLogin = async function(e) {
         e.preventDefault();
         const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         const name = document.getElementById('studentName').value.trim();
@@ -2176,6 +2198,23 @@ body.dark-mode .address-badge-full {
         
         studentProfile = { id: accountKey, name, phone, gender, stage, grade };
         localStorage.setItem('current_student_profile', JSON.stringify(studentProfile));
+        
+        // ✅ رفع البيانات لـ Firestore عشان school.html يشوفها
+        if (accountKey) {
+            try {
+                await updateStudentProfile(accountKey, {
+                    name: name,
+                    phone: phone,
+                    gender: gender,
+                    stage: stage,
+                    grade: grade
+                });
+                console.log('✅ تم حفظ البيانات في Firestore');
+            } catch (err) {
+                console.error('⚠️ فشل حفظ البيانات السحابي:', err);
+            }
+        }
+        
         window.setupStudentDashboard(); 
         window.showView('searchView');
         window.fetchClassesFromFirebase();
@@ -2264,7 +2303,6 @@ body.dark-mode .address-badge-full {
             if (el.dataset.value === currentPlaceFilter) { el.classList.add('active'); }
         });
 
-        // ✅ تحديث حالة الموقع إذا كان محفوظ
         if (studentLat && studentLng) {
             window.updateLocationStatus('manual', studentLat, studentLng);
         }
