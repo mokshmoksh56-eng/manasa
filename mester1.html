@@ -8,9 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           متغيرات الألوان (تم ضبط التباين وتغميق الألوان لضمان وضوح النصوص)
-           ========================================= */
         :root {
             --primary-teal: #009688;
             --dark-teal: #00695c;
@@ -19,7 +16,6 @@
             --text-gray: #64748b;
             --white: #ffffff;
             
-            /* ألوان المراحل */
             --kg-color: #d81b60; 
             --primary-color: #2e7d32; 
             --prep-color: #1565c0; 
@@ -41,9 +37,6 @@
             color: var(--text-dark);
         }
 
-        /* =========================================
-           الهيدر وخلفيته
-           ========================================= */
         .header-3d {
             width: 100%;
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 100%), 
@@ -70,7 +63,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* تعديلات شريط الخطوات (Stepper) ليكون تفاعلياً */
         .stepper {
             display: flex;
             justify-content: center;
@@ -118,9 +110,46 @@
             font-size: 11px;
         }
 
-        /* =========================================
-           الحاوية الرئيسية والعنوان البارز
-           ========================================= */
+        /* ✅ شارة حالة السحابة */
+        .cloud-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(6px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .cloud-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94A3B8;
+            transition: 0.3s;
+        }
+        .cloud-badge.online .dot {
+            background: #22C55E;
+            box-shadow: 0 0 8px #22C55E;
+            animation: pulseDot 1.5s infinite;
+        }
+        .cloud-badge.offline .dot {
+            background: #DC2626;
+            box-shadow: 0 0 8px #DC2626;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
         .container {
             width: 100%;
             max-width: 650px;
@@ -146,9 +175,27 @@
             box-shadow: 0 3px 8px rgba(0, 150, 136, 0.15);
         }
 
-        /* =========================================
-           شريط الحفظ التلقائي
-           ========================================= */
+        /* ✅ شاشة التحميل للانتظار */
+        .loading-curriculum {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 800;
+        }
+        .loading-curriculum .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 150, 136, 0.15);
+            border-top-color: var(--primary-teal);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .autosave-bar {
             position: fixed;
             bottom: 12px;
@@ -176,44 +223,34 @@
             background: #00E5FF;
             animation: pulseDot 1.5s infinite;
         }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
         @keyframes slideIn {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* =========================================
-           شريط حالة المزامنة مع Firebase
-           ========================================= */
-        .sync-status-bar {
+        /* ✅ شارة "تم تحديث المواد" */
+        .curriculum-updated-badge {
             position: fixed;
-            bottom: 12px;
-            left: 12px;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #10B981, #047857);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
             font-weight: 900;
-            color: white;
-            z-index: 9999;
+            box-shadow: 0 8px 20px rgba(16,185,129,0.4);
+            z-index: 99999;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
         }
-        .sync-status-bar.show { opacity: 1; transform: translateY(0); }
-        .sync-status-bar.syncing { background: #3b82f6; }
-        .sync-status-bar.success { background: #10b981; }
-        .sync-status-bar.error { background: #ef4444; }
+        .curriculum-updated-badge.show {
+            transform: translateX(-50%) translateY(0);
+        }
 
-        /* =========================================
-           عنصر المرحلة (Accordion) وتلوينها
-           ========================================= */
         .stage-item {
             background-color: var(--white);
             border: 2px solid #e2e8f0;
@@ -298,9 +335,6 @@
         .stage-content { display: none; padding: 4px 10px 12px; }
         .stage-item.active .stage-content { display: block; }
 
-        /* =========================================
-           أزرار الصفوف
-           ========================================= */
         .grades-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
             gap: 6px; margin-bottom: 8px; padding-top: 4px;
@@ -323,9 +357,6 @@
         #stage-prep .grade-btn.selected { background: var(--prep-color); border-color: #0d47a1; color: white; box-shadow: 0 2px 6px rgba(21, 101, 192, 0.25); }
         #stage-secondary .grade-btn.selected { background: var(--secondary-color); border-color: #bf360c; color: white; box-shadow: 0 2px 6px rgba(230, 81, 0, 0.25); }
 
-        /* =========================================
-           قسم وشبكة المواد
-           ========================================= */
         .subjects-section {
             background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px;
             padding: 10px 8px; margin-top: 6px; display: none;
@@ -375,7 +406,6 @@
 
         .subject-btn.selected::before { content: '✓ '; font-weight: bold; margin-left: 2px; }
 
-        /* زر الحفظ الصغير تحت المواد */
         .btn-save-inline {
             display: flex; align-items: center; justify-content: center; gap: 6px; width: fit-content;
             min-width: 140px; margin: 10px auto 0; padding: 6px 14px; color: var(--white);
@@ -398,9 +428,6 @@
         .btn-save-inline:hover { transform: translateY(-1px); }
         .btn-save-inline:active { transform: scale(0.96); }
 
-        /* =========================================
-           زر الانتقال والملخص
-           ========================================= */
         .save-btn {
             margin-top: 6px; width: 100%; padding: 11px; background: var(--primary-teal);
             color: var(--white); border: none; border-radius: 8px; font-size: 15px;
@@ -410,7 +437,6 @@
 
         .save-btn:hover { background: var(--dark-teal); }
         .save-btn:active { transform: scale(0.98); }
-        .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .summary-box {
             background: var(--white); border: 1.5px solid var(--primary-teal); border-radius: 10px;
@@ -425,6 +451,41 @@
         .summary-item-prep strong { color: var(--prep-color); }
         .summary-item-secondary strong { color: var(--secondary-color); }
 
+        /* ✅ شاشة حماية الجهاز */
+        .security-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #009688 0%, #00695c 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            gap: 20px;
+            transition: opacity 0.3s ease;
+        }
+        .security-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .security-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .security-overlay h2 {
+            font-size: 20px;
+            font-weight: 900;
+        }
+        .security-overlay p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
         @media (max-width: 380px) {
             .grades-grid { grid-template-columns: repeat(2, 1fr); }
             .subjects-grid { grid-template-columns: repeat(2, 1fr); }
@@ -433,14 +494,65 @@
 </head>
 <body>
 
+    <!-- ✅ شاشة حماية الجهاز -->
+    <div class="security-overlay" id="securityOverlay">
+        <div class="security-spinner"></div>
+        <h2>جاري التحقق من الجهاز...</h2>
+        <p>منصة احجزلي تحمي حسابك</p>
+    </div>
+
+    <!-- ✅ شارة تحديث المواد -->
+    <div class="curriculum-updated-badge" id="curriculumBadge">
+        <span>☁️</span>
+        <span>تم تحديث المواد من السحابة</span>
+    </div>
+
+    <!-- ✅ سكريبت حماية الجهاز -->
+    <script type="module">
+        import { checkTeacherDevice } from './firebase-config.js';
+        
+        (async () => {
+            const overlay = document.getElementById('securityOverlay');
+            
+            const phone = localStorage.getItem('current_teacher_phone');
+            if (!phone) {
+                window.location.href = 'teacher-login.html';
+                return;
+            }
+            
+            try {
+                const check = await checkTeacherDevice(phone);
+                if (!check.ok) {
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('current_teacher_phone');
+                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                    window.location.href = 'teacher-login.html';
+                    return;
+                }
+                overlay.classList.add('hide');
+                setTimeout(() => overlay.remove(), 300);
+            } catch (e) {
+                console.error('خطأ في التحقق:', e);
+                overlay.classList.add('hide');
+                setTimeout(() => overlay.remove(), 300);
+            }
+        })();
+    </script>
+
     <header class="header-3d">
+        <!-- ✅ شارة حالة السحابة -->
+        <div class="cloud-badge" id="cloudBadge">
+            <span class="dot"></span>
+            <span id="cloudText">جاري الاتصال...</span>
+        </div>
+
         <h1>منصة احجزلي</h1>
         <p>بوابة المعلم - إدارة المجموعات والدروس</p>
 
         <div class="stepper">
             <div class="step active">1. التخصص</div>
             <div class="step-divider">❯</div>
-            <a class="step clickable" onclick="saveSelection()" title="اضغط للانتقال لصفحة المواعيد والمجموعات">2. المواعيد والمجموعات</a>
+            <a class="step clickable" onclick="window.saveSelection()" title="اضغط للانتقال لصفحة المواعيد والمجموعات">2. المواعيد والمجموعات</a>
         </div>
     </header>
 
@@ -448,171 +560,77 @@
 
         <h2 class="page-title">ما هي المادة التي تدرسها؟ 📚</h2>
 
-        <!-- رياض الأطفال -->
-        <div class="stage-item" id="stage-kg">
-            <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title">
-                    <span>🧸 رياض الأطفال</span>
-                    <div class="stage-badges" id="badges-kg"></div>
-                </div>
-                <div class="arrow"></div>
-            </div>
-            <div class="stage-content">
-                <div class="grades-grid">
-                    <button class="grade-btn" onclick="selectGrade('KG1', 'kg', this)">KG1</button>
-                    <button class="grade-btn" onclick="selectGrade('KG2', 'kg', this)">KG2</button>
-                </div>
-                <div id="subjects-container-kg"></div>
+        <!-- ✅ سيتم بناء المراحل ديناميكياً من Firestore -->
+        <div id="stagesContainer">
+            <div class="loading-curriculum">
+                <div class="spinner"></div>
+                <div>جاري تحميل المواد من السحابة...</div>
             </div>
         </div>
 
-        <!-- الابتدائي -->
-        <div class="stage-item" id="stage-primary">
-            <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title">
-                    <span>📗 المرحلة الابتدائية</span>
-                    <div class="stage-badges" id="badges-primary"></div>
-                </div>
-                <div class="arrow"></div>
-            </div>
-            <div class="stage-content">
-                <div class="grades-grid">
-                    <button class="grade-btn" onclick="selectGrade('الأول الابتدائي', 'primary', this)">الأول الابتدائي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثاني الابتدائي', 'primary', this)">الثاني الابتدائي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثالث الابتدائي', 'primary', this)">الثالث الابتدائي</button>
-                    <button class="grade-btn" onclick="selectGrade('الرابع الابتدائي', 'primary', this)">الرابع الابتدائي</button>
-                    <button class="grade-btn" onclick="selectGrade('الخامس الابتدائي', 'primary', this)">الخامس الابتدائي</button>
-                    <button class="grade-btn" onclick="selectGrade('السادس الابتدائي', 'primary', this)">السادس الابتدائي</button>
-                </div>
-                <div id="subjects-container-primary"></div>
-            </div>
-        </div>
-
-        <!-- الإعدادي -->
-        <div class="stage-item" id="stage-prep">
-            <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title">
-                    <span>📘 المرحلة الإعدادية</span>
-                    <div class="stage-badges" id="badges-prep"></div>
-                </div>
-                <div class="arrow"></div>
-            </div>
-            <div class="stage-content">
-                <div class="grades-grid">
-                    <button class="grade-btn" onclick="selectGrade('الأول الإعدادي', 'prep', this)">الأول الإعدادي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثاني الإعدادي', 'prep', this)">الثاني الإعدادي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثالث الإعدادي', 'prep', this)">الثالث الإعدادي</button>
-                </div>
-                <div id="subjects-container-prep"></div>
-            </div>
-        </div>
-
-        <!-- الثانوي -->
-        <div class="stage-item" id="stage-secondary">
-            <div class="stage-header" onclick="toggleStage(event, this)">
-                <div class="stage-title">
-                    <span>📙 المرحلة الثانوية</span>
-                    <div class="stage-badges" id="badges-secondary"></div>
-                </div>
-                <div class="arrow"></div>
-            </div>
-            <div class="stage-content">
-                <div class="grades-grid">
-                    <button class="grade-btn" onclick="selectGrade('الأول الثانوي', 'secondary', this)">الأول الثانوي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثاني الثانوي', 'secondary', this)">الثاني الثانوي</button>
-                    <button class="grade-btn" onclick="selectGrade('الثالث الثانوي', 'secondary', this)">الثالث الثانوي</button>
-                </div>
-                <div id="subjects-container-secondary"></div>
-            </div>
-        </div>
-
-        <!-- ملخص الاختيارات -->
         <div class="summary-box" id="summary">
             <strong>ملخص اختياراتك:</strong>
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <button class="save-btn" id="saveSelectionBtn" onclick="saveSelection()">الانتقال للخطوة التالية ❯</button>
+        <button class="save-btn" onclick="window.saveSelection()">الانتقال للخطوة التالية ❯</button>
 
     </div>
 
-    <!-- ✅ شريط الحفظ التلقائي -->
     <div class="autosave-bar" id="autosave-bar">
         <span class="dot"></span>
         <span>تم الحفظ تلقائياً</span>
     </div>
 
-    <!-- 🔄 شريط حالة المزامنة مع Firebase -->
-    <div class="sync-status-bar" id="syncStatusBar">
-        <span id="syncIcon">⏳</span>
-        <span id="syncText">جاري المزامنة...</span>
-    </div>
-
     <script type="module">
-        // ==========================================
-        // 🔥 استيراد دوال Firebase
-        // ==========================================
-        import { 
-            updateTeacherSelections, getTeacher 
-        } from './firebase-config.js';
+        // ==========================================================
+        // ✅ استيراد دوال Firebase
+        // ==========================================================
+        import { subscribeCurriculum, DEFAULT_CURRICULUM } from './firebase-config.js';
 
-        // ==========================================
-        // 🔐 التحقق من تسجيل الدخول
-        // ==========================================
-        const TEACHER_PHONE = localStorage.getItem('current_teacher_phone');
-        if (!TEACHER_PHONE) {
-            alert('⚠️ يجب تسجيل الدخول أولاً.');
-            window.location.href = 'teacher-login.html';
-        }
-
-        // ==========================================
-        // 🔄 شريط حالة المزامنة
-        // ==========================================
-        function showSyncStatus(type, message) {
-            const bar = document.getElementById('syncStatusBar');
-            const icon = document.getElementById('syncIcon');
-            const text = document.getElementById('syncText');
-            
-            bar.classList.remove('syncing', 'success', 'error');
-            bar.classList.add(type, 'show');
-            
-            if (type === 'syncing') icon.textContent = '⏳';
-            if (type === 'success') icon.textContent = '✅';
-            if (type === 'error') icon.textContent = '❌';
-            
-            text.textContent = message;
-            
-            if (type !== 'syncing') {
-                setTimeout(() => bar.classList.remove('show'), 2500);
-            }
-        }
-
-        // ==========================================
-        // 📚 بيانات المواد حسب الصف
-        // ==========================================
-        const subjectsData = {
-            'KG1': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
-            'KG2': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'لغة فرنسية', 'تربية دينية'],
-
-            'الأول الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
-            'الثاني الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'تربية دينية', 'تربية فنية'],
-            'الثالث الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية'],
-            'الرابع الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            'الخامس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            'السادس الابتدائي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-
-            'الأول الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            'الثاني الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-            'الثالث الإعدادي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'علوم', 'دراسات اجتماعية', 'تربية دينية', 'تكنولوجيا المعلومات'],
-
-            'الأول الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'فلسفة ومنطق'],
-            'الثاني الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا'],
-            'الثالث الثانوي': ['لغة عربية', 'لغة إنجليزية', 'رياضيات', 'فيزياء', 'كيمياء', 'أحياء', 'تاريخ', 'جغرافيا', 'إحصاء']
+        // ==========================================================
+        // ✅ 1) حالة السحابة
+        // ==========================================================
+        window.setCloudStatus = function(status, text) {
+            const badge = document.getElementById('cloudBadge');
+            const txt = document.getElementById('cloudText');
+            if (!badge) return;
+            badge.classList.remove('online', 'offline');
+            if (status) badge.classList.add(status);
+            txt.textContent = text;
         };
 
-        // ==========================================
-        // 📦 حالة الاختيارات
-        // ==========================================
+        // ==========================================================
+        // ✅ 2) هيكل المراحل (يُبنى ديناميكياً)
+        // ==========================================================
+        let dynamicStages = [];
+        let subjectsData = {};
+
+        // ✅ تحويل المناهج السحابية إلى شكل قابل للاستخدام
+        function applyCurriculum(curriculum) {
+            if (!curriculum) return;
+            dynamicStages = [];
+            subjectsData = {};
+
+            const stageOrder = ['kg', 'primary', 'prep', 'secondary'];
+            stageOrder.forEach(stageId => {
+                if (curriculum[stageId]) {
+                    const s = curriculum[stageId];
+                    dynamicStages.push({
+                        id: stageId,
+                        name: s.name || stageId,
+                        grades: (s.grades || []).map(g => g.name)
+                    });
+                    (s.grades || []).forEach(g => {
+                        subjectsData[g.name] = g.subjects || [];
+                    });
+                }
+            });
+        }
+
+        // ==========================================================
+        // ✅ 3) إدارة الاختيارات
+        // ==========================================================
         const selections = {
             kg: { grade: '', subjects: [] },
             primary: { grade: '', subjects: [] },
@@ -621,30 +639,21 @@
         };
 
         const subjectsOpen = {
-            kg: false,
-            primary: false,
-            prep: false,
-            secondary: false
+            kg: false, primary: false, prep: false, secondary: false
         };
 
         const MESTER1_SAVE_KEY = 'mester1_selections';
         let autosaveTimer = null;
-        let isSyncing = false;
 
-        // ==========================================
-        // 💾 الحفظ التلقائي
-        // ==========================================
         function showAutosaveBar() {
             const bar = document.getElementById('autosave-bar');
             if (!bar) return;
             bar.classList.add('show');
             clearTimeout(autosaveTimer);
-            autosaveTimer = setTimeout(() => {
-                bar.classList.remove('show');
-            }, 1200);
+            autosaveTimer = setTimeout(() => bar.classList.remove('show'), 1200);
         }
 
-        async function autoSaveMester1() {
+        function autoSaveMester1() {
             try {
                 const finalData = {};
                 for (const stageId in selections) {
@@ -653,116 +662,64 @@
                         finalData[stageId] = { grade, subjects: [...subjects] };
                     }
                 }
-                
-                // احفظ محلياً
                 localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
-                localStorage.setItem('teacherSelections', JSON.stringify(finalData));
                 showAutosaveBar();
-
-                // ⬆️ ارفع إلى Firebase (بشكل غير معطل للواجهة)
-                if (TEACHER_PHONE) {
-                    try {
-                        showSyncStatus('syncing', 'جاري الحفظ...');
-                        await updateTeacherSelections(TEACHER_PHONE, finalData);
-                        showSyncStatus('success', 'تم الحفظ سحابياً');
-                    } catch (err) {
-                        console.error('فشل المزامنة مع Firebase:', err);
-                        showSyncStatus('error', 'فشل المزامنة');
-                    }
-                }
             } catch(e) {
                 console.error('خطأ في الحفظ التلقائي:', e);
             }
         }
 
-        // ==========================================
-        // 🔄 استرجاع الاختيارات (من Firebase أولاً، ثم localStorage)
-        // ==========================================
-        async function restoreMester1() {
-            try {
-                let saved = null;
+        // ==========================================================
+        // ✅ 4) بناء واجهة المراحل
+        // ==========================================================
+        function buildStagesUI() {
+            const container = document.getElementById('stagesContainer');
+            if (!container) return;
 
-                // ⬇️ حاول جلب البيانات من Firebase أولاً
-                if (TEACHER_PHONE) {
-                    try {
-                        showSyncStatus('syncing', 'جاري تحميل بياناتك...');
-                        const teacher = await getTeacher(TEACHER_PHONE);
-                        if (teacher && teacher.selections) {
-                            saved = teacher.selections;
-                            showSyncStatus('success', 'تم تحميل بياناتك');
-                        }
-                    } catch (err) {
-                        console.warn('فشل تحميل من Firebase، سأستخدم localStorage:', err);
-                    }
-                }
-
-                // ⬇️ إن لم يوجد في Firebase، استخدم localStorage
-                if (!saved) {
-                    const raw = localStorage.getItem(MESTER1_SAVE_KEY);
-                    if (raw) saved = JSON.parse(raw);
-                }
-
-                if (!saved) return false;
-
-                let hasAny = false;
-
-                Object.keys(saved).forEach(stageId => {
-                    if (!selections[stageId]) return;
-                    const { grade, subjects } = saved[stageId];
-                    if (!grade || !subjects || subjects.length === 0) return;
-
-                    hasAny = true;
-                    selections[stageId].grade = grade;
-                    selections[stageId].subjects = [...subjects];
-
-                    // فعّل زر الصف
-                    const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
-                        .find(b => b.textContent.trim() === grade);
-                    if (gradeBtn) gradeBtn.classList.add('selected');
-
-                    // افتح المرحلة
-                    const stageItem = document.getElementById(`stage-${stageId}`);
-                    if (stageItem) stageItem.classList.add('active');
-
-                    // اعرض المواد
-                    renderSubjects(grade, stageId, true);
-
-                    // فعّل المواد المختارة
-                    setTimeout(() => {
-                        document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
-                            const subjName = btn.textContent.replace('✓', '').trim();
-                            if (subjects.includes(subjName)) {
-                                btn.classList.add('selected');
-                            }
-                        });
-                    }, 50);
-
-                    renderBadges(stageId);
-                });
-
-                if (hasAny) {
-                    updateSummary();
-                    // احفظ في localStorage أيضاً
-                    localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(saved));
-                    localStorage.setItem('teacherSelections', JSON.stringify(saved));
-                }
-                return hasAny;
-            } catch(e) {
-                console.error('خطأ في استرجاع الحفظ:', e);
-                return false;
+            if (dynamicStages.length === 0) {
+                container.innerHTML = `<div class="loading-curriculum">
+                    <div class="spinner"></div>
+                    <div>جاري تحميل المواد من السحابة...</div>
+                </div>`;
+                return;
             }
+
+            container.innerHTML = '';
+
+            dynamicStages.forEach(stage => {
+                const stageEl = document.createElement('div');
+                stageEl.className = 'stage-item';
+                stageEl.id = `stage-${stage.id}`;
+
+                const gradesHtml = stage.grades.map(g => 
+                    `<button class="grade-btn" onclick="window.selectGrade('${g.replace(/'/g, "\\'")}', '${stage.id}', this)">${g}</button>`
+                ).join('');
+
+                stageEl.innerHTML = `
+                    <div class="stage-header" onclick="window.toggleStage(event, this)">
+                        <div class="stage-title">
+                            <span>${stage.name}</span>
+                            <div class="stage-badges" id="badges-${stage.id}"></div>
+                        </div>
+                        <div class="arrow"></div>
+                    </div>
+                    <div class="stage-content">
+                        <div class="grades-grid">${gradesHtml}</div>
+                        <div id="subjects-container-${stage.id}"></div>
+                    </div>
+                `;
+                container.appendChild(stageEl);
+            });
         }
 
-        // ==========================================
-        // 🎯 دوال التفاعل مع المراحل والصفوف
-        // ==========================================
-        function toggleStage(event, header) {
-            const stageItem = header.parentElement;
-            stageItem.classList.toggle('active');
-        }
+        // ==========================================================
+        // ✅ 5) التفاعلات
+        // ==========================================================
+        window.toggleStage = function(event, header) {
+            header.parentElement.classList.toggle('active');
+        };
 
-        function selectGrade(gradeName, stageId, btn) {
-            // امسح باقي المراحل
+        window.selectGrade = function(gradeName, stageId, btn) {
             for (const key in selections) {
                 if (key !== stageId && selections[key].grade !== '') {
                     selections[key] = { grade: '', subjects: [] };
@@ -771,38 +728,29 @@
                     const stageItem = document.getElementById(`stage-${key}`);
                     if (stageItem) stageItem.classList.remove('active');
 
-                    const stageContent = document.querySelector(`#stage-${key} .grades-grid`);
-                    if (stageContent) {
-                        stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
-                    }
+                    const gc = document.querySelector(`#stage-${key} .grades-grid`);
+                    if (gc) gc.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
 
-                    const container = document.getElementById(`subjects-container-${key}`);
-                    if (container) container.innerHTML = '';
+                    const c = document.getElementById(`subjects-container-${key}`);
+                    if (c) c.innerHTML = '';
 
-                    const badges = document.getElementById(`badges-${key}`);
-                    if (badges) badges.innerHTML = '';
+                    const b = document.getElementById(`badges-${key}`);
+                    if (b) b.innerHTML = '';
                 }
             }
 
             const currentGrade = selections[stageId].grade;
             const container = document.getElementById(`subjects-container-${stageId}`);
 
-            // إذا كان نفس الصف، قم بطي/فتح المواد
             if (currentGrade === gradeName) {
                 const section = container.querySelector('.subjects-section');
                 if (section) {
-                    if (subjectsOpen[stageId]) {
-                        section.classList.remove('open');
-                        subjectsOpen[stageId] = false;
-                    } else {
-                        section.classList.add('open');
-                        subjectsOpen[stageId] = true;
-                    }
+                    subjectsOpen[stageId] = !subjectsOpen[stageId];
+                    section.classList.toggle('open', subjectsOpen[stageId]);
                 }
                 return;
             }
 
-            // اختيار صف جديد
             selections[stageId].grade = gradeName;
             selections[stageId].subjects = [];
 
@@ -813,13 +761,21 @@
             renderSubjects(gradeName, stageId, true);
             renderBadges(stageId);
             updateSummary();
-
             autoSaveMester1();
-        }
+        };
 
         function renderSubjects(gradeName, stageId, open = false) {
             const container = document.getElementById(`subjects-container-${stageId}`);
+            if (!container) return;
             const subjects = subjectsData[gradeName] || [];
+
+            if (subjects.length === 0) {
+                container.innerHTML = `<div class="subjects-section open" style="text-align:center;color:#94a3b8;font-size:12px;padding:15px">
+                    ⚠️ لا توجد مواد مسجلة لهذا الصف حالياً
+                </div>`;
+                subjectsOpen[stageId] = true;
+                return;
+            }
 
             let html = `
                 <div class="subjects-section ${open ? 'open' : ''}">
@@ -829,16 +785,13 @@
 
             subjects.forEach(subject => {
                 const isSelected = selections[stageId].subjects.includes(subject);
-                html += `
-                    <button class="subject-btn ${isSelected ? 'selected' : ''}" onclick="toggleSubject(this, '${subject}', '${stageId}', '${gradeName}')">
-                        ${subject}
-                    </button>
-                `;
+                const safeSubject = subject.replace(/'/g, "\\'");
+                html += `<button class="subject-btn ${isSelected ? 'selected' : ''}" onclick="window.toggleSubject(this, '${safeSubject}', '${stageId}')">${subject}</button>`;
             });
 
             html += `
                     </div>
-                    <button class="btn-save-inline" onclick="confirmStageSelection('${stageId}')">
+                    <button class="btn-save-inline" onclick="window.confirmStageSelection('${stageId}')">
                         <span>💾</span>
                         <span>تم واعتمد المواد</span>
                     </button>
@@ -849,7 +802,7 @@
             subjectsOpen[stageId] = open;
         }
 
-        function confirmStageSelection(stageId) {
+        window.confirmStageSelection = function(stageId) {
             if (selections[stageId].subjects.length === 0) {
                 alert('⚠️ يرجى اختيار مادة واحدة على الأقل أولاً.');
                 return;
@@ -864,9 +817,9 @@
             }
             autoSaveMester1();
             showAutosaveBar();
-        }
+        };
 
-        function toggleSubject(btn, subjectName, stageId, gradeName) {
+        window.toggleSubject = function(btn, subjectName, stageId) {
             const isSelected = selections[stageId].subjects.includes(subjectName);
 
             if (isSelected) {
@@ -879,12 +832,11 @@
 
             if (selections[stageId].subjects.length === 0) {
                 selections[stageId].grade = '';
-                const stageContent = document.querySelector(`#stage-${stageId} .grades-grid`);
-                if (stageContent) {
-                    stageContent.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
-                }
-                const container = document.getElementById(`subjects-container-${stageId}`);
-                const section = container.querySelector('.subjects-section');
+                const gc = document.querySelector(`#stage-${stageId} .grades-grid`);
+                if (gc) gc.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+
+                const c = document.getElementById(`subjects-container-${stageId}`);
+                const section = c.querySelector('.subjects-section');
                 if (section) {
                     section.classList.remove('open');
                     subjectsOpen[stageId] = false;
@@ -894,12 +846,11 @@
             renderBadges(stageId);
             updateSummary();
             autoSaveMester1();
-        }
+        };
 
         function renderBadges(stageId) {
             const container = document.getElementById(`badges-${stageId}`);
             if (!container) return;
-
             container.innerHTML = '';
 
             if (selections[stageId].grade && selections[stageId].subjects.length > 0) {
@@ -940,17 +891,10 @@
                 }
             }
 
-            if (total === 0) {
-                summaryContent.textContent = 'لم تختر أي مادة بعد.';
-            } else {
-                summaryContent.innerHTML = html;
-            }
+            summaryContent.innerHTML = total === 0 ? 'لم تختر أي مادة بعد.' : html;
         }
 
-        // ==========================================
-        // 💾 زر الانتقال للخطوة التالية
-        // ==========================================
-        async function saveSelection() {
+        window.saveSelection = function() {
             let total = 0;
             for (const stageId in selections) {
                 total += selections[stageId].subjects.length;
@@ -969,43 +913,156 @@
                 }
             }
 
-            // 💾 احفظ محلياً
             localStorage.setItem('teacherSelections', JSON.stringify(finalData));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
 
-            // ⬆️ ارفع إلى Firebase
-            if (TEACHER_PHONE) {
-                const saveBtn = document.getElementById('saveSelectionBtn');
-                saveBtn.disabled = true;
-                saveBtn.textContent = '⏳ جاري الحفظ...';
-                
-                try {
-                    showSyncStatus('syncing', 'جاري الحفظ سحابياً...');
-                    await updateTeacherSelections(TEACHER_PHONE, finalData);
-                    showSyncStatus('success', 'تم الحفظ بنجاح');
-                    
+            window.location.href = "mester2.html";
+        };
+
+        // ==========================================================
+        // ✅ 6) استرجاع الاختيارات المحفوظة
+        // ==========================================================
+        function restoreMester1() {
+            try {
+                const raw = localStorage.getItem(MESTER1_SAVE_KEY);
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+
+                Object.keys(saved).forEach(stageId => {
+                    if (!selections[stageId]) return;
+                    const { grade, subjects } = saved[stageId];
+                    if (!grade || !subjects || subjects.length === 0) return;
+
+                    // ✅ نتحقق أن الصف لسه موجود في المناهج السحابية
+                    if (!subjectsData[grade]) return;
+
+                    // ✅ نفلتر المواد المحذوفة
+                    const available = subjectsData[grade] || [];
+                    const validSubjects = subjects.filter(s => available.includes(s));
+                    if (validSubjects.length === 0) return;
+
+                    selections[stageId].grade = grade;
+                    selections[stageId].subjects = validSubjects;
+
+                    const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
+                        .find(b => b.textContent.trim() === grade);
+                    if (gradeBtn) gradeBtn.classList.add('selected');
+
+                    const stageItem = document.getElementById(`stage-${stageId}`);
+                    if (stageItem) stageItem.classList.add('active');
+
+                    renderSubjects(grade, stageId, true);
+
                     setTimeout(() => {
-                        window.location.href = "mester2.html";
-                    }, 600);
-                } catch (err) {
-                    console.error('فشل الحفظ:', err);
-                    showSyncStatus('error', 'فشل الحفظ - حاول مرة أخرى');
-                    saveBtn.disabled = false;
-                    saveBtn.textContent = 'الانتقال للخطوة التالية ❯';
-                }
-            } else {
-                window.location.href = "mester2.html";
+                        document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
+                            const subjName = btn.textContent.replace('✓', '').trim();
+                            if (validSubjects.includes(subjName)) btn.classList.add('selected');
+                        });
+                    }, 50);
+
+                    renderBadges(stageId);
+                });
+
+                updateSummary();
+            } catch(e) {
+                console.error('خطأ في استرجاع الحفظ:', e);
             }
         }
 
-        // ==========================================
-        // 🚀 التهيئة عند التحميل
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', async function() {
-            await restoreMester1();
+        // ==========================================================
+        // ✅ 7) تحديث الواجهة عند تغيير المناهج (تحديث ذكي)
+        // ==========================================================
+        function rebuildUIWithPreserve() {
+            // نسخ احتياطي للاختيارات الحالية
+            const backup = JSON.parse(JSON.stringify(selections));
 
-            // احفظ عند مغادرة الصفحة (احتياطي)
-            window.addEventListener('beforeunload', function() {
+            // إعادة بناء الواجهة
+            buildStagesUI();
+
+            // إعادة تعيين selections
+            for (const k in selections) {
+                selections[k] = { grade: '', subjects: [] };
+            }
+
+            // إعادة تطبيق الاختيارات الصالحة
+            let hasAny = false;
+            for (const stageId in backup) {
+                const sel = backup[stageId];
+                if (!sel.grade || sel.subjects.length === 0) continue;
+                if (!subjectsData[sel.grade]) continue;
+
+                const available = subjectsData[sel.grade] || [];
+                const validSubjects = sel.subjects.filter(s => available.includes(s));
+                if (validSubjects.length === 0) continue;
+
+                hasAny = true;
+                selections[stageId] = { grade: sel.grade, subjects: validSubjects };
+
+                const gradeBtn = Array.from(document.querySelectorAll(`#stage-${stageId} .grade-btn`))
+                    .find(b => b.textContent.trim() === sel.grade);
+                if (gradeBtn) {
+                    gradeBtn.classList.add('selected');
+                    const stageItem = document.getElementById(`stage-${stageId}`);
+                    if (stageItem) stageItem.classList.add('active');
+                    renderSubjects(sel.grade, stageId, true);
+                    setTimeout(() => {
+                        document.querySelectorAll(`#subjects-container-${stageId} .subject-btn`).forEach(btn => {
+                            const subjName = btn.textContent.replace('✓', '').trim();
+                            if (validSubjects.includes(subjName)) btn.classList.add('selected');
+                        });
+                    }, 50);
+                    renderBadges(stageId);
+                }
+            }
+
+            updateSummary();
+        }
+
+        // ==========================================================
+        // ✅ 8) التهيئة
+        // ==========================================================
+        let isFirstLoad = true;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.setCloudStatus(null, 'جاري الاتصال...');
+
+            // ✅ الاستماع اللحظي للمناهج من السحابة
+            subscribeCurriculum((curriculum) => {
+                applyCurriculum(curriculum);
+                window.setCloudStatus('online', 'متصل ☁️');
+
+                if (isFirstLoad) {
+                    // أول تحميل: بناء الواجهة + استرجاع الاختيارات
+                    buildStagesUI();
+                    restoreMester1();
+                    isFirstLoad = false;
+                } else {
+                    // تحديث لحظي: إعادة بناء مع الحفاظ على الاختيارات
+                    rebuildUIWithPreserve();
+
+                    // إظهار شارة التحديث
+                    const badge = document.getElementById('curriculumBadge');
+                    if (badge) {
+                        badge.classList.add('show');
+                        setTimeout(() => badge.classList.remove('show'), 2200);
+                    }
+                }
+            });
+
+            // مؤقت احتياطي: لو السحابة تأخرت أكثر من 5 ثوانٍ
+            setTimeout(() => {
+                if (isFirstLoad) {
+                    console.warn('⚠️ تأخر الاتصال بالسحابة، استخدام النسخة الافتراضية');
+                    applyCurriculum(DEFAULT_CURRICULUM);
+                    buildStagesUI();
+                    restoreMester1();
+                    isFirstLoad = false;
+                    window.setCloudStatus('offline', 'استخدام النسخة المحلية');
+                }
+            }, 5000);
+
+            // ✅ حفظ عند الخروج
+            window.addEventListener('beforeunload', () => {
                 try {
                     const finalData = {};
                     for (const stageId in selections) {
@@ -1018,22 +1075,12 @@
                 } catch(e) {}
             });
 
-            // أعد التحميل عند الرجوع من BFCache
-            window.addEventListener('pageshow', async function(e) {
-                if (e.persisted) {
-                    await restoreMester1();
+            window.addEventListener('pageshow', (e) => {
+                if (e.persisted && !isFirstLoad) {
+                    // رجع من الـ cache: لا نفعل شيئاً لأن السحابة ستُحدّث تلقائياً
                 }
             });
         });
-
-        // ==========================================
-        // 🌐 ربط الدوال بالـ window
-        // ==========================================
-        window.toggleStage = toggleStage;
-        window.selectGrade = selectGrade;
-        window.toggleSubject = toggleSubject;
-        window.confirmStageSelection = confirmStageSelection;
-        window.saveSelection = saveSelection;
     </script>
 </body>
 </html>
