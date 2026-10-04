@@ -1,0 +1,385 @@
+// firebase-config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+    getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, 
+    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+    getAuth, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyABNlQQpyIw3k_ziw_-xT7SUrMV_v8Tt1Y",
+    authDomain: "manasa-2e9bd.firebaseapp.com",
+    projectId: "manasa-2e9bd",
+    storageBucket: "manasa-2e9bd.firebasestorage.app",
+    messagingSenderId: "603553286689",
+    appId: "1:603553286689:web:dbc6db83d6c1eee1feb160",
+    measurementId: "G-VG0KN2RMS0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const analytics = getAnalytics(app);
+
+// ============ دوال المعلمين ============
+export async function saveTeacher(teacher) {
+    await setDoc(doc(db, "teachers", teacher.phone), {
+        ...teacher,
+        createdAt: serverTimestamp()
+    });
+}
+
+export async function getTeacher(phone) {
+    const snap = await getDoc(doc(db, "teachers", phone));
+    return snap.exists() ? snap.data() : null;
+}
+
+export async function getAllTeachers() {
+    const snap = await getDocs(collection(db, "teachers"));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function deleteTeacher(phone) {
+    await deleteDoc(doc(db, "teachers", phone));
+}
+
+export async function teacherExists(phone) {
+    const snap = await getDoc(doc(db, "teachers", phone));
+    return snap.exists();
+}
+
+// ============ دوال الطلاب ============
+export async function saveStudent(student) {
+    const key = `${student.phone}_${student.pin}`;
+    await setDoc(doc(db, "students", key), {
+        ...student,
+        id: key,
+        registeredAt: serverTimestamp()
+    });
+    return key;
+}
+
+export async function getStudent(phone, pin) {
+    const snap = await getDoc(doc(db, "students", `${phone}_${pin}`));
+    return snap.exists() ? snap.data() : null;
+}
+
+export async function getStudentByKey(key) {
+    const snap = await getDoc(doc(db, "students", key));
+    return snap.exists() ? snap.data() : null;
+}
+
+export async function getStudentsByPhone(phone) {
+    const q = query(collection(db, "students"), where("phone", "==", phone));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function getAllStudents() {
+    const snap = await getDocs(collection(db, "students"));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function deleteStudentsByPhone(phone) {
+    const students = await getStudentsByPhone(phone);
+    for (const s of students) {
+        await deleteDoc(doc(db, "students", s.id));
+    }
+    return students.length;
+}
+
+export async function deleteStudentByKey(key) {
+    await deleteDoc(doc(db, "students", key));
+}
+
+// ============ دوال المجموعات ============
+export async function publishGroup(group) {
+    const ref = doc(collection(db, "groups"));
+    await setDoc(ref, {
+        teacherName: group.teacherName || '',
+        teacherTitle: group.teacherTitle || 'مستر',
+        subject: group.subject || '',
+        grade: group.grade || '',
+        groupName: group.groupName || '',
+        maxCapacity: group.maxCapacity || 20,
+        bookedBoys: group.bookedBoys || 0,
+        bookedGirls: group.bookedGirls || 0,
+        gender: group.gender || 'all',
+        type: group.type || 'center',
+        location: group.location || '',
+        address: group.address || '',
+        fullAddress: group.fullAddress || group.address || '',
+        detailedAddress: group.detailedAddress || '',
+        lat: group.lat || null,
+        lng: group.lng || null,
+        startTime: group.startTime || '',
+        endTime: group.endTime || '',
+        daysNames: group.daysNames || [],
+        apptType: group.apptType || 'normal',
+        date: group.date || '',
+        phone: group.phone || '',
+        isActive: group.isActive !== false,
+        id: ref.id,
+        publishedAt: serverTimestamp()
+    });
+    return ref.id;
+}
+
+export async function updateGroup(groupId, data) {
+    await updateDoc(doc(db, "groups", groupId), data);
+}
+
+export async function deleteGroup(groupId) {
+    await deleteDoc(doc(db, "groups", groupId));
+}
+
+export async function getAllGroups() {
+    const snap = await getDocs(collection(db, "groups"));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function getGroupsByTeacher(teacherPhone) {
+    const q = query(collection(db, "groups"), where("phone", "==", teacherPhone));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+// ============ دوال المواعيد ============
+export async function saveAppointment(appt) {
+    const ref = doc(collection(db, "appointments"));
+    await setDoc(ref, { ...appt, id: ref.id, createdAt: serverTimestamp() });
+    return ref.id;
+}
+
+export async function getAppointmentsByTeacher(teacherPhone) {
+    const q = query(collection(db, "appointments"), where("teacherPhone", "==", teacherPhone));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function deleteAppointment(id) {
+    await deleteDoc(doc(db, "appointments", id));
+}
+
+// ============ دوال الإحصائيات ============
+export async function getDashboardStats() {
+    const [students, teachers, groups] = await Promise.all([
+        getAllStudents(),
+        getAllTeachers(),
+        getAllGroups()
+    ]);
+    return { students, teachers, groups };
+}
+
+export async function incrementWhatsappClicks() {
+    const ref = doc(db, "stats", "whatsapp");
+    const snap = await getDoc(ref);
+    const current = snap.exists() ? (snap.data().count || 0) : 0;
+    await setDoc(ref, { count: current + 1 });
+}
+
+export async function getWhatsappClicks() {
+    const snap = await getDoc(doc(db, "stats", "whatsapp"));
+    return snap.exists() ? (snap.data().count || 0) : 0;
+}
+
+// ============ ✅ دوال Single Device Login ============
+export function generateDeviceId() {
+    let deviceId = localStorage.getItem('device_id');
+    if (!deviceId) {
+        deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('device_id', deviceId);
+    }
+    return deviceId;
+}
+
+export async function checkTeacherDevice(phone) {
+    const teacher = await getTeacher(phone);
+    if (!teacher) return { ok: false, reason: 'not_found' };
+    const currentDeviceId = generateDeviceId();
+    if (!teacher.activeDeviceId) return { ok: true, isFirst: true, teacher };
+    if (teacher.activeDeviceId === currentDeviceId) return { ok: true, isSame: true, teacher };
+    return { ok: false, reason: 'different_device', teacher };
+}
+
+export async function updateTeacherDevice(phone) {
+    const deviceId = generateDeviceId();
+    await updateDoc(doc(db, "teachers", phone), {
+        activeDeviceId: deviceId,
+        lastLoginAt: new Date().toISOString()
+    });
+    return deviceId;
+}
+
+export async function checkStudentDevice(accountKey) {
+    const student = await getStudentByKey(accountKey);
+    if (!student) return { ok: false, reason: 'not_found' };
+    const currentDeviceId = generateDeviceId();
+    if (!student.activeDeviceId) return { ok: true, isFirst: true, student };
+    if (student.activeDeviceId === currentDeviceId) return { ok: true, isSame: true, student };
+    return { ok: false, reason: 'different_device', student };
+}
+
+export async function updateStudentDevice(accountKey) {
+    const deviceId = generateDeviceId();
+    await updateDoc(doc(db, "students", accountKey), {
+        activeDeviceId: deviceId,
+        lastLoginAt: new Date().toISOString()
+    });
+    return deviceId;
+}
+
+// ==========================================================
+// ✅✅✅ دوال المزامنة السحابية (school.html + mester1.html) ✅✅✅
+// ==========================================================
+
+const SETTINGS_COLLECTION = "settings";
+
+// ✅ البيانات الافتراضية للمواد والصفوف
+export const DEFAULT_CURRICULUM = {
+    kg: {
+        name: '🧸 رياض الأطفال',
+        grades: [
+            { name: 'KG1', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','لغة فرنسية','تربية دينية'] },
+            { name: 'KG2', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','لغة فرنسية','تربية دينية'] }
+        ]
+    },
+    primary: {
+        name: '📗 المرحلة الابتدائية',
+        grades: [
+            { name: 'الأول الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','تربية فنية'] },
+            { name: 'الثاني الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','تربية فنية'] },
+            { name: 'الثالث الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية'] },
+            { name: 'الرابع الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+            { name: 'الخامس الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+            { name: 'السادس الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] }
+        ]
+    },
+    prep: {
+        name: '📘 المرحلة الإعدادية',
+        grades: [
+            { name: 'الأول الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+            { name: 'الثاني الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+            { name: 'الثالث الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] }
+        ]
+    },
+    secondary: {
+        name: '📙 المرحلة الثانوية',
+        grades: [
+            { name: 'الأول الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','فلسفة ومنطق'] },
+            { name: 'الثاني الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','جغرافيا'] },
+            { name: 'الثالث الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','جغرافيا','إحصاء'] }
+        ]
+    }
+};
+
+// ✅ قراءة المناهج من Firestore
+export async function getCurriculumSettings() {
+    try {
+        const snap = await getDoc(doc(db, SETTINGS_COLLECTION, "curriculum"));
+        if (snap.exists()) {
+            return snap.data().data || DEFAULT_CURRICULUM;
+        }
+        return DEFAULT_CURRICULUM;
+    } catch (e) {
+        console.error('خطأ قراءة المناهج:', e);
+        return DEFAULT_CURRICULUM;
+    }
+}
+
+// ✅ حفظ المناهج في Firestore
+export async function saveCurriculumSettings(curriculum, adminName = "admin") {
+    await setDoc(doc(db, SETTINGS_COLLECTION, "curriculum"), {
+        data: curriculum,
+        updatedAt: serverTimestamp(),
+        updatedBy: adminName,
+        version: Date.now()
+    });
+}
+
+// ✅ الاستماع اللحظي (Real-time) لتغييرات المناهج
+export function subscribeCurriculum(callback) {
+    return onSnapshot(doc(db, SETTINGS_COLLECTION, "curriculum"), (snap) => {
+        if (snap.exists()) {
+            callback(snap.data().data || DEFAULT_CURRICULUM, snap.data());
+        } else {
+            callback(DEFAULT_CURRICULUM, null);
+        }
+    }, (error) => {
+        console.error('خطأ في الاستماع للمناهج:', error);
+        callback(DEFAULT_CURRICULUM, null);
+    });
+}
+
+// ✅ قفل/فتح معلم (مزامنة سحابية)
+export async function setTeacherLock(phone, isLocked) {
+    await updateDoc(doc(db, "teachers", phone), {
+        isLocked: isLocked,
+        lockedAt: isLocked ? new Date().toISOString() : null
+    });
+}
+
+// ✅ قفل/فتح طالب (مزامنة سحابية)
+export async function setStudentLock(studentId, isLocked) {
+    await updateDoc(doc(db, "students", studentId), {
+        isLocked: isLocked,
+        lockedAt: isLocked ? new Date().toISOString() : null
+    });
+}
+
+// ✅ حذف معلم مع كل مجموعاته
+export async function deleteTeacherAccount(phone) {
+    const groups = await getGroupsByTeacher(phone);
+    for (const g of groups) {
+        await deleteDoc(doc(db, "groups", g.id));
+    }
+    await deleteDoc(doc(db, "teachers", phone));
+    return { deletedGroups: groups.length };
+}
+
+// ✅ حذف طالب
+export async function deleteStudentAccount(studentId) {
+    await deleteDoc(doc(db, "students", studentId));
+}
+
+// ✅ الاستماع اللحظي للمعلمين
+export function subscribeTeachers(callback) {
+    return onSnapshot(collection(db, "teachers"), (snap) => {
+        callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }, (error) => {
+        console.error('خطأ في الاستماع للمعلمين:', error);
+        callback([]);
+    });
+}
+
+// ✅ الاستماع اللحظي للطلاب
+export function subscribeStudents(callback) {
+    return onSnapshot(collection(db, "students"), (snap) => {
+        callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }, (error) => {
+        console.error('خطأ في الاستماع للطلاب:', error);
+        callback([]);
+    });
+}
+
+// ✅ الاستماع اللحظي للمجموعات
+export function subscribeGroups(callback) {
+    return onSnapshot(collection(db, "groups"), (snap) => {
+        callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }, (error) => {
+        console.error('خطأ في الاستماع للمجموعات:', error);
+        callback([]);
+    });
+}
+
+// ==========================================================
+// ✅✅✅ التصدير النهائي — مع كل الدوال المطلوبة ✅✅✅
+// ==========================================================
+export { 
+    app, db, auth, analytics,
+    doc, setDoc, getDoc, updateDoc, deleteDoc,
+    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp
+};
