@@ -1071,20 +1071,21 @@ body.dark-mode .address-badge-full {
 
 /* ✅ أيقونة المرحلة */
 .stage-card-icon{
-    width:48px;
-    height:48px;
+    width:52px;
+    height:52px;
     border-radius:12px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:26px;
+    font-size:28px;
+    line-height:1;
     background:var(--stage-bg-color,rgba(209,250,229,.5));
     border:2px solid var(--stage-color,#CBD5E1);
     flex-shrink:0;
     transition:all .25s ease;
 }
 .stage-card-option.selected .stage-card-icon{
-    transform:scale(1.1);
+    transform:scale(1.08);
     background:#fff;
     box-shadow:0 4px 10px -3px var(--stage-color);
 }
@@ -1248,6 +1249,7 @@ body.dark-mode .address-badge-full {
     }
     .card-avail-pill span:first-child { font-size: 9px !important; }
     .card-avail-pill span:last-child { font-size: 16px !important; }
+    .stage-card-icon{ width:48px; height:48px; font-size:26px; }
 }
 
 @media (max-width: 400px) {
@@ -1262,6 +1264,7 @@ body.dark-mode .address-badge-full {
     .card-address-detail { font-size: 11px !important; }
     .card-address-btn { font-size: 11px !important; padding: 7px 8px !important; }
     .card-teacher-bottom .card-teacher-name { font-size: 13px !important; }
+    .stage-card-icon{ width:44px; height:44px; font-size:24px; }
 }
 
 @media (max-width: 360px) {
@@ -1477,13 +1480,14 @@ body.dark-mode .address-badge-full {
     // ✅ EDUCATION_STRUCTURE - يُبنى ديناميكياً من السحابة
     // ═══════════════════════════════════════════════════════════
     let EDUCATION_STRUCTURE = {
-        kg: { name: '🧸 رياض الأطفال', grades: ['KG 1', 'KG 2'], subjects: [] },
-        primary: { name: '📗 المرحلة الابتدائية', grades: [], subjects: [] },
-        prep: { name: '📘 المرحلة الإعدادية', grades: [], subjects: [] },
-        secondary: { name: '📙 المرحلة الثانوية', grades: [], subjects: [] }
+        kg: { name: '🧸 رياض الأطفال', icon: '🧸', grades: ['KG 1', 'KG 2'], subjects: [] },
+        primary: { name: '📗 المرحلة الابتدائية', icon: '📗', grades: [], subjects: [] },
+        prep: { name: '📘 المرحلة الإعدادية', icon: '📘', grades: [], subjects: [] },
+        secondary: { name: '📙 المرحلة الثانوية', icon: '📙', grades: [], subjects: [] }
     };
 
     // ✅ تحويل مناهج Firestore إلى EDUCATION_STRUCTURE
+    // ✅ يستخدم حقل icon من السحابة لو موجود، وإلا يستخرج من الاسم
     function buildEducationStructureFromCurriculum(curriculum) {
         if (!curriculum) return;
         const newStructure = {};
@@ -1509,8 +1513,29 @@ body.dark-mode .address-badge-full {
             (stage.grades || []).forEach(g => {
                 (g.subjects || []).forEach(s => allSubjects.add(s));
             });
+
+            // ✅ استخرج الأيقونة والاسم النظيف
+            let icon = stage.icon || null;
+            let cleanName = stage.name || stageId;
+
+            // لو مفيش icon، حاول تستخرج من الاسم
+            if (!icon) {
+                const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
+                if (emojiMatch) {
+                    icon = emojiMatch[1];
+                    cleanName = emojiMatch[2];
+                } else {
+                    icon = '📚';
+                }
+            } else {
+                // لو فيه icon في السحابة، شيل أي إيموجي من الاسم
+                const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
+                if (emojiMatch) cleanName = emojiMatch[2];
+            }
+
             newStructure[stageId] = {
-                name: stage.name || stageId,
+                name: cleanName,
+                icon: icon,
                 color: stage.color || null,
                 grades: (stage.grades || []).map(g => g.name),
                 subjects: Array.from(allSubjects)
@@ -1538,8 +1563,6 @@ body.dark-mode .address-badge-full {
     function refreshGradeDropdowns() {
         const container = document.getElementById('stagesCardsContainer');
         const stageInput = document.getElementById('stageSelect');
-        const gradeSelect = document.getElementById('gradeSelect');
-        const gradeLabel = document.getElementById('gradeLabel');
         
         if (!container || !stageInput) return;
 
@@ -1577,10 +1600,9 @@ body.dark-mode .address-badge-full {
             const isSelected = (currentStage === stageId);
             const isNew = !knownStageIds.includes(stageId);
             
-            // استخراج الإيموجي من اسم المرحلة
-            const emojiMatch = stage.name.match(/^(\S+)\s+(.*)$/);
-            const emoji = emojiMatch ? emojiMatch[1] : '📚';
-            const stageNameOnly = emojiMatch ? emojiMatch[2] : stage.name;
+            // ✅ الأيقونة والاسم من الحقول الجديدة
+            const emoji = stage.icon || '📚';
+            const stageNameOnly = stage.name || stageId;
 
             const bgColor = hexToRgba(stageColor, 0.08);
 
@@ -1617,21 +1639,17 @@ body.dark-mode .address-badge-full {
 
     // ✅ عند اختيار كرت مرحلة
     window.selectStageCard = function(stageId) {
-        // تحديث الـ input المخفي
         document.getElementById('stageSelect').value = stageId;
 
-        // إزالة selected من الجميع
         document.querySelectorAll('.stage-card-option').forEach(card => {
             card.classList.remove('selected');
         });
 
-        // إضافة selected للكرت المختار
         const selectedCard = document.querySelector(`.stage-card-option[data-stage-id="${stageId}"]`);
         if (selectedCard) {
             selectedCard.classList.add('selected');
         }
 
-        // تحديث قائمة الصفوف
         updateGradesList(stageId);
     };
 
@@ -1653,11 +1671,9 @@ body.dark-mode .address-badge-full {
 
         gradeSelect.disabled = false;
 
-        // ✅ إظهار قائمة الصفوف
         if (gradeLabel) gradeLabel.style.display = 'block';
         gradeSelect.style.display = 'block';
 
-        // ✅ التمرير لأسفل
         setTimeout(() => {
             gradeSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 150);
