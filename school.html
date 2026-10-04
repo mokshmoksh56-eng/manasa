@@ -16,7 +16,7 @@
 :root{
   --primary:#047857; --primary-dark:#064E3B; --primary-light:#D1FAE5;
   --danger:#DC2626; --warning:#D97706; --info:#2563EB; --gold:#F59E0B;
-  --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#fff; --bg:#F8FAFC;
+  --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#fff;
 }
 *{font-family:'Cairo',sans-serif;font-weight:800;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh;color:var(--ink);margin:0;padding:16px}
@@ -108,6 +108,19 @@ tr.locked td{background:#FEF2F2}
 .page{display:none}.page.active{display:block}
 .empty-state{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .sync-badge{font-size:10px;background:#D1FAE5;color:#065F46;padding:2px 6px;border-radius:4px;margin-right:4px}
+
+.warning-banner{
+  background:linear-gradient(135deg,#FEF3C7,#FDE68A);
+  border:2px solid #F59E0B;color:#92400E;padding:12px 16px;
+  border-radius:12px;margin-bottom:16px;font-size:13px;font-weight:900;
+  display:none;align-items:center;gap:10px;flex-wrap:wrap
+}
+.warning-banner.show{display:flex}
+.warning-banner button{
+  background:#92400E;color:#fff;border:none;padding:6px 12px;
+  border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;
+  font-family:'Cairo';margin-right:auto
+}
 </style>
 </head>
 <body>
@@ -116,6 +129,8 @@ tr.locked td{background:#FEF2F2}
 <div id="loader" style="position:fixed;inset:0;background:linear-gradient(135deg,#047857,#064E3B);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:20px">
   <div style="width:60px;height:60px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite"></div>
   <h2 style="margin:0;font-size:20px">جاري الاتصال بالسحابة...</h2>
+  <p style="margin:0;font-size:13px;opacity:.8" id="loaderMsg">الرجاء الانتظار</p>
+  <button onclick="document.getElementById('loader').style.display='none'" style="margin-top:15px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 20px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer;font-family:'Cairo'">تخطي وتشغيل محلي</button>
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
@@ -125,18 +140,21 @@ tr.locked td{background:#FEF2F2}
     <span id="cloudStatusText">جاري الاتصال...</span>
   </div>
   <h1>🏫 لوحة تحكم منصة احجزلي</h1>
-  <p>إدارة شاملة للمعلمين والطلاب والمحتوى التعليمي — مزامنة سحابية لحظية</p>
+  <p>إدارة شاملة — مزامنة سحابية لحظية</p>
 </div>
 
-<!-- Tabs -->
+<div class="warning-banner" id="warningBanner">
+  <span>⚠️</span>
+  <span id="warningText">تعذر الاتصال بالسحابة — جاري العمل على النسخة المحلية</span>
+  <button onclick="window.retryFirestore()">🔄 إعادة المحاولة</button>
+</div>
+
 <div class="tabs">
   <button class="tab active" data-page="page-users">👥 إدارة المستخدمين</button>
   <button class="tab" data-page="page-curriculum">📚 إدارة المواد والصفوف</button>
 </div>
 
-<!-- ============ الصفحة الأولى: المستخدمين ============ -->
 <div id="page-users" class="page active">
-
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-num" id="statTeachers">0</div><div class="stat-label">👨‍🏫 إجمالي المعلمين</div></div>
     <div class="stat-box blue"><div class="stat-num" id="statMester">0</div><div class="stat-label">👨‍🏫 مستر</div></div>
@@ -146,37 +164,19 @@ tr.locked td{background:#FEF2F2}
   </div>
 
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
-      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
-        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
-        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">🟡 طالب</span>
-        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
-      </div>
-    </div>
+    <h2 style="margin:0 0 12px;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
     <div id="adminMap"></div>
   </div>
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
-        👨‍🏫 قائمة المعلمين <span class="sync-badge">🔄 مباشر</span>
-      </h2>
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">👨‍🏫 قائمة المعلمين <span class="sync-badge">🔄 مباشر</span></h2>
       <span style="font-size:11px;color:var(--muted)" id="teachersCount"></span>
     </div>
-    <input type="text" class="search-box" id="searchTeachers" placeholder="🔍 ابحث باسم المعلم أو رقم الهاتف..." oninput="window.filterTable('teachersTable', this.value)">
+    <input type="text" class="search-box" id="searchTeachers" placeholder="🔍 ابحث..." oninput="window.filterTable('teachersTable', this.value)">
     <div class="table-wrapper">
       <table id="teachersTable">
-        <thead>
-          <tr>
-            <th>الاسم</th>
-            <th>اللقب</th>
-            <th>الهاتف</th>
-            <th>المواد</th>
-            <th>الحالة</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
+        <thead><tr><th>الاسم</th><th>اللقب</th><th>الهاتف</th><th>المواد</th><th>الحالة</th><th>إجراءات</th></tr></thead>
         <tbody id="teachersBody"></tbody>
       </table>
     </div>
@@ -184,41 +184,25 @@ tr.locked td{background:#FEF2F2}
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
-        🎓 قائمة الطلاب <span class="sync-badge">🔄 مباشر</span>
-      </h2>
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🎓 قائمة الطلاب <span class="sync-badge">🔄 مباشر</span></h2>
       <span style="font-size:11px;color:var(--muted)" id="studentsCount"></span>
     </div>
-    <input type="text" class="search-box" id="searchStudents" placeholder="🔍 ابحث باسم الطالب أو رقم الهاتف..." oninput="window.filterTable('studentsTable', this.value)">
+    <input type="text" class="search-box" id="searchStudents" placeholder="🔍 ابحث..." oninput="window.filterTable('studentsTable', this.value)">
     <div class="table-wrapper">
       <table id="studentsTable">
-        <thead>
-          <tr>
-            <th>الاسم</th>
-            <th>الهاتف</th>
-            <th>النوع</th>
-            <th>الصف</th>
-            <th>الحالة</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
+        <thead><tr><th>الاسم</th><th>الهاتف</th><th>النوع</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
         <tbody id="studentsBody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- ============ الصفحة الثانية: المواد والصفوف ============ -->
 <div id="page-curriculum" class="page">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <div>
-        <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
-          📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span>
-        </h2>
-        <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">
-          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b> التي تفتح mester1.html
-        </p>
+        <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span></h2>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">التعديلات تنعكس فوراً على mester1.html</p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-ghost" onclick="window.exportCurriculum()">📥 تصدير</button>
@@ -231,7 +215,7 @@ tr.locked td{background:#FEF2F2}
 
     <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
       <button class="btn btn-primary" id="saveCurriculumBtn" onclick="window.saveCurriculum()">💾 حفظ ومزامنة سحابية</button>
-      <button class="btn btn-ghost" onclick="window.resetCurriculum()">↩️ إعادة تعيين للأصل</button>
+      <button class="btn btn-ghost" onclick="window.resetCurriculum()">↩️ إعادة تعيين</button>
     </div>
   </div>
 </div>
@@ -239,26 +223,65 @@ tr.locked td{background:#FEF2F2}
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { 
-  getAllTeachers, getAllStudents, getAllGroups, 
-  db, doc, deleteDoc, updateDoc,
-  subscribeTeachers, subscribeStudents, subscribeGroups,
-  getCurriculumSettings, saveCurriculumSettings, subscribeCurriculum,
-  setTeacherLock, setStudentLock,
-  deleteTeacherAccount, deleteStudentAccount,
-  DEFAULT_CURRICULUM
-} from './firebase-config.js';
+console.log('🚀 school.html بدأ التحميل');
 
-// ============ Cloud Status ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 1) إخفاء الـ Loader بعد 3 ثوانٍ مهما حصل
+// ═══════════════════════════════════════════════════════════
+function hideLoader(delay = 300) {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    if (loader) {
+      loader.style.transition = 'opacity .3s';
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 300);
+    }
+  }, delay);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ✅ 2) البيانات الافتراضية
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_CURRICULUM = {
+  kg: { name: '🧸 رياض الأطفال', grades: [
+    { name: 'KG1', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','لغة فرنسية','تربية دينية'] },
+    { name: 'KG2', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','لغة فرنسية','تربية دينية'] }
+  ]},
+  primary: { name: '📗 المرحلة الابتدائية', grades: [
+    { name: 'الأول الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','تربية فنية'] },
+    { name: 'الثاني الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','تربية دينية','تربية فنية'] },
+    { name: 'الثالث الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية'] },
+    { name: 'الرابع الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+    { name: 'الخامس الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+    { name: 'السادس الابتدائي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] }
+  ]},
+  prep: { name: '📘 المرحلة الإعدادية', grades: [
+    { name: 'الأول الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+    { name: 'الثاني الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] },
+    { name: 'الثالث الإعدادي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','علوم','دراسات اجتماعية','تربية دينية','تكنولوجيا المعلومات'] }
+  ]},
+  secondary: { name: '📙 المرحلة الثانوية', grades: [
+    { name: 'الأول الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','فلسفة ومنطق'] },
+    { name: 'الثاني الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','جغرافيا'] },
+    { name: 'الثالث الثانوي', subjects: ['لغة عربية','لغة إنجليزية','رياضيات','فيزياء','كيمياء','أحياء','تاريخ','جغرافيا','إحصاء'] }
+  ]}
+};
+
+// ═══════════════════════════════════════════════════════════
+// ✅ 3) حالة السحابة
+// ═══════════════════════════════════════════════════════════
 window.setCloudStatus = function(status, text) {
   const el = document.getElementById('cloudStatus');
   const txt = document.getElementById('cloudStatusText');
+  if (!el || !txt) return;
   el.classList.remove('online','offline');
   if (status) el.classList.add(status);
   txt.textContent = text;
 };
 
-// ============ Tabs ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 4) Tabs
+// ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.tab').forEach(tab => {
   tab.onclick = () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -271,7 +294,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   };
 });
 
-// ============ Toast ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 5) Toast
+// ═══════════════════════════════════════════════════════════
 window.toast = function(msg, color = '#0F172A') {
   const t = document.getElementById('toast');
   t.style.background = color;
@@ -281,17 +306,54 @@ window.toast = function(msg, color = '#0F172A') {
   window._toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 };
 
-// ============ Data Stores ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 6) Data Stores
+// ═══════════════════════════════════════════════════════════
 let allTeachers = [];
 let allStudents = [];
 let allGroups = [];
 window.curriculum = null;
-let unsubCurriculum = null;
+
+// Firebase refs
+let db, doc, setDoc, updateDoc, deleteDoc, collection, getDoc, getDocs, onSnapshot, serverTimestamp;
+
+// Unsubscribe functions
 let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
+let unsubCurriculum = null;
 
-// ============ Render Stats ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 7) تحميل Firebase بشكل غير حاجب (non-blocking)
+// ═══════════════════════════════════════════════════════════
+async function loadFirebase() {
+  try {
+    console.log('📦 جاري تحميل firebase-config.js...');
+    const fb = await import('./firebase-config.js');
+
+    // استخراج الدوال
+    db = fb.db;
+    doc = fb.doc;
+    setDoc = fb.setDoc;
+    updateDoc = fb.updateDoc;
+    deleteDoc = fb.deleteDoc;
+    collection = fb.collection;
+    getDoc = fb.getDoc;
+    getDocs = fb.getDocs;
+    onSnapshot = fb.onSnapshot;
+    serverTimestamp = fb.serverTimestamp;
+
+    console.log('✅ تم تحميل firebase-config.js');
+    return fb;
+  } catch(e) {
+    console.error('❌ فشل تحميل firebase-config.js:', e);
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ✅ 8) Stats + Tables
+// ═══════════════════════════════════════════════════════════
 function renderStats() {
   const teachers = allTeachers.length;
   const mester = allTeachers.filter(t => t.title === 'مستر').length;
@@ -315,10 +377,10 @@ function getTeacherSubjects(phone) {
   return Array.from(subs).slice(0, 3).join(' • ') || '—';
 }
 
-// ============ Teachers Table ============
 function renderTeachersTable() {
   const tbody = document.getElementById('teachersBody');
-  document.getElementById('teachersCount').textContent = `${allTeachers.length} معلم`;
+  const cnt = document.getElementById('teachersCount');
+  if (cnt) cnt.textContent = `${allTeachers.length} معلم`;
   if (allTeachers.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
     return;
@@ -346,10 +408,10 @@ function renderTeachersTable() {
   }).join('');
 }
 
-// ============ Students Table ============
 function renderStudentsTable() {
   const tbody = document.getElementById('studentsBody');
-  document.getElementById('studentsCount').textContent = `${allStudents.length} طالب`;
+  const cnt = document.getElementById('studentsCount');
+  if (cnt) cnt.textContent = `${allStudents.length} طالب`;
   if (allStudents.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد طلاب مسجلون</td></tr>`;
     return;
@@ -386,51 +448,70 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock (Firestore) ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 9) Lock/Unlock/Delete
+// ═══════════════════════════════════════════════════════════
 window.toggleLockTeacher = async function(phone, lockValue) {
+  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
   try {
-    await setTeacherLock(phone, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل المعلم سحابياً' : '🔓 تم فتح المعلم سحابياً', lockValue ? '#D97706' : '#047857');
+    await updateDoc(doc(db, "teachers", phone), {
+      isLocked: lockValue,
+      lockedAt: lockValue ? new Date().toISOString() : null
+    });
+    window.toast(lockValue ? '🔒 تم قفل المعلم' : '🔓 تم فتح المعلم', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل التحديث', '#DC2626');
+    window.toast('❌ فشل التحديث: ' + e.message, '#DC2626');
   }
 };
 
 window.toggleLockStudent = async function(id, lockValue) {
+  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
   try {
-    await setStudentLock(id, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل الطالب سحابياً' : '🔓 تم فتح الطالب سحابياً', lockValue ? '#D97706' : '#047857');
+    await updateDoc(doc(db, "students", id), {
+      isLocked: lockValue,
+      lockedAt: lockValue ? new Date().toISOString() : null
+    });
+    window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 تم فتح الطالب', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل التحديث', '#DC2626');
+    window.toast('❌ فشل التحديث: ' + e.message, '#DC2626');
   }
 };
 
-// ============ Delete ============
 window.deleteTeacher = async function(phone, name) {
-  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
+  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً.\n\nهل أنت متأكد؟`)) return;
+  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
   try {
-    const result = await deleteTeacherAccount(phone);
-    window.toast(`🗑 تم حذف المعلم و ${result.deletedGroups} مجموعة`, '#DC2626');
+    // حذف المجموعات المرتبطة
+    const groups = allGroups.filter(g => g.phone === phone);
+    for (const g of groups) {
+      await deleteDoc(doc(db, "groups", g.id));
+    }
+    // حذف المعلم
+    await deleteDoc(doc(db, "teachers", phone));
+    window.toast(`🗑 تم حذف المعلم و ${groups.length} مجموعة`, '#DC2626');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحذف', '#DC2626');
+    window.toast('❌ فشل الحذف: ' + e.message, '#DC2626');
   }
 };
 
 window.deleteStudent = async function(id, name) {
-  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
+  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً.\n\nهل أنت متأكد؟`)) return;
+  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
   try {
-    await deleteStudentAccount(id);
+    await deleteDoc(doc(db, "students", id));
     window.toast('🗑 تم حذف الطالب', '#DC2626');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحذف', '#DC2626');
+    window.toast('❌ فشل الحذف: ' + e.message, '#DC2626');
   }
 };
 
-// ============ Map ============
+// ═══════════════════════════════════════════════════════════
+// ✅ 10) Map
+// ═══════════════════════════════════════════════════════════
 window._map = null;
 let markersLayer = null;
 
@@ -454,7 +535,6 @@ function renderMap() {
   const bounds = L.latLngBounds();
   let count = 0;
 
-  // معلمون من المجموعات
   allGroups.forEach(g => {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
@@ -480,7 +560,6 @@ function renderMap() {
     count++;
   });
 
-  // طلاب لهم موقع
   allStudents.forEach(s => {
     if (!s.lat || !s.lng) return;
     const locked = s.isLocked === true;
@@ -491,10 +570,6 @@ function renderMap() {
       <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
         <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${s.name||''}</div>
         <div style="font-size:12px;color:#64748B;margin:4px 0">${s.grade||''}</div>
-        <div style="display:flex;gap:4px;margin-top:6px">
-          ${s.phone ? `<a href="https://wa.me/2${s.phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
-          ${s.phone ? `<a href="tel:${s.phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
-        </div>
       </div>
     `);
     markersLayer.addLayer(m);
@@ -507,9 +582,9 @@ function renderMap() {
   }
 }
 
-// ==========================================================
-// ✅ Curriculum Management (Firestore Sync)
-// ==========================================================
+// ═══════════════════════════════════════════════════════════
+// ✅ 11) Curriculum Management
+// ═══════════════════════════════════════════════════════════
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
   if (!container || !window.curriculum) return;
@@ -521,10 +596,10 @@ window.renderCurriculum = function() {
       <div class="stage-card open" data-stage="${stageId}">
         <div class="stage-card-header" onclick="this.parentElement.classList.toggle('open')">
           <h3>${stage.name}</h3>
-          <span style="font-size:12px;color:var(--muted)">${stage.grades.length} صف</span>
+          <span style="font-size:12px;color:var(--muted)">${(stage.grades||[]).length} صف</span>
         </div>
         <div class="stage-card-body">
-          ${stage.grades.map((g, gi) => `
+          ${(stage.grades||[]).map((g, gi) => `
             <div class="grade-block">
               <div class="grade-block-header">
                 <h4>📖 ${g.name}</h4>
@@ -542,14 +617,14 @@ window.renderCurriculum = function() {
                 `).join('')}
               </div>
               <div style="display:flex;gap:6px;margin-top:8px">
-                <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
-                <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
+                <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
+                <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addSubject('${stageId}', ${gi})">➕</button>
               </div>
             </div>
           `).join('')}
           <div style="display:flex;gap:6px;margin-top:8px">
-            <input type="text" class="inline-input" id="addGrade-${stageId}" placeholder="أضف صف جديد لهذه المرحلة..." onkeydown="if(event.key==='Enter')window.addGrade('${stageId}')">
-            <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
+            <input type="text" class="inline-input" id="addGrade-${stageId}" placeholder="أضف صف جديد..." onkeydown="if(event.key==='Enter')window.addGrade('${stageId}')">
+            <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addGrade('${stageId}')">➕ صف</button>
           </div>
         </div>
       </div>
@@ -563,7 +638,7 @@ window.addSubject = function(stageId, gradeIdx) {
   const val = input.value.trim();
   if (!val) return;
   if (window.curriculum[stageId].grades[gradeIdx].subjects.includes(val)) {
-    return window.toast('⚠️ المادة موجودة بالفعل', '#D97706');
+    return window.toast('⚠️ المادة موجودة', '#D97706');
   }
   window.curriculum[stageId].grades[gradeIdx].subjects.push(val);
   window.renderCurriculum();
@@ -582,7 +657,7 @@ window.addGrade = function(stageId) {
   const val = input.value.trim();
   if (!val) return;
   if (window.curriculum[stageId].grades.some(g => g.name === val)) {
-    return window.toast('⚠️ الصف موجود بالفعل', '#D97706');
+    return window.toast('⚠️ الصف موجود', '#D97706');
   }
   window.curriculum[stageId].grades.push({ name: val, subjects: [] });
   window.renderCurriculum();
@@ -595,7 +670,7 @@ window.renameGrade = function(stageId, gradeIdx) {
   if (!nw || nw.trim() === '' || nw === old) return;
   window.curriculum[stageId].grades[gradeIdx].name = nw.trim();
   window.renderCurriculum();
-  window.toast('✅ تم تعديل الاسم — لا تنسَ الحفظ', '#2563EB');
+  window.toast('✅ تم التعديل — لا تنسَ الحفظ', '#2563EB');
 };
 
 window.deleteGrade = function(stageId, gradeIdx) {
@@ -607,14 +682,26 @@ window.deleteGrade = function(stageId, gradeIdx) {
 
 window.saveCurriculum = async function() {
   const btn = document.getElementById('saveCurriculumBtn');
+  if (!db) {
+    // حفظ محلي فقط
+    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
+    window.toast('💾 تم الحفظ محلياً (غير متصل بالسحابة)', '#D97706');
+    return;
+  }
   btn.disabled = true;
-  btn.textContent = '⏳ جاري الحفظ السحابي...';
+  btn.textContent = '⏳ جاري الحفظ...';
   try {
-    await saveCurriculumSettings(window.curriculum, 'admin');
-    window.toast('☁️ تم الحفظ والمزامنة سحابياً! سيظهر فوراً على كل الأجهزة', '#047857');
+    await setDoc(doc(db, "settings", "curriculum"), {
+      data: window.curriculum,
+      updatedAt: serverTimestamp(),
+      updatedBy: 'admin',
+      version: Date.now()
+    });
+    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
+    window.toast('☁️ تم الحفظ والمزامنة! سيظهر فوراً على كل الأجهزة', '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحفظ السحابي', '#DC2626');
+    window.toast('❌ فشل الحفظ السحابي: ' + e.message, '#DC2626');
   } finally {
     btn.disabled = false;
     btn.textContent = '💾 حفظ ومزامنة سحابية';
@@ -622,16 +709,25 @@ window.saveCurriculum = async function() {
 };
 
 window.resetCurriculum = async function() {
-  if (!confirm('⚠️ سيتم استرجاع المواد والصفوف الأصلية ومزامنتها سحابياً.\nهل أنت متأكد؟')) return;
-  try {
-    const defaultCopy = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
-    window.curriculum = defaultCopy;
-    window.renderCurriculum();
-    await saveCurriculumSettings(defaultCopy, 'admin');
-    window.toast('↩️ تمت الإعادة والمزامنة', '#D97706');
-  } catch(e) {
-    console.error(e);
-    window.toast('❌ فشل الإعادة', '#DC2626');
+  if (!confirm('⚠️ استرجاع المواد والصفوف الأصلية؟')) return;
+  window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
+  window.renderCurriculum();
+  if (db) {
+    try {
+      await setDoc(doc(db, "settings", "curriculum"), {
+        data: window.curriculum,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'admin',
+        version: Date.now()
+      });
+      localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
+      window.toast('↩️ تمت الإعادة والمزامنة', '#D97706');
+    } catch(e) {
+      window.toast('❌ فشل الإعادة السحابية', '#DC2626');
+    }
+  } else {
+    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
+    window.toast('↩️ تمت الإعادة محلياً', '#D97706');
   }
 };
 
@@ -644,7 +740,7 @@ window.exportCurriculum = function() {
   a.download = `curriculum-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
-  window.toast('📥 تم تصدير النسخة');
+  window.toast('📥 تم التصدير');
 };
 
 window.importCurriculum = function(e) {
@@ -657,7 +753,7 @@ window.importCurriculum = function(e) {
       if (!data || typeof data !== 'object') throw new Error('صيغة غير صحيحة');
       window.curriculum = data;
       window.renderCurriculum();
-      window.toast('📤 تم الاستيراد، لا تنسَ الحفظ السحابي', '#2563EB');
+      window.toast('📤 تم الاستيراد — لا تنسَ الحفظ السحابي', '#2563EB');
     } catch(err) {
       window.toast('❌ فشل الاستيراد: ' + err.message, '#DC2626');
     }
@@ -666,72 +762,131 @@ window.importCurriculum = function(e) {
   e.target.value = '';
 };
 
-// ==========================================================
-// ✅ INIT - التهيئة مع المزامنة السحابية
-// ==========================================================
+// ═══════════════════════════════════════════════════════════
+// ✅ 12) INIT
+// ═══════════════════════════════════════════════════════════
 async function init() {
-  try {
-    window.setCloudStatus(null, 'جاري الاتصال...');
+  console.log('🎬 بدء التهيئة...');
+  window.setCloudStatus(null, 'جاري الاتصال...');
 
-    // ✅ 1) تحميل المناهج أولاً (مرة واحدة)
-    try {
-      window.curriculum = await getCurriculumSettings();
-      window.renderCurriculum();
-    } catch(e) {
-      console.warn('فشل تحميل المناهج، استخدام الافتراضي:', e);
+  // ✅ نعرض الـ curriculum من localStorage فوراً (لا انتظار)
+  try {
+    const localRaw = localStorage.getItem('subjectsData_override');
+    if (localRaw) {
+      window.curriculum = JSON.parse(localRaw);
+    } else {
       window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
-      window.renderCurriculum();
+    }
+  } catch(e) {
+    window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
+  }
+  window.renderCurriculum();
+
+  // ✅ الآن نحاول الاتصال بـ Firebase
+  const fb = await loadFirebase();
+
+  if (!fb) {
+    hideLoader(200);
+    window.setCloudStatus('offline', 'غير متصل');
+    document.getElementById('warningBanner').classList.add('show');
+    document.getElementById('warningText').textContent = 'لم يتم تحميل firebase-config.js — تأكد من وجوده في نفس المجلد';
+    return;
+  }
+
+  try {
+    // ✅ قراءة المناهج من Firestore
+    try {
+      const curriculumSnap = await getDoc(doc(db, "settings", "curriculum"));
+      if (curriculumSnap.exists()) {
+        const cloudData = curriculumSnap.data().data;
+        if (cloudData) {
+          window.curriculum = cloudData;
+          window.renderCurriculum();
+          localStorage.setItem('subjectsData_override', JSON.stringify(cloudData));
+          console.log('☁️ تم تحميل المناهج من السحابة');
+        }
+      } else {
+        // أول مرة: نرفع الافتراضي
+        await setDoc(doc(db, "settings", "curriculum"), {
+          data: window.curriculum,
+          updatedAt: serverTimestamp(),
+          updatedBy: 'init',
+          version: Date.now()
+        });
+        console.log('📤 تم رفع المناهج الافتراضية');
+      }
+    } catch(e) {
+      console.warn('⚠️ فشل تحميل المناهج:', e.message);
     }
 
-    // ✅ 2) الاشتراك اللحظي في المناهج (Live Sync)
-    unsubCurriculum = subscribeCurriculum((newCurriculum) => {
-      window.curriculum = newCurriculum;
-      window.renderCurriculum();
+    // ✅ اشتراك لحظي في المناهج
+    unsubCurriculum = onSnapshot(doc(db, "settings", "curriculum"), (snap) => {
+      if (snap.exists()) {
+        const cloudData = snap.data().data;
+        if (cloudData) {
+          window.curriculum = cloudData;
+          window.renderCurriculum();
+          localStorage.setItem('subjectsData_override', JSON.stringify(cloudData));
+        }
+      }
       window.setCloudStatus('online', 'متصل ☁️');
+    }, (error) => {
+      console.warn('⚠️ خطأ الاشتراك في المناهج:', error.message);
+      window.setCloudStatus('offline', 'خطأ السحابة');
     });
 
-    // ✅ 3) الاشتراك اللحظي في المعلمين
-    unsubTeachers = subscribeTeachers((teachers) => {
-      allTeachers = teachers;
+    // ✅ اشتراك في المعلمين
+    unsubTeachers = onSnapshot(collection(db, "teachers"), (snap) => {
+      allTeachers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderTeachersTable();
       renderMap();
       window.setCloudStatus('online', 'متصل ☁️');
+    }, (error) => {
+      console.warn('⚠️ خطأ الاشتراك في المعلمين:', error.message);
     });
 
-    // ✅ 4) الاشتراك اللحظي في الطلاب
-    unsubStudents = subscribeStudents((students) => {
-      allStudents = students;
+    // ✅ اشتراك في الطلاب
+    unsubStudents = onSnapshot(collection(db, "students"), (snap) => {
+      allStudents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderStudentsTable();
       renderMap();
+    }, (error) => {
+      console.warn('⚠️ خطأ الاشتراك في الطلاب:', error.message);
     });
 
-    // ✅ 5) الاشتراك اللحظي في المجموعات
-    unsubGroups = subscribeGroups((groups) => {
-      allGroups = groups;
+    // ✅ اشتراك في المجموعات
+    unsubGroups = onSnapshot(collection(db, "groups"), (snap) => {
+      allGroups = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderTeachersTable();
       renderMap();
+    }, (error) => {
+      console.warn('⚠️ خطأ الاشتراك في المجموعات:', error.message);
     });
 
-    // إخفاء الـ loader بعد 2 ثانية
-    setTimeout(() => {
-      const loader = document.getElementById('loader');
-      if (loader) loader.style.display = 'none';
-      window.setCloudStatus('online', 'متصل ☁️ — مزامنة لحظية');
-      window.toast('✅ تم الاتصال بالسحابة', '#047857');
-    }, 1500);
+    // ✅ إخفاء الـ loader
+    hideLoader(800);
+    window.setCloudStatus('online', 'متصل ☁️');
+    console.log('✅ اكتملت التهيئة');
 
-  } catch(err) {
-    console.error('خطأ في التهيئة:', err);
-    window.setCloudStatus('offline', 'غير متصل ❌');
-    document.getElementById('loader').style.display = 'none';
-    window.toast('❌ فشل الاتصال بالسحابة', '#DC2626');
+  } catch(e) {
+    console.error('❌ خطأ في التهيئة:', e);
+    hideLoader(200);
+    window.setCloudStatus('offline', 'فشل الاتصال');
+    document.getElementById('warningBanner').classList.add('show');
+    document.getElementById('warningText').textContent = 'فشل الاتصال بالسحابة — وضع محلي';
   }
 }
 
-// تنظيف الاشتراكات عند الخروج
+// ✅ إعادة المحاولة
+window.retryFirestore = function() {
+  document.getElementById('warningBanner').classList.remove('show');
+  location.reload();
+};
+
+// ✅ تنظيف عند الخروج
 window.addEventListener('beforeunload', () => {
   if (unsubCurriculum) unsubCurriculum();
   if (unsubTeachers) unsubTeachers();
@@ -739,6 +894,7 @@ window.addEventListener('beforeunload', () => {
   if (unsubGroups) unsubGroups();
 });
 
+// ✅ تشغيل
 init();
 </script>
 </body>
