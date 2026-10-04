@@ -362,13 +362,12 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box cyan"><div class="stat-num" id="statBookings">0</div><div class="stat-label">📅 الحصص المحجوزة</div></div>
   </div>
 
-  <!-- 🗺️ خريطة المعلمين -->
+  <!-- 🗺️ خريطة المعلمين فقط -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين فقط</h2>
       <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
         <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
-        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">🟡 طالب</span>
         <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
       </div>
     </div>
@@ -913,7 +912,9 @@ window.deleteStudent = async function(id, name) {
   }
 };
 
-// ============ Map (المعلمين + الطلاب) ============
+// ==========================================================
+// 🗺️ خريطة المعلمين فقط
+// ==========================================================
 window._map = null;
 let markersLayer = null;
 window._mapMarkers = {};
@@ -940,6 +941,7 @@ function renderMap() {
   let count = 0;
   const addedTeachers = new Set();
 
+  // ✅ المعلمين من المجموعات
   allGroups.forEach(g => {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
@@ -973,6 +975,7 @@ function renderMap() {
     addedTeachers.add(phone);
   });
 
+  // ✅ المعلمين من بياناتهم المباشرة
   allTeachers.forEach(t => {
     const phone = t.id || t.phone;
     if (addedTeachers.has(phone)) return;
@@ -1005,30 +1008,7 @@ function renderMap() {
     count++;
   });
 
-  allStudents.forEach(s => {
-    if (!s.lat || !s.lng) return;
-    const locked = s.isLocked === true;
-    const iconHtml = `<div class="marker-admin student ${locked ? 'locked' : ''}">🎓</div>`;
-    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
-    const m = L.marker([s.lat, s.lng], { icon });
-    const sName = s.name || s.studentName || s.fullName || '—';
-    const sGrade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || '—';
-    const sPhone = s.phone || s.studentPhone || s.mobile || '';
-    m.bindPopup(`
-      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
-        <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${sName}</div>
-        <div style="font-size:12px;color:#64748B;margin:4px 0">📖 ${sGrade}</div>
-        <div style="display:flex;gap:4px;margin-top:6px">
-          ${sPhone ? `<a href="https://wa.me/2${sPhone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
-          ${sPhone ? `<a href="tel:${sPhone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
-        </div>
-      </div>
-    `);
-    markersLayer.addLayer(m);
-    window._mapMarkers[`student_${s.id}`] = { marker: m, lat: s.lat, lng: s.lng };
-    bounds.extend([s.lat, s.lng]);
-    count++;
-  });
+  // ✅❌ تم إزالة الطلاب من هذه الخريطة
 
   if (count > 0 && bounds.isValid()) {
     window._map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 14 });
@@ -1054,7 +1034,7 @@ window.focusTeacherOnMap = function(phone) {
 };
 
 // ==========================================================
-// 🎓 خريطة الطلاب المستقلة
+// 🎓 خريطة الطلاب فقط
 // ==========================================================
 window._studentsMap = null;
 let studentsMapLayer = null;
@@ -1433,9 +1413,6 @@ window.saveCurriculum = async function() {
   }
 };
 
-// ==========================================================
-// 🔄 ترحيل البيانات القديمة
-// ==========================================================
 function migrateCurriculum(cur) {
   if (!cur) return cur;
   const colors = ['#047857','#2563EB','#7C3AED','#DC2626','#D97706','#0891B2','#DB2777','#65A30D'];
@@ -1488,7 +1465,6 @@ async function init() {
       allStudents = students;
       renderStats();
       renderStudentsTable();
-      renderMap();
       renderStudentsMap();
     });
 
