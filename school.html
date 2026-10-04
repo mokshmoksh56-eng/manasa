@@ -55,7 +55,7 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-box.blue .stat-num{color:var(--info)}.stat-box.amber .stat-num{color:var(--gold)}.stat-box.rose .stat-num{color:var(--danger)}.stat-box.purple .stat-num{color:#7C3AED}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
-#adminMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
+#adminMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1;background:#F1F5F9}
 .marker-admin{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3);border:3px solid var(--primary);margin-left:-19px;margin-top:-19px}
 .marker-admin.teacher{border-color:#2563EB}
 .marker-admin.student{border-color:#F59E0B}
@@ -121,16 +121,33 @@ tr.locked td{background:#FEF2F2}
   border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;
   font-family:'Cairo';margin-right:auto
 }
+
+/* ✅ لوحة تشخيص */
+.diag-panel{
+  background:#0F172A;color:#A7F3D0;padding:14px 16px;border-radius:12px;
+  font-family:monospace;font-size:11px;line-height:1.8;margin-bottom:16px;
+  max-height:220px;overflow:auto;direction:ltr;text-align:left;display:none
+}
+.diag-panel.show{display:block}
+.diag-panel .ok{color:#22C55E}
+.diag-panel .fail{color:#EF4444}
+.diag-panel .warn{color:#FBBF24}
+.diag-panel .info{color:#60A5FA}
+.diag-panel .title{color:#fff;font-weight:900;font-size:12px;border-bottom:1px solid #334155;padding-bottom:6px;margin-bottom:8px;display:block}
+.diag-toggle{
+  position:fixed;bottom:20px;right:20px;background:#0F172A;color:#A7F3D0;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  font-size:20px;z-index:99998;box-shadow:0 4px 12px rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center
+}
 </style>
 </head>
 <body>
 
-<!-- Loader -->
 <div id="loader" style="position:fixed;inset:0;background:linear-gradient(135deg,#047857,#064E3B);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:20px">
   <div style="width:60px;height:60px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite"></div>
   <h2 style="margin:0;font-size:20px">جاري الاتصال بالسحابة...</h2>
   <p style="margin:0;font-size:13px;opacity:.8" id="loaderMsg">الرجاء الانتظار</p>
-  <button onclick="document.getElementById('loader').style.display='none'" style="margin-top:15px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 20px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer;font-family:'Cairo'">تخطي وتشغيل محلي</button>
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
@@ -143,9 +160,17 @@ tr.locked td{background:#FEF2F2}
   <p>إدارة شاملة — مزامنة سحابية لحظية</p>
 </div>
 
+<!-- ✅ لوحة التشخيص (مخفية، تُفتح بزر) -->
+<div class="diag-panel" id="diagPanel">
+  <span class="title">🔍 تشخيص النظام:</span>
+  <div id="diagContent">جاري الفحص...</div>
+</div>
+
+<button class="diag-toggle" onclick="document.getElementById('diagPanel').classList.toggle('show')" title="عرض التشخيص">🔍</button>
+
 <div class="warning-banner" id="warningBanner">
   <span>⚠️</span>
-  <span id="warningText">تعذر الاتصال بالسحابة — جاري العمل على النسخة المحلية</span>
+  <span id="warningText">تعذر الاتصال بالسحابة</span>
   <button onclick="window.retryFirestore()">🔄 إعادة المحاولة</button>
 </div>
 
@@ -201,7 +226,7 @@ tr.locked td{background:#FEF2F2}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <div>
-        <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span></h2>
+        <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ سحابياً</span></h2>
         <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">التعديلات تنعكس فوراً على mester1.html</p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -223,24 +248,46 @@ tr.locked td{background:#FEF2F2}
 <div class="toast" id="toast"></div>
 
 <script type="module">
-console.log('🚀 school.html بدأ التحميل');
+console.log('🚀 school.html بدأ');
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 1) إخفاء الـ Loader بعد 3 ثوانٍ مهما حصل
+// ✅ تشخيص
 // ═══════════════════════════════════════════════════════════
-function hideLoader(delay = 300) {
+const diagContent = document.getElementById('diagContent');
+const diagLines = [];
+function diagLog(type, msg) {
+  const icons = { ok:'✅', fail:'❌', warn:'⚠️', info:'ℹ️' };
+  const classes = { ok:'ok', fail:'fail', warn:'warn', info:'info' };
+  diagLines.push(`<div class="${classes[type]}">${icons[type]} ${msg}</div>`);
+  diagContent.innerHTML = diagLines.join('');
+  console.log(`[${type.toUpperCase()}] ${msg}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ✅ إخفاء Loader
+// ═══════════════════════════════════════════════════════════
+function hideLoader(delay = 500) {
   setTimeout(() => {
     const loader = document.getElementById('loader');
     if (loader) {
-      loader.style.transition = 'opacity .3s';
+      loader.style.transition = 'opacity .4s';
       loader.style.opacity = '0';
-      setTimeout(() => loader.style.display = 'none', 300);
+      setTimeout(() => loader.style.display = 'none', 400);
     }
   }, delay);
 }
 
+// ✅ إخفاء قسري بعد 4 ثوانٍ
+setTimeout(() => {
+  const loader = document.getElementById('loader');
+  if (loader && loader.style.display !== 'none' && loader.style.opacity !== '0') {
+    diagLog('warn', 'Timeout: إخفاء قسري');
+    hideLoader(0);
+  }
+}, 4000);
+
 // ═══════════════════════════════════════════════════════════
-// ✅ 2) البيانات الافتراضية
+// ✅ البيانات الافتراضية
 // ═══════════════════════════════════════════════════════════
 const DEFAULT_CURRICULUM = {
   kg: { name: '🧸 رياض الأطفال', grades: [
@@ -268,7 +315,7 @@ const DEFAULT_CURRICULUM = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 3) حالة السحابة
+// ✅ Cloud Status
 // ═══════════════════════════════════════════════════════════
 window.setCloudStatus = function(status, text) {
   const el = document.getElementById('cloudStatus');
@@ -280,7 +327,7 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 4) Tabs
+// ✅ Tabs + Toast
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.tab').forEach(tab => {
   tab.onclick = () => {
@@ -294,9 +341,6 @@ document.querySelectorAll('.tab').forEach(tab => {
   };
 });
 
-// ═══════════════════════════════════════════════════════════
-// ✅ 5) Toast
-// ═══════════════════════════════════════════════════════════
 window.toast = function(msg, color = '#0F172A') {
   const t = document.getElementById('toast');
   t.style.background = color;
@@ -307,31 +351,26 @@ window.toast = function(msg, color = '#0F172A') {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 6) Data Stores
+// ✅ Data
 // ═══════════════════════════════════════════════════════════
 let allTeachers = [];
 let allStudents = [];
 let allGroups = [];
 window.curriculum = null;
 
-// Firebase refs
-let db, doc, setDoc, updateDoc, deleteDoc, collection, getDoc, getDocs, onSnapshot, serverTimestamp;
+let db = null, doc = null, setDoc = null, updateDoc = null, deleteDoc = null,
+    collection = null, getDoc = null, onSnapshot = null, serverTimestamp = null;
 
-// Unsubscribe functions
-let unsubTeachers = null;
-let unsubStudents = null;
-let unsubGroups = null;
-let unsubCurriculum = null;
+let unsubTeachers = null, unsubStudents = null, unsubGroups = null, unsubCurriculum = null;
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 7) تحميل Firebase بشكل غير حاجب (non-blocking)
+// ✅ تحميل Firebase
 // ═══════════════════════════════════════════════════════════
 async function loadFirebase() {
   try {
-    console.log('📦 جاري تحميل firebase-config.js...');
+    diagLog('info', 'تحميل firebase-config.js...');
     const fb = await import('./firebase-config.js');
 
-    // استخراج الدوال
     db = fb.db;
     doc = fb.doc;
     setDoc = fb.setDoc;
@@ -339,20 +378,24 @@ async function loadFirebase() {
     deleteDoc = fb.deleteDoc;
     collection = fb.collection;
     getDoc = fb.getDoc;
-    getDocs = fb.getDocs;
     onSnapshot = fb.onSnapshot;
     serverTimestamp = fb.serverTimestamp;
 
-    console.log('✅ تم تحميل firebase-config.js');
+    if (!db) {
+      diagLog('fail', 'db غير موجود');
+      return null;
+    }
+    diagLog('ok', 'Firebase جاهز');
     return fb;
   } catch(e) {
-    console.error('❌ فشل تحميل firebase-config.js:', e);
+    diagLog('fail', `خطأ التحميل: ${e.message}`);
+    console.error(e);
     return null;
   }
 }
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 8) Stats + Tables
+// ✅ Stats + Tables
 // ═══════════════════════════════════════════════════════════
 function renderStats() {
   const teachers = allTeachers.length;
@@ -382,7 +425,7 @@ function renderTeachersTable() {
   const cnt = document.getElementById('teachersCount');
   if (cnt) cnt.textContent = `${allTeachers.length} معلم`;
   if (allTeachers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد معلمون</td></tr>`;
     return;
   }
   tbody.innerHTML = allTeachers.map(t => {
@@ -413,7 +456,7 @@ function renderStudentsTable() {
   const cnt = document.getElementById('studentsCount');
   if (cnt) cnt.textContent = `${allStudents.length} طالب`;
   if (allStudents.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد طلاب مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد طلاب</td></tr>`;
     return;
   }
   tbody.innerHTML = allStudents.map(s => {
@@ -449,10 +492,10 @@ window.filterTable = function(tableId, query) {
 };
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 9) Lock/Unlock/Delete
+// ✅ Lock/Unlock/Delete
 // ═══════════════════════════════════════════════════════════
 window.toggleLockTeacher = async function(phone, lockValue) {
-  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
+  if (!db) return window.toast('❌ غير متصل', '#DC2626');
   try {
     await updateDoc(doc(db, "teachers", phone), {
       isLocked: lockValue,
@@ -461,12 +504,12 @@ window.toggleLockTeacher = async function(phone, lockValue) {
     window.toast(lockValue ? '🔒 تم قفل المعلم' : '🔓 تم فتح المعلم', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل التحديث: ' + e.message, '#DC2626');
+    window.toast('❌ ' + e.message, '#DC2626');
   }
 };
 
 window.toggleLockStudent = async function(id, lockValue) {
-  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
+  if (!db) return window.toast('❌ غير متصل', '#DC2626');
   try {
     await updateDoc(doc(db, "students", id), {
       isLocked: lockValue,
@@ -475,42 +518,40 @@ window.toggleLockStudent = async function(id, lockValue) {
     window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 تم فتح الطالب', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل التحديث: ' + e.message, '#DC2626');
+    window.toast('❌ ' + e.message, '#DC2626');
   }
 };
 
 window.deleteTeacher = async function(phone, name) {
-  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته نهائياً.\n\nهل أنت متأكد؟`)) return;
-  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
+  if (!confirm(`⚠️ سيتم حذف المعلم "${name}" وكل مجموعاته.\n\nهل أنت متأكد؟`)) return;
+  if (!db) return window.toast('❌ غير متصل', '#DC2626');
   try {
-    // حذف المجموعات المرتبطة
     const groups = allGroups.filter(g => g.phone === phone);
     for (const g of groups) {
       await deleteDoc(doc(db, "groups", g.id));
     }
-    // حذف المعلم
     await deleteDoc(doc(db, "teachers", phone));
     window.toast(`🗑 تم حذف المعلم و ${groups.length} مجموعة`, '#DC2626');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحذف: ' + e.message, '#DC2626');
+    window.toast('❌ ' + e.message, '#DC2626');
   }
 };
 
 window.deleteStudent = async function(id, name) {
-  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً.\n\nهل أنت متأكد؟`)) return;
-  if (!db) return window.toast('❌ غير متصل بالسحابة', '#DC2626');
+  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً.`)) return;
+  if (!db) return window.toast('❌ غير متصل', '#DC2626');
   try {
     await deleteDoc(doc(db, "students", id));
     window.toast('🗑 تم حذف الطالب', '#DC2626');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحذف: ' + e.message, '#DC2626');
+    window.toast('❌ ' + e.message, '#DC2626');
   }
 };
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 10) Map
+// ✅ Map
 // ═══════════════════════════════════════════════════════════
 window._map = null;
 let markersLayer = null;
@@ -560,30 +601,13 @@ function renderMap() {
     count++;
   });
 
-  allStudents.forEach(s => {
-    if (!s.lat || !s.lng) return;
-    const locked = s.isLocked === true;
-    const iconHtml = `<div class="marker-admin student ${locked ? 'locked' : ''}">🎓</div>`;
-    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
-    const m = L.marker([s.lat, s.lng], { icon });
-    m.bindPopup(`
-      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
-        <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${s.name||''}</div>
-        <div style="font-size:12px;color:#64748B;margin:4px 0">${s.grade||''}</div>
-      </div>
-    `);
-    markersLayer.addLayer(m);
-    bounds.extend([s.lat, s.lng]);
-    count++;
-  });
-
   if (count > 0 && bounds.isValid()) {
     window._map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 14 });
   }
 }
 
 // ═══════════════════════════════════════════════════════════
-// ✅ 11) Curriculum Management
+// ✅ Curriculum
 // ═══════════════════════════════════════════════════════════
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
@@ -604,15 +628,15 @@ window.renderCurriculum = function() {
               <div class="grade-block-header">
                 <h4>📖 ${g.name}</h4>
                 <div style="display:flex;gap:6px">
-                  <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
-                  <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
+                  <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️</button>
+                  <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑</button>
                 </div>
               </div>
               <div class="subjects-list">
                 ${(g.subjects || []).map((s, si) => `
                   <span class="subject-tag">
                     ${s}
-                    <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
+                    <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})">✖</button>
                   </span>
                 `).join('')}
               </div>
@@ -638,18 +662,18 @@ window.addSubject = function(stageId, gradeIdx) {
   const val = input.value.trim();
   if (!val) return;
   if (window.curriculum[stageId].grades[gradeIdx].subjects.includes(val)) {
-    return window.toast('⚠️ المادة موجودة', '#D97706');
+    return window.toast('⚠️ موجودة', '#D97706');
   }
   window.curriculum[stageId].grades[gradeIdx].subjects.push(val);
   window.renderCurriculum();
-  window.toast('✅ أضيفت — لا تنسَ الحفظ', '#2563EB');
+  window.toast('✅ لا تنسَ الحفظ', '#2563EB');
 };
 
 window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
-  if (!confirm('حذف هذه المادة؟')) return;
+  if (!confirm('حذف المادة؟')) return;
   window.curriculum[stageId].grades[gradeIdx].subjects.splice(subjIdx, 1);
   window.renderCurriculum();
-  window.toast('🗑 محذوفة — لا تنسَ الحفظ', '#2563EB');
+  window.toast('🗑 لا تنسَ الحفظ', '#2563EB');
 };
 
 window.addGrade = function(stageId) {
@@ -657,35 +681,35 @@ window.addGrade = function(stageId) {
   const val = input.value.trim();
   if (!val) return;
   if (window.curriculum[stageId].grades.some(g => g.name === val)) {
-    return window.toast('⚠️ الصف موجود', '#D97706');
+    return window.toast('⚠️ موجود', '#D97706');
   }
   window.curriculum[stageId].grades.push({ name: val, subjects: [] });
   window.renderCurriculum();
-  window.toast('✅ أضيف — لا تنسَ الحفظ', '#2563EB');
+  window.toast('✅ لا تنسَ الحفظ', '#2563EB');
 };
 
 window.renameGrade = function(stageId, gradeIdx) {
   const old = window.curriculum[stageId].grades[gradeIdx].name;
-  const nw = prompt('الاسم الجديد للصف:', old);
+  const nw = prompt('الاسم الجديد:', old);
   if (!nw || nw.trim() === '' || nw === old) return;
   window.curriculum[stageId].grades[gradeIdx].name = nw.trim();
   window.renderCurriculum();
-  window.toast('✅ تم التعديل — لا تنسَ الحفظ', '#2563EB');
+  window.toast('✅ لا تنسَ الحفظ', '#2563EB');
 };
 
 window.deleteGrade = function(stageId, gradeIdx) {
-  if (!confirm('⚠️ حذف هذا الصف وكل مواده؟')) return;
+  if (!confirm('حذف الصف وكل مواده؟')) return;
   window.curriculum[stageId].grades.splice(gradeIdx, 1);
   window.renderCurriculum();
-  window.toast('🗑 محذوف — لا تنسَ الحفظ', '#2563EB');
+  window.toast('🗑 لا تنسَ الحفظ', '#2563EB');
 };
 
 window.saveCurriculum = async function() {
   const btn = document.getElementById('saveCurriculumBtn');
+  localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
+
   if (!db) {
-    // حفظ محلي فقط
-    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
-    window.toast('💾 تم الحفظ محلياً (غير متصل بالسحابة)', '#D97706');
+    window.toast('💾 تم الحفظ محلياً (غير متصل)', '#D97706');
     return;
   }
   btn.disabled = true;
@@ -697,11 +721,10 @@ window.saveCurriculum = async function() {
       updatedBy: 'admin',
       version: Date.now()
     });
-    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
-    window.toast('☁️ تم الحفظ والمزامنة! سيظهر فوراً على كل الأجهزة', '#047857');
+    window.toast('☁️ تم الحفظ سحابياً! سيظهر على كل الأجهزة', '#047857');
   } catch(e) {
     console.error(e);
-    window.toast('❌ فشل الحفظ السحابي: ' + e.message, '#DC2626');
+    window.toast('❌ فشل: ' + e.message, '#DC2626');
   } finally {
     btn.disabled = false;
     btn.textContent = '💾 حفظ ومزامنة سحابية';
@@ -709,9 +732,10 @@ window.saveCurriculum = async function() {
 };
 
 window.resetCurriculum = async function() {
-  if (!confirm('⚠️ استرجاع المواد والصفوف الأصلية؟')) return;
+  if (!confirm('استرجاع الأصلية؟')) return;
   window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
   window.renderCurriculum();
+  localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
   if (db) {
     try {
       await setDoc(doc(db, "settings", "curriculum"), {
@@ -720,20 +744,17 @@ window.resetCurriculum = async function() {
         updatedBy: 'admin',
         version: Date.now()
       });
-      localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
       window.toast('↩️ تمت الإعادة والمزامنة', '#D97706');
     } catch(e) {
-      window.toast('❌ فشل الإعادة السحابية', '#DC2626');
+      window.toast('❌ فشل المزامنة', '#DC2626');
     }
   } else {
-    localStorage.setItem('subjectsData_override', JSON.stringify(window.curriculum));
     window.toast('↩️ تمت الإعادة محلياً', '#D97706');
   }
 };
 
 window.exportCurriculum = function() {
-  const data = JSON.stringify(window.curriculum, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(window.curriculum, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -753,73 +774,51 @@ window.importCurriculum = function(e) {
       if (!data || typeof data !== 'object') throw new Error('صيغة غير صحيحة');
       window.curriculum = data;
       window.renderCurriculum();
-      window.toast('📤 تم الاستيراد — لا تنسَ الحفظ السحابي', '#2563EB');
+      window.toast('📤 تم الاستيراد — احفظ الآن', '#2563EB');
     } catch(err) {
-      window.toast('❌ فشل الاستيراد: ' + err.message, '#DC2626');
+      window.toast('❌ ' + err.message, '#DC2626');
     }
   };
   reader.readAsText(file);
   e.target.value = '';
 };
 
+window.retryFirestore = function() {
+  document.getElementById('warningBanner').classList.remove('show');
+  location.reload();
+};
+
 // ═══════════════════════════════════════════════════════════
-// ✅ 12) INIT
+// ✅ INIT
 // ═══════════════════════════════════════════════════════════
 async function init() {
-  console.log('🎬 بدء التهيئة...');
+  diagLog('info', 'بدء التهيئة...');
   window.setCloudStatus(null, 'جاري الاتصال...');
 
-  // ✅ نعرض الـ curriculum من localStorage فوراً (لا انتظار)
+  // 1) تحميل محلي فوري
   try {
     const localRaw = localStorage.getItem('subjectsData_override');
-    if (localRaw) {
-      window.curriculum = JSON.parse(localRaw);
-    } else {
-      window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
-    }
+    window.curriculum = localRaw ? JSON.parse(localRaw) : JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
+    diagLog('ok', 'مناهج محلية جاهزة');
   } catch(e) {
     window.curriculum = JSON.parse(JSON.stringify(DEFAULT_CURRICULUM));
   }
   window.renderCurriculum();
 
-  // ✅ الآن نحاول الاتصال بـ Firebase
+  // 2) تحميل Firebase
   const fb = await loadFirebase();
 
   if (!fb) {
     hideLoader(200);
     window.setCloudStatus('offline', 'غير متصل');
     document.getElementById('warningBanner').classList.add('show');
-    document.getElementById('warningText').textContent = 'لم يتم تحميل firebase-config.js — تأكد من وجوده في نفس المجلد';
+    document.getElementById('warningText').textContent = 'فشل تحميل firebase-config.js';
+    diagLog('fail', 'وضع محلي فقط');
     return;
   }
 
   try {
-    // ✅ قراءة المناهج من Firestore
-    try {
-      const curriculumSnap = await getDoc(doc(db, "settings", "curriculum"));
-      if (curriculumSnap.exists()) {
-        const cloudData = curriculumSnap.data().data;
-        if (cloudData) {
-          window.curriculum = cloudData;
-          window.renderCurriculum();
-          localStorage.setItem('subjectsData_override', JSON.stringify(cloudData));
-          console.log('☁️ تم تحميل المناهج من السحابة');
-        }
-      } else {
-        // أول مرة: نرفع الافتراضي
-        await setDoc(doc(db, "settings", "curriculum"), {
-          data: window.curriculum,
-          updatedAt: serverTimestamp(),
-          updatedBy: 'init',
-          version: Date.now()
-        });
-        console.log('📤 تم رفع المناهج الافتراضية');
-      }
-    } catch(e) {
-      console.warn('⚠️ فشل تحميل المناهج:', e.message);
-    }
-
-    // ✅ اشتراك لحظي في المناهج
+    // 3) اشتراك المناهج
     unsubCurriculum = onSnapshot(doc(db, "settings", "curriculum"), (snap) => {
       if (snap.exists()) {
         const cloudData = snap.data().data;
@@ -827,66 +826,71 @@ async function init() {
           window.curriculum = cloudData;
           window.renderCurriculum();
           localStorage.setItem('subjectsData_override', JSON.stringify(cloudData));
+          diagLog('ok', 'المناهج محدّثة من السحابة');
         }
+      } else {
+        diagLog('info', 'لا توجد مناهج سحابية — نرفع الافتراضية');
+        setDoc(doc(db, "settings", "curriculum"), {
+          data: window.curriculum,
+          updatedAt: serverTimestamp(),
+          updatedBy: 'init',
+          version: Date.now()
+        }).catch(e => diagLog('warn', 'فشل الرفع: ' + e.message));
       }
       window.setCloudStatus('online', 'متصل ☁️');
+      diagLog('ok', 'المزامنة السحابية نشطة');
     }, (error) => {
-      console.warn('⚠️ خطأ الاشتراك في المناهج:', error.message);
+      diagLog('fail', 'خطأ المناهج: ' + error.message);
       window.setCloudStatus('offline', 'خطأ السحابة');
+      document.getElementById('warningBanner').classList.add('show');
+      document.getElementById('warningText').textContent = 'خطأ في الاشتراك: ' + error.message;
     });
 
-    // ✅ اشتراك في المعلمين
+    // 4) اشتراك المعلمين
     unsubTeachers = onSnapshot(collection(db, "teachers"), (snap) => {
       allTeachers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderTeachersTable();
       renderMap();
+      diagLog('ok', `تم تحميل ${allTeachers.length} معلم`);
       window.setCloudStatus('online', 'متصل ☁️');
     }, (error) => {
-      console.warn('⚠️ خطأ الاشتراك في المعلمين:', error.message);
+      diagLog('fail', 'خطأ المعلمين: ' + error.message);
     });
 
-    // ✅ اشتراك في الطلاب
+    // 5) اشتراك الطلاب
     unsubStudents = onSnapshot(collection(db, "students"), (snap) => {
       allStudents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderStudentsTable();
       renderMap();
+      diagLog('ok', `تم تحميل ${allStudents.length} طالب`);
     }, (error) => {
-      console.warn('⚠️ خطأ الاشتراك في الطلاب:', error.message);
+      diagLog('fail', 'خطأ الطلاب: ' + error.message);
     });
 
-    // ✅ اشتراك في المجموعات
+    // 6) اشتراك المجموعات
     unsubGroups = onSnapshot(collection(db, "groups"), (snap) => {
       allGroups = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderStats();
       renderTeachersTable();
       renderMap();
+      diagLog('ok', `تم تحميل ${allGroups.length} مجموعة`);
     }, (error) => {
-      console.warn('⚠️ خطأ الاشتراك في المجموعات:', error.message);
+      diagLog('fail', 'خطأ المجموعات: ' + error.message);
     });
 
-    // ✅ إخفاء الـ loader
-    hideLoader(800);
-    window.setCloudStatus('online', 'متصل ☁️');
-    console.log('✅ اكتملت التهيئة');
+    // ✅ إخفاء Loader
+    hideLoader(1000);
 
   } catch(e) {
-    console.error('❌ خطأ في التهيئة:', e);
+    diagLog('fail', 'خطأ init: ' + e.message);
     hideLoader(200);
     window.setCloudStatus('offline', 'فشل الاتصال');
     document.getElementById('warningBanner').classList.add('show');
-    document.getElementById('warningText').textContent = 'فشل الاتصال بالسحابة — وضع محلي';
   }
 }
 
-// ✅ إعادة المحاولة
-window.retryFirestore = function() {
-  document.getElementById('warningBanner').classList.remove('show');
-  location.reload();
-};
-
-// ✅ تنظيف عند الخروج
 window.addEventListener('beforeunload', () => {
   if (unsubCurriculum) unsubCurriculum();
   if (unsubTeachers) unsubTeachers();
@@ -894,7 +898,6 @@ window.addEventListener('beforeunload', () => {
   if (unsubGroups) unsubGroups();
 });
 
-// ✅ تشغيل
 init();
 </script>
 </body>
