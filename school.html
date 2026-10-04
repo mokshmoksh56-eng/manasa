@@ -43,6 +43,23 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .cloud-status.offline .dot{background:#DC2626;box-shadow:0 0 8px #DC2626}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
 
+/* ✅ شارة "يوجد تعديلات غير محفوظة" */
+.unsaved-badge{
+  position:fixed;bottom:20px;left:20px;
+  background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;
+  padding:10px 18px;border-radius:24px;font-size:12px;font-weight:900;
+  box-shadow:0 8px 20px rgba(217,119,6,.4);z-index:99998;
+  display:none;align-items:center;gap:8px;
+  animation:bounceIn .4s ease
+}
+.unsaved-badge.show{display:flex}
+.unsaved-badge .pulse-dot{
+  width:10px;height:10px;border-radius:50%;background:#fff;
+  animation:pingPong 1.2s infinite
+}
+@keyframes pingPong{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+@keyframes bounceIn{from{transform:translateY(20px) scale(.9);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+
 .tabs{display:flex;gap:8px;background:#F1F5F9;padding:6px;border-radius:14px;margin-bottom:16px}
 .tab{flex:1;padding:12px;border-radius:10px;border:none;background:transparent;font-weight:900;font-size:14px;color:var(--muted);cursor:pointer;transition:.2s;font-family:'Cairo'}
 .tab.active{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
@@ -82,47 +99,82 @@ tr.locked td{background:#FEF2F2}
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
 
-/* ✅ هيدر المرحلة - مغلق افتراضياً */
-.stage-card{background:#fff;border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
-.stage-card-header{padding:14px 16px;background:#F8FAFC;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
-.stage-card-header:hover{background:#ECFDF5}
-.stage-card-header h3{margin:0;font-size:16px;font-weight:900;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+/* ✅ هيدر المرحلة - الآن بلون قابل للتخصيص */
+.stage-card{
+  background:#fff;border:2px solid var(--line);border-radius:14px;
+  margin-bottom:12px;overflow:hidden;
+  border-right-width:6px;border-right-style:solid;
+  border-right-color:var(--stage-color, #CBD5E1);
+  transition:box-shadow .2s
+}
+.stage-card:hover{box-shadow:0 4px 12px -4px rgba(0,0,0,.1)}
+
+.stage-card-header{
+  padding:14px 16px;
+  background:var(--stage-header-bg, #F8FAFC);
+  border-bottom:2px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;transition:filter .2s
+}
+.stage-card-header:hover{filter:brightness(.97)}
+.stage-card-header h3{
+  margin:0;font-size:16px;font-weight:900;
+  color:var(--stage-header-text, var(--primary-dark));
+  display:flex;align-items:center;gap:8px
+}
 .stage-card-header .stage-arrow{
   width:24px;height:24px;display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--muted);transition:transform .3s ease
+  font-size:14px;color:var(--stage-header-text, var(--muted));
+  transition:transform .3s ease
 }
 .stage-card.open .stage-card-header .stage-arrow{transform:rotate(180deg)}
 .stage-card-body{padding:14px;display:none}
 .stage-card.open .stage-card-body{display:block}
 
-/* ✅ رأس المرحلة - أزرار التحكم */
+/* ✅ أزرار التحكم في المرحلة */
 .stage-actions{
-  display:flex;gap:6px;align-items:center;margin-right:auto
+  display:flex;gap:6px;align-items:center;margin-right:auto;flex-wrap:wrap
 }
 .stage-action-btn{
   padding:5px 10px;border-radius:6px;border:none;font-size:11px;font-weight:900;
-  cursor:pointer;transition:.2s;font-family:'Cairo'
+  cursor:pointer;transition:.2s;font-family:'Cairo';display:flex;align-items:center;gap:4px
 }
+.stage-action-btn.rename-stage{background:#DBEAFE;color:#1E40AF}
+.stage-action-btn.rename-stage:hover{background:#BFDBFE}
 .stage-action-btn.delete-stage{background:#FEE2E2;color:#991B1B}
 .stage-action-btn.delete-stage:hover{background:#FECACA}
 
-/* ✅ الصف - مع إمكانية التلوين والترتيب */
-.grade-block{
-  background:#F8FAFC;border:1.5px solid var(--line);border-radius:10px;
-  padding:12px;margin-bottom:10px;position:relative;transition:all .2s;
-  border-right-width:5px;border-right-style:solid;border-right-color:var(--grade-color, #CBD5E1)
+/* ✅ Color picker للهيدر */
+.stage-color-picker{
+  width:30px;height:30px;border:2px solid rgba(255,255,255,.6);
+  border-radius:8px;cursor:pointer;padding:0;background:transparent;
+  -webkit-appearance:none;appearance:none;
+  box-shadow:0 2px 6px rgba(0,0,0,.15)
 }
+.stage-color-picker::-webkit-color-swatch-wrapper{padding:2px}
+.stage-color-picker::-webkit-color-swatch{border:none;border-radius:5px}
+.stage-color-picker::-moz-color-swatch{border:none;border-radius:5px}
+
+/* ✅ لوحة ألوان سريعة للمرحلة */
+.stage-quick-colors{
+  display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;padding:8px;
+  background:#fff;border-radius:8px;border:1px dashed #CBD5E1
+}
+.stage-quick-colors .qc-btn{
+  width:26px;height:26px;border-radius:50%;border:2px solid #fff;
+  cursor:pointer;box-shadow:0 0 0 1.5px rgba(0,0,0,.15);
+  transition:transform .15s;padding:0
+}
+.stage-quick-colors .qc-btn:hover{transform:scale(1.15)}
+.stage-quick-colors .qc-btn:active{transform:scale(.9)}
+
+/* ✅ الصف */
+.grade-block{background:#F8FAFC;border:1.5px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
 .grade-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
-.grade-block-header h4{
-  margin:0;font-size:14px;font-weight:900;
-  color:var(--grade-color, var(--primary-dark));
-  display:flex;align-items:center;gap:6px
-}
+.grade-block-header h4{margin:0;font-size:14px;font-weight:900;color:var(--primary-dark);display:flex;align-items:center;gap:6px}
 
 /* ✅ أزرار الترتيب ▲▼ */
-.grade-order-controls{
-  display:flex;flex-direction:column;gap:2px;
-}
+.grade-order-controls{display:flex;flex-direction:column;gap:2px}
 .order-btn{
   width:24px;height:20px;border:none;border-radius:4px;
   font-size:10px;font-weight:900;cursor:pointer;
@@ -133,19 +185,6 @@ tr.locked td{background:#FEF2F2}
 .order-btn:hover:not(:disabled){background:#CBD5E1;color:var(--primary-dark)}
 .order-btn:active:not(:disabled){transform:scale(.9)}
 .order-btn:disabled{opacity:.3;cursor:not-allowed}
-
-/* ✅ زر اختيار اللون */
-.color-picker-wrapper{
-  position:relative;display:inline-block;width:32px;height:32px
-}
-.color-picker-wrapper input[type="color"]{
-  position:absolute;inset:0;width:100%;height:100%;
-  border:2px solid #CBD5E1;border-radius:8px;cursor:pointer;padding:0;
-  background:transparent;-webkit-appearance:none;appearance:none
-}
-.color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper{padding:2px}
-.color-picker-wrapper input[type="color"]::-webkit-color-swatch{border:none;border-radius:5px}
-.color-picker-wrapper input[type="color"]::-moz-color-swatch{border:none;border-radius:5px}
 
 .grade-actions-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 
@@ -189,32 +228,12 @@ tr.locked td{background:#FEF2F2}
 .badge-boy{background:#DBEAFE;color:#1E40AF}
 .badge-girl{background:#FCE7F3;color:#9D174D}
 
-/* ✅ عينة اللون بجانب اسم الصف */
-.grade-color-dot{
-  width:14px;height:14px;border-radius:50%;
-  display:inline-block;border:2px solid #fff;
-  box-shadow:0 0 0 1.5px rgba(0,0,0,.1);flex-shrink:0
-}
-
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0F172A;color:#fff;padding:12px 24px;border-radius:12px;font-weight:900;font-size:13px;z-index:99999;opacity:0;transition:.3s;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 .page{display:none}.page.active{display:block}
 .empty-state{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .sync-badge{font-size:10px;background:#D1FAE5;color:#065F46;padding:2px 6px;border-radius:4px;margin-right:4px}
-
-/* ✅ لوحة الألوان السريعة */
-.quick-colors{
-  display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;padding:8px;
-  background:#fff;border-radius:8px;border:1px solid var(--line)
-}
-.quick-colors .quick-color-btn{
-  width:24px;height:24px;border-radius:50%;border:2px solid #fff;
-  cursor:pointer;box-shadow:0 0 0 1.5px rgba(0,0,0,.15);
-  transition:transform .15s;padding:0
-}
-.quick-colors .quick-color-btn:hover{transform:scale(1.2)}
-.quick-colors .quick-color-btn:active{transform:scale(.9)}
 </style>
 </head>
 <body>
@@ -233,6 +252,12 @@ tr.locked td{background:#FEF2F2}
   </div>
   <h1>🏫 لوحة تحكم منصة احجزلي</h1>
   <p>إدارة شاملة للمعلمين والطلاب والمحتوى التعليمي — مزامنة سحابية لحظية</p>
+</div>
+
+<!-- ✅ شارة "يوجد تعديلات غير محفوظة" -->
+<div class="unsaved-badge" id="unsavedBadge">
+  <span class="pulse-dot"></span>
+  <span>يوجد تعديلات غير محفوظة — لا تنسَ الحفظ!</span>
 </div>
 
 <!-- Tabs -->
@@ -254,11 +279,6 @@ tr.locked td{background:#FEF2F2}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين والطلاب</h2>
-      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
-        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
-        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">🟡 طالب</span>
-        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
-      </div>
     </div>
     <div id="adminMap"></div>
   </div>
@@ -326,7 +346,7 @@ tr.locked td{background:#FEF2F2}
           التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b>
         </p>
         <p style="margin:4px 0 0;font-size:11px;color:var(--primary)">
-          ✨ يمكنك ترتيب الصفوف بالأسهم ▲▼ وتخصيص لون لكل صف 🎨
+          ✨ يمكنك تلوين الهيدر 🎨 وترتيب الصفوف بالأسهم ▲▼
         </p>
       </div>
     </div>
@@ -341,7 +361,7 @@ tr.locked td{background:#FEF2F2}
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
       <p style="margin:8px 0 0;font-size:11px;color:var(--muted);font-weight:800">
-        💡 سيتم إنشاء المرحلة فارغة بدون صفوف، ويمكنك إضافة الصفوف والمواد لها بعد ذلك
+        💡 سيتم إنشاء المرحلة فارغة بدون صفوف
       </p>
     </div>
 
@@ -396,6 +416,32 @@ window.toast = function(msg, color = '#0F172A') {
   window._toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 };
 
+// ============ Unsaved Changes Flag ============
+window._hasUnsavedChanges = false;
+
+function markAsChanged() {
+  if (!window._hasUnsavedChanges) {
+    window._hasUnsavedChanges = true;
+    const badge = document.getElementById('unsavedBadge');
+    if (badge) badge.classList.add('show');
+  }
+}
+
+function clearChanged() {
+  window._hasUnsavedChanges = false;
+  const badge = document.getElementById('unsavedBadge');
+  if (badge) badge.classList.remove('show');
+}
+
+// ✅ تحذير عند محاولة إغلاق الصفحة
+window.addEventListener('beforeunload', (e) => {
+  if (window._hasUnsavedChanges) {
+    e.preventDefault();
+    e.returnValue = 'يوجد تعديلات غير محفوظة! هل تريد الخروج فعلاً؟';
+    return e.returnValue;
+  }
+});
+
 // ============ Data Stores ============
 let allTeachers = [];
 let allStudents = [];
@@ -406,13 +452,47 @@ let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
 
-// ✅ ألوان جاهزة للاختيار السريع
+// ✅ ألوان جاهزة
 const QUICK_COLORS = [
+  '#D81B60', // وردي - KG
+  '#2E7D32', // أخضر - ابتدائي
+  '#1565C0', // أزرق - إعدادي
+  '#E65100', // برتقالي - ثانوي
+  '#7C3AED', // بنفسجي - جامعي
   '#047857', '#059669', '#10B981', '#22C55E', '#84CC16',
   '#EAB308', '#F59E0B', '#F97316', '#EF4444', '#DC2626',
   '#EC4899', '#D946EF', '#A855F7', '#8B5CF6', '#6366F1',
   '#3B82F6', '#0EA5E9', '#06B6D4', '#14B8A6', '#64748B'
 ];
+
+// ✅ الألوان الافتراضية للمراحل المعروفة
+const DEFAULT_STAGE_COLORS = {
+  kg: '#D81B60',
+  primary: '#2E7D32',
+  prep: '#1565C0',
+  secondary: '#E65100'
+};
+
+// ✅ تحويل HEX إلى RGB مع شفافية
+function hexToRgba(hex, alpha) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// ✅ تحديد إذا كان اللون فاتح (لتغيير لون النص)
+function isLightColor(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 155;
+}
 
 // ============ Render Stats ============
 function renderStats() {
@@ -523,7 +603,7 @@ window.toggleLockTeacher = async function(phone, lockValue) {
 window.toggleLockStudent = async function(id, lockValue) {
   try {
     await setStudentLock(id, lockValue);
-    window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 فتح الطالب', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل الطالب' : '🔓 تم فتح الطالب', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -625,7 +705,7 @@ function renderMap() {
 }
 
 // ==========================================================
-// ✅ Curriculum Management (مع ترتيب وتلوين)
+// ✅ Curriculum Management - مع تلوين الهيدر
 // ==========================================================
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
@@ -637,55 +717,69 @@ window.renderCurriculum = function() {
     const gradesCount = (stage.grades || []).length;
     const subjectsCount = (stage.grades || []).reduce((sum, g) => sum + ((g.subjects || []).length), 0);
 
+    // ✅ لون المرحلة (من البيانات أو الافتراضي حسب ID)
+    const stageColor = stage.color || DEFAULT_STAGE_COLORS[stageId] || '#7C3AED';
+    const headerBg = hexToRgba(stageColor, 0.15); // خلفية شفافة
+    const headerTextColor = stageColor; // لون النص = اللون الأساسي
+    const lightText = isLightColor(stageColor);
+
     html += `
-      <div class="stage-card" data-stage="${stageId}">
+      <div class="stage-card" 
+           data-stage="${stageId}"
+           style="--stage-color:${stageColor}; --stage-header-bg:${headerBg}; --stage-header-text:${headerTextColor}">
         <div class="stage-card-header" onclick="window.toggleStageHeader(event, '${stageId}')">
           <h3>
             <span>${stage.name}</span>
-            <span style="font-size:11px;background:var(--primary-light);color:var(--primary-dark);padding:2px 8px;border-radius:6px">
+            <span style="font-size:11px;background:${hexToRgba(stageColor, 0.2)};color:${stageColor};padding:2px 8px;border-radius:6px;border:1px solid ${hexToRgba(stageColor, 0.3)}">
               ${gradesCount} صف • ${subjectsCount} مادة
             </span>
           </h3>
           <div class="stage-actions" onclick="event.stopPropagation()">
+            <!-- ✅ Color picker للهيدر -->
+            <input type="color" 
+                   class="stage-color-picker" 
+                   value="${stageColor}" 
+                   onchange="window.changeStageColor('${stageId}', this.value)"
+                   title="اختر لون الهيدر">
+            <button class="stage-action-btn rename-stage" onclick="window.renameStage('${stageId}')" title="تعديل اسم المرحلة">✏️ تعديل</button>
             <button class="stage-action-btn delete-stage" onclick="window.deleteStage('${stageId}')" title="حذف المرحلة">🗑 حذف</button>
           </div>
           <div class="stage-arrow">▼</div>
         </div>
         <div class="stage-card-body">
+          <!-- ✅ لوحة ألوان سريعة -->
+          <div class="stage-quick-colors" onclick="event.stopPropagation()">
+            <span style="font-size:11px;font-weight:900;color:#64748B;align-self:center;margin-left:6px">ألوان سريعة:</span>
+            ${QUICK_COLORS.map(c => `
+              <button class="qc-btn" 
+                      style="background:${c}" 
+                      onclick="window.changeStageColor('${stageId}', '${c}')" 
+                      title="${c}"></button>
+            `).join('')}
+          </div>
+
+          <!-- ✅ الصفوف -->
           ${(stage.grades || []).map((g, gi) => {
-            const gradeColor = g.color || '#CBD5E1';
             const totalGrades = stage.grades.length;
             return `
-              <div class="grade-block" style="--grade-color: ${gradeColor}; background: linear-gradient(135deg, ${gradeColor}10 0%, #F8FAFC 100%)">
+              <div class="grade-block" style="border-right:4px solid ${stageColor}30">
                 <div class="grade-block-header">
                   <h4>
-                    <span class="grade-color-dot" style="background:${gradeColor}"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:${stageColor};display:inline-block"></span>
                     📖 ${g.name}
                   </h4>
                   <div class="grade-actions-row">
-                    <!-- ✅ أزرار الترتيب ▲▼ -->
                     <div class="grade-order-controls">
                       <button class="order-btn" onclick="window.moveGradeUp('${stageId}', ${gi})" ${gi === 0 ? 'disabled' : ''} title="تحريك لأعلى">▲</button>
                       <button class="order-btn" onclick="window.moveGradeDown('${stageId}', ${gi})" ${gi === totalGrades - 1 ? 'disabled' : ''} title="تحريك لأسفل">▼</button>
                     </div>
-                    <!-- ✅ زر اختيار اللون -->
-                    <div class="color-picker-wrapper">
-                      <input type="color" value="${gradeColor}" onchange="window.changeGradeColor('${stageId}', ${gi}, this.value)" title="اختر لون الصف">
-                    </div>
-                    <!-- ✅ أزرار التعديل والحذف -->
                     <button class="btn btn-ghost" onclick="window.renameGrade('${stageId}', ${gi})">✏️ تعديل</button>
                     <button class="btn btn-del" onclick="window.deleteGrade('${stageId}', ${gi})">🗑 حذف</button>
                   </div>
                 </div>
-                <!-- ✅ لوحة الألوان السريعة -->
-                <div class="quick-colors">
-                  ${QUICK_COLORS.map(c => `
-                    <button class="quick-color-btn" style="background:${c}" onclick="window.changeGradeColor('${stageId}', ${gi}, '${c}')" title="${c}"></button>
-                  `).join('')}
-                </div>
                 <div class="subjects-list">
                   ${(g.subjects || []).map((s, si) => `
-                    <span class="subject-tag" style="background:${gradeColor}20; color:${gradeColor}; border-color:${gradeColor}40">
+                    <span class="subject-tag" style="background:${hexToRgba(stageColor, 0.12)}; color:${stageColor}; border-color:${hexToRgba(stageColor, 0.3)}">
                       ${s}
                       <button onclick="window.deleteSubject('${stageId}', ${gi}, ${si})" title="حذف">✖</button>
                     </span>
@@ -693,14 +787,16 @@ window.renderCurriculum = function() {
                 </div>
                 <div style="display:flex;gap:6px;margin-top:8px">
                   <input type="text" class="inline-input" id="addSubj-${stageId}-${gi}" placeholder="أضف مادة جديدة..." onkeydown="if(event.key==='Enter')window.addSubject('${stageId}', ${gi})">
-                  <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${gradeColor},${gradeColor}CC)" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
+                  <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${stageColor},${stageColor}CC)" onclick="window.addSubject('${stageId}', ${gi})">➕ إضافة</button>
                 </div>
               </div>
             `;
           }).join('')}
+
+          <!-- ✅ إضافة صف جديد -->
           <div style="display:flex;gap:6px;margin-top:8px">
             <input type="text" class="inline-input" id="addGrade-${stageId}" placeholder="أضف صف جديد لهذه المرحلة..." onkeydown="if(event.key==='Enter')window.addGrade('${stageId}')">
-            <button class="btn btn-primary" style="width:auto;padding:8px 14px" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
+            <button class="btn btn-primary" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,${stageColor},${stageColor}CC)" onclick="window.addGrade('${stageId}')">➕ صف جديد</button>
           </div>
         </div>
       </div>
@@ -715,17 +811,45 @@ window.toggleStageHeader = function(event, stageId) {
   if (card) card.classList.toggle('open');
 };
 
-// ✅ تحريك الصف لأعلى
-window.moveGradeUp = function(stageId, gradeIdx) {
-  if (gradeIdx <= 0) return;
-  const grades = window.curriculum[stageId].grades;
-  [grades[gradeIdx - 1], grades[gradeIdx]] = [grades[gradeIdx], grades[gradeIdx - 1]];
+// ✅ تغيير لون الهيدر (تلوين المرحلة)
+window.changeStageColor = function(stageId, color) {
+  window.curriculum[stageId].color = color;
   window.renderCurriculum();
   // إعادة فتح المرحلة بعد التحديث
   setTimeout(() => {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
+  window.toast('🎨 تم تغيير لون المرحلة — لا تنسَ الحفظ', '#2563EB');
+};
+
+// ✅ تعديل اسم المرحلة
+window.renameStage = function(stageId) {
+  const old = window.curriculum[stageId].name;
+  const nw = prompt('الاسم الجديد للمرحلة:', old);
+  if (!nw || nw.trim() === '' || nw === old) return;
+  window.curriculum[stageId].name = nw.trim();
+  window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
+  markAsChanged();
+  window.toast('✅ تم تعديل اسم المرحلة — لا تنسَ الحفظ', '#2563EB');
+};
+
+// ✅ تحريك الصف لأعلى
+window.moveGradeUp = function(stageId, gradeIdx) {
+  if (gradeIdx <= 0) return;
+  const grades = window.curriculum[stageId].grades;
+  [grades[gradeIdx - 1], grades[gradeIdx]] = [grades[gradeIdx], grades[gradeIdx - 1]];
+  window.renderCurriculum();
+  setTimeout(() => {
+    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
+    if (card) card.classList.add('open');
+  }, 10);
+  markAsChanged();
   window.toast('✅ تم تحريك الصف لأعلى — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -739,19 +863,8 @@ window.moveGradeDown = function(stageId, gradeIdx) {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('✅ تم تحريك الصف لأسفل — لا تنسَ الحفظ', '#2563EB');
-};
-
-// ✅ تغيير لون الصف
-window.changeGradeColor = function(stageId, gradeIdx, color) {
-  window.curriculum[stageId].grades[gradeIdx].color = color;
-  window.renderCurriculum();
-  // إعادة فتح المرحلة بعد التحديث
-  setTimeout(() => {
-    const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
-    if (card) card.classList.add('open');
-  }, 10);
-  window.toast('🎨 تم تغيير اللون — لا تنسَ الحفظ', '#2563EB');
 };
 
 // ✅ إضافة مرحلة جديدة
@@ -770,13 +883,18 @@ window.addStage = function() {
     }
   }
 
+  // ✅ لون افتراضي عشوائي للمرحلة الجديدة
+  const randomColor = QUICK_COLORS[Math.floor(Math.random() * QUICK_COLORS.length)];
+
   window.curriculum[stageId] = {
     name: name,
+    color: randomColor,
     grades: []
   };
 
   input.value = '';
   window.renderCurriculum();
+  markAsChanged();
   window.toast('✅ أضيفت المرحلة — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -788,6 +906,7 @@ window.deleteStage = function(stageId) {
   if (!confirm(`⚠️ سيتم حذف المرحلة "${stage.name}" و ${gradesCount} صف مع كل مواده.\n\nهل أنت متأكد؟`)) return;
   delete window.curriculum[stageId];
   window.renderCurriculum();
+  markAsChanged();
   window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -804,6 +923,7 @@ window.addSubject = function(stageId, gradeIdx) {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('✅ أضيفت — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -815,6 +935,7 @@ window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('🗑 محذوفة — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -825,18 +946,13 @@ window.addGrade = function(stageId) {
   if (window.curriculum[stageId].grades.some(g => g.name === val)) {
     return window.toast('⚠️ الصف موجود بالفعل', '#D97706');
   }
-  // ✅ إضافة لون افتراضي عشوائي للصف الجديد
-  const randomColor = QUICK_COLORS[Math.floor(Math.random() * QUICK_COLORS.length)];
-  window.curriculum[stageId].grades.push({ 
-    name: val, 
-    subjects: [],
-    color: randomColor
-  });
+  window.curriculum[stageId].grades.push({ name: val, subjects: [] });
   window.renderCurriculum();
   setTimeout(() => {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('✅ أضيف — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -850,6 +966,7 @@ window.renameGrade = function(stageId, gradeIdx) {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('✅ تم تعديل الاسم — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -861,6 +978,7 @@ window.deleteGrade = function(stageId, gradeIdx) {
     const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
     if (card) card.classList.add('open');
   }, 10);
+  markAsChanged();
   window.toast('🗑 محذوف — لا تنسَ الحفظ', '#2563EB');
 };
 
@@ -870,6 +988,7 @@ window.saveCurriculum = async function() {
   btn.textContent = '⏳ جاري الحفظ السحابي...';
   try {
     await saveCurriculumSettings(window.curriculum, 'admin');
+    clearChanged();
     window.toast('☁️ تم الحفظ والمزامنة سحابياً! سيظهر فوراً على كل الأجهزة', '#047857');
   } catch(e) {
     console.error(e);
@@ -897,6 +1016,8 @@ async function init() {
     }
 
     unsubCurriculum = subscribeCurriculum((newCurriculum) => {
+      // ✅ لا نحدّث إذا كان هناك تعديلات غير محفوظة
+      if (window._hasUnsavedChanges) return;
       window.curriculum = newCurriculum;
       window.renderCurriculum();
       window.setCloudStatus('online', 'متصل ☁️');
