@@ -213,6 +213,76 @@ input[type="radio"]:active + .option-btn { transform:scale(0.95); }
     transition: height 0.3s ease; 
 }
 
+/* ✅ زر تأكيد الموقع */
+.confirm-location-box{
+    background: linear-gradient(160deg, #ECFDF5 0%, #D1FAE5 100%);
+    border: 2px solid #6EE7B7;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 16px;
+    margin-top: 12px;
+    box-shadow: 0 4px 12px -4px rgba(16,185,129,.25);
+}
+.confirm-location-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.confirm-location-label{
+    font-size: 13px;
+    font-weight: 900;
+    color: #065F46;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.confirm-location-status{
+    font-size: 11px;
+    font-weight: 900;
+    color: #64748B;
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+}
+.confirm-location-btn{
+    width: 100%;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: #fff;
+    font-weight: 900;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all .2s ease;
+    box-shadow: 0 6px 15px -6px rgba(5,150,105,.6);
+    font-family: 'Cairo', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+.confirm-location-btn:active{ transform: scale(.97); }
+.confirm-location-btn:disabled{ opacity: .7; cursor: not-allowed; }
+.confirm-location-hint{
+    font-size: 11px;
+    color: #64748B;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 700;
+}
+body.dark-mode .confirm-location-box{
+    background: linear-gradient(160deg, #064E3B 0%, #065F46 100%);
+    border-color: #047857;
+}
+body.dark-mode .confirm-location-label{ color: #A7F3D0; }
+body.dark-mode .confirm-location-status{ background: #1E293B; border-color: #334155; color: #CBD5E1; }
+
 .leaflet-div-icon { background: transparent; border: none; }
 .mb-marker-teacher { 
     width: 42px; 
@@ -1048,7 +1118,6 @@ body.dark-mode .address-badge-full {
     transform:scale(.98);
 }
 
-/* ✅ الشريط الجانبي الملون */
 .stage-card-option::before{
     content:'';
     position:absolute;
@@ -1069,7 +1138,6 @@ body.dark-mode .address-badge-full {
     width:8px;
 }
 
-/* ✅ أيقونة المرحلة */
 .stage-card-icon{
     width:52px;
     height:52px;
@@ -1090,7 +1158,6 @@ body.dark-mode .address-badge-full {
     box-shadow:0 4px 10px -3px var(--stage-color);
 }
 
-/* ✅ المحتوى */
 .stage-card-content{
     flex:1;
     min-width:0;
@@ -1120,7 +1187,6 @@ body.dark-mode .address-badge-full {
     gap:3px;
 }
 
-/* ✅ علامة الاختيار */
 .stage-card-check{
     width:24px;
     height:24px;
@@ -1152,7 +1218,6 @@ body.dark-mode .address-badge-full {
     transform:scale(1);
 }
 
-/* ✅ شارة "جديد" للمراحل الجديدة */
 .stage-card-new-badge{
     background:linear-gradient(135deg,#F59E0B,#D97706);
     color:#fff;
@@ -1169,7 +1234,6 @@ body.dark-mode .address-badge-full {
     50%{transform:scale(1.05)}
 }
 
-/* ✅ loading spinner صغير */
 .loading-stages-cards{
     padding:30px 20px;
     text-align:center;
@@ -1189,7 +1253,6 @@ body.dark-mode .address-badge-full {
     animation:spin 1s linear infinite;
 }
 
-/* ✅ للجوال - تحسين العرض */
 @media (min-width:640px){
     .stages-cards-container{
         grid-template-columns:1fr 1fr;
@@ -1428,6 +1491,29 @@ body.dark-mode .address-badge-full {
 
             <div id="studentMap"></div>
 
+            <!-- ✅✅✅ زر تأكيد الموقع الجديد ✅✅✅ -->
+            <div class="confirm-location-box">
+                <div class="confirm-location-header">
+                    <span class="confirm-location-label">
+                        <span>📍</span>
+                        <span>موقعك الحالي:</span>
+                    </span>
+                    <span id="currentLocationStatus" class="confirm-location-status">لم يتم تحديد الموقع بعد</span>
+                </div>
+                <button 
+                    type="button" 
+                    onclick="window.confirmMyLocation()" 
+                    id="confirmLocationBtn" 
+                    class="confirm-location-btn"
+                >
+                    <span>🎯</span>
+                    <span>تأكيد موقعي الحالي الآن</span>
+                </button>
+                <p class="confirm-location-hint">
+                    💡 أو اضغط على الخريطة مباشرة لتحديد موقعك يدوياً
+                </p>
+            </div>
+
             <div class="flex items-center gap-2 mb-4 mt-2 border-b-2 border-slate-100 pb-2">
                 <span class="text-2xl">📋</span>
                 <h3 class="font-black text-slate-800 text-[18px]">القائمة والمتاح لك:</h3>
@@ -1477,7 +1563,7 @@ body.dark-mode .address-badge-full {
     };
 
     // ═══════════════════════════════════════════════════════════
-    // ✅ EDUCATION_STRUCTURE - يُبنى ديناميكياً من السحابة
+    // ✅ EDUCATION_STRUCTURE
     // ═══════════════════════════════════════════════════════════
     let EDUCATION_STRUCTURE = {
         kg: { name: '🧸 رياض الأطفال', icon: '🧸', grades: ['KG 1', 'KG 2'], subjects: [] },
@@ -1486,8 +1572,6 @@ body.dark-mode .address-badge-full {
         secondary: { name: '📙 المرحلة الثانوية', icon: '📙', grades: [], subjects: [] }
     };
 
-    // ✅ تحويل مناهج Firestore إلى EDUCATION_STRUCTURE
-    // ✅ يستخدم حقل icon من السحابة لو موجود، وإلا يستخرج من الاسم
     function buildEducationStructureFromCurriculum(curriculum) {
         if (!curriculum) return;
         const newStructure = {};
@@ -1495,12 +1579,10 @@ body.dark-mode .address-badge-full {
         const knownOrder = ['kg', 'primary', 'prep', 'secondary'];
         const allStageIds = [];
 
-        // المراحل المعروفة أولاً
         knownOrder.forEach(id => {
             if (curriculum[id]) allStageIds.push(id);
         });
 
-        // ثم المراحل الجديدة
         Object.keys(curriculum).forEach(id => {
             if (!knownOrder.includes(id) && curriculum[id]) {
                 allStageIds.push(id);
@@ -1514,11 +1596,9 @@ body.dark-mode .address-badge-full {
                 (g.subjects || []).forEach(s => allSubjects.add(s));
             });
 
-            // ✅ استخرج الأيقونة والاسم النظيف
             let icon = stage.icon || null;
             let cleanName = stage.name || stageId;
 
-            // لو مفيش icon، حاول تستخرج من الاسم
             if (!icon) {
                 const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
                 if (emojiMatch) {
@@ -1528,7 +1608,6 @@ body.dark-mode .address-badge-full {
                     icon = '📚';
                 }
             } else {
-                // لو فيه icon في السحابة، شيل أي إيموجي من الاسم
                 const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
                 if (emojiMatch) cleanName = emojiMatch[2];
             }
@@ -1546,7 +1625,6 @@ body.dark-mode .address-badge-full {
         console.log('✅ EDUCATION_STRUCTURE محدّث:', Object.keys(EDUCATION_STRUCTURE));
     }
 
-    // ✅ دالة تحويل HEX إلى RGBA
     function hexToRgba(hex, alpha) {
         if (!hex) return `rgba(203, 213, 225, ${alpha})`;
         hex = hex.replace('#', '');
@@ -1557,9 +1635,6 @@ body.dark-mode .address-badge-full {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ✅ كروت المراحل التفاعلية
-    // ═══════════════════════════════════════════════════════════
     function refreshGradeDropdowns() {
         const container = document.getElementById('stagesCardsContainer');
         const stageInput = document.getElementById('stageSelect');
@@ -1568,7 +1643,6 @@ body.dark-mode .address-badge-full {
 
         const currentStage = stageInput.value;
 
-        // ✅ قائمة الألوان الافتراضية لكل مرحلة
         const defaultColors = {
             kg: '#D81B60',
             primary: '#2E7D32',
@@ -1586,7 +1660,6 @@ body.dark-mode .address-badge-full {
             const gradesCount = (stage.grades || []).length;
             const subjectsCount = (stage.subjects || []).length;
             
-            // اللون
             let stageColor = stage.color;
             if (!stageColor) {
                 if (defaultColors[stageId]) {
@@ -1600,7 +1673,6 @@ body.dark-mode .address-badge-full {
             const isSelected = (currentStage === stageId);
             const isNew = !knownStageIds.includes(stageId);
             
-            // ✅ الأيقونة والاسم من الحقول الجديدة
             const emoji = stage.icon || '📚';
             const stageNameOnly = stage.name || stageId;
 
@@ -1631,13 +1703,11 @@ body.dark-mode .address-badge-full {
 
         container.innerHTML = html;
 
-        // ✅ إذا كانت هناك مرحلة مختارة، نحدّث الصفوف
         if (currentStage && EDUCATION_STRUCTURE[currentStage]) {
             updateGradesList(currentStage);
         }
     }
 
-    // ✅ عند اختيار كرت مرحلة
     window.selectStageCard = function(stageId) {
         document.getElementById('stageSelect').value = stageId;
 
@@ -1653,7 +1723,6 @@ body.dark-mode .address-badge-full {
         updateGradesList(stageId);
     };
 
-    // ✅ تحديث قائمة الصفوف
     function updateGradesList(stageId) {
         const gradeSelect = document.getElementById('gradeSelect');
         const gradeLabel = document.getElementById('gradeLabel');
@@ -1679,13 +1748,11 @@ body.dark-mode .address-badge-full {
         }, 150);
     }
 
-    // ✅ تحديث قائمة المراحل والصفوف (old API compat)
     window.updateGrades = function() {
         const stage = document.getElementById('stageSelect').value;
         if (stage) updateGradesList(stage);
     };
 
-    // ✅ تحديث فلتر المواد
     function refreshSubjectFilter() {
         const subjectSelect = document.getElementById('filterSubject');
         if (!subjectSelect) return;
@@ -1716,9 +1783,6 @@ body.dark-mode .address-badge-full {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ✅ متغيرات الطالب
-    // ═══════════════════════════════════════════════════════════
     let studentProfile = JSON.parse(localStorage.getItem('current_student_profile')) || null;
     window.classesDB = [];
     
@@ -1808,7 +1872,6 @@ body.dark-mode .address-badge-full {
     };
 
     async function initApp() {
-        // ✅ تحميل المناهج من السحابة أولاً
         try {
             const curriculum = await getCurriculumSettings();
             buildEducationStructureFromCurriculum(curriculum);
@@ -1816,7 +1879,6 @@ body.dark-mode .address-badge-full {
             console.warn('فشل تحميل المناهج:', e);
         }
         
-        // ✅ تحديث الكروت
         refreshGradeDropdowns();
 
         if (studentProfile && studentProfile.id && studentProfile.name && studentProfile.phone) {
@@ -1915,12 +1977,14 @@ body.dark-mode .address-badge-full {
             const pos = e.target.getLatLng(); 
             studentLat = pos.lat; studentLng = pos.lng; 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+            window.updateLocationStatus('manual', studentLat, studentLng);
         });
         
         map.on('click', (e) => { 
             studentLat = e.latlng.lat; studentLng = e.latlng.lng; 
             studentSearchMarker.setLatLng([studentLat, studentLng]); 
             window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+            window.updateLocationStatus('manual', studentLat, studentLng);
         });
         
         window.updateSearchCircle();
@@ -1935,6 +1999,117 @@ body.dark-mode .address-badge-full {
         }).addTo(map);
     };
 
+    // ✅ تحديث حالة الموقع في البوكس الجديد
+    window.updateLocationStatus = function(type, lat, lng) {
+        const status = document.getElementById('currentLocationStatus');
+        const btn = document.getElementById('confirmLocationBtn');
+        if (!status) return;
+        
+        if (type === 'success') {
+            status.textContent = `✅ ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+            status.style.color = '#059669';
+            status.style.background = '#D1FAE5';
+            status.style.borderColor = '#6EE7B7';
+            if (btn) {
+                btn.innerHTML = '<span>🔄</span><span>تحديث الموقع</span>';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        } else if (type === 'manual') {
+            status.textContent = `📍 ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+            status.style.color = '#059669';
+            status.style.background = '#D1FAE5';
+            status.style.borderColor = '#6EE7B7';
+        } else if (type === 'loading') {
+            status.textContent = '⏳ جاري التحديد...';
+            status.style.color = '#D97706';
+            status.style.background = '#FEF3C7';
+            status.style.borderColor = '#FCD34D';
+        } else if (type === 'error') {
+            status.textContent = '❌ فشل التحديد';
+            status.style.color = '#DC2626';
+            status.style.background = '#FEE2E2';
+            status.style.borderColor = '#FECACA';
+        }
+    };
+
+    // ✅✅✅ زر تأكيد الموقع للطالب ✅✅✅
+    window.confirmMyLocation = function() {
+        const btn = document.getElementById('confirmLocationBtn');
+        const status = document.getElementById('currentLocationStatus');
+        
+        if (!btn || !status) return;
+        
+        if (!navigator.geolocation) {
+            status.textContent = '❌ غير مدعوم';
+            status.style.color = '#DC2626';
+            status.style.background = '#FEE2E2';
+            alert('⚠️ تحديد الموقع غير مدعوم في هذا المتصفح');
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳</span><span>جاري تحديد موقعك...</span>';
+        btn.style.opacity = '0.7';
+        status.textContent = '⏳ جاري التحديد...';
+        status.style.color = '#D97706';
+        status.style.background = '#FEF3C7';
+        status.style.borderColor = '#FCD34D';
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                studentLat = lat;
+                studentLng = lng;
+                isGpsActive = true;
+                
+                if (map && studentSearchMarker) {
+                    studentSearchMarker.setLatLng([lat, lng]);
+                    map.flyTo([lat, lng], 15, { animate: true, duration: 1.5 });
+                    window.updateSearchCircle();
+                }
+                
+                window.saveMapState();
+                window.renderClasses();
+                
+                status.textContent = `✅ ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                status.style.color = '#059669';
+                status.style.background = '#D1FAE5';
+                status.style.borderColor = '#6EE7B7';
+                
+                btn.disabled = false;
+                btn.innerHTML = '<span>✅</span><span>تم تحديد موقعك بنجاح</span>';
+                btn.style.opacity = '1';
+                btn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<span>🔄</span><span>تحديث الموقع</span>';
+                }, 2500);
+                
+                if (window.showToast) window.showToast('✅ تم تحديد موقعك بنجاح');
+            },
+            (error) => {
+                let msg = '❌ فشل تحديد الموقع';
+                if (error.code === 1) msg = '❌ يرجى السماح بالوصول للموقع';
+                else if (error.code === 2) msg = '❌ الموقع غير متاح — فعّل GPS';
+                else if (error.code === 3) msg = '❌ انتهت المهلة — حاول مجدداً';
+                
+                status.textContent = msg;
+                status.style.color = '#DC2626';
+                status.style.background = '#FEE2E2';
+                status.style.borderColor = '#FECACA';
+                
+                btn.disabled = false;
+                btn.innerHTML = '<span>🎯</span><span>تأكيد موقعي الحالي الآن</span>';
+                btn.style.opacity = '1';
+                btn.style.background = '';
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+    };
+
     window.autoDetectStudentLocation = function() {
         if (!navigator.geolocation) return;
         navigator.geolocation.getCurrentPosition(
@@ -1944,6 +2119,7 @@ body.dark-mode .address-badge-full {
                     studentSearchMarker.setLatLng([lat, lng]); studentLat = lat; studentLng = lng;
                     map.flyTo([lat, lng], 14, { animate: true, duration: 1.5 });
                     isGpsActive = true; window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+                    window.updateLocationStatus('success', lat, lng);
                 }
             },
             () => { isGpsActive = true; window.renderClasses(); },
@@ -1975,6 +2151,7 @@ body.dark-mode .address-badge-full {
                     isGpsActive = true;
                     map.flyTo([lat, lng], 14, { animate: true, duration: 1.5 }); 
                     window.updateSearchCircle(); window.saveMapState(); window.renderClasses();
+                    window.updateLocationStatus('success', lat, lng);
                 }
             },
             () => { alert('فشل تحديد الموقع.'); },
@@ -2012,7 +2189,6 @@ body.dark-mode .address-badge-full {
         document.querySelector(`input[name="studentGender"][value="${studentProfile.gender || 'boy'}"]`).checked = true;
         window.prefillStudentData();
 
-        // ✅ إذا كانت المرحلة موجودة، نختارها
         if (studentProfile.stage && EDUCATION_STRUCTURE[studentProfile.stage]) {
             window.selectStageCard(studentProfile.stage);
             
@@ -2023,7 +2199,6 @@ body.dark-mode .address-badge-full {
                 }
             }, 150);
         } else {
-            // ✅ المرحلة اتحذفت
             document.getElementById('stageSelect').value = '';
             document.querySelectorAll('.stage-card-option').forEach(c => c.classList.remove('selected'));
             document.getElementById('gradeSelect').innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
@@ -2088,6 +2263,11 @@ body.dark-mode .address-badge-full {
             el.classList.remove('active');
             if (el.dataset.value === currentPlaceFilter) { el.classList.add('active'); }
         });
+
+        // ✅ تحديث حالة الموقع إذا كان محفوظ
+        if (studentLat && studentLng) {
+            window.updateLocationStatus('manual', studentLat, studentLng);
+        }
     };
 
     window.setPlaceFilter = function(val, element) { 
@@ -2551,9 +2731,6 @@ body.dark-mode .address-badge-full {
         return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'م' : 'ص'}`;
     };
 
-    // ═══════════════════════════════════════════════════════════
-    // ✅ الاستماع اللحظي للمناهج
-    // ═══════════════════════════════════════════════════════════
     let isFirstCurriculumLoad = true;
 
     subscribeCurriculum((curriculum) => {
