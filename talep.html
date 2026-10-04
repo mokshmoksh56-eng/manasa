@@ -369,6 +369,9 @@ body.dark-mode .bg-gradient-to-l { background: linear-gradient(to left, #064E3B,
 body.dark-mode .text-emerald-900, body.dark-mode .text-emerald-700 { color: #A7F3D0 !important; }
 body.dark-mode .border-emerald-200 { border-color: #047857 !important; }
 body.dark-mode .bg-emerald-50, body.dark-mode .bg-emerald-100 { background: #064E3B !important; color: #A7F3D0 !important; }
+body.dark-mode .stage-card-option { background: #1E293B; border-color: #334155; }
+body.dark-mode .stage-card-title { color: #F1F5F9; }
+body.dark-mode .stage-card-meta { color: #94A3B8; }
 
 .dark-mode-toggle {
     position: fixed;
@@ -1011,24 +1014,185 @@ body.dark-mode .address-badge-full {
     } 
 }
 
-/* ✅ Loading state للمرحلة */
-.loading-stages {
-    padding: 15px;
-    text-align: center;
-    color: #64748B;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+/* ═══════════════════════════════════════════════════════ */
+/* ✅✅✅ كروت المراحل التفاعلية ✅✅✅ */
+/* ═══════════════════════════════════════════════════════ */
+
+.stages-cards-container{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:16px;
+    transition:all .3s ease;
 }
-.loading-stages .mini-spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(16, 185, 129, 0.2);
-    border-top-color: #10B981;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+
+.stage-card-option{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    background:var(--surface);
+    border:2px solid var(--line);
+    border-radius:14px;
+    cursor:pointer;
+    transition:all .25s ease;
+    overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+}
+.stage-card-option:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px -8px rgba(0,0,0,.15);
+}
+.stage-card-option:active{
+    transform:scale(.98);
+}
+
+/* ✅ الشريط الجانبي الملون */
+.stage-card-option::before{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    width:5px;
+    background:var(--stage-color,#CBD5E1);
+    transition:width .25s ease;
+}
+
+.stage-card-option.selected{
+    border-color:var(--stage-color);
+    background:linear-gradient(135deg,var(--stage-bg-color,rgba(209,250,229,.5)) 0%,#fff 100%);
+    box-shadow:0 6px 20px -6px var(--stage-color);
+}
+.stage-card-option.selected::before{
+    width:8px;
+}
+
+/* ✅ أيقونة المرحلة */
+.stage-card-icon{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    background:var(--stage-bg-color,rgba(209,250,229,.5));
+    border:2px solid var(--stage-color,#CBD5E1);
+    flex-shrink:0;
+    transition:all .25s ease;
+}
+.stage-card-option.selected .stage-card-icon{
+    transform:scale(1.1);
+    background:#fff;
+    box-shadow:0 4px 10px -3px var(--stage-color);
+}
+
+/* ✅ المحتوى */
+.stage-card-content{
+    flex:1;
+    min-width:0;
+}
+.stage-card-title{
+    font-size:15px;
+    font-weight:900;
+    color:var(--ink);
+    margin-bottom:3px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+.stage-card-meta{
+    font-size:11.5px;
+    color:var(--muted);
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.stage-card-meta .meta-item{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+}
+
+/* ✅ علامة الاختيار */
+.stage-card-check{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:2px solid #CBD5E1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:all .25s ease;
+    background:#fff;
+}
+.stage-card-option.selected .stage-card-check{
+    border-color:var(--stage-color);
+    background:var(--stage-color);
+    box-shadow:0 4px 10px -2px var(--stage-color);
+}
+.stage-card-check::after{
+    content:'✓';
+    color:#fff;
+    font-size:14px;
+    font-weight:900;
+    opacity:0;
+    transform:scale(0);
+    transition:all .2s ease;
+}
+.stage-card-option.selected .stage-card-check::after{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* ✅ شارة "جديد" للمراحل الجديدة */
+.stage-card-new-badge{
+    background:linear-gradient(135deg,#F59E0B,#D97706);
+    color:#fff;
+    font-size:9px;
+    font-weight:900;
+    padding:2px 7px;
+    border-radius:8px;
+    letter-spacing:.5px;
+    box-shadow:0 2px 4px -1px rgba(217,119,6,.4);
+    animation:badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+}
+
+/* ✅ loading spinner صغير */
+.loading-stages-cards{
+    padding:30px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+.loading-stages-cards .mini-spinner{
+    width:20px;
+    height:20px;
+    border:3px solid rgba(16,185,129,.15);
+    border-top-color:var(--primary-600);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+/* ✅ للجوال - تحسين العرض */
+@media (min-width:640px){
+    .stages-cards-container{
+        grid-template-columns:1fr 1fr;
+    }
 }
 
 @media (max-width: 640px) {
@@ -1106,7 +1270,7 @@ body.dark-mode .address-badge-full {
     .card-address-street { font-size: 11px !important; }
     .card-address-detail { font-size: 10.5px !important; }
     .card-address-btn { font-size: 10.5px !important; }
-    .card-teacher-bottom .card-teacher-name { font-size: 12.5px !important; }
+    .card-teacher-bottom .card-teacher-name { font-size: 12px !important; }
 }
 </style>
 </head>
@@ -1180,14 +1344,21 @@ body.dark-mode .address-badge-full {
                     <label><input type="radio" name="studentGender" value="boy" checked class="hidden"><div class="option-btn"><span class="text-2xl">👦</span><span>ولد</span></div></label>
                     <label><input type="radio" name="studentGender" value="girl" class="hidden"><div class="option-btn"><span class="text-2xl">👧</span><span>بنت</span></div></label>
                 </div>
+
                 <label class="field-label">أنت في أي مرحلة؟ <span class="text-rose-500">*</span></label>
-                <select id="stageSelect" class="input-base" required onchange="window.updateGrades()">
-                    <option value="" disabled selected>اختر المرحلة...</option>
-                </select>
-                <label class="field-label">الصف الدراسي <span class="text-rose-500">*</span></label>
-                <select id="gradeSelect" class="input-base" required disabled>
+                <input type="hidden" id="stageSelect" value="">
+                <div id="stagesCardsContainer" class="stages-cards-container">
+                    <div class="loading-stages-cards">
+                        <div class="mini-spinner"></div>
+                        <span>جاري تحميل المراحل...</span>
+                    </div>
+                </div>
+
+                <label class="field-label" id="gradeLabel" style="display:none;">اختر الصف الدراسي <span class="text-rose-500">*</span></label>
+                <select id="gradeSelect" class="input-base" required disabled style="display:none;">
                     <option value="" disabled selected>اختر المرحلة أولاً...</option>
                 </select>
+
                 <button type="submit" class="btn-primary mt-4">تسجيل الدخول والبحث 🚀</button>
             </form>
         </div>
@@ -1350,45 +1521,153 @@ body.dark-mode .address-badge-full {
         console.log('✅ EDUCATION_STRUCTURE محدّث:', Object.keys(EDUCATION_STRUCTURE));
     }
 
-    // ✅ تحديث قائمة المراحل والصفوف في نموذج التسجيل
+    // ✅ دالة تحويل HEX إلى RGBA
+    function hexToRgba(hex, alpha) {
+        if (!hex) return `rgba(203, 213, 225, ${alpha})`;
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ✅ كروت المراحل التفاعلية
+    // ═══════════════════════════════════════════════════════════
     function refreshGradeDropdowns() {
-        const stageSelect = document.getElementById('stageSelect');
+        const container = document.getElementById('stagesCardsContainer');
+        const stageInput = document.getElementById('stageSelect');
         const gradeSelect = document.getElementById('gradeSelect');
-        if (!stageSelect || !gradeSelect) return;
+        const gradeLabel = document.getElementById('gradeLabel');
+        
+        if (!container || !stageInput) return;
 
-        const currentStage = stageSelect.value;
-        const currentGrade = gradeSelect.value;
+        const currentStage = stageInput.value;
 
-        // ✅ نبني المراحل من EDUCATION_STRUCTURE (الذي يحتوي أسماء المراحل من Firestore)
-        stageSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة...</option>';
+        // ✅ قائمة الألوان الافتراضية لكل مرحلة
+        const defaultColors = {
+            kg: '#D81B60',
+            primary: '#2E7D32',
+            prep: '#1565C0',
+            secondary: '#E65100'
+        };
+        const customColors = ['#7C3AED', '#0891B2', '#DB2777', '#65A30D', '#4338CA', '#F59E0B'];
+        const knownStageIds = ['kg', 'primary', 'prep', 'secondary'];
+
+        let html = '';
+        let idx = 0;
 
         Object.keys(EDUCATION_STRUCTURE).forEach(stageId => {
-            const stageMeta = EDUCATION_STRUCTURE[stageId];
-            const opt = document.createElement('option');
-            opt.value = stageId;
-            // ✅ استخدام اسم المرحلة من Firestore (يشمل المراحل الجديدة)
-            opt.textContent = stageMeta.name || stageId;
-            stageSelect.appendChild(opt);
+            const stage = EDUCATION_STRUCTURE[stageId];
+            const gradesCount = (stage.grades || []).length;
+            const subjectsCount = (stage.subjects || []).length;
+            
+            // اللون
+            let stageColor = stage.color;
+            if (!stageColor) {
+                if (defaultColors[stageId]) {
+                    stageColor = defaultColors[stageId];
+                } else {
+                    stageColor = customColors[idx % customColors.length];
+                    idx++;
+                }
+            }
+
+            const isSelected = (currentStage === stageId);
+            const isNew = !knownStageIds.includes(stageId);
+            
+            // استخراج الإيموجي من اسم المرحلة
+            const emojiMatch = stage.name.match(/^(\S+)\s+(.*)$/);
+            const emoji = emojiMatch ? emojiMatch[1] : '📚';
+            const stageNameOnly = emojiMatch ? emojiMatch[2] : stage.name;
+
+            const bgColor = hexToRgba(stageColor, 0.08);
+
+            html += `
+                <div class="stage-card-option ${isSelected ? 'selected' : ''}"
+                     data-stage-id="${stageId}"
+                     style="--stage-color:${stageColor}; --stage-bg-color:${bgColor}"
+                     onclick="window.selectStageCard('${stageId}')">
+                    <div class="stage-card-icon" style="--stage-color:${stageColor}; --stage-bg-color:${bgColor}">
+                        ${emoji}
+                    </div>
+                    <div class="stage-card-content">
+                        <div class="stage-card-title">
+                            ${stageNameOnly}
+                            ${isNew ? '<span class="stage-card-new-badge">✨ جديد</span>' : ''}
+                        </div>
+                        <div class="stage-card-meta">
+                            <span class="meta-item">📖 ${gradesCount} صف</span>
+                            ${subjectsCount > 0 ? `<span class="meta-item">📚 ${subjectsCount} مادة</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="stage-card-check"></div>
+                </div>
+            `;
         });
 
+        container.innerHTML = html;
+
+        // ✅ إذا كانت هناك مرحلة مختارة، نحدّث الصفوف
         if (currentStage && EDUCATION_STRUCTURE[currentStage]) {
-            stageSelect.value = currentStage;
-            gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف...</option>';
-            EDUCATION_STRUCTURE[currentStage].grades.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g;
-                opt.textContent = g;
-                gradeSelect.appendChild(opt);
-            });
-            gradeSelect.disabled = false;
-            if (currentGrade && EDUCATION_STRUCTURE[currentStage].grades.includes(currentGrade)) {
-                gradeSelect.value = currentGrade;
-            }
-        } else {
-            gradeSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
-            gradeSelect.disabled = true;
+            updateGradesList(currentStage);
         }
     }
+
+    // ✅ عند اختيار كرت مرحلة
+    window.selectStageCard = function(stageId) {
+        // تحديث الـ input المخفي
+        document.getElementById('stageSelect').value = stageId;
+
+        // إزالة selected من الجميع
+        document.querySelectorAll('.stage-card-option').forEach(card => {
+            card.classList.remove('selected');
+        });
+
+        // إضافة selected للكرت المختار
+        const selectedCard = document.querySelector(`.stage-card-option[data-stage-id="${stageId}"]`);
+        if (selectedCard) {
+            selectedCard.classList.add('selected');
+        }
+
+        // تحديث قائمة الصفوف
+        updateGradesList(stageId);
+    };
+
+    // ✅ تحديث قائمة الصفوف
+    function updateGradesList(stageId) {
+        const gradeSelect = document.getElementById('gradeSelect');
+        const gradeLabel = document.getElementById('gradeLabel');
+
+        if (!EDUCATION_STRUCTURE[stageId]) return;
+
+        gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف الدراسي...</option>';
+        
+        EDUCATION_STRUCTURE[stageId].grades.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g;
+            opt.textContent = g;
+            gradeSelect.appendChild(opt);
+        });
+
+        gradeSelect.disabled = false;
+
+        // ✅ إظهار قائمة الصفوف
+        if (gradeLabel) gradeLabel.style.display = 'block';
+        gradeSelect.style.display = 'block';
+
+        // ✅ التمرير لأسفل
+        setTimeout(() => {
+            gradeSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
+    }
+
+    // ✅ تحديث قائمة المراحل والصفوف (old API compat)
+    window.updateGrades = function() {
+        const stage = document.getElementById('stageSelect').value;
+        if (stage) updateGradesList(stage);
+    };
 
     // ✅ تحديث فلتر المواد
     function refreshSubjectFilter() {
@@ -1521,7 +1800,7 @@ body.dark-mode .address-badge-full {
             console.warn('فشل تحميل المناهج:', e);
         }
         
-        // ✅ تحديث القوائم
+        // ✅ تحديث الكروت
         refreshGradeDropdowns();
 
         if (studentProfile && studentProfile.id && studentProfile.name && studentProfile.phone) {
@@ -1687,20 +1966,6 @@ body.dark-mode .address-badge-full {
         );
     };
 
-    window.updateGrades = function() {
-        const stage = document.getElementById('stageSelect').value;
-        const gradeSelect = document.getElementById('gradeSelect');
-        gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف الدراسي...</option>';
-        if (stage && EDUCATION_STRUCTURE[stage]) {
-            EDUCATION_STRUCTURE[stage].grades.forEach(g => {
-                gradeSelect.innerHTML += `<option value="${g}">${g}</option>`;
-            });
-            gradeSelect.disabled = false;
-        } else {
-            gradeSelect.disabled = true;
-        }
-    };
-
     window.handleStudentLogin = function(e) {
         e.preventDefault();
         const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
@@ -1711,6 +1976,7 @@ body.dark-mode .address-badge-full {
         const stage = document.getElementById('stageSelect').value;
         const grade = document.getElementById('gradeSelect').value;
         
+        if (!stage) return alert('⚠️ اختر المرحلة أولاً');
         if (!name || !phone || !grade) return alert('يرجى إكمال جميع البيانات.');
         if (name.length < 3) return alert('الاسم يجب أن يكون 3 أحرف على الأقل.');
         if (!/^01[0125][0-9]{8}$/.test(phone)) return alert('يرجى إدخال رقم هاتف مصري صحيح (010, 011, 012, 015).');
@@ -1725,27 +1991,31 @@ body.dark-mode .address-badge-full {
     window.editStudentData = function() {
         if (!studentProfile) { window.showView('loginView'); return; }
         
-        // ✅ نتحقق أن المرحلة موجودة
-        if (!EDUCATION_STRUCTURE[studentProfile.stage]) {
-            // المرحلة اتحذفت - نظهر تحذير
-            alert('⚠️ المرحلة القديمة تم حذفها. يرجى اختيار مرحلة جديدة.');
-            document.getElementById('stageSelect').value = '';
-            document.getElementById('gradeSelect').innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
-            document.getElementById('gradeSelect').disabled = true;
-        } else {
-            document.getElementById('stageSelect').value = studentProfile.stage;
-            window.updateGrades();
-            setTimeout(() => { 
-                if (EDUCATION_STRUCTURE[studentProfile.stage].grades.includes(studentProfile.grade)) {
-                    document.getElementById('gradeSelect').value = studentProfile.grade;
-                }
-            }, 50);
-        }
-        
         document.getElementById('studentName').value = studentProfile.name || '';
         document.getElementById('studentPhone').value = studentProfile.phone || '';
         document.querySelector(`input[name="studentGender"][value="${studentProfile.gender || 'boy'}"]`).checked = true;
         window.prefillStudentData();
+
+        // ✅ إذا كانت المرحلة موجودة، نختارها
+        if (studentProfile.stage && EDUCATION_STRUCTURE[studentProfile.stage]) {
+            window.selectStageCard(studentProfile.stage);
+            
+            setTimeout(() => {
+                const gradeSelect = document.getElementById('gradeSelect');
+                if (gradeSelect && EDUCATION_STRUCTURE[studentProfile.stage].grades.includes(studentProfile.grade)) {
+                    gradeSelect.value = studentProfile.grade;
+                }
+            }, 150);
+        } else {
+            // ✅ المرحلة اتحذفت
+            document.getElementById('stageSelect').value = '';
+            document.querySelectorAll('.stage-card-option').forEach(c => c.classList.remove('selected'));
+            document.getElementById('gradeSelect').innerHTML = '<option value="" disabled selected>اختر المرحلة أولاً...</option>';
+            document.getElementById('gradeSelect').disabled = true;
+            document.getElementById('gradeSelect').style.display = 'none';
+            document.getElementById('gradeLabel').style.display = 'none';
+        }
+
         isGpsActive = false; 
         window.showView('loginView');
     };
@@ -2266,7 +2536,7 @@ body.dark-mode .address-badge-full {
     };
 
     // ═══════════════════════════════════════════════════════════
-    // ✅ الاستماع اللحظي للمناهج من السحابة
+    // ✅ الاستماع اللحظي للمناهج
     // ═══════════════════════════════════════════════════════════
     let isFirstCurriculumLoad = true;
 
@@ -2274,10 +2544,8 @@ body.dark-mode .address-badge-full {
         buildEducationStructureFromCurriculum(curriculum);
         window.setCloudStatus('online', 'متصل ☁️');
         
-        // ✅ تحديث القوائم في كل مرة (سواء أول مرة أو تحديث لحظي)
         refreshGradeDropdowns();
         
-        // إذا كان الطالب معبّأ بياناته، حدّث فلتر المواد
         if (studentProfile && studentProfile.stage) {
             refreshSubjectFilter();
             if (window.renderClasses && studentProfile.grade) window.renderClasses();
@@ -2285,15 +2553,12 @@ body.dark-mode .address-badge-full {
         
         if (isFirstCurriculumLoad) {
             isFirstCurriculumLoad = false;
-            console.log('✅ تم تحميل المناهج من السحابة (talep.html)');
+            console.log('✅ تم تحميل المناهج من السحابة');
         } else {
-            console.log('🔄 تحديث لحظي للمناهج');
+            console.log('🔄 تحديث لحظي');
         }
     });
 
-    // ═══════════════════════════════════════════════════════════
-    // ✅ التهيئة
-    // ═══════════════════════════════════════════════════════════
     initStarPicker();
     initApp();
 </script>
