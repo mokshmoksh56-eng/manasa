@@ -508,7 +508,6 @@
                 window.location.href = 'teacher-login.html';
                 return;
             }
-            // ✅ كل تمام، أخفي شاشة الحماية
             overlay.classList.add('hide');
             setTimeout(() => overlay.remove(), 300);
         } catch (e) {
@@ -670,7 +669,7 @@
             <div class="swipe-hint">👈 اسحب يميناً أو يساراً لتغيير الشهر 👉</div>
         </div>
 
-        <button class="btn-add" onclick="addAppointment()">حفظ الموعد وإنشاء الكارت</button>
+        <button class="btn-add" onclick="addAppointment()">حفظ الموعد ونشره مباشرة</button>
         <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
     </div>
 
@@ -900,9 +899,7 @@
   let editingAppt = null;
   let isAnimating = false;
 
-  let appointments = JSON.parse(localStorage.getItem('appointments') || '{}');
-  let recurringAppointments = JSON.parse(localStorage.getItem('recurringAppointments') || '{}');
-
+  // ✅ الاعتماد الكامل على Firebase فقط - لا يوجد تخزين محلي
   window.onlineAppointments = {};
   window.onlineRecurring = {};
 
@@ -973,55 +970,39 @@
     info.classList.add('show');
   };
 
-  function saveAllAppts() {
-    localStorage.setItem('appointments', JSON.stringify(appointments));
-    localStorage.setItem('recurringAppointments', JSON.stringify(recurringAppointments));
-  }
-
-  function removeLocalAppt(appt) {
-    const targetDate = appt.date || selectedDateKey;
-    const [y, m, d] = targetDate.split('-').map(Number);
-    const dayOfWeek = new Date(y, m - 1, d).getDay();
-    if (appt.type === 'recurring') {
-        const list = recurringAppointments[dayOfWeek] || [];
-        const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
-        if (idx > -1) list.splice(idx, 1);
-    } else {
-        const list = appointments[targetDate] || [];
-        const idx = list.findIndex(a => a.start === appt.start && a.end === appt.end);
-        if (idx > -1) list.splice(idx, 1);
-    }
-    saveAllAppts();
-  }
-
   function dateKey(year, month, day) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 
+  // ✅ الاعتماد الكامل على Firebase فقط لجلب مواعيد اليوم
   function getDayAppointments(year, month, day) {
     const key = dateKey(year, month, day);
     const dayOfWeek = new Date(year, month, day).getDay();
 
-    const normalLocal = (appointments[key] || []).map(a => ({ ...a, type: 'normal', date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek] }));
-    const recurringLocal = (recurringAppointments[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek] }));
+    const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ 
+        ...a, 
+        type: 'normal', 
+        isOnline: true,
+        date: key,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek],
+        start: a.startTime,
+        end: a.endTime
+    }));
+    const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ 
+        ...a, 
+        type: 'recurring', 
+        isOnline: true,
+        date: key,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek],
+        start: a.startTime,
+        end: a.endTime
+    }));
 
-    const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ ...a, type: 'normal', isOnline: true }));
-    const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ ...a, type: 'recurring', isOnline: true }));
-
-    const map = new Map();
-    [...normalOnline, ...recurringOnline].forEach(item => {
-        map.set(item.slotId, item);
-    });
-    [...normalLocal, ...recurringLocal].forEach(item => {
-        const alreadyOnline = Array.from(map.values()).some(onlineAppt => 
-            onlineAppt.start === item.start && onlineAppt.end === item.end && onlineAppt.type === item.type
-        );
-        if (!alreadyOnline) {
-            map.set(`local_${item.start}_${item.end}_${item.type}_${item.date}`, item);
-        }
-    });
-
-    return Array.from(map.values()).sort((a, b) => (a.startTime || a.start).localeCompare(b.startTime || b.start));
+    return [...normalOnline, ...recurringOnline].sort((a, b) => 
+        (a.startTime || a.start).localeCompare(b.startTime || b.start)
+    );
   }
 
   function getMonthAppointmentsCount(year, month) {
@@ -1193,12 +1174,19 @@
     renderCalendar();
   }
 
+  // ✅ جلب البيانات من Firebase فقط
   window.loadLocalPublishedSlots = async function() {
       try {
-          const teacherPhone = localStorage.getItem('current_teacher_phone') || '01000000000';
+          const teacherPhone = localStorage.getItem('current_teacher_phone');
+          if (!teacherPhone) {
+              console.warn("لا يوجد رقم هاتف مسجل");
+              return;
+          }
+          
           const groups = await getAllGroups(); 
           const myGroups = groups.filter(g => g.phone === teacherPhone);
 
+          // ✅ إعادة تعيين البيانات السحابية بالكامل
           window.onlineAppointments = {};
           window.onlineRecurring = {};
 
@@ -1213,7 +1201,12 @@
                   slotId: data.id
               };
 
-              const uiItem = { ...data, appointment: appt, isVisible: data.isActive };
+              const uiItem = { 
+                  ...data, 
+                  appointment: appt, 
+                  isVisible: data.isActive,
+                  isOnline: true 
+              };
 
               if (appt.type === 'recurring') {
                   const day = appt.dayOfWeek;
@@ -1232,6 +1225,7 @@
       }
   };
 
+  // ✅ نشر مباشر على Firebase (لا يوجد تخزين محلي)
   window.publishSingleApptOnline = async function(appt) {
       const groupName = appt.groupName || document.getElementById('group-name').value.trim();
       const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
@@ -1308,7 +1302,7 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          removeLocalAppt(appt);
+          // ✅ إعادة تحميل من Firebase مباشرة (لا تخزين محلي)
           await window.loadLocalPublishedSlots();
           showPublishModalDetails(classPayload);
       } catch (error) {
@@ -1349,21 +1343,20 @@
       }
   };
 
+  // ✅ حذف مباشر من Firebase (لا يوجد تخزين محلي)
   window.deleteAppointmentOnline = async function(appt) {
       if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
 
-      if (appt.slotId || (appt.id && !String(appt.id).startsWith('local_'))) {
+      const idToDelete = appt.slotId || appt.id;
+      if (idToDelete && !String(idToDelete).startsWith('local_')) {
           try {
-              const idToDelete = appt.slotId || appt.id;
               await deleteGroup(idToDelete);
               await window.loadLocalPublishedSlots();
           } catch (error) {
               console.error("خطأ الحذف:", error);
           }
       } else {
-          removeLocalAppt(appt);
-          renderCalendar();
-          renderAllCardsSummary();
+          console.warn("لا يمكن حذف هذا العنصر: لا يوجد معرف سحابي صالح");
       }
   };
 
@@ -1438,6 +1431,7 @@
       document.getElementById('publishModalOverlay').classList.add('active');
   }
 
+  // ✅ عرض الكروت من Firebase فقط (لا يوجد تخزين محلي)
   function renderAllCardsSummary() {
     const grid = document.getElementById('summaryCardsGrid');
     const badge = document.getElementById('summaryTotalBadge');
@@ -1458,72 +1452,12 @@
         });
     }
 
-    for (const dKey in appointments) {
-        (appointments[dKey] || []).forEach(localAppt => {
-            const isAlreadyOnline = allItems.some(item => item.isOnline && item.appointment && item.appointment.date === dKey && item.appointment.start === localAppt.start && item.appointment.end === localAppt.end && item.appointment.type === 'normal');
-            if (!isAlreadyOnline) {
-                const [y, m, d] = dKey.split('-').map(Number);
-                const dayWk = new Date(y, m - 1, d).getDay();
-                allItems.push({
-                    id: `local_norm_${dKey}_${localAppt.start}`,
-                    groupName: localAppt.groupName || document.getElementById('group-name').value.trim() || 'مجموعة دراسية',
-                    teacherName: localAppt.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localAppt.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localAppt.studentsCount || document.getElementById('students-count').value || 20,
-                    genderAllowed: localAppt.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
-                    location: localAppt.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
-                    street: localAppt.street || document.getElementById('location-text').dataset.street || '',
-                    detailedAddress: localAppt.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '',
-                    gpsLocation: document.getElementById('gps-coords').value || '',
-                    start: localAppt.start,
-                    end: localAppt.end,
-                    type: 'normal',
-                    dayOfWeek: dayWk,
-                    dayName: dayNames[dayWk],
-                    date: dKey,
-                    appointment: { start: localAppt.start, end: localAppt.end, type: 'normal', dayOfWeek: dayWk, dayName: dayNames[dayWk], date: dKey },
-                    isVisible: true,
-                    isOnline: false
-                });
-            }
-        });
-    }
-
-    for (const dWk in recurringAppointments) {
-        (recurringAppointments[dWk] || []).forEach(localRec => {
-            const isAlreadyOnline = allItems.some(item => item.isOnline && item.appointment && item.appointment.dayOfWeek == dWk && item.appointment.start === localRec.start && item.appointment.end === localRec.end && item.appointment.type === 'recurring');
-            if (!isAlreadyOnline) {
-                allItems.push({
-                    id: `local_rec_${dWk}_${localRec.start}`,
-                    groupName: localRec.groupName || document.getElementById('group-name').value.trim() || 'مجموعة أسبوعية',
-                    teacherName: localRec.teacherName || document.getElementById('teacher-name').value.trim() || 'المعلم',
-                    subjectData: localRec.subjectData || document.getElementById('fixed-subject').dataset.value || 'المادة المحددة',
-                    studentsCount: localRec.studentsCount || document.getElementById('students-count').value || 20,
-                    genderAllowed: localRec.genderAllowed || (document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : 'مختلط'),
-                    location: localRec.location || (document.querySelector('input[name="location"]:checked') ? document.querySelector('input[name="location"]:checked').value : 'السنتر'),
-                    street: localRec.street || document.getElementById('location-text').dataset.street || '',
-                    detailedAddress: localRec.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '',
-                    gpsLocation: document.getElementById('gps-coords').value || '',
-                    start: localRec.start,
-                    end: localRec.end,
-                    type: 'recurring',
-                    dayOfWeek: parseInt(dWk),
-                    dayName: dayNames[parseInt(dWk)],
-                    date: selectedDateKey || 'كل أسبوع',
-                    appointment: { start: localRec.start, end: localRec.end, type: 'recurring', dayOfWeek: parseInt(dWk), dayName: dayNames[parseInt(dWk)], date: selectedDateKey || 'كل أسبوع' },
-                    isVisible: true,
-                    isOnline: false
-                });
-            }
-        });
-    }
-
     badge.textContent = `المواعيد المسجلة: ${allItems.length}`;
 
     if (allItems.length === 0) {
         grid.innerHTML = `
             <div class="empty-cards-state">
-                لا توجد مجموعات أو مواعيد مضافة حتى الآن.<br>أكمل خطوات الإدخال بالترتيب واضغط <b>حفظ الموعد وإنشاء الكارت</b>.
+                لا توجد مجموعات أو مواعيد مضافة حتى الآن.<br>أكمل خطوات الإدخال بالترتيب واضغط <b>حفظ الموعد ونشره مباشرة</b>.
             </div>
         `;
         return;
@@ -1578,7 +1512,7 @@
                     <div class="sc-teacher">${item.teacherName}</div>
                 </div>
                 <div class="sc-badges">
-                    ${item.isOnline ? '<span class="badge-status online">منشور</span>' : '<span class="badge-status draft">مسودة</span>'}
+                    <span class="badge-status online">منشور</span>
                     ${visibilityBadge}
                     ${isRec ? '<span class="badge-status recurring">أسبوعي</span>' : '<span class="badge-status" style="background:var(--light-teal); color:var(--dark-teal); border:1px solid var(--border-teal);">محدد</span>'}
                 </div>
@@ -1591,7 +1525,7 @@
 
             <div class="sc-details-grid">
                 <div class="sc-detail-item full">
-                    <span class="val">${item.subjectData || (item.grade + ' | ' + item.subject)}</span>
+                    <span class="val">${item.subjectData || (item.grade + ' | ' + item.subject) || 'المادة'}</span>
                 </div>
                 ${addressLine}
                 <div class="sc-detail-item">
@@ -1613,35 +1547,17 @@
                     <button class="btn-action btn-edit btn-card-edit">تعديل</button>
                     <button class="btn-action btn-delete btn-card-del">إلغاء</button>
                 </div>
-                ${item.isOnline 
-                    ? `<div style="display:flex; gap:5px; align-items:center;">
-                        <button class="btn-action btn-toggle-vis btn-card-toggle" title="تغيير حالة الظهور">${item.isActive ? '🙈 إخفاء' : '👁️ إظهار'}</button>
-                        <button class="btn-action btn-published btn-card-view">تفاصيل 👁</button>
-                       </div>` 
-                    : '<button class="btn-action btn-publish btn-card-pub">نشر الموعد</button>'}
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button class="btn-action btn-toggle-vis btn-card-toggle" title="تغيير حالة الظهور">${(item.isActive !== undefined ? item.isActive : item.isVisible) ? '🙈 إخفاء' : '👁️ إظهار'}</button>
+                    <button class="btn-action btn-published btn-card-view">تفاصيل 👁</button>
+                </div>
             </div>
         `;
 
         card.querySelector('.btn-card-del').onclick = () => window.deleteAppointmentOnline(item);
         card.querySelector('.btn-card-edit').onclick = () => window.startEdit(item);
-
-        const pubBtn = card.querySelector('.btn-card-pub');
-        if (pubBtn) {
-            pubBtn.onclick = () => {
-                if (item.date && item.date.includes('-')) selectedDateKey = item.date;
-                window.publishSingleApptOnline(item);
-            };
-        }
-
-        const viewBtn = card.querySelector('.btn-card-view');
-        if (viewBtn) {
-            viewBtn.onclick = () => showPublishModalDetails(item);
-        }
-
-        const toggleBtn = card.querySelector('.btn-card-toggle');
-        if (toggleBtn) {
-            toggleBtn.onclick = () => window.toggleVisibilityOnline(item.id || item.slotId);
-        }
+        card.querySelector('.btn-card-view').onclick = () => showPublishModalDetails(item);
+        card.querySelector('.btn-card-toggle').onclick = () => window.toggleVisibilityOnline(item.id || item.slotId);
 
         grid.appendChild(card);
     });
@@ -1666,7 +1582,8 @@
     if (e.target.id === 'editModalOverlay') window.cancelEdit();
   };
 
-  window.saveEdit = function() {
+  // ✅ حفظ التعديل مباشرة على Firebase
+  window.saveEdit = async function() {
     if (!editingAppt) return;
     const newStart = document.getElementById('editStart').value;
     const newEnd = document.getElementById('editEnd').value;
@@ -1684,37 +1601,18 @@
         return; 
     }
 
-    if (editingAppt.isOnline) {
-        const targetId = editingAppt.id || editingAppt.slotId;
-        window.updateAppointmentOnline(targetId, newStart, newEnd, isRecurring);
+    const targetId = editingAppt.id || editingAppt.slotId;
+    if (targetId && !String(targetId).startsWith('local_')) {
+        await window.updateAppointmentOnline(targetId, newStart, newEnd, isRecurring);
     } else {
-        const targetDate = editingAppt.date || selectedDateKey;
-        const [y, m, d] = targetDate.split('-').map(Number);
-        const dayOfWeek = new Date(y, m - 1, d).getDay();
-
-        removeLocalAppt(editingAppt);
-        const updatedLocal = {
-            ...editingAppt,
-            start: newStart,
-            end: newEnd,
-            type: isRecurring ? 'recurring' : 'normal'
-        };
-        if (isRecurring) {
-          if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
-          recurringAppointments[dayOfWeek].push(updatedLocal);
-        } else {
-          if (!appointments[targetDate]) appointments[targetDate] = [];
-          appointments[targetDate].push(updatedLocal);
-        }
-        saveAllAppts(); 
-        renderCalendar();
-        renderAllCardsSummary();
+        console.warn("لا يمكن تعديل هذا العنصر: لا يوجد معرف سحابي صالح");
     }
 
     window.cancelEdit();
   };
 
-  window.addAppointment = function() {
+  // ✅ إضافة الموعد ونشره مباشرة على Firebase
+  window.addAppointment = async function() {
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
     
@@ -1800,18 +1698,12 @@
         detailedAddress,
         date: selectedDateKey,
         dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek]
+        dayName: dayNames[dayOfWeek],
+        type: isRecurring ? 'recurring' : 'normal'
     };
 
-    if (isRecurring) {
-      if (!recurringAppointments[dayOfWeek]) recurringAppointments[dayOfWeek] = [];
-      recurringAppointments[dayOfWeek].push(newApptObj);
-    } else {
-      if (!appointments[selectedDateKey]) appointments[selectedDateKey] = [];
-      appointments[selectedDateKey].push(newApptObj);
-    }
-
-    saveAllAppts();
+    // ✅ نشر مباشر على Firebase (لا يوجد تخزين محلي)
+    await window.publishSingleApptOnline(newApptObj);
     
     document.getElementById('startTime').value = ''; 
     document.getElementById('endTime').value = '';
@@ -1819,9 +1711,6 @@
     document.getElementById('repeatWeekly').checked = false;
     document.getElementById('detailed-address').value = '';
     hideAddError(); 
-    
-    renderCalendar();
-    renderAllCardsSummary();
 
     setTimeout(() => {
         document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
