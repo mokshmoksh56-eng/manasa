@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>لوحة تحكم منصة احجزلي - الإدارة</title>
-
-<!-- ✅ منع الكاش نهائياً -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -57,10 +51,8 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;position:relative;overflow:hidden}
 .stat-box::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:var(--primary)}
 .stat-box.blue::before{background:var(--info)}.stat-box.amber::before{background:var(--gold)}.stat-box.rose::before{background:var(--danger)}.stat-box.purple::before{background:#7C3AED}
-.stat-box.green::before{background:#25D366}.stat-box.cyan::before{background:#06B6D4}
 .stat-num{font-size:28px;font-weight:900;color:var(--primary)}
 .stat-box.blue .stat-num{color:var(--info)}.stat-box.amber .stat-num{color:var(--gold)}.stat-box.rose .stat-num{color:var(--danger)}.stat-box.purple .stat-num{color:#7C3AED}
-.stat-box.green .stat-num{color:#128C7E}.stat-box.cyan .stat-num{color:#0891B2}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
 #adminMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
@@ -70,13 +62,13 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .marker-admin.locked{border-color:#DC2626;opacity:.7}
 
 .table-wrapper{overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
 th{background:#F1F5F9;color:var(--primary-dark);font-weight:900;padding:12px 10px;text-align:right;border-bottom:2px solid var(--line);white-space:nowrap}
 td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink)}
 tr:hover td{background:#F8FAFC}
 tr.locked td{background:#FEF2F2}
 
-.btn{padding:7px 12px;border-radius:8px;border:none;font-weight:900;font-size:12px;cursor:pointer;transition:.2s;font-family:'Cairo';display:inline-flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;text-decoration:none}
+.btn{padding:7px 12px;border-radius:8px;border:none;font-weight:900;font-size:12px;cursor:pointer;transition:.2s;font-family:'Cairo';display:inline-flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent}
 .btn:active{transform:scale(.95)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff}
@@ -90,46 +82,11 @@ tr.locked td{background:#FEF2F2}
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
 
-.wa-clicks-badge{background:#DCFCE7;color:#166534;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.booking-badge{background:#CFFAFE;color:#155E75;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.address-cell{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
-.address-link{font-size:11px;color:#047857;text-decoration:none;cursor:pointer;font-weight:900}
-.address-link:hover{text-decoration:underline}
-
-/* ✅ أزرار الألوان */
-.color-btn{
-  width:38px;height:38px;border-radius:50%;border:3px solid transparent;
-  cursor:pointer;transition:.2s;padding:0;
-  box-shadow:0 3px 8px rgba(0,0,0,.15)
-}
-.color-btn:hover{transform:scale(1.15)}
-.color-btn:active{transform:scale(.95)}
-.color-btn.selected{
-  border-color:#fff;
-  box-shadow:0 0 0 3px #0F172A, 0 4px 12px rgba(0,0,0,.3);
-  transform:scale(1.1)
-}
-
-/* ✅ لون ديناميكي لكل مرحلة */
-.stage-card{
-  border-right:6px solid var(--stage-color, #047857) !important;
-}
-.stage-card .stage-card-header h3{
-  color: var(--stage-color, var(--primary-dark));
-}
-.stage-card .stage-card-header .stage-arrow{
-  background: var(--stage-color, var(--primary));
-  color:#fff;
-  border-radius:50%;
-  width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;flex-shrink:0
-}
-
+/* ✅ هيدر المرحلة - مغلق افتراضياً */
 .stage-card{background:#fff;border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
 .stage-card-header{padding:14px 16px;background:#F8FAFC;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s;gap:8px}
 .stage-card-header:hover{background:#ECFDF5}
-.stage-card-header h3{margin:0;font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stage-card-header h3{margin:0;font-size:16px;font-weight:900;color:var(--primary-dark);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .stage-card-header .stage-arrow{
   width:24px;height:24px;display:flex;align-items:center;justify-content:center;
   font-size:14px;color:var(--muted);transition:transform .3s ease;flex-shrink:0
@@ -159,6 +116,7 @@ tr.locked td{background:#FEF2F2}
 .inline-input{flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);font-family:'Cairo';font-weight:800;font-size:13px;outline:none;min-width:0}
 .inline-input:focus{border-color:var(--primary)}
 
+/* ✅ مربع إضافة مرحلة جديدة */
 .add-stage-box{
   background:linear-gradient(135deg,#F0FDF4,#DCFCE7);
   border:2px dashed #10B981;border-radius:14px;padding:16px;margin-top:12px
@@ -182,6 +140,7 @@ tr.locked td{background:#FEF2F2}
 .add-stage-inputs button:hover{transform:translateY(-2px)}
 .add-stage-inputs button:active{transform:translateY(0) scale(.98)}
 
+/* ✅ مكتبة الأيقونات */
 .icon-library{
   margin-top:14px;background:#fff;border:1.5px solid #A7F3D0;
   border-radius:12px;padding:12px;max-height:420px;overflow-y:auto
@@ -213,8 +172,8 @@ tr.locked td{background:#FEF2F2}
 .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:900}
 .badge-active{background:#D1FAE5;color:#065F46}
 .badge-locked{background:#FEE2E2;color:#991B1B}
-.badge-boy{background:#DBEAFE;color:#1E40AF}
-.badge-girl{background:#FCE7F3;color:#9D174D}
+.badge-boy{background:#DBEAFE;color:#1E40AF;border-right:3px solid #2563EB;padding-right:6px}
+.badge-girl{background:#FCE7F3;color:#9D174D;border-right:3px solid #EC4899;padding-right:6px}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0F172A;color:#fff;padding:12px 24px;border-radius:12px;font-weight:900;font-size:13px;z-index:99999;opacity:0;transition:.3s;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
@@ -222,61 +181,6 @@ tr.locked td{background:#FEF2F2}
 .page{display:none}.page.active{display:block}
 .empty-state{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .sync-badge{font-size:10px;background:#D1FAE5;color:#065F46;padding:2px 6px;border-radius:4px;margin-right:4px}
-
-/* ✅ نافذة تعديل المرحلة */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(15,23,42,.6);
-  backdrop-filter:blur(4px);z-index:99998;
-  display:none;align-items:center;justify-content:center;padding:16px;
-  animation:fadeIn .2s ease
-}
-.modal-overlay.show{display:flex}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-.modal-box{
-  background:#fff;border-radius:20px;padding:24px;
-  max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);
-  animation:slideUp .3s ease
-}
-@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-.modal-box h3{
-  margin:0 0 16px;font-size:18px;font-weight:900;color:var(--primary-dark);
-  display:flex;align-items:center;gap:8px
-}
-.modal-box label{
-  display:block;font-size:13px;font-weight:900;color:var(--ink);
-  margin-bottom:6px;margin-top:14px
-}
-.modal-box input[type="text"]{
-  width:100%;padding:12px 14px;border-radius:10px;
-  border:2px solid var(--line);font-family:'Cairo';font-weight:800;
-  font-size:14px;outline:none;box-sizing:border-box
-}
-.modal-box input[type="text"]:focus{
-  border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)
-}
-.modal-color-palette{
-  display:flex;gap:10px;flex-wrap:wrap;margin-top:6px
-}
-.modal-buttons{
-  display:flex;gap:10px;margin-top:22px
-}
-.modal-buttons button{
-  flex:1;padding:12px 18px;border-radius:10px;border:none;
-  font-family:'Cairo';font-weight:900;font-size:14px;cursor:pointer;
-  transition:.2s
-}
-.modal-buttons button:active{transform:scale(.97)}
-.modal-btn-cancel{
-  background:#F1F5F9;color:var(--ink);border:1px solid var(--line)
-}
-.modal-btn-cancel:hover{background:#E2E8F0}
-.modal-btn-save{
-  background:linear-gradient(135deg,#10B981,#047857);color:#fff;
-  box-shadow:0 4px 12px -4px rgba(16,185,129,.6)
-}
-.modal-btn-save:hover{transform:translateY(-2px)}
 </style>
 </head>
 <body>
@@ -312,8 +216,6 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box purple"><div class="stat-num" id="statMissa">0</div><div class="stat-label">👩‍🏫 مس</div></div>
     <div class="stat-box amber"><div class="stat-num" id="statStudents">0</div><div class="stat-label">🎓 الطلاب</div></div>
     <div class="stat-box rose"><div class="stat-num" id="statLocked">0</div><div class="stat-label">🔒 الحسابات المقفولة</div></div>
-    <div class="stat-box green"><div class="stat-num" id="statWaClicks">0</div><div class="stat-label">💬 نقرات واتساب</div></div>
-    <div class="stat-box cyan"><div class="stat-num" id="statBookings">0</div><div class="stat-label">📅 الحصص المحجوزة</div></div>
   </div>
 
   <div class="card">
@@ -344,9 +246,6 @@ tr.locked td{background:#FEF2F2}
             <th>اللقب</th>
             <th>الهاتف</th>
             <th>المواد</th>
-            <th>💬 واتساب</th>
-            <th>📅 الحصص</th>
-            <th>📍 الموقع</th>
             <th>الحالة</th>
             <th>إجراءات</th>
           </tr>
@@ -363,7 +262,7 @@ tr.locked td{background:#FEF2F2}
       </h2>
       <span style="font-size:11px;color:var(--muted)" id="studentsCount"></span>
     </div>
-    <input type="text" class="search-box" id="searchStudents" placeholder="🔍 ابحث باسم الطالب أو رقم الهاتف..." oninput="window.filterTable('studentsTable', this.value)">
+    <input type="text" class="search-box" id="searchStudents" placeholder="🔍 ابحث باسم الطالب أو رقم الهاتف أو الصف..." oninput="window.filterTable('studentsTable', this.value)">
     <div class="table-wrapper">
       <table id="studentsTable">
         <thead>
@@ -398,6 +297,7 @@ tr.locked td{background:#FEF2F2}
 
     <div id="curriculumContainer"></div>
 
+    <!-- ✅ مربع إضافة مرحلة جديدة -->
     <div class="add-stage-box">
       <h4><span>➕</span> إضافة مرحلة جديدة</h4>
 
@@ -409,24 +309,7 @@ tr.locked td{background:#FEF2F2}
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
 
-      <!-- ✅ مكتبة الألوان -->
-      <div style="margin-top:14px">
-        <div style="font-size:12px;font-weight:900;color:var(--primary-dark);margin-bottom:8px">🎨 اختر لون المرحلة:</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button type="button" class="color-btn selected" data-color="#047857" style="background:#047857" onclick="window.pickColor('#047857', event)" title="أخضر"></button>
-          <button type="button" class="color-btn" data-color="#2563EB" style="background:#2563EB" onclick="window.pickColor('#2563EB', event)" title="أزرق"></button>
-          <button type="button" class="color-btn" data-color="#7C3AED" style="background:#7C3AED" onclick="window.pickColor('#7C3AED', event)" title="بنفسجي"></button>
-          <button type="button" class="color-btn" data-color="#DC2626" style="background:#DC2626" onclick="window.pickColor('#DC2626', event)" title="أحمر"></button>
-          <button type="button" class="color-btn" data-color="#D97706" style="background:#D97706" onclick="window.pickColor('#D97706', event)" title="برتقالي"></button>
-          <button type="button" class="color-btn" data-color="#0891B2" style="background:#0891B2" onclick="window.pickColor('#0891B2', event)" title="سماوي"></button>
-          <button type="button" class="color-btn" data-color="#DB2777" style="background:#DB2777" onclick="window.pickColor('#DB2777', event)" title="وردي"></button>
-          <button type="button" class="color-btn" data-color="#65A30D" style="background:#65A30D" onclick="window.pickColor('#65A30D', event)" title="ليموني"></button>
-          <button type="button" class="color-btn" data-color="#0F172A" style="background:#0F172A" onclick="window.pickColor('#0F172A', event)" title="أسود"></button>
-          <button type="button" class="color-btn" data-color="#78716C" style="background:#78716C" onclick="window.pickColor('#78716C', event)" title="رمادي"></button>
-        </div>
-        <input type="hidden" id="newStageColor" value="#047857">
-      </div>
-
+      <!-- 🎨 مكتبة الأيقونات -->
       <div class="icon-library">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
           <span style="font-size:12px;color:var(--primary-dark);font-weight:900">🎨 اختار أيقونة من المكتبة:</span>
@@ -435,6 +318,7 @@ tr.locked td{background:#FEF2F2}
                  oninput="window.filterIcons(this.value)">
         </div>
 
+        <!-- تصنيف: المراحل المدرسية -->
         <div class="icon-category" data-cat="مدارس">
           <div class="icon-cat-title">🏫 المراحل المدرسية</div>
           <div class="icon-grid">
@@ -453,6 +337,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: الثانوية والجامعة -->
         <div class="icon-category" data-cat="جامعات">
           <div class="icon-cat-title">🎓 الثانوية والجامعات</div>
           <div class="icon-grid">
@@ -479,6 +364,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: المعاهد والكورسات -->
         <div class="icon-category" data-cat="كورسات">
           <div class="icon-cat-title">💻 المعاهد والكورسات</div>
           <div class="icon-grid">
@@ -495,6 +381,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: الديانات -->
         <div class="icon-category" data-cat="أديان">
           <div class="icon-cat-title">🕌⛪ الديانات</div>
           <div class="icon-grid">
@@ -517,6 +404,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: أطفال وحضانة -->
         <div class="icon-category" data-cat="أطفال">
           <div class="icon-cat-title">🧸 الحضانة والأطفال</div>
           <div class="icon-grid">
@@ -530,6 +418,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: رياضة وفنون -->
         <div class="icon-category" data-cat="رياضة">
           <div class="icon-cat-title">⚽ الرياضة والفنون</div>
           <div class="icon-grid">
@@ -546,6 +435,7 @@ tr.locked td{background:#FEF2F2}
           </div>
         </div>
 
+        <!-- تصنيف: متنوع -->
         <div class="icon-category" data-cat="متنوع">
           <div class="icon-cat-title">✨ أيقونات متنوعة</div>
           <div class="icon-grid">
@@ -566,35 +456,6 @@ tr.locked td{background:#FEF2F2}
 
     <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
       <button class="btn btn-primary" id="saveCurriculumBtn" onclick="window.saveCurriculum()">💾 حفظ ومزامنة سحابية</button>
-    </div>
-  </div>
-</div>
-
-<!-- ✅ Modal تعديل المرحلة -->
-<div class="modal-overlay" id="editStageModal">
-  <div class="modal-box">
-    <h3>✏️ تعديل المرحلة</h3>
-
-    <label>اسم المرحلة:</label>
-    <input type="text" id="editStageName" maxlength="50" placeholder="اسم المرحلة">
-
-    <label>🎨 لون المرحلة:</label>
-    <div class="modal-color-palette" id="editColorPalette">
-      <button type="button" class="color-btn" data-color="#047857" style="background:#047857" onclick="window.pickEditColor('#047857', event)" title="أخضر"></button>
-      <button type="button" class="color-btn" data-color="#2563EB" style="background:#2563EB" onclick="window.pickEditColor('#2563EB', event)" title="أزرق"></button>
-      <button type="button" class="color-btn" data-color="#7C3AED" style="background:#7C3AED" onclick="window.pickEditColor('#7C3AED', event)" title="بنفسجي"></button>
-      <button type="button" class="color-btn" data-color="#DC2626" style="background:#DC2626" onclick="window.pickEditColor('#DC2626', event)" title="أحمر"></button>
-      <button type="button" class="color-btn" data-color="#D97706" style="background:#D97706" onclick="window.pickEditColor('#D97706', event)" title="برتقالي"></button>
-      <button type="button" class="color-btn" data-color="#0891B2" style="background:#0891B2" onclick="window.pickEditColor('#0891B2', event)" title="سماوي"></button>
-      <button type="button" class="color-btn" data-color="#DB2777" style="background:#DB2777" onclick="window.pickEditColor('#DB2777', event)" title="وردي"></button>
-      <button type="button" class="color-btn" data-color="#65A30D" style="background:#65A30D" onclick="window.pickEditColor('#65A30D', event)" title="ليموني"></button>
-      <button type="button" class="color-btn" data-color="#0F172A" style="background:#0F172A" onclick="window.pickEditColor('#0F172A', event)" title="أسود"></button>
-      <button type="button" class="color-btn" data-color="#78716C" style="background:#78716C" onclick="window.pickEditColor('#78716C', event)" title="رمادي"></button>
-    </div>
-
-    <div class="modal-buttons">
-      <button class="modal-btn-cancel" onclick="window.closeEditStage()">إلغاء</button>
-      <button class="modal-btn-save" onclick="window.saveEditStage()">💾 حفظ التعديل</button>
     </div>
   </div>
 </div>
@@ -621,38 +482,17 @@ window.setCloudStatus = function(status, text) {
   txt.textContent = text;
 };
 
-// ==========================================================
-// ✅ Tabs — محفوظة في hash الرابط (تعمل بعد الـ Refresh)
-// ==========================================================
-function switchTab(pageId) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const tab = document.querySelector(`.tab[data-page="${pageId}"]`);
-  const page = document.getElementById(pageId);
-  if (tab && page) {
-    tab.classList.add('active');
-    page.classList.add('active');
-    if (pageId === 'page-users' && window._map) {
-      setTimeout(() => window._map.invalidateSize(), 100);
-    }
-  }
-}
-
+// ============ Tabs ============
 document.querySelectorAll('.tab').forEach(tab => {
   tab.onclick = () => {
-    const pageId = tab.dataset.page;
-    switchTab(pageId);
-    if (location.hash !== '#' + pageId) {
-      history.replaceState(null, '', '#' + pageId);
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.page).classList.add('active');
+    if (tab.dataset.page === 'page-users' && window._map) {
+      setTimeout(() => window._map.invalidateSize(), 100);
     }
   };
-});
-
-window.addEventListener('hashchange', () => {
-  const hash = location.hash.replace('#', '');
-  if (hash === 'page-users' || hash === 'page-curriculum') {
-    switchTab(hash);
-  }
 });
 
 // ============ Toast ============
@@ -682,16 +522,12 @@ function renderStats() {
   const missa = allTeachers.filter(t => t.title === 'مس').length;
   const students = allStudents.length;
   const locked = allTeachers.filter(t => t.isLocked).length + allStudents.filter(s => s.isLocked).length;
-  const totalWaClicks = allTeachers.reduce((sum, t) => sum + (Number(t.waClicks) || 0), 0);
-  const totalBookings = allTeachers.reduce((sum, t) => sum + (Number(t.bookingsCount) || 0), 0);
 
   document.getElementById('statTeachers').textContent = teachers;
   document.getElementById('statMester').textContent = mester;
   document.getElementById('statMissa').textContent = missa;
   document.getElementById('statStudents').textContent = students;
   document.getElementById('statLocked').textContent = locked;
-  document.getElementById('statWaClicks').textContent = totalWaClicks;
-  document.getElementById('statBookings').textContent = totalBookings;
 }
 
 function getTeacherSubjects(phone) {
@@ -708,43 +544,25 @@ function renderTeachersTable() {
   const tbody = document.getElementById('teachersBody');
   document.getElementById('teachersCount').textContent = `${allTeachers.length} معلم`;
   if (allTeachers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
     return;
   }
   tbody.innerHTML = allTeachers.map(t => {
     const phone = t.id || t.phone;
     const locked = t.isLocked === true;
-    const waClicks = Number(t.waClicks) || 0;
-    const bookings = Number(t.bookingsCount) || 0;
-
-    let address = t.address || '';
-    let teacherLat = t.lat, teacherLng = t.lng;
-    if ((!teacherLat || !teacherLng) && allGroups.length) {
-      const g = allGroups.find(x => x.phone === phone && x.lat && x.lng);
-      if (g) { teacherLat = g.lat; teacherLng = g.lng; if (!address) address = g.address || ''; }
-    }
-    const hasLocation = teacherLat && teacherLng;
-    const locationCell = hasLocation
-      ? `<a class="address-link" onclick="window.focusTeacherOnMap('${phone}');return false;" title="${address||'عرض على الخريطة'}">📍 ${address || 'عرض على الخريطة'}</a>`
-      : `<span class="address-cell">— لا يوجد موقع</span>`;
-
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${(t.name||'')} ${phone}">
         <td>${t.name || '—'}</td>
         <td><span class="badge ${t.title === 'مس' ? 'badge-girl' : 'badge-boy'}">${t.title || 'مستر'}</span></td>
         <td dir="ltr" style="text-align:right">${phone}</td>
         <td style="font-size:11px;color:var(--muted)">${getTeacherSubjects(phone)}</td>
-        <td><span class="wa-clicks-badge">💬 ${waClicks}</span></td>
-        <td><span class="booking-badge">📅 ${bookings}</span></td>
-        <td>${locationCell}</td>
-        <td>${locked ? '<span class="badge badge-locked">🚫 محظور</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
+        <td>${locked ? '<span class="badge badge-locked">🔒 مقفول</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
           <div style="display:flex;gap:4px;flex-wrap:wrap">
-            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" onclick="window.toggleLockTeacher('${phone}', ${!locked})" title="${locked ? 'فك الحظر' : 'حظر المعلم'}">${locked ? '🔓 فك الحظر' : '🚫 حظر'}</button>
-            <a class="btn btn-wa" href="https://wa.me/2${phone}" target="_blank" title="واتساب المعلم">💬 واتس</a>
-            <a class="btn btn-call" href="tel:${phone}" title="اتصال">📞</a>
-            ${hasLocation ? `<button class="btn btn-ghost" onclick="window.focusTeacherOnMap('${phone}')" title="عرض على الخريطة">📍</button>` : ''}
-            <button class="btn btn-del" onclick="window.deleteTeacher('${phone}', '${(t.name||'').replace(/'/g,"\\'")}')" title="حذف نهائي">🗑</button>
+            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" onclick="window.toggleLockTeacher('${phone}', ${!locked})">${locked ? '🔓 فتح' : '🔒 قفل'}</button>
+            <a class="btn btn-wa" href="https://wa.me/2${phone}" target="_blank">💬</a>
+            <a class="btn btn-call" href="tel:${phone}">📞</a>
+            <button class="btn btn-del" onclick="window.deleteTeacher('${phone}', '${(t.name||'').replace(/'/g,"\\'")}')">🗑</button>
           </div>
         </td>
       </tr>
@@ -752,30 +570,76 @@ function renderTeachersTable() {
   }).join('');
 }
 
-// ============ Students Table ============
+// ============ ✅ Students Table (مُعدّل) ============
+// دالة مرنة لاستخراج اسم الصف من أي حقل محتمل
+function getStudentGrade(s) {
+  if (!s) return '—';
+  
+  // نجرّب كل الحقول المحتملة المباشرة
+  const direct = s.grade || s.gradeName || s.className || s.class || s.level || s.stageName || s.classRoom || s.gradeLabel;
+  if (direct && String(direct).trim() !== '') return String(direct).trim();
+  
+  // نحاول من خلال curriculum عبر gradeId / stageId
+  if (window.curriculum) {
+    if (s.gradeId && window.curriculum[s.gradeId]?.name) return window.curriculum[s.gradeId].name;
+    if (s.stageId && window.curriculum[s.stageId]?.name) return window.curriculum[s.stageId].name;
+    
+    // البحث في كل المراحل عن صف بهذا الـ ID
+    for (const sid in window.curriculum) {
+      const stage = window.curriculum[sid];
+      const found = (stage.grades || []).find(g => g.id === s.gradeId || g.name === s.grade);
+      if (found) return found.name;
+    }
+  }
+  
+  return '—';
+}
+
+// دالة مرنة لتحديد النوع (ولد / بنت)
+function isGirl(s) {
+  const g = String(s?.gender || s?.type || s?.sex || '').toLowerCase().trim();
+  return ['girl', 'female', 'f', 'بنت', 'انثى', 'أنثى', 'طالبة', 'فتاة'].includes(g);
+}
+
 function renderStudentsTable() {
   const tbody = document.getElementById('studentsBody');
   document.getElementById('studentsCount').textContent = `${allStudents.length} طالب`;
+
   if (allStudents.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد طلاب مسجلون</td></tr>`;
     return;
   }
+
   tbody.innerHTML = allStudents.map(s => {
     const locked = s.isLocked === true;
-    const genderBadge = s.gender === 'girl' ? '<span class="badge badge-girl">👧 بنت</span>' : '<span class="badge badge-boy">👦 ولد</span>';
+    const girl = isGirl(s);
+    const gradeName = getStudentGrade(s);
+    const safeName = (s.name || '').replace(/'/g, "\\'");
+
+    // ✅ بادج النوع مع لون مميز: ولد أزرق / بنت وردي
+    const genderBadge = girl
+      ? '<span class="badge badge-girl">👧 بنت</span>'
+      : '<span class="badge badge-boy">👦 ولد</span>';
+
     return `
-      <tr class="${locked ? 'locked' : ''}" data-search="${(s.name||'')} ${s.phone||''}">
+      <tr class="${locked ? 'locked' : ''}" data-search="${(s.name||'')} ${s.phone||''} ${gradeName}">
         <td>${s.name || '—'}</td>
         <td dir="ltr" style="text-align:right">${s.phone || '—'}</td>
         <td>${genderBadge}</td>
-        <td style="font-size:12px">${s.grade || '—'}</td>
+        <td style="font-size:12px;font-weight:900;color:${gradeName === '—' ? 'var(--muted)' : 'var(--primary-dark)'}">
+          ${gradeName}
+        </td>
         <td>${locked ? '<span class="badge badge-locked">🔒 مقفول</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
           <div style="display:flex;gap:4px;flex-wrap:wrap">
-            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" onclick="window.toggleLockStudent('${s.id}', ${!locked})">${locked ? '🔓 فتح' : '🔒 قفل'}</button>
+            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" 
+                    onclick="window.toggleLockStudent('${s.id}', ${!locked})">
+              ${locked ? '🔓 فتح' : '🔒 قفل'}
+            </button>
             ${s.phone ? `<a class="btn btn-wa" href="https://wa.me/2${s.phone}" target="_blank">💬</a>` : ''}
             ${s.phone ? `<a class="btn btn-call" href="tel:${s.phone}">📞</a>` : ''}
-            <button class="btn btn-del" onclick="window.deleteStudent('${s.id}', '${(s.name||'').replace(/'/g,"\\'")}')">🗑</button>
+            <button class="btn btn-del" 
+                    onclick="window.deleteStudent('${s.id}', '${safeName}')">🗑 حذف</button>
           </div>
         </td>
       </tr>
@@ -796,7 +660,7 @@ window.filterTable = function(tableId, query) {
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
-    window.toast(lockValue ? '🚫 تم حظر المعلم سحابياً' : '🔓 تم فك الحظر سحابياً', lockValue ? '#D97706' : '#047857');
+    window.toast(lockValue ? '🔒 تم قفل المعلم سحابياً' : '🔓 تم فتح المعلم سحابياً', lockValue ? '#D97706' : '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل التحديث', '#DC2626');
@@ -825,21 +689,30 @@ window.deleteTeacher = async function(phone, name) {
   }
 };
 
+// ✅ دالة حذف الطالب (محسّنة)
 window.deleteStudent = async function(id, name) {
-  if (!confirm(`⚠️ سيتم حذف الطالب "${name}" نهائياً من السحابة.\n\nهل أنت متأكد؟`)) return;
+  if (!id) {
+    window.toast('❌ لا يمكن تحديد الطالب', '#DC2626');
+    return;
+  }
+  const confirmed = confirm(
+    `⚠️ تحذير!\n\nسيتم حذف الطالب "${name || 'بدون اسم'}" نهائياً من السحابة.\n` +
+    `لا يمكن التراجع عن هذه العملية.\n\nهل أنت متأكد؟`
+  );
+  if (!confirmed) return;
+
   try {
     await deleteStudentAccount(id);
-    window.toast('🗑 تم حذف الطالب', '#DC2626');
+    window.toast(`🗑 تم حذف الطالب "${name}" بنجاح`, '#DC2626');
   } catch(e) {
-    console.error(e);
-    window.toast('❌ فشل الحذف', '#DC2626');
+    console.error('Delete student error:', e);
+    window.toast('❌ فشل حذف الطالب: ' + (e.message || ''), '#DC2626');
   }
 };
 
 // ============ Map ============
 window._map = null;
 let markersLayer = null;
-window._mapMarkers = {};
 
 function renderMap() {
   if (!window._map) {
@@ -858,73 +731,31 @@ function renderMap() {
     }).addTo(window._map);
   }
   markersLayer.clearLayers();
-  window._mapMarkers = {};
   const bounds = L.latLngBounds();
   let count = 0;
-  const addedTeachers = new Set();
 
   allGroups.forEach(g => {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
     const teacher = allTeachers.find(t => (t.id || t.phone) === phone) || { name: g.teacherName, title: g.teacherTitle };
     const locked = teacher.isLocked === true;
-    const waClicks = Number(teacher.waClicks) || 0;
-    const bookings = Number(teacher.bookingsCount) || 0;
     const iconHtml = `<div class="marker-admin teacher ${locked ? 'locked' : ''}">👨‍🏫</div>`;
     const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
     const m = L.marker([g.lat, g.lng], { icon });
     m.bindPopup(`
-      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:200px">
+      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:180px">
         <div style="font-weight:900;font-size:14px;color:#047857">${teacher.title||''} ${teacher.name||''}</div>
         <div style="font-size:12px;color:#64748B;margin:4px 0">📚 ${g.subject||''} - ${g.groupName||''}</div>
-        <div style="font-size:12px;color:#64748B;margin-bottom:4px">📍 ${g.address||''}</div>
-        <div style="display:flex;gap:6px;margin:6px 0;font-size:11px">
-          <span style="background:#DCFCE7;color:#166534;padding:3px 8px;border-radius:6px;font-weight:900">💬 ${waClicks} نقرة</span>
-          <span style="background:#CFFAFE;color:#155E75;padding:3px 8px;border-radius:6px;font-weight:900">📅 ${bookings} حصة</span>
-        </div>
+        <div style="font-size:12px;color:#64748B;margin-bottom:6px">📍 ${g.address||''}</div>
         <div style="display:flex;gap:4px">
           <a href="https://wa.me/2${phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
           <a href="tel:${phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
         </div>
-        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
+        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:4px">🔒 مقفول</div>' : ''}
       </div>
     `);
     markersLayer.addLayer(m);
-    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: g.lat, lng: g.lng };
     bounds.extend([g.lat, g.lng]);
-    count++;
-    addedTeachers.add(phone);
-  });
-
-  allTeachers.forEach(t => {
-    const phone = t.id || t.phone;
-    if (addedTeachers.has(phone)) return;
-    if (!t.lat || !t.lng) return;
-
-    const locked = t.isLocked === true;
-    const waClicks = Number(t.waClicks) || 0;
-    const bookings = Number(t.bookingsCount) || 0;
-    const iconHtml = `<div class="marker-admin teacher ${locked ? 'locked' : ''}">👨‍🏫</div>`;
-    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
-    const m = L.marker([t.lat, t.lng], { icon });
-    m.bindPopup(`
-      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:200px">
-        <div style="font-weight:900;font-size:14px;color:#047857">${t.title||''} ${t.name||''}</div>
-        <div style="font-size:12px;color:#64748B;margin:4px 0">📍 ${t.address||''}</div>
-        <div style="display:flex;gap:6px;margin:6px 0;font-size:11px">
-          <span style="background:#DCFCE7;color:#166534;padding:3px 8px;border-radius:6px;font-weight:900">💬 ${waClicks} نقرة</span>
-          <span style="background:#CFFAFE;color:#155E75;padding:3px 8px;border-radius:6px;font-weight:900">📅 ${bookings} حصة</span>
-        </div>
-        <div style="display:flex;gap:4px">
-          <a href="https://wa.me/2${phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
-          <a href="tel:${phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
-        </div>
-        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
-      </div>
-    `);
-    markersLayer.addLayer(m);
-    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: t.lat, lng: t.lng };
-    bounds.extend([t.lat, t.lng]);
     count++;
   });
 
@@ -937,7 +768,7 @@ function renderMap() {
     m.bindPopup(`
       <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
         <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${s.name||''}</div>
-        <div style="font-size:12px;color:#64748B;margin:4px 0">${s.grade||''}</div>
+        <div style="font-size:12px;color:#64748B;margin:4px 0">${getStudentGrade(s)}</div>
         <div style="display:flex;gap:4px;margin-top:6px">
           ${s.phone ? `<a href="https://wa.me/2${s.phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
           ${s.phone ? `<a href="tel:${s.phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
@@ -945,7 +776,6 @@ function renderMap() {
       </div>
     `);
     markersLayer.addLayer(m);
-    window._mapMarkers[`student_${s.id}`] = { marker: m, lat: s.lat, lng: s.lng };
     bounds.extend([s.lat, s.lng]);
     count++;
   });
@@ -955,26 +785,9 @@ function renderMap() {
   }
 }
 
-window.focusTeacherOnMap = function(phone) {
-  const ref = window._mapMarkers[`teacher_${phone}`];
-  if (!ref || !window._map) {
-    window.toast('📍 لا يوجد موقع محفوظ لهذا المعلم', '#D97706');
-    return;
-  }
-  switchTab('page-users');
-  if (location.hash !== '#page-users') {
-    history.replaceState(null, '', '#page-users');
-  }
-
-  setTimeout(() => {
-    window._map.invalidateSize();
-    window._map.flyTo([ref.lat, ref.lng], 15, { duration: 0.8 });
-    setTimeout(() => ref.marker.openPopup(), 900);
-  }, 200);
-};
-
 // ==========================================================
-// ✅ Curriculum Management
+// ✅ Curriculum Management (مع الأيقونات - بدون موجات)
+// ✅ الهيدر مقفول افتراضياً - يتم فتحه بالنقر
 // ==========================================================
 window.renderCurriculum = function() {
   const container = document.getElementById('curriculumContainer');
@@ -987,7 +800,7 @@ window.renderCurriculum = function() {
     const subjectsCount = (stage.grades || []).reduce((sum, g) => sum + ((g.subjects || []).length), 0);
 
     html += `
-      <div class="stage-card" data-stage="${stageId}" style="--stage-color: ${stage.color || '#047857'}">
+      <div class="stage-card" data-stage="${stageId}">
         <div class="stage-card-header" onclick="window.toggleStageHeader(event, '${stageId}')">
           <h3>
             <span style="font-size:24px;line-height:1">${stage.icon || '🏫'}</span>
@@ -1037,12 +850,13 @@ window.renderCurriculum = function() {
   container.innerHTML = html;
 };
 
+// ✅ فتح/غلق هيدر المرحلة
 window.toggleStageHeader = function(event, stageId) {
   const card = document.querySelector(`.stage-card[data-stage="${stageId}"]`);
   if (card) card.classList.toggle('open');
 };
 
-// ✅ اختيار أيقونة (للإضافة فقط)
+// ✅ اختيار أيقونة
 window.pickIcon = function(icon, event) {
   const input = document.getElementById('newStageIcon');
   if (input) {
@@ -1054,15 +868,7 @@ window.pickIcon = function(icon, event) {
   if (event?.target) event.target.classList.add('selected');
 };
 
-// ✅ اختيار لون (للإضافة)
-window.pickColor = function(color, event) {
-  const input = document.getElementById('newStageColor');
-  if (input) input.value = color;
-
-  document.querySelectorAll('.add-stage-box .color-btn').forEach(b => b.classList.remove('selected'));
-  if (event?.target) event.target.classList.add('selected');
-};
-
+// ✅ فلترة الأيقونات بالبحث
 window.filterIcons = function(query) {
   const q = query.trim().toLowerCase();
   const cats = document.querySelectorAll('.icon-category');
@@ -1091,14 +897,12 @@ window.filterIcons = function(query) {
   });
 };
 
-// ✅ إضافة مرحلة جديدة (بالأيقونة + اللون)
+// ✅ إضافة مرحلة جديدة مع أيقونة
 window.addStage = function() {
   const input = document.getElementById('newStageName');
   const iconInput = document.getElementById('newStageIcon');
-  const colorInput = document.getElementById('newStageColor');
   const name = input.value.trim();
   const icon = (iconInput?.value || '🏫').trim();
-  const color = (colorInput?.value || '#047857').trim();
 
   if (!name) return window.toast('⚠️ اكتب اسم المرحلة أولاً', '#D97706');
 
@@ -1112,20 +916,18 @@ window.addStage = function() {
   window.curriculum[stageId] = { 
     name: name, 
     icon: icon || '🏫',
-    color: color || '#047857',
     grades: [] 
   };
 
   input.value = '';
   if (iconInput) iconInput.value = '';
-  if (colorInput) colorInput.value = '#047857';
   document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('selected'));
-  document.querySelectorAll('.add-stage-box .color-btn').forEach((b, i) => b.classList.toggle('selected', i === 0));
 
   window.renderCurriculum();
   window.toast(`✅ أضيفت المرحلة ${icon} — لا تنسَ الحفظ السحابي`, '#2563EB');
 };
 
+// ✅ حذف مرحلة
 window.deleteStage = function(stageId) {
   const stage = window.curriculum[stageId];
   if (!stage) return;
@@ -1136,73 +938,23 @@ window.deleteStage = function(stageId) {
   window.toast('🗑 تم حذف المرحلة — لا تنسَ الحفظ السحابي', '#2563EB');
 };
 
-// ==========================================================
-// ✅ Modal تعديل المرحلة (اسم + لون)
-// ==========================================================
-window._editingStageId = null;
-
+// ✅ تعديل أيقونة واسم المرحلة
 window.editStage = function(stageId) {
   const stage = window.curriculum[stageId];
   if (!stage) return;
 
-  window._editingStageId = stageId;
-  document.getElementById('editStageName').value = stage.name || '';
+  const newIcon = prompt('أدخل الأيقونة الجديدة (إيموجي):', stage.icon || '🏫');
+  if (newIcon === null) return;
 
-  const currentColor = stage.color || '#047857';
-  document.querySelectorAll('#editColorPalette .color-btn').forEach(btn => {
-    btn.classList.toggle('selected', btn.dataset.color === currentColor);
-  });
+  const newName = prompt('الاسم الجديد للمرحلة:', stage.name);
+  if (newName === null) return;
 
-  document.getElementById('editStageModal').classList.add('show');
-  setTimeout(() => document.getElementById('editStageName').focus(), 100);
-};
+  if (newIcon.trim()) stage.icon = newIcon.trim();
+  if (newName.trim()) stage.name = newName.trim();
 
-window.closeEditStage = function() {
-  document.getElementById('editStageModal').classList.remove('show');
-  window._editingStageId = null;
-};
-
-window.pickEditColor = function(color, event) {
-  document.querySelectorAll('#editColorPalette .color-btn').forEach(b => b.classList.remove('selected'));
-  if (event?.target) event.target.classList.add('selected');
-};
-
-window.saveEditStage = function() {
-  const stageId = window._editingStageId;
-  if (!stageId) return;
-
-  const stage = window.curriculum[stageId];
-  if (!stage) return;
-
-  const newName = document.getElementById('editStageName').value.trim();
-  if (!newName) return window.toast('⚠️ اكتب اسم المرحلة', '#D97706');
-
-  for (const sid in window.curriculum) {
-    if (sid !== stageId && window.curriculum[sid].name === newName) {
-      return window.toast('⚠️ الاسم مستخدم في مرحلة أخرى', '#D97706');
-    }
-  }
-
-  const selectedColor = document.querySelector('#editColorPalette .color-btn.selected');
-  const newColor = selectedColor?.dataset.color || stage.color || '#047857';
-
-  stage.name = newName;
-  stage.color = newColor;
-
-  window.closeEditStage();
   window.renderCurriculum();
-  window.toast('✅ تم التعديل — لا تنسَ الحفظ السحابي', '#2563EB');
+  window.toast('✅ تم التعديل — لا تنسَ الحفظ', '#2563EB');
 };
-
-// ✅ إغلاق الـ Modal بالضغط على الخلفية أو Escape
-document.getElementById('editStageModal')?.addEventListener('click', (e) => {
-  if (e.target.id === 'editStageModal') window.closeEditStage();
-});
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('editStageModal')?.classList.contains('show')) {
-    window.closeEditStage();
-  }
-});
 
 // ✅ إضافة مادة
 window.addSubject = function(stageId, gradeIdx) {
@@ -1217,6 +969,7 @@ window.addSubject = function(stageId, gradeIdx) {
   window.toast('✅ أضيفت — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حذف مادة
 window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
   if (!confirm('حذف هذه المادة؟')) return;
   window.curriculum[stageId].grades[gradeIdx].subjects.splice(subjIdx, 1);
@@ -1224,6 +977,7 @@ window.deleteSubject = function(stageId, gradeIdx, subjIdx) {
   window.toast('🗑 محذوفة — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ إضافة صف
 window.addGrade = function(stageId) {
   const input = document.getElementById(`addGrade-${stageId}`);
   const val = input.value.trim();
@@ -1236,6 +990,7 @@ window.addGrade = function(stageId) {
   window.toast('✅ أضيف — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ تعديل اسم صف
 window.renameGrade = function(stageId, gradeIdx) {
   const old = window.curriculum[stageId].grades[gradeIdx].name;
   const nw = prompt('الاسم الجديد للصف:', old);
@@ -1245,6 +1000,7 @@ window.renameGrade = function(stageId, gradeIdx) {
   window.toast('✅ تم تعديل الاسم — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حذف صف
 window.deleteGrade = function(stageId, gradeIdx) {
   if (!confirm('⚠️ حذف هذا الصف وكل مواده؟')) return;
   window.curriculum[stageId].grades.splice(gradeIdx, 1);
@@ -1252,6 +1008,7 @@ window.deleteGrade = function(stageId, gradeIdx) {
   window.toast('🗑 محذوف — لا تنسَ الحفظ', '#2563EB');
 };
 
+// ✅ حفظ سحابي
 window.saveCurriculum = async function() {
   const btn = document.getElementById('saveCurriculumBtn');
   btn.disabled = true;
@@ -1269,33 +1026,23 @@ window.saveCurriculum = async function() {
 };
 
 // ==========================================================
-// 🔄 ترحيل البيانات القديمة (إضافة لون افتراضي)
+// 🔄 ترحيل البيانات القديمة (إضافة icon لو مش موجود)
 // ==========================================================
 function migrateCurriculum(cur) {
   if (!cur) return cur;
-  const colors = ['#047857','#2563EB','#7C3AED','#DC2626','#D97706','#0891B2','#DB2777','#65A30D'];
-  let i = 0;
   for (const sid in cur) {
     if (!cur[sid].icon) cur[sid].icon = '🏫';
-    if (!cur[sid].color) cur[sid].color = colors[i % colors.length];
     if (!cur[sid].grades) cur[sid].grades = [];
-    i++;
   }
   return cur;
 }
 
 // ==========================================================
-// ✅ INIT
+// ✅ INIT - التهيئة مع المزامنة السحابية
 // ==========================================================
 async function init() {
   try {
     window.setCloudStatus(null, 'جاري الاتصال...');
-
-    // ✅ افتح التبويب المحفوظ في الرابط فوراً
-    const initialHash = location.hash.replace('#', '');
-    if (initialHash === 'page-users' || initialHash === 'page-curriculum') {
-      switchTab(initialHash);
-    }
 
     try {
       window.curriculum = migrateCurriculum(await getCurriculumSettings());
@@ -1310,6 +1057,8 @@ async function init() {
       window.curriculum = migrateCurriculum(newCurriculum);
       window.renderCurriculum();
       window.setCloudStatus('online', 'متصل ☁️');
+      // ✅ إعادة رسم جدول الطلاب بعد تحميل المناهج (لظهور أسماء الصفوف)
+      renderStudentsTable();
     });
 
     unsubTeachers = subscribeTeachers((teachers) => {
@@ -1357,27 +1106,6 @@ window.addEventListener('beforeunload', () => {
 });
 
 init();
-</script>
-
-<!-- ✅ منع الرجوع من الكاش + تنظيف أي كاش قديم -->
-<script>
-window.addEventListener('pageshow', (e) => {
-  if (e.persisted) window.location.reload();
-});
-
-if ('caches' in window) {
-  caches.keys().then(names => names.forEach(n => caches.delete(n))).catch(() => {});
-}
-
-if ('indexedDB' in window && indexedDB.databases) {
-  indexedDB.databases().then(dbs => {
-    dbs.forEach(d => {
-      if (d.name && d.name.toLowerCase().includes('firestore')) {
-        indexedDB.deleteDatabase(d.name);
-      }
-    });
-  }).catch(() => {});
-}
 </script>
 </body>
 </html>
