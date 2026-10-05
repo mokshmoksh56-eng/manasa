@@ -1123,7 +1123,7 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر + تسجيل طلب التواصل -->
+<!-- ✅ سكريبت حماية الجهاز + الحظر (المنطق الجديد) -->
 <script type="module">
     import { checkTeacherDevice, getTeacher, db, doc, updateDoc, setDoc, serverTimestamp } from './firebase-config.js';
 
@@ -1135,14 +1135,11 @@
             overlay.classList.add('hide');
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
-
         if (blockedOverlay) {
             blockedOverlay.classList.add('show');
         }
-
         document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
-
         console.log('🚫 تم عرض شاشة الحظر');
     }
 
@@ -1152,7 +1149,6 @@
             overlay.classList.add('hide');
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
-        console.log('✅ تم إخفاء شاشة الحماية');
     }
 
     (async () => {
@@ -1164,24 +1160,55 @@
 
         try {
             let isLocked = false;
+            let teacherDoc = null;
 
-            // ✅ 1) فحص علامة الحظر المحفوظة مسبقاً
-            if (localStorage.getItem('teacher_is_blocked') === 'true') {
-                isLocked = true;
-                console.log('🚫 المعلم محظور (من localStorage)');
+            // ✅ 1) نقرأ من قاعدة البيانات دايماً (المصدر الأساسي للحقيقة)
+            try {
+                teacherDoc = await getTeacher(phone);
+            } catch (e) {
+                console.warn('فشل جلب بيانات المعلم:', e);
             }
 
-            // ✅ 2) فحص الحظر المباشر من قاعدة البيانات
-            if (!isLocked) {
-                try {
-                    const teacherDoc = await getTeacher(phone);
-                    if (teacherDoc && teacherDoc.isLocked === true) {
+            if (teacherDoc) {
+                // ✅ فحص الاشتراك المؤقت أولاً
+                if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
+                    const until = typeof teacherDoc.unlockUntil === 'number'
+                        ? teacherDoc.unlockUntil
+                        : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
+
+                    if (until && until <= Date.now()) {
+                        // ⏰ انتهت المدة — قفل تلقائي
+                        try {
+                            await updateDoc(doc(db, 'teachers', phone), {
+                                isLocked: true,
+                                lockType: 'auto_expired',
+                                autoLockedAt: Date.now()
+                            });
+                        } catch(_) {}
                         isLocked = true;
                         localStorage.setItem('teacher_is_blocked', 'true');
-                        console.log('🚫 المعلم محظور — isLocked =', teacherDoc.isLocked);
+                        console.log('⏰ انتهت مدة الاشتراك — تم القفل تلقائياً');
+                    } else {
+                        // ✅ الاشتراك ساري — نمسح علامة الحظر من localStorage
+                        localStorage.removeItem('teacher_is_blocked');
+                        console.log('✅ الاشتراك نشط حتى:', new Date(until).toLocaleDateString('ar-EG'));
                     }
-                } catch (e) {
-                    console.warn('فشل فحص الحظر المباشر:', e);
+                } 
+                else if (teacherDoc.isLocked === true) {
+                    // 🚫 محظور من الإدارة
+                    isLocked = true;
+                    localStorage.setItem('teacher_is_blocked', 'true');
+                    console.log('🚫 المعلم محظور — isLocked = true');
+                } 
+                else {
+                    // ✅ نشط — نمسح علامة الحظر
+                    localStorage.removeItem('teacher_is_blocked');
+                    console.log('✅ المعلم نشط');
+                }
+            } else {
+                // لو فشل جلب البيانات، نعتمد على الـ localStorage كحل مؤقت
+                if (localStorage.getItem('teacher_is_blocked') === 'true') {
+                    isLocked = true;
                 }
             }
 
@@ -1191,10 +1218,15 @@
                 return;
             }
 
-            // ✅ 3) فحص الجهاز
-            const check = await checkTeacherDevice(phone);
+            // ✅ 2) فحص الجهاز
+            let check = null;
+            try {
+                check = await checkTeacherDevice(phone);
+            } catch (e) {
+                console.warn('فشل فحص الجهاز:', e);
+            }
 
-            // ✅ لو الحساب محظور حسب فحص الجهاز، نعرض شاشة الحظر برضه
+            // ✅ لو الحساب محظور حسب فحص الجهاز
             if (check && check.locked === true) {
                 localStorage.setItem('teacher_is_blocked', 'true');
                 showBlockedScreen();
@@ -1203,7 +1235,6 @@
 
             // ✅ لو الجهاز مختلف (ومش محظور)، نعمل تسجيل خروج عادي
             if (!check || !check.ok) {
-                // تأكيد إضافي إنه مش محظور
                 if (localStorage.getItem('teacher_is_blocked') !== 'true') {
                     localStorage.removeItem('current_teacher_profile');
                     localStorage.removeItem('current_teacher_phone');
@@ -1218,6 +1249,7 @@
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
+            // في حالة الخطأ، نحاول نتأكد من الحظر
             try {
                 const teacherDoc = await getTeacher(phone);
                 if (teacherDoc && teacherDoc.isLocked === true) {
@@ -1225,13 +1257,14 @@
                     showBlockedScreen();
                     return;
                 }
+                localStorage.removeItem('teacher_is_blocked');
             } catch (_) {}
             hideAllOverlays();
         }
     })();
 
     // ==========================================================
-    // 🆘 تسجيل طلب التواصل لما المعلم المحظور يضغط الإيميل
+    // 🆘 تسجيل طلب التواصل
     // ==========================================================
     (function initSupportContactTracker() {
         const link = document.getElementById('supportEmailLink');
@@ -1245,10 +1278,7 @@
             isSending = true;
 
             const phone = localStorage.getItem('current_teacher_phone');
-            if (!phone) {
-                isSending = false;
-                return;
-            }
+            if (!phone) { isSending = false; return; }
 
             try {
                 let teacherName = '';
@@ -1259,9 +1289,7 @@
                         teacherName = teacherDoc.name || '';
                         teacherTitle = teacherDoc.title || '';
                     }
-                } catch (e) {
-                    console.warn('فشل جلب بيانات المعلم:', e);
-                }
+                } catch (e) {}
 
                 await updateDoc(doc(db, 'teachers', phone), {
                     contactRequest: {
@@ -1283,20 +1311,14 @@
                         handled: false,
                         handledAt: null
                     });
-                } catch (e) {
-                    console.warn('فشل حفظ السجل التاريخي (تم تجاهله):', e);
-                }
+                } catch (e) {}
 
                 if (msgEl) {
                     msgEl.classList.remove('error');
                     msgEl.classList.add('show');
                     msgEl.textContent = '✅ تم إرسال تنبيه للإدارة — سيتم التواصل معك قريباً';
                 }
-
-                console.log('✅ تم إرسال طلب التواصل للإدارة بنجاح');
-
             } catch (e) {
-                console.warn('⚠️ فشل تسجيل طلب التواصل:', e);
                 if (msgEl) {
                     msgEl.classList.add('show', 'error');
                     msgEl.textContent = '⚠️ فشل الإرسال — جرب تاني';
@@ -1515,7 +1537,7 @@
   </div>
 </div>
 
-<!-- 🎉 النافذة المنبثقة الشاملة لتأكيد/عرض النشر وحالة الظهور للطلبة -->
+<!-- 🎉 النافذة المنبثقة الشاملة -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
@@ -1574,6 +1596,15 @@
                           _lockCheckInterval = null;
                       }
                   }
+              } else {
+                  // ✅ لو الأدمن فك الحظر، نظهر المحتوى عادي
+                  const blockedOverlay = document.getElementById('blockedOverlay');
+                  if (blockedOverlay && blockedOverlay.classList.contains('show')) {
+                      blockedOverlay.classList.remove('show');
+                      document.body.style.overflow = '';
+                      document.documentElement.style.overflow = '';
+                  }
+                  localStorage.removeItem('teacher_is_blocked');
               }
           } catch (e) {
               console.warn('فشل فحص الحظر الدوري:', e);
