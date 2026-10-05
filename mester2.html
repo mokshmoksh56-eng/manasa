@@ -8,14 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- 🗺️ مكتبات Leaflet و OpenStreetMap -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <style>
-    /* ========================================== */
-    /* 🎨 تنسيقات الصفحة الأساسية والخلفية */
-    /* ========================================== */
     :root {
         --primary-teal: #25968b;
         --dark-teal: #1b736a;
@@ -51,9 +47,6 @@
 
     .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
-    /* ========================================== */
-    /* 🔢 الترقيم الذكي */
-    /* ========================================== */
     .step-num {
         display: inline-flex; align-items: center; justify-content: center;
         width: 24px; height: 24px; background: var(--primary-teal); color: var(--white);
@@ -65,9 +58,6 @@
         border-radius: 8px; font-size: 16px; font-weight: 900; margin-left: 10px;
     }
 
-    /* ========================================== */
-    /* 📋 كارت نموذج التسجيل والتقويم المدمج مع خيال 3D */
-    /* ========================================== */
     .booking-card { 
         background: var(--white); 
         border-radius: 16px; 
@@ -86,7 +76,6 @@
     
     .form-group label { display: flex; align-items: center; font-size: 14px; color: var(--text-dark); font-weight: 900; margin-bottom: 8px; }
     
-    /* 🕳️ حقول الإدخال بخيال 3D عميق للداخل */
     .form-control { 
         width: 100%; 
         padding: 13px 15px; 
@@ -102,7 +91,6 @@
         box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
     }
     
-    /* 🌟 تأثير البروز عند التحديد/الكتابة */
     .form-control:focus { 
         border-color: var(--primary-teal); 
         border-top: 1px solid var(--primary-teal);
@@ -124,7 +112,6 @@
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
     }
 
-    /* 🏫 حقل اسم السنتر الديناميكي */
     #center-name-group {
         animation: slideDownFade 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
@@ -162,7 +149,6 @@
         background: linear-gradient(135deg, #f59e0b, #d97706);
     }
 
-    /* تنسيقات كروت الاختيار مع الأيقونات بظل 3D */
     .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .cards-grid input[type="radio"] { display: none; }
     .cards-grid label { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 900; color: var(--text-dark); font-size: 13px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
@@ -178,7 +164,6 @@
     
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-    /* 🗺 خريطة Leaflet */
     #map-container { 
         width: 100%; height: 280px; border-radius: 10px; overflow: hidden; 
         border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; 
@@ -193,7 +178,6 @@
     }
     .leaflet-control-my-location button:hover { background: #f1f5f9; }
 
-    /* 🕳️ قوائم الاختيار بخيال 3D عميق */
     .form-group select { 
         width: 100%; 
         padding: 13px 15px; 
@@ -229,7 +213,6 @@
     .duration-info { background: #f8fafc; border-right: 4px solid var(--primary-teal); color: var(--dark-teal); padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
     .duration-info.show { display: block; }
 
-    /* ⏱ زر الموقع */
     .btn-gps { 
         background: var(--primary-teal); color: var(--white); border: none; padding: 12px 18px; border-radius: 8px; 
         font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; 
@@ -240,9 +223,6 @@
     .btn-gps:active { transform: translateY(0); box-shadow: 0 2px 5px rgba(37, 150, 139, 0.2); }
     .btn-gps:disabled { opacity: 0.8; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ========================================== */
-    /* ✅ حقل العنوان التفصيلي الجديد */
-    /* ========================================== */
     .detailed-address-box {
         background: linear-gradient(160deg, #FFFBEB 0%, #FEF3C7 100%);
         border: 2px dashed #FCD34D;
@@ -304,9 +284,6 @@
         box-shadow: 0 8px 15px rgba(217, 119, 6, 0.15), 0 0 0 4px rgba(245, 158, 11, 0.15) !important;
     }
 
-    /* ========================================== */
-    /* 📅 جدول التقويم وحركات السحب (مع ظل 3D) */
-    /* ========================================== */
     .calendar-container-block { 
         background: var(--white); 
         border: 2px solid #e2e8f0; 
@@ -386,9 +363,6 @@
     .summary-total-badge { background: var(--light-teal); color: var(--dark-teal); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 1px solid var(--border-teal); box-shadow: 0 2px 6px rgba(37, 150, 139, 0.1); }
     .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
 
-    /* ========================================== */
-    /* 🎨 كروت المواعيد الملونة بألوان صريحة */
-    /* ========================================== */
     .summary-card { 
         background: var(--white); 
         border-radius: 14px; 
@@ -489,7 +463,6 @@
         border: 1px solid #2563eb; 
     }
 
-    /* 🌟 رسالة الحالة (ظاهر / مخفي) */
     .status-message {
         margin: 0 14px 12px;
         padding: 12px 16px;
@@ -829,7 +802,6 @@
     .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: all 0.2s; box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
     .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
 
-    /* ✅ شاشة حماية أولية */
     .security-overlay {
         position: fixed;
         inset: 0;
@@ -867,9 +839,6 @@
         opacity: 0.9;
     }
 
-    /* ========================================== */
-    /* 🚫 شاشة الحظر - تمنع كل التفاعل */
-    /* ========================================== */
     .blocked-overlay {
         position: fixed;
         inset: 0;
@@ -993,6 +962,83 @@
         letter-spacing: 1px;
     }
 
+    /* ✅ Subscription Warning Banner */
+    .subscription-banner {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto 15px;
+        padding: 14px 18px;
+        border-radius: 14px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        animation: slideDownFade 0.4s ease;
+        position: relative;
+        z-index: 20;
+    }
+    .subscription-banner.show { display: flex; }
+    .subscription-banner.warning {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        border: 2px solid #FBBF24;
+    }
+    .subscription-banner.danger {
+        background: linear-gradient(135deg, #DC2626, #991B1B);
+        color: #fff;
+        border: 2px solid #F87171;
+        animation: slideDownFade 0.4s ease, pulse-danger-banner 2s infinite;
+    }
+    @keyframes pulse-danger-banner {
+        0%, 100% { box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
+        50% { box-shadow: 0 6px 30px rgba(220,38,38,0.7); }
+    }
+    .subscription-banner .sb-icon {
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+    .subscription-banner .sb-text {
+        flex: 1;
+        line-height: 1.4;
+    }
+    .subscription-banner .sb-text strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 2px;
+        font-weight: 900;
+    }
+    .subscription-banner .sb-text small {
+        font-size: 12.5px;
+        opacity: 0.95;
+        font-weight: 700;
+    }
+    .subscription-banner .sb-btn {
+        background: #fff;
+        color: #D97706;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 900;
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: inherit;
+    }
+    .subscription-banner.danger .sb-btn { color: #991B1B; }
+    .subscription-banner .sb-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .subscription-banner .sb-btn:active {
+        transform: translateY(0);
+    }
+
     @media (max-width: 768px) {
         .form-grid-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
         .booking-card { padding: 16px; }
@@ -1008,6 +1054,8 @@
         .blocked-overlay h1 { font-size: 22px; }
         .blocked-overlay .blocked-icon { font-size: 70px; }
         .blocked-overlay .support-email { font-size: 13px; padding: 12px 16px; }
+        .subscription-banner { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
+        .subscription-banner .sb-btn { width: 100%; justify-content: center; }
     }
 </style>
 </head>
@@ -1048,11 +1096,10 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر (نسخة محسّنة) -->
+<!-- ✅ سكريبت حماية الجهاز + الحظر -->
 <script type="module">
     import { checkTeacherDevice, getTeacher } from './firebase-config.js';
 
-    // ✅ دالة مساعدة لتفعيل شاشة الحظر بشكل آمن
     function showBlockedScreen() {
         const overlay = document.getElementById('securityOverlay');
         const blockedOverlay = document.getElementById('blockedOverlay');
@@ -1072,7 +1119,6 @@
         console.log('🚫 تم عرض شاشة الحظر');
     }
 
-    // ✅ دالة مساعدة لإخفاء كل الشاشات (دخول ناجح)
     function hideAllOverlays() {
         const overlay = document.getElementById('securityOverlay');
         if (overlay) {
@@ -1090,9 +1136,6 @@
         }
 
         try {
-            // ==========================================
-            // 🔥 الفحص الأول: هل المعلم محظور؟ (مباشر من Firestore)
-            // ==========================================
             let isLocked = false;
             try {
                 const teacherDoc = await getTeacher(phone);
@@ -1109,12 +1152,8 @@
                 return;
             }
 
-            // ==========================================
-            // ⚠️ الفحص الثاني: الجهاز (Single Device Login)
-            // ==========================================
             const check = await checkTeacherDevice(phone);
 
-            // حماية إضافية: لو checkTeacherDevice أرجعت locked
             if (check && check.locked === true) {
                 showBlockedScreen();
                 return;
@@ -1128,12 +1167,10 @@
                 return;
             }
 
-            // ✅ كل شيء سليم
             hideAllOverlays();
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
-            // في حالة الخطأ — نتحقق مرة أخيرة من الحظر
             try {
                 const teacherDoc = await getTeacher(phone);
                 if (teacherDoc && teacherDoc.isLocked === true) {
@@ -1155,6 +1192,18 @@
     </div>
 </header>
 
+<!-- ✅ بانر الاشتراك (يظهر ديناميكياً) -->
+<div class="subscription-banner" id="subscriptionBanner">
+    <span class="sb-icon" id="subBannerIcon">⏳</span>
+    <div class="sb-text">
+        <strong id="subBannerTitle">جاري فحص الاشتراك...</strong>
+        <small id="subBannerMsg">يرجى الانتظار قليلاً</small>
+    </div>
+    <a href="subscription.html" class="sb-btn" id="subBannerBtn">
+        💎 ترقية الباقة
+    </a>
+</div>
+
 <div class="main-container">
     <div class="booking-card">
         
@@ -1163,27 +1212,23 @@
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
-        <!-- Row 1: اسم المجموعة + اسم السنتر (ديناميكي) + اسم المستر -->
         <div class="form-grid-row">
           <div class="form-group">
             <label><span class="step-num">1</span> اسم المجموعة</label>
             <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة هنا">
           </div>
           
-          <!-- 🏫 حقل اسم السنتر (يظهر فقط عند اختيار السنتر) -->
           <div class="form-group" id="center-name-group" style="display: none;">
             <label><span class="step-num" id="center-step-num">2</span> اسم السنتر</label>
             <input type="text" id="center-name" class="form-control" placeholder="مثال: سنتر النخبة التعليمي">
           </div>
           
-          <!-- 👨‍🏫 حقل اسم المستر (يظهر دائماً) -->
           <div class="form-group" id="teacher-name-group">
             <label><span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر</label>
             <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو اسم المركز">
           </div>
         </div>
 
-        <!-- Row 2: العدد & الفئات -->
         <div class="form-grid-row">
           <div class="form-group">
             <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب (السعة)</label>
@@ -1199,7 +1244,6 @@
           </div>
         </div>
 
-        <!-- Row 3: المكان & الموقع -->
         <div class="form-grid-row">
           <div class="form-group full-width">
             <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
@@ -1212,7 +1256,6 @@
           
           <div class="form-group full-width">
             <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي واسم الشارع</label>
-            <!-- 🗺️ خريطة Leaflet -->
             <div id="map-container">
               <div id="map"></div>
             </div>
@@ -1223,7 +1266,6 @@
             </div>
             <div id="location-text" style="color: var(--text-gray); font-size: 14px; font-weight: 900; margin-top: 8px; text-align: center;">يرجى تحديد الموقع من خلال الخريطة أو الزر للتأكيد</div>
 
-            <!-- ✅ حقل العنوان التفصيلي / علامة مميزة -->
             <div class="detailed-address-box">
                 <div class="label-row">
                     <span>🏠</span>
@@ -1245,7 +1287,6 @@
           </div>
         </div>
 
-        <!-- Section 7: توقيت الحصة -->
         <div class="form-section-title" style="margin-top: 15px;">
             <span class="step-num-lg" id="time-num">7</span> توقيت الحصة
         </div>
@@ -1267,7 +1308,6 @@
           <label for="repeatWeekly">تكرار أسبوعي كل <span id="repeatDayName">...</span></label>
         </div>
 
-        <!-- Section 8: جدول التقويم -->
         <div class="calendar-container-block">
             <div class="selected-day-banner">
               <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم من التقويم</span>
@@ -1309,7 +1349,6 @@
         <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
     </div>
 
-    <!-- 🌟 نظام الكروت الشامل: ملخص المجموعات والمواعيد 🌟 -->
     <div class="summary-section" id="allSummarySection">
         <div class="summary-section-header">
             <div class="summary-section-title">
@@ -1367,12 +1406,21 @@
 
 <script type="module">
   // ==========================================
-  // 🔥 استدعاء دوال Firebase من firebase-config.js
+  // 🔥 استدعاء دوال Firebase
   // ==========================================
-  import { publishGroup, getAllGroups, deleteGroup, updateGroup, isTeacherLocked } from './firebase-config.js';
+  import { 
+    publishGroup, 
+    getAllGroups, 
+    deleteGroup, 
+    updateGroup, 
+    isTeacherLocked,
+    isSubscriptionActive,
+    getTeacherSubscription,
+    SUBSCRIPTION_PLANS
+  } from './firebase-config.js';
 
   // ==========================================
-  // 🔄 فحص دوري لحالة الحظر (كل 20 ثانية) مع إمكانية الإلغاء
+  // 🔄 فحص دوري لحالة الحظر (كل 20 ثانية)
   // ==========================================
   let _lockCheckInterval = null;
 
@@ -1380,7 +1428,6 @@
       const teacherPhone = localStorage.getItem('current_teacher_phone');
       if (!teacherPhone) return;
 
-      // إلغاء أي interval سابق
       if (_lockCheckInterval) {
           clearInterval(_lockCheckInterval);
           _lockCheckInterval = null;
@@ -1396,7 +1443,6 @@
                       document.body.style.overflow = 'hidden';
                       document.documentElement.style.overflow = 'hidden';
 
-                      // إيقاف الفحص الدوري بعد الحظر
                       if (_lockCheckInterval) {
                           clearInterval(_lockCheckInterval);
                           _lockCheckInterval = null;
@@ -1409,7 +1455,6 @@
       }, 20000);
   }
 
-  // بدء الفحص الدوري فقط إذا لم يكن المعلم محظوراً أصلاً
   const _initPhone = localStorage.getItem('current_teacher_phone');
   if (_initPhone) {
       const _initialBlock = document.getElementById('blockedOverlay');
@@ -1418,7 +1463,6 @@
       }
   }
 
-  // ✅ تنظيف الـ interval عند مغادرة الصفحة (يحل مشكلة التعليق)
   window.addEventListener('beforeunload', () => {
       if (_lockCheckInterval) {
           clearInterval(_lockCheckInterval);
@@ -1426,7 +1470,6 @@
       }
   });
 
-  // ✅ تنظيف إضافي عند hide/show الصفحة (للـ PWA)
   window.addEventListener('pagehide', () => {
       if (_lockCheckInterval) {
           clearInterval(_lockCheckInterval);
@@ -1435,7 +1478,88 @@
   });
 
   // ==========================================
-  // 🗺 جلب اسم الشارع والعنوان بالتفصيل
+  // 💎 فحص الاشتراك وعرض البانر
+  // ==========================================
+  window.currentSubscriptionState = {
+      active: false,
+      plan: null,
+      sub: null,
+      daysLeft: null
+  };
+
+  async function checkAndShowSubscription() {
+      const phone = localStorage.getItem('current_teacher_phone');
+      if (!phone) return;
+
+      const banner = document.getElementById('subscriptionBanner');
+      const icon = document.getElementById('subBannerIcon');
+      const title = document.getElementById('subBannerTitle');
+      const msg = document.getElementById('subBannerMsg');
+      const btn = document.getElementById('subBannerBtn');
+
+      try {
+          const sub = await getTeacherSubscription(phone);
+          const active = await isSubscriptionActive(phone);
+
+          let daysLeft = null;
+          if (sub?.endDate && sub.status === 'active') {
+              daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+          }
+
+          window.currentSubscriptionState = {
+              active,
+              plan: sub ? SUBSCRIPTION_PLANS[sub.planId] : null,
+              sub,
+              daysLeft
+          };
+
+          if (active) {
+              // ✅ اشتراك نشط
+              const plan = SUBSCRIPTION_PLANS[sub?.planId];
+
+              // لو باقة تجريبية أو قرب ينتهي (أقل من 7 أيام) → أظهر تحذير أصفر
+              if (sub?.planId === 'trial' || (daysLeft !== null && daysLeft <= 7 && daysLeft > 0)) {
+                  banner.className = 'subscription-banner show warning';
+                  icon.textContent = sub?.planId === 'trial' ? '🎁' : '⏰';
+                  title.textContent = sub?.planId === 'trial' 
+                      ? `باقة تجريبية — باقي ${daysLeft} يوم` 
+                      : `اشتراكك ينتهي قريباً — باقي ${daysLeft} يوم`;
+                  msg.textContent = 'قم بالترقية الآن للاستمرار بدون توقف';
+                  btn.innerHTML = '💎 ترقية الباقة';
+                  btn.href = 'subscription.html';
+              } 
+              // لو باقة مجانية → أظهر تنبيه بسيط بمحدودية الميزات
+              else if (sub?.planId === 'free') {
+                  banner.className = 'subscription-banner show warning';
+                  icon.textContent = '🆓';
+                  title.textContent = 'أنت على الباقة المجانية';
+                  msg.textContent = 'محدودة بمجموعة واحدة وحتى 15 طالب';
+                  btn.innerHTML = '💎 ترقية';
+                  btn.href = 'subscription.html';
+              }
+              // باقي الحالات (باقات مدفوعة نشطة) → نخفي البانر
+              else {
+                  banner.className = 'subscription-banner';
+              }
+          } else {
+              // 🚫 لا يوجد اشتراك نشط → أظهر بانر أحمر
+              banner.className = 'subscription-banner show danger';
+              icon.textContent = '🚫';
+              title.textContent = sub?.status === 'expired' 
+                  ? 'اشتراكك منتهي!' 
+                  : 'لا يوجد اشتراك نشط!';
+              msg.textContent = 'يجب اختيار باقة لتتمكن من نشر المواعيد';
+              btn.innerHTML = '💎 اختر باقة الآن';
+              btn.href = 'subscription.html';
+          }
+      } catch (e) {
+          console.error('خطأ فحص الاشتراك:', e);
+          banner.className = 'subscription-banner';
+      }
+  }
+
+  // ==========================================
+  // 🗺 جلب اسم الشارع
   // ==========================================
   async function getStreetName(lat, lng) {
       try {
@@ -1456,7 +1580,7 @@
   }
 
   // ==========================================
-  // 🏫 إظهار/إخفاء حقل اسم السنتر حسب مكان الدرس
+  // 🏫 إظهار/إخفاء حقل اسم السنتر
   // ==========================================
   window.toggleCenterNameField = function() {
       const locationValue = document.querySelector('input[name="location"]:checked').value;
@@ -1496,7 +1620,7 @@
   };
 
   // ==========================================
-  // 🗺️ تهيئة خريطة Leaflet وتأكيد المكان
+  // 🗺️ تهيئة خريطة Leaflet
   // ==========================================
   let map, marker;
 
@@ -1626,7 +1750,7 @@
   };
 
   // ==========================================
-  // 📅 إعداد التقويم والوظائف الأساسية
+  // 📅 إعداد التقويم
   // ==========================================
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -2408,7 +2532,31 @@
     window.cancelEdit();
   };
 
+  // ==========================================
+  // ✅ addAppointment — مع فحص الاشتراك
+  // ==========================================
   window.addAppointment = async function() {
+    // ✅✅✅ فحص الاشتراك أولاً
+    const phone = localStorage.getItem('current_teacher_phone');
+    if (phone) {
+        try {
+            const active = await isSubscriptionActive(phone);
+            if (!active) {
+                const sub = await getTeacherSubscription(phone);
+                const msg = sub?.status === 'expired'
+                    ? '⚠️ اشتراكك منتهي! يرجى التجديد للمتابعة.'
+                    : '⚠️ لا يوجد اشتراك نشط! يرجى اختيار باقة أولاً.';
+                
+                if (confirm(msg + '\n\nهل تريد الانتقال لصفحة الباقات الآن؟')) {
+                    window.location.href = 'subscription.html';
+                }
+                return;
+            }
+        } catch (e) {
+            console.error('خطأ فحص الاشتراك:', e);
+        }
+    }
+
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
     
@@ -2577,6 +2725,9 @@
       toggleCenterNameField();
       
       window.loadLocalPublishedSlots();
+
+      // ✅ فحص الاشتراك وعرض البانر
+      checkAndShowSubscription();
   }
 
   initApp();
