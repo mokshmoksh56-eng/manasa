@@ -512,7 +512,6 @@ tr.locked td{background:#FEF2F2}
 }
 .modal-btn-save:hover{transform:translateY(-2px)}
 
-/* ✅ كروت طلبات الاشتراك */
 .req-card{
   background:#fff;
   border:2px solid var(--line);
@@ -571,7 +570,6 @@ tr.locked td{background:#FEF2F2}
   50%{transform:scale(1.15)}
 }
 
-/* 🆕 🆘 كروت طلبات التواصل */
 .contact-req-card{
     background:linear-gradient(180deg,#fef2f2 0%,#fff 40%);
     border:2px solid #DC2626;
@@ -590,7 +588,6 @@ tr.locked td{background:#FEF2F2}
     50%{box-shadow:0 4px 22px rgba(220,38,38,.55)}
 }
 
-/* 🆕 👨‍🏫 كروت المعلمين المصغرة */
 .teacher-mini-card{
     display:flex;
     justify-content:space-between;
@@ -611,6 +608,187 @@ tr.locked td{background:#FEF2F2}
     background:#FEF2F2;
     animation:pulse-danger-card 2s infinite;
 }
+
+/* 🆕 كروت إدارة اشتراك المعلمين */
+.teacher-sub-card{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+    margin-bottom:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+    transition:.2s;
+    position:relative;
+    overflow:hidden;
+}
+.teacher-sub-card::before{
+    content:'';
+    position:absolute;
+    top:0;right:0;
+    width:5px;height:100%;
+    background:linear-gradient(180deg,#10B981,#047857);
+}
+.teacher-sub-card.contact-pending::before{
+    background:linear-gradient(180deg,#F59E0B,#DC2626);
+}
+.teacher-sub-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 22px rgba(0,0,0,.1);
+}
+
+.tsc-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+}
+.tsc-info{flex:1;min-width:150px}
+.tsc-info strong{
+    font-size:15px;
+    color:var(--primary-dark);
+    display:block;
+    margin-bottom:2px;
+}
+.tsc-phone{
+    font-size:12px;
+    color:var(--muted);
+    direction:ltr;
+    text-align:right;
+}
+
+.tsc-status{
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:11.5px;
+    font-weight:900;
+    border:1.5px solid;
+    white-space:nowrap;
+}
+
+.tsc-dates{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+.tsc-date-chip{
+    background:#F1F5F9;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:11px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.tsc-date-chip span{color:var(--muted)}
+.tsc-date-chip strong{color:var(--ink);font-size:11.5px}
+.tsc-date-chip.expired{
+    background:#FEF3C7;
+    border-color:#FDE68A;
+}
+.tsc-date-chip.expired strong{color:#92400E}
+
+.tsc-actions{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+    margin-bottom:10px;
+}
+@media(max-width:640px){
+    .tsc-actions{grid-template-columns:repeat(3,1fr)}
+}
+
+.tsc-btn{
+    padding:8px 4px;
+    border-radius:9px;
+    border:none;
+    font-family:'Cairo';
+    font-weight:900;
+    font-size:11px;
+    cursor:pointer;
+    transition:.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+}
+.tsc-btn:hover{transform:translateY(-2px)}
+.tsc-btn:active{transform:scale(.95)}
+
+.tsc-lock{
+    background:linear-gradient(135deg,#DC2626,#991B1B);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(220,38,38,.5);
+}
+.tsc-lock:hover{box-shadow:0 6px 16px -4px rgba(220,38,38,.7)}
+
+.tsc-perm{
+    background:linear-gradient(135deg,#0F172A,#1E293B);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(15,23,42,.5);
+}
+.tsc-perm:hover{box-shadow:0 6px 16px -4px rgba(15,23,42,.7)}
+
+.tsc-3m{
+    background:linear-gradient(135deg,#3B82F6,#1D4ED8);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(59,130,246,.5);
+}
+.tsc-3m:hover{box-shadow:0 6px 16px -4px rgba(59,130,246,.7)}
+
+.tsc-6m{
+    background:linear-gradient(135deg,#8B5CF6,#6D28D9);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(139,92,246,.5);
+}
+.tsc-6m:hover{box-shadow:0 6px 16px -4px rgba(139,92,246,.7)}
+
+.tsc-1y{
+    background:linear-gradient(135deg,#F59E0B,#D97706);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(245,158,11,.5);
+}
+.tsc-1y:hover{box-shadow:0 6px 16px -4px rgba(245,158,11,.7)}
+
+.tsc-contact{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+}
+.tsc-contact-btn{
+    padding:7px 14px;
+    border-radius:8px;
+    border:none;
+    font-family:'Cairo';
+    font-weight:900;
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    transition:.2s;
+}
+.tsc-contact-btn.wa{
+    background:linear-gradient(135deg,#25D366,#128C7E);
+    color:#fff;
+}
+.tsc-contact-btn.call{
+    background:linear-gradient(135deg,#3B82F6,#1D4ED8);
+    color:#fff;
+}
+.tsc-contact-btn.done{
+    background:linear-gradient(135deg,#10B981,#047857);
+    color:#fff;
+}
+.tsc-contact-btn:hover{transform:translateY(-2px)}
 </style>
 </head>
 <body>
@@ -926,7 +1104,6 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box rose"><div class="stat-num" id="statRejectedReqs">0</div><div class="stat-label">❌ مرفوضة</div></div>
   </div>
 
-  <!-- 🆕 🆘 طلبات التواصل من المعلمين المحظورين -->
   <div class="card" id="contactRequestsCard" style="display:none;border:2px solid #DC2626">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:#991B1B">
@@ -953,11 +1130,10 @@ tr.locked td{background:#FEF2F2}
     <div id="requestsContainer"></div>
   </div>
 
-  <!-- 🆕 👨‍🏫 قائمة المعلمين السريعة -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
-        👨‍🏫 قائمة المعلمين (للتواصل السريع)
+        👨‍🏫 إدارة اشتراك المعلمين (فتح/حظر + تواريخ)
       </h2>
       <span style="font-size:11px;color:var(--muted)" id="subTeachersCount"></span>
     </div>
@@ -1083,6 +1259,8 @@ window.setCloudStatus = function(status, text) {
       '.stage-card-header',
       '.modal-buttons button',
       '.req-btn',
+      '.tsc-btn',
+      '.tsc-contact-btn',
       'button:not([disabled])',
       'a.icon-action-btn'
     ].join(', ');
@@ -1094,9 +1272,9 @@ window.setCloudStatus = function(status, text) {
       el.addEventListener('click', () => {
         if (el.disabled) return;
 
-        if (el.classList.contains('btn-del') || el.classList.contains('btn-del-icon') || el.classList.contains('delete-stage') || el.classList.contains('reject')) {
+        if (el.classList.contains('btn-del') || el.classList.contains('btn-del-icon') || el.classList.contains('delete-stage') || el.classList.contains('reject') || el.classList.contains('tsc-lock')) {
           window.playClick(900, 0.06, 0.14);
-        } else if (el.classList.contains('btn-wa-icon') || el.classList.contains('wa')) {
+        } else if (el.classList.contains('btn-wa-icon') || el.classList.contains('wa') || el.classList.contains('tsc-contact-btn')) {
           window.playClick(1800, 0.05, 0.10);
         } else if (el.classList.contains('btn-gps-icon')) {
           window.playClick(2200, 0.06, 0.10);
@@ -1106,7 +1284,7 @@ window.setCloudStatus = function(status, text) {
           window.playClick(2000, 0.035, 0.09);
         } else if (el.classList.contains('tab')) {
           window.playClick(1100, 0.05, 0.12);
-        } else if (el.classList.contains('approve')) {
+        } else if (el.classList.contains('approve') || el.classList.contains('tsc-perm') || el.classList.contains('tsc-3m') || el.classList.contains('tsc-6m') || el.classList.contains('tsc-1y')) {
           window.playClick(2000, 0.06, 0.14);
         } else {
           window.playClick(1500, 0.045, 0.11);
@@ -1155,8 +1333,8 @@ function switchTab(pageId) {
     }
     if (pageId === 'page-subscriptions') {
       renderSubscriptionRequests();
-      renderContactRequests();                    // 🆕
-      window.renderSubscriptionsTeachersList();   // 🆕
+      renderContactRequests();
+      window.renderSubscriptionsTeachersList();
     }
   }
 }
@@ -2252,8 +2430,45 @@ window.markContactHandled = async function(phone) {
 };
 
 // ==========================================================
-// 🆕 👨‍🏫 قائمة المعلمين السريعة في صفحة الاشتراكات
+// 🆕 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك (فتح/حظر + تواريخ)
 // ==========================================================
+function formatDateNice(ts) {
+    if (!ts) return '—';
+    let d;
+    try {
+        if (typeof ts === 'number') d = new Date(ts);
+        else if (ts?.toDate) d = ts.toDate();
+        else if (ts?.seconds) d = new Date(ts.seconds * 1000);
+        else d = new Date(ts);
+        if (isNaN(d.getTime())) return '—';
+    } catch { return '—'; }
+    return d.toLocaleDateString('ar-EG', { year:'numeric', month:'2-digit', day:'2-digit' });
+}
+
+function getTeacherStatus(t) {
+    const now = Date.now();
+    if (t.isLocked === true) {
+        return { status:'locked', label:'🚫 محظور دائم', color:'#DC2626' };
+    }
+    if (t.unlockUntil) {
+        const until = typeof t.unlockUntil === 'number'
+            ? t.unlockUntil
+            : (t.unlockUntil.seconds ? t.unlockUntil.seconds * 1000 : 0);
+        if (until && until > now) {
+            const daysLeft = Math.ceil((until - now) / (1000*60*60*24));
+            return {
+                status:'active',
+                label:`✅ نشط • باقي ${daysLeft} يوم`,
+                color:'#10B981',
+                until
+            };
+        } else if (until && until <= now) {
+            return { status:'expired', label:'⏰ منتهي', color:'#D97706', until };
+        }
+    }
+    return { status:'permanent', label:'♾️ دائم', color:'#047857' };
+}
+
 window.renderSubscriptionsTeachersList = function() {
     const container = document.getElementById('teachersListContainer');
     const countEl = document.getElementById('subTeachersCount');
@@ -2268,7 +2483,7 @@ window.renderSubscriptionsTeachersList = function() {
 
     if (q) {
         teachers = teachers.filter(t => {
-            const hay = ((t.name || '') + ' ' + (t.id || t.phone || '') + ' ' + (t.title || '')).toLowerCase();
+            const hay = ((t.name||'') + ' ' + (t.id||t.phone||'') + ' ' + (t.title||'')).toLowerCase();
             return hay.includes(q);
         });
     }
@@ -2282,44 +2497,139 @@ window.renderSubscriptionsTeachersList = function() {
 
     container.innerHTML = teachers.map(t => {
         const phone = t.id || t.phone;
-        const isLocked = t.isLocked === true;
+        const statusInfo = getTeacherStatus(t);
+        const regDate = formatDateNice(t.createdAt || t.registeredAt || t.joinedAt);
+        const untilDate = statusInfo.until ? formatDateNice(statusInfo.until) : '';
         const hasContactReq = t.contactRequest?.requested === true && t.contactRequest?.handled !== true;
 
         return `
-            <div class="teacher-mini-card ${hasContactReq ? 'contact-pending' : ''}">
-                <div style="flex:1;min-width:160px">
-                    <strong>
-                        ${hasContactReq ? '🆘 ' : ''}${t.title || 'مستر'} ${t.name || '—'}
-                        ${isLocked ? ' <span style="color:#DC2626;font-size:11px">🚫 محظور</span>' : ''}
-                    </strong>
-                    <div style="font-size:12px;color:#64748B;direction:ltr;text-align:right;margin-top:2px">
-                        📱 ${phone}
+            <div class="teacher-sub-card ${hasContactReq ? 'contact-pending' : ''}">
+                <div class="tsc-header">
+                    <div class="tsc-info">
+                        <strong>${hasContactReq ? '🆘 ' : ''}${t.title || 'مستر'} ${t.name || '—'}</strong>
+                        <div class="tsc-phone">📱 ${phone}</div>
                     </div>
+                    <span class="tsc-status"
+                          style="background:${statusInfo.color}1A;color:${statusInfo.color};border-color:${statusInfo.color}55">
+                        ${statusInfo.label}
+                    </span>
                 </div>
-                <div style="display:flex;gap:6px">
-                    <a href="https://wa.me/2${phone}" target="_blank"
-                       class="icon-action-btn btn-wa-icon" title="واتساب">
-                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
+
+                <div class="tsc-dates">
+                    <div class="tsc-date-chip">
+                        <span>📅 التسجيل:</span>
+                        <strong>${regDate}</strong>
+                    </div>
+                    ${untilDate ? `
+                        <div class="tsc-date-chip ${statusInfo.status === 'expired' ? 'expired' : ''}">
+                            <span>⏰ ينتهي:</span>
+                            <strong>${untilDate}</strong>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="tsc-actions">
+                    <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر دائم حتى تفتحه يدوياً">
+                        🔒 دائم
+                    </button>
+                    <button class="tsc-btn tsc-perm" onclick="window.unlockTeacherPermanent('${phone}')" title="فتح دائم بدون تاريخ انتهاء">
+                        ♾️ دائم
+                    </button>
+                    <button class="tsc-btn tsc-3m" onclick="window.unlockTeacherForMonths('${phone}', 3)" title="فتح لمدة 3 شهور">
+                        📅 3 شهور
+                    </button>
+                    <button class="tsc-btn tsc-6m" onclick="window.unlockTeacherForMonths('${phone}', 6)" title="فتح لمدة 6 شهور">
+                        📅 6 شهور
+                    </button>
+                    <button class="tsc-btn tsc-1y" onclick="window.unlockTeacherForMonths('${phone}', 12)" title="فتح لمدة سنة كاملة">
+                        📅 سنة
+                    </button>
+                </div>
+
+                <div class="tsc-contact">
+                    <a href="https://wa.me/2${phone}" target="_blank" class="tsc-contact-btn wa">
+                        💬 واتساب
                     </a>
-                    <a href="tel:${phone}" class="icon-action-btn btn-call-icon" title="اتصال">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
-                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-                        </svg>
+                    <a href="tel:${phone}" class="tsc-contact-btn call">
+                        📞 اتصال
                     </a>
                     ${hasContactReq ? `
-                        <button class="icon-action-btn btn-approve-icon" style="width:36px;height:36px"
-                                onclick="window.markContactHandled('${phone}')" title="تم التواصل">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
-                                <polyline points="20 6 9 17 4 12"/>
-                            </svg>
+                        <button class="tsc-contact-btn done" onclick="window.markContactHandled('${phone}')">
+                            ✅ تم التواصل
                         </button>
                     ` : ''}
                 </div>
             </div>
         `;
     }).join('');
+};
+
+// ==========================================================
+// 🔒♾️📅 دوال إدارة اشتراك المعلم يدوياً
+// ==========================================================
+
+// 🔒 حظر دائم
+window.lockTeacherPermanent = async function(phone) {
+    if (!confirm(`⚠️ سيتم حظر المعلم بشكل دائم حتى تقوم بفتحه يدوياً.\n\nهل أنت متأكد؟`)) return;
+    try {
+        await updateDoc(doc(db, 'teachers', phone), {
+            isLocked: true,
+            unlockUntil: null,
+            lockType: 'permanent_locked',
+            lockedAt: Date.now()
+        });
+        window.toast('🔒 تم الحظر الدائم', '#DC2626');
+    } catch (e) {
+        console.error(e);
+        window.toast('❌ فشل الحظر', '#DC2626');
+    }
+};
+
+// ♾️ فتح دائم (بدون تاريخ انتهاء)
+window.unlockTeacherPermanent = async function(phone) {
+    try {
+        await updateDoc(doc(db, 'teachers', phone), {
+            isLocked: false,
+            unlockUntil: null,
+            lockType: 'permanent_open',
+            unlockedAt: Date.now()
+        });
+        window.toast('♾️ تم الفتح الدائم', '#047857');
+    } catch (e) {
+        console.error(e);
+        window.toast('❌ فشل الفتح', '#DC2626');
+    }
+};
+
+// 📅 فتح لمدة عدد شهور (مع إغلاق تلقائي بعد المدة)
+window.unlockTeacherForMonths = async function(phone, months) {
+    const days = months * 30;
+    const until = Date.now() + days * 24 * 60 * 60 * 1000;
+    const untilStr = new Date(until).toLocaleDateString('ar-EG');
+
+    const monthsText = months === 1 ? 'شهر واحد'
+                    : months === 3 ? '3 شهور'
+                    : months === 6 ? '6 شهور'
+                    : months === 12 ? 'سنة كاملة'
+                    : `${months} شهر`;
+
+    if (!confirm(`⏰ سيتم فتح الحساب لمدة ${monthsText}\n📅 حتى تاريخ: ${untilStr}\n\nبعد هذا التاريخ سيتم إغلاق الحساب تلقائياً.\n\nهل أنت متأكد؟`)) return;
+
+    try {
+        await updateDoc(doc(db, 'teachers', phone), {
+            isLocked: false,
+            unlockUntil: until,
+            lockType: months === 3 ? '3months'
+                    : months === 6 ? '6months'
+                    : months === 12 ? '1year'
+                    : `${months}months`,
+            unlockedAt: Date.now()
+        });
+        window.toast(`✅ تم الفتح حتى ${untilStr}`, '#10B981');
+    } catch (e) {
+        console.error(e);
+        window.toast('❌ فشل الفتح', '#DC2626');
+    }
 };
 
 // ==========================================================
@@ -2365,7 +2675,6 @@ async function init() {
       window.setCloudStatus('online', 'متصل ☁️');
     });
 
-    // 🆕 محدّث ليستدعي الطلبات الجديدة
     unsubTeachers = subscribeTeachers((teachers) => {
       allTeachers = teachers;
       renderStats();
