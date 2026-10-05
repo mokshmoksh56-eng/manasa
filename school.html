@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>لوحة تحكم منصة احجزلي - الإدارة</title>
 
-<!-- ✅ منع الكاش نهائياً -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -49,8 +48,8 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .cloud-status.offline .dot{background:#DC2626;box-shadow:0 0 8px #DC2626}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
 
-.tabs{display:flex;gap:8px;background:#F1F5F9;padding:6px;border-radius:14px;margin-bottom:16px}
-.tab{flex:1;padding:12px;border-radius:10px;border:none;background:transparent;font-weight:900;font-size:14px;color:var(--muted);cursor:pointer;transition:.2s;font-family:'Cairo'}
+.tabs{display:flex;gap:8px;background:#F1F5F9;padding:6px;border-radius:14px;margin-bottom:16px;flex-wrap:wrap}
+.tab{flex:1;min-width:130px;padding:12px;border-radius:10px;border:none;background:transparent;font-weight:900;font-size:14px;color:var(--muted);cursor:pointer;transition:.2s;font-family:'Cairo';position:relative}
 .tab.active{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
 
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
@@ -151,9 +150,6 @@ tr.locked td{background:#FEF2F2}
   border-color:#E2E8F0;
 }
 
-/* ========================================== */
-/* 🎯 أزرار الإجراءات الأيقونية الرسمية */
-/* ========================================== */
 .actions-cell {
   display: flex;
   gap: 6px;
@@ -243,7 +239,6 @@ tr.locked td{background:#FEF2F2}
   box-shadow: 0 8px 18px -4px rgba(239, 68, 68, 0.7);
 }
 
-/* 🎯 زر GPS */
 .icon-action-btn.btn-gps-icon {
   background: linear-gradient(135deg, #8B5CF6, #6D28D9);
   color: #fff;
@@ -261,6 +256,24 @@ tr.locked td{background:#FEF2F2}
 .icon-action-btn.btn-gps-icon:disabled:hover {
   transform: none;
   box-shadow: none;
+}
+
+.icon-action-btn.btn-approve-icon {
+  background: linear-gradient(135deg, #10B981, #047857);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(16, 185, 129, 0.5);
+}
+.icon-action-btn.btn-approve-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(16, 185, 129, 0.7);
+}
+
+.icon-action-btn.btn-reject-icon {
+  background: linear-gradient(135deg, #EF4444, #B91C1C);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(239, 68, 68, 0.5);
+}
+.icon-action-btn.btn-reject-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(239, 68, 68, 0.7);
 }
 
 .icon-action-btn.btn-lock-icon::after {
@@ -283,7 +296,6 @@ tr.locked td{background:#FEF2F2}
   .icon-action-btn svg { width: 16px; height: 16px; }
 }
 
-/* 📅 تاريخ التسجيل */
 .date-chip {
   display: inline-flex;
   align-items: center;
@@ -304,7 +316,6 @@ tr.locked td{background:#FEF2F2}
   border-color: #FDE68A;
 }
 
-/* 🎯 وميض GPS */
 @keyframes gpsPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(0,0,0,.3); }
   50%      { transform: scale(1.4); box-shadow: 0 0 0 12px rgba(139, 92, 246, 0.4), 0 0 0 24px rgba(139, 92, 246, 0.15); }
@@ -315,7 +326,6 @@ tr.locked td{background:#FEF2F2}
   z-index: 9999;
 }
 
-/* 🔊 تأثير بصري خفيف عند النقر */
 .click-ripple {
   position: relative;
   overflow: hidden;
@@ -501,11 +511,69 @@ tr.locked td{background:#FEF2F2}
   box-shadow:0 4px 12px -4px rgba(16,185,129,.6)
 }
 .modal-btn-save:hover{transform:translateY(-2px)}
+
+/* ✅ كروت طلبات الاشتراك */
+.req-card{
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+  transition:.2s
+}
+.req-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
+.req-card.pending{border-color:#F59E0B;background:linear-gradient(180deg,#fffbeb 0%,#fff 30%)}
+.req-card.approved{border-color:#10B981;background:linear-gradient(180deg,#f0fdf4 0%,#fff 30%)}
+.req-card.rejected{border-color:#DC2626;background:linear-gradient(180deg,#fef2f2 0%,#fff 30%);opacity:.85}
+
+.req-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.req-teacher{display:flex;align-items:center;gap:10px;flex:1}
+.req-teacher .icon{font-size:36px}
+.req-teacher .info h4{margin:0;font-size:15px;font-weight:900;color:var(--primary-dark)}
+.req-teacher .info p{margin:2px 0 0;font-size:12px;color:var(--muted);direction:ltr;text-align:right}
+
+.req-status{
+  color:#fff;padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:900;white-space:nowrap
+}
+.req-status.pending{background:linear-gradient(135deg,#F59E0B,#D97706)}
+.req-status.approved{background:linear-gradient(135deg,#10B981,#047857)}
+.req-status.rejected{background:linear-gradient(135deg,#DC2626,#991B1B)}
+
+.req-details{
+  background:#F8FAFC;border-radius:10px;padding:12px;margin-bottom:12px;
+  font-size:13px;display:grid;gap:6px
+}
+.req-detail-row{display:flex;justify-content:space-between;padding:3px 0;align-items:center;flex-wrap:wrap;gap:6px}
+.req-detail-row .label{color:var(--muted)}
+.req-detail-row .value{font-weight:900;color:var(--ink)}
+
+.req-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.req-btn{
+  padding:10px 18px;border-radius:10px;border:none;
+  font-family:'Cairo';font-weight:900;font-size:13px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:.2s
+}
+.req-btn:hover{transform:translateY(-2px)}
+.req-btn:active{transform:translateY(0) scale(.97)}
+.req-btn.approve{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
+.req-btn.reject{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;box-shadow:0 4px 12px -4px rgba(220,38,38,.6)}
+.req-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px -4px rgba(37,211,102,.6)}
+
+.pending-badge-tab{
+  background:#DC2626;color:#fff;padding:2px 8px;border-radius:10px;
+  font-size:11px;margin-right:6px;display:inline-block;
+  animation:pulse-badge 1.5s infinite
+}
+@keyframes pulse-badge{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+}
 </style>
 </head>
 <body>
 
-<!-- Loader -->
 <div id="loader" style="position:fixed;inset:0;background:linear-gradient(135deg,#047857,#064E3B);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:20px">
   <div style="width:60px;height:60px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite"></div>
   <h2 style="margin:0;font-size:20px">جاري الاتصال بالسحابة...</h2>
@@ -525,6 +593,10 @@ tr.locked td{background:#FEF2F2}
 <div class="tabs">
   <button class="tab active" data-page="page-users">👥 إدارة المستخدمين</button>
   <button class="tab" data-page="page-curriculum">📚 إدارة المواد والصفوف</button>
+  <button class="tab" data-page="page-subscriptions">
+    💎 طلبات الاشتراك
+    <span id="pendingBadge" class="pending-badge-tab" style="display:none">0</span>
+  </button>
 </div>
 
 <!-- ============ الصفحة الأولى: المستخدمين ============ -->
@@ -540,7 +612,6 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box cyan"><div class="stat-num" id="statBookings">0</div><div class="stat-label">📅 الحصص المحجوزة</div></div>
   </div>
 
-  <!-- 🌟 قسم المعلمين -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
@@ -569,7 +640,6 @@ tr.locked td{background:#FEF2F2}
     </div>
   </div>
 
-  <!-- 🗺️ خريطة المعلمين (تحت قائمة المعلمين) -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين</h2>
@@ -581,7 +651,6 @@ tr.locked td{background:#FEF2F2}
     <div id="teachersMap"></div>
   </div>
 
-  <!-- 🌟 قسم الطلاب -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
@@ -608,7 +677,6 @@ tr.locked td{background:#FEF2F2}
     </div>
   </div>
 
-  <!-- 🗺️ خريطة الطلاب (تحت قائمة الطلاب) -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد الطلاب</h2>
@@ -630,7 +698,7 @@ tr.locked td{background:#FEF2F2}
           📚 إدارة الصفوف والمواد <span class="sync-badge">☁️ محفوظ سحابياً</span>
         </h2>
         <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">
-          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b> التي تفتح mester1.html و talep.html
+          التعديلات تُحفظ في Firestore وتنعكس فوراً على <b>كل الأجهزة</b>
         </p>
       </div>
     </div>
@@ -648,7 +716,6 @@ tr.locked td{background:#FEF2F2}
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
 
-      <!-- ✅ مكتبة الألوان -->
       <div style="margin-top:14px">
         <div style="font-size:12px;font-weight:900;color:var(--primary-dark);margin-bottom:8px">🎨 اختر لون المرحلة:</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -809,7 +876,32 @@ tr.locked td{background:#FEF2F2}
   </div>
 </div>
 
-<!-- ✅ Modal تعديل المرحلة -->
+<!-- ============ الصفحة الثالثة: طلبات الاشتراك ============ -->
+<div id="page-subscriptions" class="page">
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-num" id="statTotalReqs">0</div><div class="stat-label">📋 إجمالي الطلبات</div></div>
+    <div class="stat-box amber"><div class="stat-num" id="statPendingReqs">0</div><div class="stat-label">⏳ قيد المراجعة</div></div>
+    <div class="stat-box" style="--primary:#10B981"><div class="stat-num" id="statApprovedReqs">0</div><div class="stat-label">✅ تم التفعيل</div></div>
+    <div class="stat-box rose"><div class="stat-num" id="statRejectedReqs">0</div><div class="stat-label">❌ مرفوضة</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
+        💎 طلبات الاشتراك <span class="sync-badge">🔄 مباشر</span>
+      </h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="window.filterReqs('all')" id="filterAll">الكل</button>
+        <button class="btn btn-ghost" onclick="window.filterReqs('pending')" id="filterPending">⏳ قيد المراجعة</button>
+        <button class="btn btn-ghost" onclick="window.filterReqs('approved')" id="filterApproved">✅ مفعلة</button>
+        <button class="btn btn-ghost" onclick="window.filterReqs('rejected')" id="filterRejected">❌ مرفوضة</button>
+      </div>
+    </div>
+    <div id="requestsContainer"></div>
+  </div>
+</div>
+
+<!-- Modal تعديل المرحلة -->
 <div class="modal-overlay" id="editStageModal">
   <div class="modal-box">
     <h3>✏️ تعديل المرحلة</h3>
@@ -819,16 +911,16 @@ tr.locked td{background:#FEF2F2}
 
     <label>🎨 لون المرحلة:</label>
     <div class="modal-color-palette" id="editColorPalette">
-      <button type="button" class="color-btn" data-color="#047857" style="background:#047857" onclick="window.pickEditColor('#047857', event)" title="أخضر"></button>
-      <button type="button" class="color-btn" data-color="#2563EB" style="background:#2563EB" onclick="window.pickEditColor('#2563EB', event)" title="أزرق"></button>
-      <button type="button" class="color-btn" data-color="#7C3AED" style="background:#7C3AED" onclick="window.pickEditColor('#7C3AED', event)" title="بنفسجي"></button>
-      <button type="button" class="color-btn" data-color="#DC2626" style="background:#DC2626" onclick="window.pickEditColor('#DC2626', event)" title="أحمر"></button>
-      <button type="button" class="color-btn" data-color="#D97706" style="background:#D97706" onclick="window.pickEditColor('#D97706', event)" title="برتقالي"></button>
-      <button type="button" class="color-btn" data-color="#0891B2" style="background:#0891B2" onclick="window.pickEditColor('#0891B2', event)" title="سماوي"></button>
-      <button type="button" class="color-btn" data-color="#DB2777" style="background:#DB2777" onclick="window.pickEditColor('#DB2777', event)" title="وردي"></button>
-      <button type="button" class="color-btn" data-color="#65A30D" style="background:#65A30D" onclick="window.pickEditColor('#65A30D', event)" title="ليموني"></button>
-      <button type="button" class="color-btn" data-color="#0F172A" style="background:#0F172A" onclick="window.pickEditColor('#0F172A', event)" title="أسود"></button>
-      <button type="button" class="color-btn" data-color="#78716C" style="background:#78716C" onclick="window.pickEditColor('#78716C', event)" title="رمادي"></button>
+      <button type="button" class="color-btn" data-color="#047857" style="background:#047857" onclick="window.pickEditColor('#047857', event)"></button>
+      <button type="button" class="color-btn" data-color="#2563EB" style="background:#2563EB" onclick="window.pickEditColor('#2563EB', event)"></button>
+      <button type="button" class="color-btn" data-color="#7C3AED" style="background:#7C3AED" onclick="window.pickEditColor('#7C3AED', event)"></button>
+      <button type="button" class="color-btn" data-color="#DC2626" style="background:#DC2626" onclick="window.pickEditColor('#DC2626', event)"></button>
+      <button type="button" class="color-btn" data-color="#D97706" style="background:#D97706" onclick="window.pickEditColor('#D97706', event)"></button>
+      <button type="button" class="color-btn" data-color="#0891B2" style="background:#0891B2" onclick="window.pickEditColor('#0891B2', event)"></button>
+      <button type="button" class="color-btn" data-color="#DB2777" style="background:#DB2777" onclick="window.pickEditColor('#DB2777', event)"></button>
+      <button type="button" class="color-btn" data-color="#65A30D" style="background:#65A30D" onclick="window.pickEditColor('#65A30D', event)"></button>
+      <button type="button" class="color-btn" data-color="#0F172A" style="background:#0F172A" onclick="window.pickEditColor('#0F172A', event)"></button>
+      <button type="button" class="color-btn" data-color="#78716C" style="background:#78716C" onclick="window.pickEditColor('#78716C', event)"></button>
     </div>
 
     <div class="modal-buttons">
@@ -848,7 +940,12 @@ import {
   getCurriculumSettings, saveCurriculumSettings, subscribeCurriculum,
   setTeacherLock, setStudentLock,
   deleteTeacherAccount, deleteStudentAccount,
-  DEFAULT_CURRICULUM
+  DEFAULT_CURRICULUM,
+  SUBSCRIPTION_PLANS,
+  subscribeSubscriptionRequests,
+  approveSubscription,
+  rejectSubscription,
+  ADMIN_EMAIL
 } from './firebase-config.js';
 
 // ============ Cloud Status ============
@@ -861,7 +958,7 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ==========================================================
-// 🔊 صوت النقر الرفيع — Web Audio API (بدون ملفات)
+// 🔊 صوت النقر الرفيع
 // ==========================================================
 (function initClickSound() {
   let audioCtx = null;
@@ -885,7 +982,6 @@ window.setCloudStatus = function(status, text) {
     if (!ctx) return;
 
     const now = ctx.currentTime;
-
     const osc = ctx.createOscillator();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, now);
@@ -919,6 +1015,7 @@ window.setCloudStatus = function(status, text) {
       '.stage-action-btn',
       '.stage-card-header',
       '.modal-buttons button',
+      '.req-btn',
       'button:not([disabled])',
       'a.icon-action-btn'
     ].join(', ');
@@ -930,9 +1027,9 @@ window.setCloudStatus = function(status, text) {
       el.addEventListener('click', () => {
         if (el.disabled) return;
 
-        if (el.classList.contains('btn-del') || el.classList.contains('btn-del-icon') || el.classList.contains('delete-stage')) {
+        if (el.classList.contains('btn-del') || el.classList.contains('btn-del-icon') || el.classList.contains('delete-stage') || el.classList.contains('reject')) {
           window.playClick(900, 0.06, 0.14);
-        } else if (el.classList.contains('btn-wa-icon')) {
+        } else if (el.classList.contains('btn-wa-icon') || el.classList.contains('wa')) {
           window.playClick(1800, 0.05, 0.10);
         } else if (el.classList.contains('btn-gps-icon')) {
           window.playClick(2200, 0.06, 0.10);
@@ -942,6 +1039,8 @@ window.setCloudStatus = function(status, text) {
           window.playClick(2000, 0.035, 0.09);
         } else if (el.classList.contains('tab')) {
           window.playClick(1100, 0.05, 0.12);
+        } else if (el.classList.contains('approve')) {
+          window.playClick(2000, 0.06, 0.14);
         } else {
           window.playClick(1500, 0.045, 0.11);
         }
@@ -971,7 +1070,7 @@ window.setCloudStatus = function(status, text) {
 })();
 
 // ==========================================================
-// ✅ Tabs — محفوظة في hash الرابط
+// ✅ Tabs
 // ==========================================================
 function switchTab(pageId) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -986,6 +1085,9 @@ function switchTab(pageId) {
         if (window._teachersMap) window._teachersMap.invalidateSize();
         if (window._studentsMap) window._studentsMap.invalidateSize();
       }, 150);
+    }
+    if (pageId === 'page-subscriptions') {
+      renderSubscriptionRequests();
     }
   }
 }
@@ -1002,7 +1104,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 window.addEventListener('hashchange', () => {
   const hash = location.hash.replace('#', '');
-  if (hash === 'page-users' || hash === 'page-curriculum') {
+  if (hash === 'page-users' || hash === 'page-curriculum' || hash === 'page-subscriptions') {
     switchTab(hash);
   }
 });
@@ -1021,11 +1123,14 @@ window.toast = function(msg, color = '#0F172A') {
 let allTeachers = [];
 let allStudents = [];
 let allGroups = [];
+let allRequests = [];
+let currentReqFilter = 'all';
 window.curriculum = null;
 let unsubCurriculum = null;
 let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
+let unsubRequests = null;
 
 // ============ Render Stats ============
 function renderStats() {
@@ -1055,7 +1160,6 @@ function getTeacherSubjects(phone) {
   return Array.from(subs).slice(0, 3).join(' • ') || '—';
 }
 
-// ============ 📅 تنسيق تاريخ التسجيل ============
 function formatRegDate(ts) {
   if (!ts) return '<span class="date-chip unknown">📅 —</span>';
   let d;
@@ -1174,21 +1278,16 @@ function renderStudentsTable() {
       ? '<span class="badge-girl">👧 بنت</span>' 
       : '<span class="badge-boy">👦 ولد</span>';
     
-    const grade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || 
-                  s.الصف || s.صف || s.gradeName || s.level || '—';
-    
+    const grade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || s.الصف || s.صف || s.gradeName || s.level || '—';
     const name = s.name || s.studentName || s.fullName || s.الاسم || '—';
-    const phone = s.phone || s.studentPhone || s.mobile || s.phoneNumber || 
-                  s.الهاتف || s.whatsapp || '—';
+    const phone = s.phone || s.studentPhone || s.mobile || s.phoneNumber || s.الهاتف || s.whatsapp || '—';
     
     const gradeHtml = grade === '—' 
       ? '<span class="grade-tag empty">📖 غير محدد</span>'
       : `<span class="grade-tag">📖 ${grade}</span>`;
     
     const safeName = name.replace(/'/g, "\\'");
-
     const hasLocation = !!(s.lat && s.lng);
-
     const regDate = s.createdAt || s.registeredAt || s.joinedAt || s.timestamp || s.created_at;
     
     return `
@@ -1261,7 +1360,7 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock (Firestore) ============
+// ============ Lock/Unlock ============
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
@@ -1305,7 +1404,7 @@ window.deleteStudent = async function(id, name) {
   }
 };
 
-// ============ Maps (خريطتان منفصلتان) ============
+// ============ Maps ============
 window._teachersMap = null;
 window._studentsMap = null;
 let teachersMarkersLayer = null;
@@ -1346,20 +1445,15 @@ function initStudentsMap() {
   }).addTo(window._studentsMap);
 }
 
-// ==========================================================
-// ✅ renderMap مع فلترة المعلمين المحظورين
-// ==========================================================
 function renderMap() {
   initTeachersMap();
   initStudentsMap();
 
-  // ============== خريطة المعلمين ==============
   teachersMarkersLayer.clearLayers();
   const teacherBounds = L.latLngBounds();
   let teacherCount = 0;
   const addedTeachers = new Set();
 
-  // ✅ مجموعة أرقام المعلمين المحظورين — لا يظهرون على الخريطة
   const lockedTeachersSet = new Set(
     allTeachers.filter(t => t.isLocked === true).map(t => t.id || t.phone)
   );
@@ -1368,8 +1462,6 @@ function renderMap() {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
     if (addedTeachers.has(phone)) return;
-
-    // ✅ تخطي المعلم المحظور
     if (lockedTeachersSet.has(phone)) return;
     
     const teacher = allTeachers.find(t => (t.id || t.phone) === phone) || { name: g.teacherName, title: g.teacherTitle };
@@ -1405,8 +1497,6 @@ function renderMap() {
     const phone = t.id || t.phone;
     if (addedTeachers.has(phone)) return;
     if (!t.lat || !t.lng) return;
-
-    // ✅ تخطي المعلم المحظور
     if (t.isLocked === true) return;
 
     const waClicks = Number(t.waClicks) || 0;
@@ -1439,7 +1529,6 @@ function renderMap() {
     window._teachersMap.flyToBounds(teacherBounds, { padding: [40, 40], maxZoom: 14 });
   }
 
-  // ============== خريطة الطلاب ==============
   studentsMarkersLayer.clearLayers();
   const studentBounds = L.latLngBounds();
   let studentCount = 0;
@@ -1480,7 +1569,6 @@ function renderMap() {
   }, 200);
 }
 
-// ============ 🎯 التركيز على عنصر على الخريطة ============
 window._gpsHighlight = null;
 
 window.focusOnMap = function(markerKey, mapType) {
@@ -1810,13 +1898,204 @@ window.saveCurriculum = async function() {
   btn.textContent = '⏳ جاري الحفظ السحابي...';
   try {
     await saveCurriculumSettings(window.curriculum, 'admin');
-    window.toast('☁️ تم الحفظ والمزامنة سحابياً! سيظهر فوراً على كل الأجهزة', '#047857');
+    window.toast('☁️ تم الحفظ والمزامنة سحابياً!', '#047857');
   } catch(e) {
     console.error(e);
     window.toast('❌ فشل الحفظ السحابي', '#DC2626');
   } finally {
     btn.disabled = false;
     btn.textContent = '💾 حفظ ومزامنة سحابية';
+  }
+};
+
+// ==========================================================
+// 💎 Subscription Requests Management
+// ==========================================================
+window.filterReqs = function(filter) {
+  currentReqFilter = filter;
+  ['All','Pending','Approved','Rejected'].forEach(f => {
+    const btn = document.getElementById('filter' + f);
+    if (btn) {
+      btn.style.background = (f.toLowerCase() === filter || (filter === 'all' && f === 'All')) 
+        ? 'linear-gradient(135deg,#10B981,#047857)' : '';
+      btn.style.color = (f.toLowerCase() === filter || (filter === 'all' && f === 'All')) 
+        ? '#fff' : '';
+    }
+  });
+  renderSubscriptionRequests();
+};
+
+function renderSubscriptionRequests() {
+  const container = document.getElementById('requestsContainer');
+  if (!container) return;
+
+  // إحصائيات
+  const total = allRequests.length;
+  const pending = allRequests.filter(r => r.status === 'pending').length;
+  const approved = allRequests.filter(r => r.status === 'approved').length;
+  const rejected = allRequests.filter(r => r.status === 'rejected').length;
+
+  document.getElementById('statTotalReqs').textContent = total;
+  document.getElementById('statPendingReqs').textContent = pending;
+  document.getElementById('statApprovedReqs').textContent = approved;
+  document.getElementById('statRejectedReqs').textContent = rejected;
+
+  // badge على التاب
+  const badge = document.getElementById('pendingBadge');
+  if (badge) {
+    if (pending > 0) {
+      badge.textContent = pending;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // فلترة
+  let filtered = allRequests;
+  if (currentReqFilter !== 'all') {
+    filtered = allRequests.filter(r => r.status === currentReqFilter);
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="padding:40px 20px">
+        ${currentReqFilter === 'all' 
+          ? 'لا توجد طلبات اشتراك حتى الآن' 
+          : 'لا توجد طلبات بهذه الحالة'}
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(req => {
+    const plan = SUBSCRIPTION_PLANS[req.planId] || {};
+    const statusText = req.status === 'pending' ? '⏳ قيد المراجعة' 
+                     : req.status === 'approved' ? '✅ تم التفعيل' 
+                     : '❌ مرفوض';
+    
+    let reqDate = '—';
+    try {
+      if (req.requestedAt?.toDate) {
+        reqDate = req.requestedAt.toDate().toLocaleDateString('ar-EG', {
+          year:'numeric', month:'2-digit', day:'2-digit'
+        });
+      } else if (req.requestedAt?.seconds) {
+        reqDate = new Date(req.requestedAt.seconds * 1000).toLocaleDateString('ar-EG');
+      }
+    } catch(e) {}
+
+    let approvedDate = '';
+    try {
+      if (req.approvedAt?.toDate) {
+        approvedDate = req.approvedAt.toDate().toLocaleDateString('ar-EG', {
+          year:'numeric', month:'2-digit', day:'2-digit'
+        });
+      } else if (req.approvedAt?.seconds) {
+        approvedDate = new Date(req.approvedAt.seconds * 1000).toLocaleDateString('ar-EG');
+      }
+    } catch(e) {}
+
+    return `
+      <div class="req-card ${req.status}">
+        <div class="req-header">
+          <div class="req-teacher">
+            <span class="icon">${plan.icon || '💎'}</span>
+            <div class="info">
+              <h4>${req.teacherName || 'بدون اسم'} <span style="font-size:12px;color:var(--muted)">${req.teacherTitle || ''}</span></h4>
+              <p>📱 ${req.phone}</p>
+            </div>
+          </div>
+          <span class="req-status ${req.status}">${statusText}</span>
+        </div>
+        
+        <div class="req-details">
+          <div class="req-detail-row">
+            <span class="label">💎 الباقة:</span>
+            <span class="value">${req.planName}</span>
+          </div>
+          <div class="req-detail-row">
+            <span class="label">💰 السعر:</span>
+            <span class="value" style="color:${plan.color || '#047857'}">${req.priceText}</span>
+          </div>
+          <div class="req-detail-row">
+            <span class="label">📅 تاريخ الطلب:</span>
+            <span class="value">${reqDate}</span>
+          </div>
+          ${approvedDate ? `
+          <div class="req-detail-row">
+            <span class="label">✅ تاريخ التفعيل:</span>
+            <span class="value">${approvedDate}</span>
+          </div>
+          ` : ''}
+          ${req.adminNote ? `
+          <div class="req-detail-row">
+            <span class="label">📝 ملاحظة:</span>
+            <span class="value">${req.adminNote}</span>
+          </div>
+          ` : ''}
+        </div>
+
+        <div class="req-actions">
+          ${req.status === 'pending' ? `
+            <button class="req-btn approve" onclick="window.approveReq('${req.id}')">
+              ✅ موافقة وتفعيل
+            </button>
+            <button class="req-btn reject" onclick="window.rejectReq('${req.id}')">
+              ❌ رفض
+            </button>
+          ` : ''}
+          <a class="req-btn wa" href="https://wa.me/2${req.phone}" target="_blank">
+            💬 واتساب
+          </a>
+          <a class="req-btn" style="background:#F1F5F9;color:var(--ink)" href="tel:${req.phone}">
+            📞 اتصال
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.approveReq = async function(reqId) {
+  const req = allRequests.find(r => r.id === reqId);
+  if (!req) return;
+  
+  const plan = SUBSCRIPTION_PLANS[req.planId];
+  if (!plan) return;
+
+  const confirmMsg = 
+    `✅ تأكيد تفعيل الاشتراك:\n\n` +
+    `👤 المعلم: ${req.teacherName}\n` +
+    `📱 الهاتف: ${req.phone}\n` +
+    `💎 الباقة: ${plan.name}\n` +
+    `💰 السعر: ${req.priceText}\n` +
+    `⏱ المدة: ${plan.durationDays} يوم\n\n` +
+    `هل أنت متأكد من استلام المبلغ وتفعيل الاشتراك؟`;
+
+  if (!confirm(confirmMsg)) return;
+
+  const note = prompt('ملاحظة (اختياري):', '') || '';
+
+  try {
+    window.toast('⏳ جاري التفعيل...', '#F59E0B');
+    const result = await approveSubscription(reqId, note);
+    window.toast(`✅ تم تفعيل الاشتراك حتى ${new Date(result.endDate).toLocaleDateString('ar-EG')}`, '#10B981');
+  } catch (e) {
+    console.error(e);
+    window.toast('❌ فشل التفعيل: ' + e.message, '#DC2626');
+  }
+};
+
+window.rejectReq = async function(reqId) {
+  if (!confirm('هل أنت متأكد من رفض هذا الطلب؟')) return;
+  const note = prompt('سبب الرفض (اختياري):', '') || '';
+  try {
+    await rejectSubscription(reqId, note);
+    window.toast('❌ تم رفض الطلب', '#DC2626');
+  } catch (e) {
+    console.error(e);
+    window.toast('❌ فشل الرفض', '#DC2626');
   }
 };
 
@@ -1844,7 +2123,7 @@ async function init() {
     window.setCloudStatus(null, 'جاري الاتصال...');
 
     const initialHash = location.hash.replace('#', '');
-    if (initialHash === 'page-users' || initialHash === 'page-curriculum') {
+    if (initialHash === 'page-users' || initialHash === 'page-curriculum' || initialHash === 'page-subscriptions') {
       switchTab(initialHash);
     }
 
@@ -1885,6 +2164,12 @@ async function init() {
       renderMap();
     });
 
+    // ✅ الاستماع لطلبات الاشتراك
+    unsubRequests = subscribeSubscriptionRequests((requests) => {
+      allRequests = requests;
+      renderSubscriptionRequests();
+    });
+
     setTimeout(() => {
       const loader = document.getElementById('loader');
       if (loader) loader.style.display = 'none';
@@ -1905,12 +2190,13 @@ window.addEventListener('beforeunload', () => {
   if (unsubTeachers) unsubTeachers();
   if (unsubStudents) unsubStudents();
   if (unsubGroups) unsubGroups();
+  if (unsubRequests) unsubRequests();
 });
 
 init();
 </script>
 
-<!-- ✅ منع الرجوع من الكاش + تنظيف أي كاش قديم -->
+<!-- ✅ منع الرجوع من الكاش -->
 <script>
 window.addEventListener('pageshow', (e) => {
   if (e.persisted) window.location.reload();
