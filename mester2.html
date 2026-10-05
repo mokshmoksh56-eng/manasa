@@ -962,7 +962,6 @@
         letter-spacing: 1px;
     }
 
-    /* ✅ تنبيه إرسال طلب التواصل */
     .contact-sent-msg {
         display: none;
         margin-top: 14px;
@@ -987,7 +986,6 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* ✅ Subscription Warning Banner */
     .subscription-banner {
         width: 100%;
         max-width: 900px;
@@ -1107,7 +1105,6 @@
             mmoksh162@gmail.com
         </a>
 
-        <!-- ✅ رسالة تأكيد الإرسال للإدارة -->
         <div class="contact-sent-msg" id="contactSentMsg">
             ✅ تم إرسال تنبيه للإدارة — سيتم التواصل معك قريباً
         </div>
@@ -1167,33 +1164,53 @@
 
         try {
             let isLocked = false;
-            try {
-                const teacherDoc = await getTeacher(phone);
-                if (teacherDoc && teacherDoc.isLocked === true) {
-                    isLocked = true;
-                    console.log('🚫 المعلم محظور — isLocked =', teacherDoc.isLocked);
-                }
-            } catch (e) {
-                console.warn('فشل فحص الحظر المباشر:', e);
+
+            // ✅ 1) فحص علامة الحظر المحفوظة مسبقاً
+            if (localStorage.getItem('teacher_is_blocked') === 'true') {
+                isLocked = true;
+                console.log('🚫 المعلم محظور (من localStorage)');
             }
 
+            // ✅ 2) فحص الحظر المباشر من قاعدة البيانات
+            if (!isLocked) {
+                try {
+                    const teacherDoc = await getTeacher(phone);
+                    if (teacherDoc && teacherDoc.isLocked === true) {
+                        isLocked = true;
+                        localStorage.setItem('teacher_is_blocked', 'true');
+                        console.log('🚫 المعلم محظور — isLocked =', teacherDoc.isLocked);
+                    }
+                } catch (e) {
+                    console.warn('فشل فحص الحظر المباشر:', e);
+                }
+            }
+
+            // ✅ لو محظور: نعرض الشاشة ونوقف أي كود تاني (مفيش تسجيل خروج)
             if (isLocked) {
                 showBlockedScreen();
                 return;
             }
 
+            // ✅ 3) فحص الجهاز
             const check = await checkTeacherDevice(phone);
 
+            // ✅ لو الحساب محظور حسب فحص الجهاز، نعرض شاشة الحظر برضه
             if (check && check.locked === true) {
+                localStorage.setItem('teacher_is_blocked', 'true');
                 showBlockedScreen();
                 return;
             }
 
+            // ✅ لو الجهاز مختلف (ومش محظور)، نعمل تسجيل خروج عادي
             if (!check || !check.ok) {
-                localStorage.removeItem('current_teacher_profile');
-                localStorage.removeItem('current_teacher_phone');
-                alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
-                window.location.href = 'teacher-login.html';
+                // تأكيد إضافي إنه مش محظور
+                if (localStorage.getItem('teacher_is_blocked') !== 'true') {
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('current_teacher_phone');
+                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                    window.location.href = 'teacher-login.html';
+                    return;
+                }
                 return;
             }
 
@@ -1204,6 +1221,7 @@
             try {
                 const teacherDoc = await getTeacher(phone);
                 if (teacherDoc && teacherDoc.isLocked === true) {
+                    localStorage.setItem('teacher_is_blocked', 'true');
                     showBlockedScreen();
                     return;
                 }
@@ -1233,7 +1251,6 @@
             }
 
             try {
-                // 1️⃣ نجيب بيانات المعلم عشان ناخد الاسم واللقب
                 let teacherName = '';
                 let teacherTitle = '';
                 try {
@@ -1246,7 +1263,6 @@
                     console.warn('فشل جلب بيانات المعلم:', e);
                 }
 
-                // 2️⃣ نحفظ الطلب جوه وثيقة المعلم (عشان المزامنة اللحظية في school.html)
                 await updateDoc(doc(db, 'teachers', phone), {
                     contactRequest: {
                         requested: true,
@@ -1255,7 +1271,6 @@
                     }
                 });
 
-                // 3️⃣ نحفظ كمان في collection منفصل (سجل تاريخي كامل)
                 try {
                     const reqId = `contact_${phone}_${Date.now()}`;
                     await setDoc(doc(db, 'contact_requests', reqId), {
@@ -1272,7 +1287,6 @@
                     console.warn('فشل حفظ السجل التاريخي (تم تجاهله):', e);
                 }
 
-                // 4️⃣ نظهر رسالة تأكيد للمستخدم
                 if (msgEl) {
                     msgEl.classList.remove('error');
                     msgEl.classList.add('show');
@@ -1303,7 +1317,7 @@
     </div>
 </header>
 
-<!-- ✅ بانر الاشتراك (يظهر ديناميكياً) -->
+<!-- ✅ بانر الاشتراك -->
 <div class="subscription-banner" id="subscriptionBanner">
     <span class="sb-icon" id="subBannerIcon">⏳</span>
     <div class="sb-text">
@@ -1548,6 +1562,7 @@
           try {
               const locked = await isTeacherLocked(teacherPhone);
               if (locked) {
+                  localStorage.setItem('teacher_is_blocked', 'true');
                   const blockedOverlay = document.getElementById('blockedOverlay');
                   if (blockedOverlay && !blockedOverlay.classList.contains('show')) {
                       blockedOverlay.classList.add('show');
