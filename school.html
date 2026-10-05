@@ -2448,7 +2448,7 @@ function formatDateNice(ts) {
 function getTeacherStatus(t) {
     const now = Date.now();
     if (t.isLocked === true) {
-        return { status:'locked', label:'🚫 محظور دائم', color:'#DC2626' };
+        return { status:'locked', label:'🚫 محظور', color:'#DC2626' };
     }
     if (t.unlockUntil) {
         const until = typeof t.unlockUntil === 'number'
@@ -2466,7 +2466,7 @@ function getTeacherStatus(t) {
             return { status:'expired', label:'⏰ منتهي', color:'#D97706', until };
         }
     }
-    return { status:'permanent', label:'♾️ دائم', color:'#047857' };
+    return { status:'permanent', label:'♾️ فتح دائم', color:'#047857' };
 }
 
 window.renderSubscriptionsTeachersList = function() {
@@ -2529,11 +2529,11 @@ window.renderSubscriptionsTeachersList = function() {
                 </div>
 
                 <div class="tsc-actions">
-                    <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر دائم حتى تفتحه يدوياً">
-                        🔒 دائم
+                    <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر المعلم حتى تفتحه يدوياً">
+                        🔒 حظر
                     </button>
                     <button class="tsc-btn tsc-perm" onclick="window.unlockTeacherPermanent('${phone}')" title="فتح دائم بدون تاريخ انتهاء">
-                        ♾️ دائم
+                        ♾️ فتح دائم
                     </button>
                     <button class="tsc-btn tsc-3m" onclick="window.unlockTeacherForMonths('${phone}', 3)" title="فتح لمدة 3 شهور">
                         📅 3 شهور
@@ -2568,7 +2568,7 @@ window.renderSubscriptionsTeachersList = function() {
 // 🔒♾️📅 دوال إدارة اشتراك المعلم يدوياً
 // ==========================================================
 
-// 🔒 حظر دائم
+// 🔒 حظر (يظل محظوراً حتى تفتحه يدوياً)
 window.lockTeacherPermanent = async function(phone) {
     if (!confirm(`⚠️ سيتم حظر المعلم بشكل دائم حتى تقوم بفتحه يدوياً.\n\nهل أنت متأكد؟`)) return;
     try {
@@ -2578,7 +2578,7 @@ window.lockTeacherPermanent = async function(phone) {
             lockType: 'permanent_locked',
             lockedAt: Date.now()
         });
-        window.toast('🔒 تم الحظر الدائم', '#DC2626');
+        window.toast('🔒 تم حظر المعلم', '#DC2626');
     } catch (e) {
         console.error(e);
         window.toast('❌ فشل الحظر', '#DC2626');
