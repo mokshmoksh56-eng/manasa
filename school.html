@@ -75,6 +75,16 @@ td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink)}
 tr:hover td{background:#F8FAFC}
 tr.locked td{background:#FEF2F2}
 
+/* 📱 تكبير وتنسيق خلية الهاتف في الجداول */
+#teachersTable td[dir="ltr"],
+#studentsTable td[dir="ltr"] {
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.5px;
+    font-family: 'Cairo', sans-serif;
+    color: #0F172A;
+}
+
 .btn{padding:7px 12px;border-radius:8px;border:none;font-weight:900;font-size:12px;cursor:pointer;transition:.2s;font-family:'Cairo';display:inline-flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;text-decoration:none}
 .btn:active{transform:scale(.95)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -87,9 +97,6 @@ tr.locked td{background:#FEF2F2}
 
 .wa-clicks-badge{background:#DCFCE7;color:#166534;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .booking-badge{background:#CFFAFE;color:#155E75;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.address-cell{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
-.address-link{font-size:11px;color:#047857;text-decoration:none;cursor:pointer;font-weight:900}
-.address-link:hover{text-decoration:underline}
 
 .color-btn{
   width:38px;height:38px;border-radius:50%;border:3px solid transparent;
@@ -595,12 +602,12 @@ tr.locked td{background:#FEF2F2}
     background: linear-gradient(180deg, var(--card-color-light) 0%, #ffffff 25%) !important;
     border: 2px solid var(--card-color) !important;
     border-radius:16px;
-    padding:14px;
     margin-bottom:12px;
     box-shadow:0 4px 12px rgba(0,0,0,.06);
     transition:.2s;
     position:relative;
     overflow:hidden;
+    padding: 0 !important;
 }
 .teacher-sub-card::before {
     content:'';
@@ -608,6 +615,7 @@ tr.locked td{background:#FEF2F2}
     top:0;right:0;
     width:6px;height:100%;
     background: linear-gradient(180deg, var(--card-color), color-mix(in srgb, var(--card-color) 70%, black));
+    z-index: 2;
 }
 .teacher-sub-card .tsc-info strong {
     color: color-mix(in srgb, var(--card-color) 70%, black) !important;
@@ -620,25 +628,100 @@ tr.locked td{background:#FEF2F2}
     box-shadow:0 8px 22px rgba(0,0,0,.12);
 }
 
-.tsc-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:10px;
-    margin-bottom:10px;
-    flex-wrap:wrap;
+/* Bold لكل النصوص */
+.teacher-sub-card, .teacher-sub-card * {
+    font-weight: 900 !important;
 }
-.tsc-info{flex:1;min-width:150px}
-.tsc-info strong{
-    font-size:15px;
-    display:block;
-    margin-bottom:2px;
+.teacher-sub-card .tsc-phone { font-weight: 900 !important; }
+.teacher-sub-card strong { font-weight: 900 !important; }
+
+/* 🗂️ كارت قابل للطي (Collapsible) */
+.tsc-collapse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    gap: 10px;
+    flex-wrap: nowrap;
+    position: relative;
+    z-index: 3;
 }
-.tsc-phone{
-    font-size:12px;
-    color:var(--muted);
-    direction:ltr;
-    text-align:right;
+.tsc-collapse-header:hover {
+    background: rgba(255,255,255,0.4);
+}
+.tsc-collapse-header .tsc-info { flex: 1; min-width: 0; }
+.tsc-collapse-header .tsc-info strong {
+    font-size: 15px;
+    display: block;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.tsc-collapse-header .tsc-phone {
+    font-size: 13px;
+    color: var(--muted);
+    direction: ltr;
+    text-align: right;
+    font-weight: 900;
+}
+.tsc-collapse-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.tsc-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--card-color, #047857);
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 3px 8px rgba(0,0,0,.1);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1.5px solid var(--line);
+}
+.teacher-sub-card.open .tsc-arrow {
+    transform: rotate(180deg);
+}
+
+.tsc-collapse-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                padding 0.3s ease,
+                opacity 0.3s ease;
+    opacity: 0;
+    padding: 0 14px;
+}
+.teacher-sub-card.open .tsc-collapse-body {
+    max-height: 1200px;
+    opacity: 1;
+    padding: 0 14px 14px;
+}
+
+/* شارة تنبيه في الكارت */
+.tsc-alert-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #F59E0B, #DC2626);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10.5px;
+    font-weight: 900;
+    box-shadow: 0 3px 8px rgba(220,38,38,.5);
+    animation: badgePulse 1.5s infinite;
+    white-space: nowrap;
 }
 
 .tsc-status{
@@ -902,6 +985,61 @@ tr.locked td{background:#FEF2F2}
     color: #065F46;
     border-color: #10B981;
 }
+
+/* 🔔 وميض التنبيه في الهيدر */
+.main-header.has-alert {
+    animation: headerGlow 1.8s ease-in-out infinite;
+}
+@keyframes headerGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(220,38,38,.7),
+                    0 10px 40px -10px rgba(220,38,38,.6);
+        filter: brightness(1);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(220,38,38,0),
+                    0 0 30px rgba(220,38,38,.9),
+                    0 10px 50px -8px rgba(220,38,38,.8);
+        filter: brightness(1.15);
+    }
+}
+
+/* شارة تنبيه عائمة في الهيدر */
+.header-alert-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #DC2626, #991B1B);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 15px rgba(220,38,38,.6);
+    animation: badgePulse 1.5s infinite;
+    border: 2px solid rgba(255,255,255,.4);
+    z-index: 100;
+}
+.header-alert-badge.show { display: inline-flex; }
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+.header-alert-badge .badge-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FEF08A;
+    box-shadow: 0 0 10px #FEF08A;
+    animation: badgeDot 1s infinite;
+}
+@keyframes badgeDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+}
 </style>
 </head>
 <body>
@@ -912,11 +1050,18 @@ tr.locked td{background:#FEF2F2}
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
-<div class="main-header">
+<div class="main-header" id="mainHeader">
   <div class="cloud-status" id="cloudStatus">
     <span class="dot"></span>
     <span id="cloudStatusText">جاري الاتصال...</span>
   </div>
+
+  <!-- 🔔 شارة التنبيه العائمة -->
+  <div class="header-alert-badge" id="headerAlertBadge">
+    <span class="badge-dot"></span>
+    <span id="headerAlertText">تنبيهات جديدة</span>
+  </div>
+
   <h1>🏫 لوحة تحكم منصة احجزلي</h1>
   <p>إدارة شاملة للمعلمين والطلاب والمحتوى التعليمي — مزامنة سحابية لحظية</p>
 </div>
@@ -1374,6 +1519,7 @@ window.setCloudStatus = function(status, text) {
       '.req-btn',
       '.tsc-btn',
       '.tsc-contact-btn',
+      '.tsc-collapse-header',
       'button:not([disabled])',
       'a.icon-action-btn'
     ].join(', ');
@@ -1397,6 +1543,8 @@ window.setCloudStatus = function(status, text) {
           window.playClick(2000, 0.035, 0.09);
         } else if (el.classList.contains('tab')) {
           window.playClick(1100, 0.05, 0.12);
+        } else if (el.classList.contains('tsc-collapse-header')) {
+          window.playClick(1300, 0.04, 0.10);
         } else if (el.classList.contains('approve') || el.classList.contains('tsc-perm') || el.classList.contains('tsc-3m') || el.classList.contains('tsc-6m') || el.classList.contains('tsc-1y')) {
           window.playClick(2000, 0.06, 0.14);
         } else {
@@ -1566,7 +1714,7 @@ function renderTeachersTable() {
       <tr class="${locked ? 'locked' : ''}" data-search="${(t.name||'')} ${phone}">
         <td>${t.name || '—'}</td>
         <td><span class="badge ${t.title === 'مس' ? 'badge-girl' : 'badge-boy'}">${t.title || 'مستر'}</span></td>
-        <td dir="ltr" style="text-align:right">${phone}</td>
+        <td dir="ltr" style="text-align:right;font-size:16px;font-weight:900;color:#0F172A;letter-spacing:0.5px;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:8px;padding:8px 10px">${phone}</td>
         <td style="font-size:11px;color:var(--muted)">${getTeacherSubjects(phone)}</td>
         <td><span class="wa-clicks-badge">💬 ${waClicks}</span></td>
         <td><span class="booking-badge">📅 ${bookings}</span></td>
@@ -1653,7 +1801,7 @@ function renderStudentsTable() {
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${name} ${phone} ${grade}">
         <td><span style="font-weight:900;font-size:13px">${name}</span></td>
-        <td dir="ltr" style="text-align:right;font-size:12px">${phone}</td>
+        <td dir="ltr" style="text-align:right;font-size:16px;font-weight:900;color:#0F172A;letter-spacing:0.5px">${phone}</td>
         <td>${genderBadge}</td>
         <td>${gradeHtml}</td>
         <td>${formatRegDate(regDate)}</td>
@@ -2573,7 +2721,7 @@ function getTeacherColor(phone) {
 }
 
 // ==========================================================
-// 📅 بناء الـ Timeline
+// 📅 دوال مساعدة
 // ==========================================================
 function formatDateNice(ts) {
     if (!ts) return '—';
@@ -2728,7 +2876,39 @@ function buildSubscriptionTimeline(t) {
 }
 
 // ==========================================================
-// 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك
+// 🔔 تحديث شارة التنبيه في الهيدر
+// ==========================================================
+function updateHeaderAlert() {
+    const header = document.getElementById('mainHeader');
+    const badge = document.getElementById('headerAlertBadge');
+    const badgeText = document.getElementById('headerAlertText');
+    if (!header || !badge) return;
+
+    const pendingContactReqs = allTeachers.filter(t =>
+        t.contactRequest?.requested === true && t.contactRequest?.handled !== true
+    ).length;
+
+    const pendingSubReqs = allRequests.filter(r => r.status === 'pending').length;
+
+    const totalAlerts = pendingContactReqs + pendingSubReqs;
+
+    if (totalAlerts > 0) {
+        header.classList.add('has-alert');
+        badge.classList.add('show');
+
+        let parts = [];
+        if (pendingContactReqs > 0) parts.push(`🆘 ${pendingContactReqs} طلب تواصل`);
+        if (pendingSubReqs > 0) parts.push(`💎 ${pendingSubReqs} طلب اشتراك`);
+
+        badgeText.textContent = parts.join(' • ');
+    } else {
+        header.classList.remove('has-alert');
+        badge.classList.remove('show');
+    }
+}
+
+// ==========================================================
+// 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك (Collapsible)
 // ==========================================================
 window.renderSubscriptionsTeachersList = function() {
     const container = document.getElementById('teachersListContainer');
@@ -2737,6 +2917,13 @@ window.renderSubscriptionsTeachersList = function() {
     if (!container) return;
 
     const q = (searchInput?.value || '').trim().toLowerCase();
+
+    // ✅ الحفاظ على حالة الكروت المفتوحة
+    const openCards = new Set();
+    document.querySelectorAll('.teacher-sub-card.open').forEach(c => {
+        const phone = c.dataset.phone;
+        if (phone) openCards.add(phone);
+    });
 
     let teachers = allTeachers.slice().sort((a, b) =>
         (a.name || '').localeCompare(b.name || '', 'ar')
@@ -2764,65 +2951,95 @@ window.renderSubscriptionsTeachersList = function() {
 
         const color = getTeacherColor(phone);
         const timelineHtml = buildSubscriptionTimeline(t);
+        const isOpen = openCards.has(phone);
+
+        // ✅ نص الشارة المختصرة
+        const compactStatus = statusInfo.status === 'locked' ? '🚫'
+                            : statusInfo.status === 'expired' ? '⏰'
+                            : statusInfo.status === 'permanent' ? '♾️'
+                            : statusInfo.label.match(/باقي \d+ يوم/)?.[0]?.replace('باقي','⏳')
+                            : '✅';
 
         return `
-            <div class="teacher-sub-card ${hasContactReq ? 'contact-pending' : ''}"
+            <div class="teacher-sub-card ${isOpen ? 'open' : ''} ${hasContactReq ? 'contact-pending' : ''}"
+                 data-phone="${phone}"
                  style="--card-color:${color.main};--card-color-light:${color.light}">
 
-                <div class="tsc-header">
+                <!-- 🗂️ الرأس القابل للنقر (Collapsible Header) -->
+                <div class="tsc-collapse-header" onclick="window.toggleTeacherCard('${phone}')">
                     <div class="tsc-info">
                         <strong>${hasContactReq ? '🆘 ' : ''}${t.title || 'مستر'} ${t.name || '—'}</strong>
                         <div class="tsc-phone">📱 ${phone}</div>
                     </div>
-                    <span class="tsc-status"
-                          style="background:${statusInfo.color}1A;color:${statusInfo.color};border-color:${statusInfo.color}55">
-                        ${statusInfo.label}
-                    </span>
-                </div>
-
-                <div class="tsc-dates">
-                    <div class="tsc-date-chip">
-                        <span>📅 التسجيل:</span>
-                        <strong>${regDate}</strong>
+                    <div class="tsc-collapse-right">
+                        ${hasContactReq ? `<span class="tsc-alert-badge">🆘 تنبيه</span>` : ''}
+                        <span class="tsc-status"
+                              style="background:${statusInfo.color}1A;color:${statusInfo.color};border-color:${statusInfo.color}55">
+                            ${compactStatus}
+                        </span>
+                        <div class="tsc-arrow">▼</div>
                     </div>
                 </div>
 
-                ${timelineHtml}
+                <!-- 📦 الجسم القابل للطي -->
+                <div class="tsc-collapse-body">
 
-                <div class="tsc-actions">
-                    <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر المعلم حتى تفتحه يدوياً">
-                        🔒 حظر
-                    </button>
-                    <button class="tsc-btn tsc-perm" onclick="window.unlockTeacherPermanent('${phone}')" title="فتح دائم بدون تاريخ انتهاء">
-                        ♾️ فتح دائم
-                    </button>
-                    <button class="tsc-btn tsc-3m" onclick="window.unlockTeacherForMonths('${phone}', 3)" title="فتح لمدة 3 شهور">
-                        📅 3 شهور
-                    </button>
-                    <button class="tsc-btn tsc-6m" onclick="window.unlockTeacherForMonths('${phone}', 6)" title="فتح لمدة 6 شهور">
-                        📅 6 شهور
-                    </button>
-                    <button class="tsc-btn tsc-1y" onclick="window.unlockTeacherForMonths('${phone}', 12)" title="فتح لمدة سنة كاملة">
-                        📅 سنة
-                    </button>
-                </div>
+                    <div class="tsc-dates">
+                        <div class="tsc-date-chip">
+                            <span>📅 التسجيل:</span>
+                            <strong>${regDate}</strong>
+                        </div>
+                        <div class="tsc-date-chip" style="background:${statusInfo.color}15;border-color:${statusInfo.color}55;color:${statusInfo.color}">
+                            <span>الحالة:</span>
+                            <strong style="color:${statusInfo.color}">${statusInfo.label}</strong>
+                        </div>
+                    </div>
 
-                <div class="tsc-contact">
-                    <a href="https://wa.me/2${phone}" target="_blank" class="tsc-contact-btn wa">
-                        💬 واتساب
-                    </a>
-                    <a href="tel:${phone}" class="tsc-contact-btn call">
-                        📞 اتصال
-                    </a>
-                    ${hasContactReq ? `
-                        <button class="tsc-contact-btn done" onclick="window.markContactHandled('${phone}')">
-                            ✅ تم التواصل
+                    ${timelineHtml}
+
+                    <div class="tsc-actions">
+                        <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر المعلم حتى تفتحه يدوياً">
+                            🔒 حظر
                         </button>
-                    ` : ''}
+                        <button class="tsc-btn tsc-perm" onclick="window.unlockTeacherPermanent('${phone}')" title="فتح دائم بدون تاريخ انتهاء">
+                            ♾️ فتح دائم
+                        </button>
+                        <button class="tsc-btn tsc-3m" onclick="window.unlockTeacherForMonths('${phone}', 3)" title="فتح لمدة 3 شهور">
+                            📅 3 شهور
+                        </button>
+                        <button class="tsc-btn tsc-6m" onclick="window.unlockTeacherForMonths('${phone}', 6)" title="فتح لمدة 6 شهور">
+                            📅 6 شهور
+                        </button>
+                        <button class="tsc-btn tsc-1y" onclick="window.unlockTeacherForMonths('${phone}', 12)" title="فتح لمدة سنة كاملة">
+                            📅 سنة
+                        </button>
+                    </div>
+
+                    <div class="tsc-contact">
+                        <a href="https://wa.me/2${phone}" target="_blank" class="tsc-contact-btn wa">
+                            💬 واتساب
+                        </a>
+                        <a href="tel:${phone}" class="tsc-contact-btn call">
+                            📞 اتصال
+                        </a>
+                        ${hasContactReq ? `
+                            <button class="tsc-contact-btn done" onclick="window.markContactHandled('${phone}')">
+                                ✅ تم التواصل
+                            </button>
+                        ` : ''}
+                    </div>
+
                 </div>
             </div>
         `;
     }).join('');
+};
+
+// 🗂️ دالة فتح/طي الكارت
+window.toggleTeacherCard = function(phone) {
+    const card = document.querySelector(`.teacher-sub-card[data-phone="${phone}"]`);
+    if (!card) return;
+    card.classList.toggle('open');
 };
 
 // ==========================================================
@@ -2942,6 +3159,7 @@ async function init() {
       renderMap();
       renderContactRequests();
       window.renderSubscriptionsTeachersList();
+      updateHeaderAlert();
       window.setCloudStatus('online', 'متصل ☁️');
     });
 
@@ -2962,6 +3180,7 @@ async function init() {
     unsubRequests = subscribeSubscriptionRequests((requests) => {
       allRequests = requests;
       renderSubscriptionRequests();
+      updateHeaderAlert();
     });
 
     setTimeout(() => {
