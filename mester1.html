@@ -21,7 +21,7 @@
             --prep-color: #1565c0; 
             --secondary-color: #e65100; 
             --custom-color: #7C3AED;
-            --azhar-color: #059669; /* ✅ لون مرحلة الأزهر */
+            --azhar-color: #059669;
         }
 
         * {
@@ -112,7 +112,6 @@
             font-size: 11px;
         }
 
-        /* ✅ شارة حالة السحابة */
         .cloud-badge {
             position: absolute;
             top: 12px;
@@ -177,7 +176,6 @@
             box-shadow: 0 3px 8px rgba(0, 150, 136, 0.15);
         }
 
-        /* ✅ شاشة التحميل للانتظار */
         .loading-curriculum {
             text-align: center;
             padding: 60px 20px;
@@ -230,7 +228,6 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* ✅ شارة "تم تحديث المواد" */
         .curriculum-updated-badge {
             position: fixed;
             top: 12px;
@@ -275,14 +272,12 @@
         #stage-secondary { border-right-color: var(--secondary-color); }
         #stage-secondary.active { border-color: var(--secondary-color); box-shadow: 0 4px 12px rgba(230, 81, 0, 0.15); }
 
-        /* ✅ لون افتراضي للمراحل الجديدة */
         .stage-item[data-custom="true"] { border-right-color: var(--custom-color); }
         .stage-item[data-custom="true"].active { 
             border-color: var(--custom-color); 
             box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15); 
         }
 
-        /* ✅ لون مرحلة الأزهر (لو موجودة بمعرف stage_azhar) */
         #stage-azhar, #stage-azhar_secondary { border-right-color: var(--azhar-color); }
         #stage-azhar.active, #stage-azhar_secondary.active { border-color: var(--azhar-color); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15); }
 
@@ -318,11 +313,9 @@
         .stage-item#stage-secondary .badge-grade { background: var(--secondary-color); }
         .stage-item#stage-secondary .badge { background: #bf360c; }
 
-        /* ✅ ألوان المراحل الجديدة */
         .stage-item[data-custom="true"] .badge-grade { background: var(--custom-color); }
         .stage-item[data-custom="true"] .badge { background: #5B21B6; }
 
-        /* ✅ ألوان الأزهر */
         #stage-azhar .badge-grade, #stage-azhar_secondary .badge-grade { background: var(--azhar-color); }
         #stage-azhar .badge, #stage-azhar_secondary .badge { background: #047857; }
 
@@ -492,7 +485,6 @@
         .summary-item-prep strong { color: var(--prep-color); }
         .summary-item-secondary strong { color: var(--secondary-color); }
 
-        /* ✅ شاشة حماية الجهاز */
         .security-overlay {
             position: fixed;
             inset: 0;
@@ -548,9 +540,9 @@
         <span>تم تحديث المواد من السحابة</span>
     </div>
 
-    <!-- ✅ سكريبت حماية الجهاز -->
+    <!-- ✅ سكريبت حماية الجهاز + فحص الحظر (بدون تسجيل خروج) -->
     <script type="module">
-        import { checkTeacherDevice } from './firebase-config.js';
+        import { checkTeacherDevice, getTeacher } from './firebase-config.js';
         
         (async () => {
             const overlay = document.getElementById('securityOverlay');
@@ -560,16 +552,46 @@
                 window.location.href = 'teacher-login.html';
                 return;
             }
+
+            // ✅ لو المعلم محظور (محفوظ سابقاً)، يروح فوراً لصفحة mester2.html لعرض شاشة الحظر
+            if (localStorage.getItem('teacher_is_blocked') === 'true') {
+                window.location.href = 'mester2.html';
+                return;
+            }
             
             try {
+                // ✅ 1) فحص الحظر المباشر من قاعدة البيانات
+                try {
+                    const teacherDoc = await getTeacher(phone);
+                    if (teacherDoc && teacherDoc.isLocked === true) {
+                        localStorage.setItem('teacher_is_blocked', 'true');
+                        window.location.href = 'mester2.html';
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('فشل فحص الحظر:', e);
+                }
+
+                // ✅ 2) فحص الجهاز
                 const check = await checkTeacherDevice(phone);
-                if (!check.ok) {
+                
+                // ✅ لو الحساب محظور حسب فحص الجهاز، يروح لصفحة الحظر بدون تسجيل خروج
+                if (check && check.locked === true) {
+                    localStorage.setItem('teacher_is_blocked', 'true');
+                    window.location.href = 'mester2.html';
+                    return;
+                }
+
+                // ✅ لو الجهاز مختلف (مش محظور)، بنعمل تسجيل خروج عادي
+                if (!check || !check.ok) {
                     localStorage.removeItem('current_teacher_profile');
                     localStorage.removeItem('current_teacher_phone');
                     alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
                     window.location.href = 'teacher-login.html';
                     return;
                 }
+                
+                // ✅ كله تمام، نخفي شاشة الحماية
                 overlay.classList.add('hide');
                 setTimeout(() => overlay.remove(), 300);
             } catch (e) {
@@ -581,7 +603,6 @@
     </script>
 
     <header class="header-3d">
-        <!-- ✅ شارة حالة السحابة -->
         <div class="cloud-badge" id="cloudBadge">
             <span class="dot"></span>
             <span id="cloudText">جاري الاتصال...</span>
@@ -601,7 +622,6 @@
 
         <h2 class="page-title">ما هي المادة التي تدرسها؟ 📚</h2>
 
-        <!-- ✅ سيتم بناء المراحل ديناميكياً من Firestore -->
         <div id="stagesContainer">
             <div class="loading-curriculum">
                 <div class="spinner"></div>
@@ -642,17 +662,14 @@
         };
 
         // ==========================================================
-        // ✅ 2) هيكل المراحل (ديناميكي بالكامل - يدعم المراحل الجديدة)
-        // ✅ يدعم حقل icon من السحابة
+        // ✅ 2) هيكل المراحل (ديناميكي - يدعم المراحل الجديدة)
         // ==========================================================
         let dynamicStages = [];
         let subjectsData = {};
 
-        // ✅ selections و subjectsOpen ديناميكيان - يدعمان أي مرحلة جديدة
         let selections = {};
         let subjectsOpen = {};
 
-        // ✅ دالة تهيئة selections من المراحل المتاحة
         function initSelectionsFromStages() {
             const oldSelections = JSON.parse(JSON.stringify(selections));
             selections = {};
@@ -668,39 +685,30 @@
             });
         }
 
-        // ✅ تحويل المناهج السحابية إلى شكل قابل للاستخدام
-        // ✅ يدعم أي مرحلة جديدة + يرتب المراحل المعروفة أولاً
-        // ✅ يستخرج الأيقونة من حقل icon أو من الاسم
         function applyCurriculum(curriculum) {
             if (!curriculum) return;
             dynamicStages = [];
             subjectsData = {};
 
-            // ✅ المراحل المعروفة (بترتيبها المفضل)
             const knownOrder = ['kg', 'primary', 'prep', 'secondary'];
             const allStageIds = [];
             
-            // 1) المراحل المعروفة أولاً
             knownOrder.forEach(id => {
                 if (curriculum[id]) allStageIds.push(id);
             });
             
-            // 2) أي مرحلة جديدة (مش في knownOrder)
             Object.keys(curriculum).forEach(id => {
                 if (!knownOrder.includes(id) && curriculum[id]) {
                     allStageIds.push(id);
                 }
             });
 
-            // ✅ نبني dynamicStages من كل المراحل
             allStageIds.forEach(stageId => {
                 const s = curriculum[stageId];
                 
-                // ✅ استخرج الأيقونة
                 let icon = s.icon || null;
                 let cleanName = s.name || stageId;
                 
-                // لو مفيش icon، حاول تستخرج من الاسم
                 if (!icon) {
                     const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
                     if (emojiMatch) {
@@ -710,7 +718,6 @@
                         icon = '📚';
                     }
                 } else {
-                    // لو فيه icon في السحابة، شيل أي إيموجي من الاسم
                     const emojiMatch = cleanName.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})\s+(.*)$/u);
                     if (emojiMatch) cleanName = emojiMatch[2];
                 }
@@ -727,7 +734,6 @@
                 });
             });
 
-            // ✅ نعيد بناء selections للمراحل الجديدة
             initSelectionsFromStages();
             
             console.log('✅ المراحل المحمّلة:', dynamicStages.map(s => `${s.icon} ${s.name}`));
@@ -761,7 +767,7 @@
         }
 
         // ==========================================================
-        // ✅ 4) بناء واجهة المراحل (يدعم المراحل الجديدة + الأيقونات)
+        // ✅ 4) بناء واجهة المراحل
         // ==========================================================
         function buildStagesUI() {
             const container = document.getElementById('stagesContainer');
@@ -784,12 +790,10 @@
                 stageEl.className = 'stage-item';
                 stageEl.id = `stage-${stage.id}`;
 
-                // ✅ وضع علامة data-custom للمراحل الجديدة (غير المعروفة)
                 if (!knownOrder.includes(stage.id)) {
                     stageEl.setAttribute('data-custom', 'true');
                 }
 
-                // ✅ إضافة اللون المخصص (لو موجود في السحابة)
                 if (stage.color) {
                     stageEl.style.borderRightColor = stage.color;
                 }
@@ -798,7 +802,6 @@
                     `<button class="grade-btn" onclick="window.selectGrade('${g.replace(/'/g, "\\'")}', '${stage.id}', this)">${g}</button>`
                 ).join('');
 
-                // ✅ عرض الأيقونة + الاسم
                 stageEl.innerHTML = `
                     <div class="stage-header" onclick="window.toggleStage(event, this)">
                         <div class="stage-title">
@@ -825,7 +828,6 @@
         };
 
         window.selectGrade = function(gradeName, stageId, btn) {
-            // مسح باقي المراحل
             for (const key in selections) {
                 if (key !== stageId && selections[key].grade !== '') {
                     selections[key] = { grade: '', subjects: [] };
@@ -974,7 +976,6 @@
             });
         }
 
-        // ✅ ملخص الاختيارات - يستخدم أسماء المراحل الديناميكية + الأيقونات
         function updateSummary() {
             const summaryContent = document.getElementById('summary-content');
             let html = '';
@@ -983,7 +984,6 @@
             for (const stageId in selections) {
                 const { grade, subjects } = selections[stageId];
                 if (subjects.length > 0) {
-                    // ✅ نجيب بيانات المرحلة من dynamicStages
                     const stageMeta = dynamicStages.find(s => s.id === stageId);
                     const stageIcon = stageMeta ? stageMeta.icon : '📚';
                     const stageName = stageMeta ? stageMeta.name : stageId;
@@ -1038,10 +1038,8 @@
                     const { grade, subjects } = saved[stageId];
                     if (!grade || !subjects || subjects.length === 0) return;
 
-                    // ✅ نتحقق أن الصف لسه موجود في المناهج السحابية
                     if (!subjectsData[grade]) return;
 
-                    // ✅ نفلتر المواد المحذوفة
                     const available = subjectsData[grade] || [];
                     const validSubjects = subjects.filter(s => available.includes(s));
                     if (validSubjects.length === 0) return;
@@ -1075,21 +1073,18 @@
         }
 
         // ==========================================================
-        // ✅ 7) تحديث الواجهة عند تغيير المناهج (تحديث ذكي - يدعم الجديد)
+        // ✅ 7) تحديث الواجهة عند تغيير المناهج
         // ==========================================================
         function rebuildUIWithPreserve() {
-            // نسخ احتياطي للاختيارات الحالية
             const backup = JSON.parse(JSON.stringify(selections));
 
-            // إعادة بناء الواجهة (ستستدعي initSelectionsFromStages داخلياً)
             buildStagesUI();
             initSelectionsFromStages();
 
-            // إعادة تطبيق الاختيارات الصالحة
             for (const stageId in backup) {
                 const sel = backup[stageId];
                 if (!sel.grade || sel.subjects.length === 0) continue;
-                if (!selections[stageId]) continue; // المرحلة اختفت
+                if (!selections[stageId]) continue;
                 if (!subjectsData[sel.grade]) continue;
 
                 const available = subjectsData[sel.grade] || [];
@@ -1126,21 +1121,17 @@
         window.addEventListener('DOMContentLoaded', () => {
             window.setCloudStatus(null, 'جاري الاتصال...');
 
-            // ✅ الاستماع اللحظي للمناهج من السحابة
             subscribeCurriculum((curriculum) => {
                 applyCurriculum(curriculum);
                 window.setCloudStatus('online', 'متصل ☁️');
 
                 if (isFirstLoad) {
-                    // أول تحميل: بناء الواجهة + استرجاع الاختيارات
                     buildStagesUI();
                     restoreMester1();
                     isFirstLoad = false;
                 } else {
-                    // تحديث لحظي: إعادة بناء مع الحفاظ على الاختيارات
                     rebuildUIWithPreserve();
 
-                    // إظهار شارة التحديث
                     const badge = document.getElementById('curriculumBadge');
                     if (badge) {
                         badge.classList.add('show');
@@ -1149,7 +1140,6 @@
                 }
             });
 
-            // مؤقت احتياطي: لو السحابة تأخرت أكثر من 5 ثوانٍ
             setTimeout(() => {
                 if (isFirstLoad) {
                     console.warn('⚠️ تأخر الاتصال بالسحابة، استخدام النسخة الافتراضية');
@@ -1161,7 +1151,6 @@
                 }
             }, 5000);
 
-            // ✅ حفظ عند الخروج
             window.addEventListener('beforeunload', () => {
                 try {
                     const finalData = {};
@@ -1177,7 +1166,7 @@
 
             window.addEventListener('pageshow', (e) => {
                 if (e.persisted && !isFirstLoad) {
-                    // رجع من الـ cache: لا نفعل شيئاً لأن السحابة ستُحدّث تلقائياً
+                    // رجع من الـ cache
                 }
             });
         });
