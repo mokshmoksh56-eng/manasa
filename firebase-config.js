@@ -95,7 +95,6 @@ export async function deleteStudentByKey(key) {
     await deleteDoc(doc(db, "students", key));
 }
 
-// ✅ دالة جديدة: تحديث بيانات الطالب (الاسم، النوع، المرحلة، الصف، الموقع)
 export async function updateStudentProfile(accountKey, data) {
     const allowed = ['name', 'gender', 'stage', 'grade', 'phone', 'lat', 'lng', 'address'];
     const updates = {};
@@ -210,36 +209,24 @@ export function generateDeviceId() {
     return deviceId;
 }
 
-// ==========================================================
-// ✅ محدّثة: checkTeacherDevice مع دعم حالة الحظر (isLocked)
-// ==========================================================
 export async function checkTeacherDevice(phone) {
     const teacher = await getTeacher(phone);
     if (!teacher) return { ok: false, locked: false, reason: 'not_found' };
 
-    // 🚫 الحالة الأولى: المعلم محظور من قبل الإدارة
     if (teacher.isLocked === true) {
-        return { 
-            ok: false, 
-            locked: true, 
-            reason: 'locked',
-            teacher 
-        };
+        return { ok: false, locked: true, reason: 'locked', teacher };
     }
 
     const currentDeviceId = generateDeviceId();
 
-    // ✅ أول تسجيل دخول (لا يوجد جهاز مسجل)
     if (!teacher.activeDeviceId) {
         return { ok: true, locked: false, isFirst: true, teacher };
     }
 
-    // ✅ نفس الجهاز
     if (teacher.activeDeviceId === currentDeviceId) {
         return { ok: true, locked: false, isSame: true, teacher };
     }
 
-    // ⚠️ جهاز مختلف
     return { ok: false, locked: false, reason: 'different_device', teacher };
 }
 
@@ -252,26 +239,16 @@ export async function updateTeacherDevice(phone) {
     return deviceId;
 }
 
-// ==========================================================
-// ✅ محدّثة: checkStudentDevice مع دعم حالة الحظر (isLocked)
-// ==========================================================
 export async function checkStudentDevice(accountKey) {
     const student = await getStudentByKey(accountKey);
     if (!student) return { ok: false, locked: false, reason: 'not_found' };
 
-    // 🚫 الحالة الأولى: الطالب مقفول من قبل الإدارة
     if (student.isLocked === true) {
-        return { 
-            ok: false, 
-            locked: true, 
-            reason: 'locked',
-            student 
-        };
+        return { ok: false, locked: true, reason: 'locked', student };
     }
 
     const currentDeviceId = generateDeviceId();
     
-    // ✅ مزامنة بيانات localStorage مع Firestore (للحسابات القديمة)
     try {
         const profile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         if (profile.id === accountKey) {
@@ -304,9 +281,6 @@ export async function updateStudentDevice(accountKey) {
     return deviceId;
 }
 
-// ==========================================================
-// ✅ دالة جديدة: فحص حالة حظر المعلم فقط (بدون فحص الجهاز)
-// ==========================================================
 export async function isTeacherLocked(phone) {
     try {
         const teacher = await getTeacher(phone);
@@ -318,7 +292,6 @@ export async function isTeacherLocked(phone) {
     }
 }
 
-// ✅ دالة جديدة: فحص حالة قفل الطالب فقط
 export async function isStudentLocked(accountKey) {
     try {
         const student = await getStudentByKey(accountKey);
@@ -331,7 +304,7 @@ export async function isStudentLocked(accountKey) {
 }
 
 // ==========================================================
-// دوال المزامنة السحابية (school.html + mester1.html)
+// دوال المزامنة السحابية
 // ==========================================================
 
 const SETTINGS_COLLECTION = "settings";
@@ -461,6 +434,289 @@ export function subscribeGroups(callback) {
         callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     }, (error) => {
         console.error('خطأ في الاستماع للمجموعات:', error);
+        callback([]);
+    });
+}
+
+// ==========================================================
+// 💳 نظام الاشتراكات (بدون Google Play - تفعيل يدوي عبر الإيميل)
+// ==========================================================
+
+export const ADMIN_EMAIL = 'mmoksh162@gmail.com';
+
+export const SUBSCRIPTION_PLANS = {
+    trial: {
+        id: 'trial',
+        name: 'الباقة التجريبية',
+        icon: '🎁',
+        durationDays: 60,
+        price: 0,
+        priceText: 'مجاناً',
+        requiresActivation: false,
+        color: '#8B5CF6',
+        features: [
+            'كل المميزات مفتوحة لمدة 60 يوم',
+            'بدون أي رسوم',
+            'مرة واحدة فقط لكل حساب',
+            'تفعيل فوري تلقائي'
+        ]
+    },
+    free: {
+        id: 'free',
+        name: 'الباقة المجانية',
+        icon: '🆓',
+        durationDays: null,
+        price: 0,
+        priceText: 'مجاناً',
+        requiresActivation: false,
+        color: '#64748B',
+        features: [
+            'مجموعة واحدة فقط',
+            'حتى 15 طالب',
+            'مفتوح للأبد',
+            'تفعيل فوري تلقائي'
+        ]
+    },
+    '3months': {
+        id: '3months',
+        name: 'باقة 3 شهور',
+        icon: '⭐',
+        durationDays: 90,
+        price: 99,
+        priceText: '99 جنيه',
+        requiresActivation: true,
+        color: '#10B981',
+        features: [
+            'مجموعات غير محدودة',
+            'طلاب غير محدود',
+            'إحصائيات متقدمة',
+            'تفعيل بعد التواصل بالإيميل'
+        ]
+    },
+    '6months': {
+        id: '6months',
+        name: 'باقة 6 شهور',
+        icon: '💎',
+        durationDays: 180,
+        price: 179,
+        priceText: '179 جنيه',
+        requiresActivation: true,
+        popular: true,
+        color: '#3B82F6',
+        features: [
+            'كل مميزات 3 شهور',
+            'خصم 10%',
+            'أولوية في الدعم',
+            'تفعيل بعد التواصل بالإيميل'
+        ]
+    },
+    '1year': {
+        id: '1year',
+        name: 'باقة سنة كاملة',
+        icon: '👑',
+        durationDays: 365,
+        price: 299,
+        priceText: '299 جنيه',
+        requiresActivation: true,
+        color: '#F59E0B',
+        features: [
+            'كل مميزات 6 شهور',
+            'خصم 20%',
+            'ميزات مستقبلية مجاناً',
+            'دعم VIP',
+            'تفعيل بعد التواصل بالإيميل'
+        ]
+    }
+};
+
+export async function requestSubscription(phone, planId, teacherInfo = {}) {
+    const plan = SUBSCRIPTION_PLANS[planId];
+    if (!plan) throw new Error('خطة غير صحيحة');
+
+    const requestId = `req_${phone}_${Date.now()}`;
+    const reqRef = doc(db, "subscription_requests", requestId);
+    
+    await setDoc(reqRef, {
+        id: requestId,
+        phone,
+        planId,
+        planName: plan.name,
+        price: plan.price,
+        priceText: plan.priceText,
+        teacherName: teacherInfo.name || '',
+        teacherTitle: teacherInfo.title || '',
+        status: 'pending',
+        requestedAt: serverTimestamp(),
+        approvedAt: null,
+        rejectedAt: null,
+        adminNote: ''
+    });
+
+    return requestId;
+}
+
+export async function getAllSubscriptionRequests() {
+    const snap = await getDocs(collection(db, "subscription_requests"));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => {
+            const ta = a.requestedAt?.seconds || 0;
+            const tb = b.requestedAt?.seconds || 0;
+            return tb - ta;
+        });
+}
+
+export async function approveSubscription(requestId, adminNote = '') {
+    const reqRef = doc(db, "subscription_requests", requestId);
+    const reqSnap = await getDoc(reqRef);
+    if (!reqSnap.exists()) throw new Error('الطلب غير موجود');
+    
+    const req = reqSnap.data();
+    const plan = SUBSCRIPTION_PLANS[req.planId];
+    if (!plan) throw new Error('الخطة غير صحيحة');
+
+    const now = new Date();
+    
+    const currentSub = await getTeacherSubscription(req.phone);
+    let baseDate = now;
+    if (currentSub && currentSub.endDate && new Date(currentSub.endDate) > now && currentSub.status === 'active') {
+        baseDate = new Date(currentSub.endDate);
+    }
+
+    const endDate = new Date(baseDate.getTime() + plan.durationDays * 24 * 60 * 60 * 1000);
+
+    await setDoc(doc(db, "subscriptions", req.phone), {
+        phone: req.phone,
+        planId: req.planId,
+        planName: plan.name,
+        startDate: now.toISOString(),
+        endDate: endDate.toISOString(),
+        status: 'active',
+        paymentMethod: 'manual',
+        approvedBy: 'admin',
+        approvedAt: now.toISOString(),
+        updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    await updateDoc(doc(db, "teachers", req.phone), {
+        subscriptionPlan: req.planId,
+        subscriptionStatus: 'active',
+        subscriptionEnd: endDate.toISOString(),
+        isPremium: true
+    });
+
+    await updateDoc(reqRef, {
+        status: 'approved',
+        approvedAt: serverTimestamp(),
+        adminNote
+    });
+
+    return { phone: req.phone, endDate: endDate.toISOString() };
+}
+
+export async function rejectSubscription(requestId, adminNote = '') {
+    await updateDoc(doc(db, "subscription_requests", requestId), {
+        status: 'rejected',
+        rejectedAt: serverTimestamp(),
+        adminNote
+    });
+}
+
+export async function createSubscription(phone, planId) {
+    const plan = SUBSCRIPTION_PLANS[planId];
+    if (!plan) throw new Error('خطة غير صحيحة');
+
+    const now = new Date();
+    let endDate = null;
+    if (plan.durationDays) {
+        const end = new Date(now.getTime() + plan.durationDays * 24 * 60 * 60 * 1000);
+        endDate = end.toISOString();
+    }
+
+    const payload = {
+        phone,
+        planId,
+        planName: plan.name,
+        startDate: now.toISOString(),
+        endDate,
+        status: 'active',
+        paymentMethod: 'free',
+        updatedAt: serverTimestamp()
+    };
+
+    if (planId === 'trial') {
+        payload.trialUsed = true;
+        payload.trialUsedAt = now.toISOString();
+    }
+
+    await setDoc(doc(db, "subscriptions", phone), payload, { merge: true });
+
+    await updateDoc(doc(db, "teachers", phone), {
+        subscriptionPlan: planId,
+        subscriptionStatus: 'active',
+        subscriptionEnd: endDate,
+        isPremium: planId === 'trial'
+    });
+
+    return { planId, startDate: now.toISOString(), endDate };
+}
+
+export async function getTeacherSubscription(phone) {
+    try {
+        const snap = await getDoc(doc(db, "subscriptions", phone));
+        if (!snap.exists()) return null;
+        const data = snap.data();
+        
+        if (data.endDate && new Date(data.endDate) < new Date() && data.status === 'active') {
+            await updateDoc(doc(db, "subscriptions", phone), {
+                status: 'expired',
+                updatedAt: serverTimestamp()
+            });
+            data.status = 'expired';
+        }
+        return data;
+    } catch (e) {
+        console.error('خطأ جلب الاشتراك:', e);
+        return null;
+    }
+}
+
+export async function isSubscriptionActive(phone) {
+    const sub = await getTeacherSubscription(phone);
+    if (!sub) return false;
+    if (sub.planId === 'free') return true;
+    if (sub.status !== 'active') return false;
+    if (!sub.endDate) return true;
+    return new Date(sub.endDate) > new Date();
+}
+
+export async function hasUsedTrial(phone) {
+    try {
+        const snap = await getDoc(doc(db, "subscriptions", phone));
+        if (!snap.exists()) return false;
+        const data = snap.data();
+        return data.trialUsed === true || data.planId === 'trial';
+    } catch {
+        return false;
+    }
+}
+
+export async function getMyPendingRequest(phone) {
+    const q = query(
+        collection(db, "subscription_requests"), 
+        where("phone", "==", phone),
+        where("status", "==", "pending")
+    );
+    const snap = await getDocs(q);
+    return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
+}
+
+export function subscribeSubscriptionRequests(callback) {
+    return onSnapshot(collection(db, "subscription_requests"), (snap) => {
+        const requests = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => (b.requestedAt?.seconds || 0) - (a.requestedAt?.seconds || 0));
+        callback(requests);
+    }, (error) => {
+        console.error('خطأ في الاستماع للطلبات:', error);
         callback([]);
     });
 }
