@@ -574,8 +574,8 @@ tr.locked td{background:#FEF2F2}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين</h2>
       <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
-        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
-        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 محظور</span>
+        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم نشط</span>
+        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🚫 المحظورون لا يظهرون</span>
       </div>
     </div>
     <div id="teachersMap"></div>
@@ -1346,6 +1346,9 @@ function initStudentsMap() {
   }).addTo(window._studentsMap);
 }
 
+// ==========================================================
+// ✅ renderMap مع فلترة المعلمين المحظورين
+// ==========================================================
 function renderMap() {
   initTeachersMap();
   initStudentsMap();
@@ -1356,17 +1359,24 @@ function renderMap() {
   let teacherCount = 0;
   const addedTeachers = new Set();
 
+  // ✅ مجموعة أرقام المعلمين المحظورين — لا يظهرون على الخريطة
+  const lockedTeachersSet = new Set(
+    allTeachers.filter(t => t.isLocked === true).map(t => t.id || t.phone)
+  );
+
   allGroups.forEach(g => {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
     if (addedTeachers.has(phone)) return;
+
+    // ✅ تخطي المعلم المحظور
+    if (lockedTeachersSet.has(phone)) return;
     
     const teacher = allTeachers.find(t => (t.id || t.phone) === phone) || { name: g.teacherName, title: g.teacherTitle };
-    const locked = teacher.isLocked === true;
     const waClicks = Number(teacher.waClicks) || 0;
     const bookings = Number(teacher.bookingsCount) || 0;
     
-    const iconHtml = `<div class="marker-admin teacher ${locked ? 'locked' : ''}">👨‍🏫</div>`;
+    const iconHtml = `<div class="marker-admin teacher">👨‍🏫</div>`;
     const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
     const m = L.marker([g.lat, g.lng], { icon });
     m.bindPopup(`
@@ -1382,7 +1392,6 @@ function renderMap() {
           <a href="https://wa.me/2${phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
           <a href="tel:${phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
         </div>
-        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
       </div>
     `);
     teachersMarkersLayer.addLayer(m);
@@ -1397,10 +1406,12 @@ function renderMap() {
     if (addedTeachers.has(phone)) return;
     if (!t.lat || !t.lng) return;
 
-    const locked = t.isLocked === true;
+    // ✅ تخطي المعلم المحظور
+    if (t.isLocked === true) return;
+
     const waClicks = Number(t.waClicks) || 0;
     const bookings = Number(t.bookingsCount) || 0;
-    const iconHtml = `<div class="marker-admin teacher ${locked ? 'locked' : ''}">👨‍🏫</div>`;
+    const iconHtml = `<div class="marker-admin teacher">👨‍🏫</div>`;
     const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
     const m = L.marker([t.lat, t.lng], { icon });
     m.bindPopup(`
@@ -1415,7 +1426,6 @@ function renderMap() {
           <a href="https://wa.me/2${phone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
           <a href="tel:${phone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
         </div>
-        ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
       </div>
     `);
     teachersMarkersLayer.addLayer(m);
