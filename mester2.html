@@ -1513,44 +1513,40 @@
               daysLeft
           };
 
-          if (active) {
-              // ✅ اشتراك نشط
-              const plan = SUBSCRIPTION_PLANS[sub?.planId];
+          // ═══════════════════════════════════════════
+          // ✅ البانر الأحمر تم إلغاؤه نهائياً
+          // ═══════════════════════════════════════════
 
-              // لو باقة تجريبية أو قرب ينتهي (أقل من 7 أيام) → أظهر تحذير أصفر
-              if (sub?.planId === 'trial' || (daysLeft !== null && daysLeft <= 7 && daysLeft > 0)) {
-                  banner.className = 'subscription-banner show warning';
-                  icon.textContent = sub?.planId === 'trial' ? '🎁' : '⏰';
-                  title.textContent = sub?.planId === 'trial' 
-                      ? `باقة تجريبية — باقي ${daysLeft} يوم` 
-                      : `اشتراكك ينتهي قريباً — باقي ${daysLeft} يوم`;
-                  msg.textContent = 'قم بالترقية الآن للاستمرار بدون توقف';
-                  btn.innerHTML = '💎 ترقية الباقة';
-                  btn.href = 'subscription.html';
-              } 
-              // لو باقة مجانية → أظهر تنبيه بسيط بمحدودية الميزات
-              else if (sub?.planId === 'free') {
-                  banner.className = 'subscription-banner show warning';
-                  icon.textContent = '🆓';
-                  title.textContent = 'أنت على الباقة المجانية';
-                  msg.textContent = 'محدودة بمجموعة واحدة وحتى 15 طالب';
-                  btn.innerHTML = '💎 ترقية';
-                  btn.href = 'subscription.html';
-              }
-              // باقي الحالات (باقات مدفوعة نشطة) → نخفي البانر
-              else {
-                  banner.className = 'subscription-banner';
-              }
-          } else {
-              // 🚫 لا يوجد اشتراك نشط → أظهر بانر أحمر
-              banner.className = 'subscription-banner show danger';
-              icon.textContent = '🚫';
-              title.textContent = sub?.status === 'expired' 
-                  ? 'اشتراكك منتهي!' 
-                  : 'لا يوجد اشتراك نشط!';
-              msg.textContent = 'يجب اختيار باقة لتتمكن من نشر المواعيد';
-              btn.innerHTML = '💎 اختر باقة الآن';
+          if (!active) {
+              // 🚫 لا يوجد اشتراك → نخفي البانر تماماً (لا يظهر أي تنبيه)
+              banner.className = 'subscription-banner';
+              return;
+          }
+
+          // ✅ اشتراك نشط → نعرض التنبيهات الخفيفة فقط
+          if (sub?.planId === 'trial' || (daysLeft !== null && daysLeft <= 7 && daysLeft > 0)) {
+              // 🟡 تحذير أصفر: باقة تجريبية أو قرب ينتهي
+              banner.className = 'subscription-banner show warning';
+              icon.textContent = sub?.planId === 'trial' ? '🎁' : '⏰';
+              title.textContent = sub?.planId === 'trial' 
+                  ? `باقة تجريبية — باقي ${daysLeft} يوم` 
+                  : `اشتراكك ينتهي قريباً — باقي ${daysLeft} يوم`;
+              msg.textContent = 'قم بالترقية الآن للاستمرار بدون توقف';
+              btn.innerHTML = '💎 ترقية الباقة';
               btn.href = 'subscription.html';
+          } 
+          else if (sub?.planId === 'free') {
+              // 🟡 تحذير أصفر: باقة مجانية
+              banner.className = 'subscription-banner show warning';
+              icon.textContent = '🆓';
+              title.textContent = 'أنت على الباقة المجانية';
+              msg.textContent = 'محدودة بمجموعة واحدة وحتى 15 طالب';
+              btn.innerHTML = '💎 ترقية';
+              btn.href = 'subscription.html';
+          }
+          else {
+              // ✅ باقة مدفوعة نشطة → نخفي البانر
+              banner.className = 'subscription-banner';
           }
       } catch (e) {
           console.error('خطأ فحص الاشتراك:', e);
