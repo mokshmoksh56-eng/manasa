@@ -2953,12 +2953,20 @@ window.renderSubscriptionsTeachersList = function() {
         const timelineHtml = buildSubscriptionTimeline(t);
         const isOpen = openCards.has(phone);
 
-        // ✅ نص الشارة المختصرة
-        const compactStatus = statusInfo.status === 'locked' ? '🚫'
-                            : statusInfo.status === 'expired' ? '⏰'
-                            : statusInfo.status === 'permanent' ? '♾️'
-                            : statusInfo.label.match(/باقي \d+ يوم/)?.[0]?.replace('باقي','⏳')
-                            : '✅';
+        // ✅ نص الشارة المختصرة (بدون ternary معقد)
+        let compactStatus = '✅';
+        if (statusInfo.status === 'locked') {
+            compactStatus = '🚫';
+        } else if (statusInfo.status === 'expired') {
+            compactStatus = '⏰';
+        } else if (statusInfo.status === 'permanent') {
+            compactStatus = '♾️';
+        } else {
+            const match = statusInfo.label.match(/باقي\s*\d+\s*يوم/);
+            if (match) {
+                compactStatus = '⏳ ' + match[0].replace('باقي', '').trim();
+            }
+        }
 
         return `
             <div class="teacher-sub-card ${isOpen ? 'open' : ''} ${hasContactReq ? 'contact-pending' : ''}"
