@@ -124,6 +124,44 @@
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
     }
 
+    /* 🏫 حقل اسم السنتر الديناميكي */
+    #center-name-group {
+        animation: slideDownFade 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes slideDownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+            max-height: 0;
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 200px;
+        }
+    }
+
+    #center-name-group .form-control {
+        background: linear-gradient(160deg, #e0f2f0 0%, #f1f5f9 100%);
+        border-color: var(--border-teal);
+        border-top-color: var(--primary-teal);
+        font-weight: 900;
+        color: var(--dark-teal);
+    }
+    #center-name-group .form-control:focus {
+        background: #fff;
+        border-color: var(--primary-teal);
+        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.2), 0 0 0 4px rgba(37, 150, 139, 0.12);
+    }
+    #center-name-group label {
+        color: var(--dark-teal);
+        font-weight: 900;
+    }
+    #center-name-group .step-num {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
     /* تنسيقات كروت الاختيار مع الأيقونات بظل 3D */
     .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .cards-grid input[type="radio"] { display: none; }
@@ -297,7 +335,7 @@
     
     .days-wrapper { position: relative; overflow: hidden; background: #e2e8f0; padding-top: 1px; touch-action: pan-y; }
     .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
-    .days div.cell { background: var(--white); min-height: 75px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text-dark); font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
+    .days div.cell { background: var(--white); min-height: 110px; padding: 8px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text-dark); font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
     .days div.cell:hover { background: #f8fafc !important; }
     .days div.cell:nth-child(7n), .days div.cell:nth-child(7n-1) { background: #fafbfc; }
     .days div.cell.out-of-month { background: #f1f5f9 !important; color: #cbd5e1; }
@@ -313,10 +351,10 @@
     }
     .days div.cell.past-cell:hover { background: #f8fafc !important; }
 
-    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; }
+    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 15px; }
     .cell.today-cell .date-number { background: var(--dark-teal); color: var(--white); box-shadow: 0 2px 4px rgba(27, 115, 106, 0.3); }
     .cell.selected-cell { box-shadow: inset 0 0 0 3px var(--primary-teal); background: var(--light-teal) !important;}
-    .badge { position: absolute; bottom: 5px; left: 5px; background: var(--primary-teal); color: var(--white); font-size: 10px; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(37, 150, 139, 0.4); }
+    .badge { position: absolute; bottom: 8px; left: 8px; background: var(--primary-teal); color: var(--white); font-size: 11px; font-weight: 900; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(37, 150, 139, 0.4); }
     .swipe-hint { text-align: center; font-size: 13px; font-weight: 800; color: var(--text-gray); margin-top: 10px; }
 
     .slide-out-left { animation: slideOutLeft 0.3s forwards; }
@@ -346,58 +384,417 @@
     .summary-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; flex-wrap: wrap; gap: 10px; }
     .summary-section-title { color: var(--dark-teal); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .summary-total-badge { background: var(--light-teal); color: var(--dark-teal); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 1px solid var(--border-teal); box-shadow: 0 2px 6px rgba(37, 150, 139, 0.1); }
-    .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
-    
+    .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
+
+    /* ========================================== */
+    /* 🎨 كروت المواعيد الملونة بألوان صريحة */
+    /* ========================================== */
     .summary-card { 
         background: var(--white); 
-        border: 1px solid #e2e8f0; 
         border-radius: 14px; 
-        padding: 16px; 
+        padding: 0; 
         display: flex; 
         flex-direction: column; 
-        justify-content: space-between; 
-        gap: 12px; 
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05), 0 2px 5px rgba(0, 0, 0, 0.03); 
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04); 
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; 
+        position: relative;
+        border: 2px solid #e2e8f0;
     }
+
     .summary-card:hover { 
-        transform: translateY(-6px) scale(1.01); 
-        box-shadow: 0 20px 30px rgba(37, 150, 139, 0.12), 0 8px 12px rgba(0,0,0,0.06); 
-        border-color: var(--primary-teal); 
+        transform: translateY(-6px); 
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15); 
     }
-    
-    .summary-card.recurring-border { border-top: 4px solid var(--dark-teal); }
-    .summary-card.normal-border { border-top: 4px solid var(--primary-teal); }
-    .sc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-    .sc-group-name { font-size: 17px; font-weight: 900; color: var(--text-dark); }
-    .sc-teacher { font-size: 14px; color: var(--text-gray); font-weight: 800; margin-top: 2px; }
-    .sc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .badge-status { font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .badge-status.online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-status.hidden-student { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-    .badge-status.visible-student { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-    .badge-status.draft { background: #f8fafc; color: var(--text-gray); border: 1px solid #e2e8f0; }
-    .badge-status.recurring { background: var(--light-teal); color: var(--dark-teal); border: 1px solid var(--border-teal); }
-    .sc-time-banner { background: var(--light-teal); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border-teal); display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 900; box-shadow: inset 0 2px 4px rgba(37, 150, 139, 0.03); }
-    .sc-time-banner .time-text { color: var(--dark-teal); }
-    .sc-time-banner .duration-pill { background: var(--white); color: var(--primary-teal); padding: 2px 8px; border-radius: 6px; font-size: 12px; border: 1px solid var(--border-teal); box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-    .sc-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: #f8fafc; border-radius: 10px; padding: 12px; font-size: 13px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); }
-    .sc-detail-item { display: flex; align-items: center; gap: 6px; color: var(--text-gray); font-weight: 800; }
-    .sc-detail-item.full { grid-column: span 2; }
-    .sc-detail-item .val { font-weight: 900; color: var(--text-dark); }
-    .sc-footer-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 2px dashed #e2e8f0; padding-top: 12px; flex-wrap: wrap; }
-    .sc-actions-sub { display: flex; gap: 6px; }
-    .btn-action { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 900; padding: 7px 12px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .btn-edit { background: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; }
-    .btn-edit:hover { background: #e2e8f0; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
-    .btn-delete { background: #fee2e2; color: #b91c1c; }
-    .btn-delete:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(220, 38, 38, 0.15); }
-    .btn-publish { background: var(--primary-teal); color: var(--white); box-shadow: 0 3px 8px rgba(37, 150, 139, 0.2); }
-    .btn-publish:hover { background: var(--dark-teal); transform: translateY(-1px); box-shadow: 0 5px 12px rgba(37, 150, 139, 0.3); }
-    .btn-published { background: var(--dark-teal); color: var(--white); cursor: pointer; }
-    .btn-published:hover { background: var(--primary-teal); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(37, 150, 139, 0.25); }
-    .btn-toggle-vis { background: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; font-size: 12px; padding: 7px 10px; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .btn-toggle-vis:hover { background: #e2e8f0; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+
+    .summary-card.recurring-card {
+        border-color: #8b5cf6;
+        background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%);
+    }
+    .summary-card.recurring-card .sc-top-strip {
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    }
+
+    .summary-card.normal-card {
+        border-color: #3b82f6;
+        background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%);
+    }
+    .summary-card.normal-card .sc-top-strip {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    }
+
+    .summary-card.visible-card {
+        border-color: #16a34a;
+        background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%);
+    }
+    .summary-card.visible-card .sc-top-strip {
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+    }
+
+    .summary-card.hidden-card {
+        border-color: #dc2626;
+        background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%);
+        opacity: 0.95;
+    }
+    .summary-card.hidden-card .sc-top-strip {
+        background: linear-gradient(90deg, #dc2626, #f87171);
+    }
+    .summary-card.hidden-card .sc-group-name {
+        color: #991b1b;
+    }
+
+    .sc-top-strip {
+        height: 8px;
+        width: 100%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .sc-status-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 12px 14px 0;
+    }
+
+    .badge-status { 
+        font-size: 11px; 
+        font-weight: 900; 
+        padding: 5px 10px; 
+        border-radius: 20px; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 4px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        letter-spacing: 0.2px;
+    }
+    .badge-status.online { 
+        background: #16a34a; 
+        color: #fff; 
+        border: 1px solid #15803d;
+        animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+        0%, 100% { box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
+        50% { box-shadow: 0 2px 15px rgba(22, 163, 74, 0.8); }
+    }
+
+    .badge-status.recurring { 
+        background: #8b5cf6; 
+        color: #fff; 
+        border: 1px solid #7c3aed; 
+    }
+    .badge-status.one-time { 
+        background: #3b82f6; 
+        color: #fff; 
+        border: 1px solid #2563eb; 
+    }
+
+    /* 🌟 رسالة الحالة (ظاهر / مخفي) */
+    .status-message {
+        margin: 0 14px 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .status-message::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+    }
+    .status-message.visible-msg {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        color: #14532d;
+        border: 2px solid #16a34a;
+    }
+    .status-message.visible-msg::before {
+        background: #16a34a;
+    }
+    .status-message.hidden-msg {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #7f1d1d;
+        border: 2px solid #dc2626;
+        animation: pulse-red 2s infinite;
+    }
+    .status-message.hidden-msg::before {
+        background: #dc2626;
+    }
+    @keyframes pulse-red {
+        0%, 100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
+        50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6); }
+    }
+    .status-message .status-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    .status-message .status-text {
+        flex: 1;
+        line-height: 1.4;
+    }
+    .status-message .status-text strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 2px;
+    }
+    .status-message .status-text small {
+        font-size: 12px;
+        font-weight: 700;
+        opacity: 0.85;
+    }
+
+    .sc-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        gap: 10px; 
+        padding: 8px 14px 12px;
+    }
+    .sc-group-name { 
+        font-size: 18px; 
+        font-weight: 900; 
+        color: var(--text-dark); 
+        line-height: 1.3;
+    }
+    .sc-teacher { 
+        font-size: 13px; 
+        color: var(--text-gray); 
+        font-weight: 800; 
+        margin-top: 3px; 
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: center;
+    }
+    .sc-teacher .center-tag {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        color: #1b736a;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        border: 1px solid #b2dfdb;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .sc-subject-block {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin: 0 14px 10px;
+        text-align: center;
+        font-weight: 900;
+        color: #92400e;
+        font-size: 14px;
+        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.2);
+    }
+    .sc-subject-block .subject-icon {
+        font-size: 16px;
+        margin-left: 4px;
+    }
+
+    .sc-time-banner { 
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-radius: 10px; 
+        padding: 12px 14px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        font-size: 14px; 
+        font-weight: 900; 
+        margin: 0 14px 12px;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(30, 41, 59, 0.3);
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .sc-time-banner .time-text { 
+        color: #fff; 
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .sc-time-banner .duration-pill { 
+        background: #fbbf24; 
+        color: #78350f; 
+        padding: 3px 10px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: 900;
+        box-shadow: 0 2px 5px rgba(251, 191, 36, 0.4);
+    }
+
+    .sc-details-grid { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 8px; 
+        background: #f8fafc; 
+        border-radius: 10px; 
+        padding: 12px; 
+        font-size: 13px; 
+        margin: 0 14px 12px;
+        border: 1px solid #e2e8f0;
+    }
+    .sc-detail-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        color: var(--text-gray); 
+        font-weight: 800; 
+        padding: 6px 8px;
+        background: #fff;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+    .sc-detail-item.full { 
+        grid-column: span 2; 
+    }
+    .sc-detail-item .val { 
+        font-weight: 900; 
+        color: var(--text-dark); 
+    }
+    .sc-detail-item.address-item {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border-color: #6ee7b7;
+        color: #065f46;
+    }
+    .sc-detail-item.address-item .val {
+        color: #065f46;
+    }
+    .sc-detail-item.detailed-address-item {
+        background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        border-color: #fcd34d;
+        color: #92400e;
+    }
+    .sc-detail-item.detailed-address-item .val {
+        color: #92400e;
+    }
+    .sc-detail-item.center-item {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        border-color: #25968b;
+        color: #1b736a;
+    }
+    .sc-detail-item.center-item .val {
+        color: #1b736a;
+    }
+
+    .sc-footer-actions { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        gap: 8px; 
+        padding: 12px 14px; 
+        background: #f8fafc;
+        border-top: 2px solid #e2e8f0;
+        flex-wrap: wrap; 
+    }
+    .sc-actions-sub { 
+        display: flex; 
+        gap: 6px; 
+    }
+    .btn-action { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 5px; 
+        font-size: 12px; 
+        font-weight: 900; 
+        padding: 8px 12px; 
+        border-radius: 8px; 
+        border: none; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        font-family: inherit; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+    }
+    .btn-edit { 
+        background: #f1f5f9; 
+        color: #334155; 
+        border: 1px solid #cbd5e1; 
+    }
+    .btn-edit:hover { 
+        background: #e2e8f0; 
+        transform: translateY(-2px); 
+    }
+    .btn-delete { 
+        background: #fee2e2; 
+        color: #b91c1c; 
+        border: 1px solid #fecaca;
+    }
+    .btn-delete:hover { 
+        background: #fecaca;
+        transform: translateY(-2px); 
+    }
+
+    .btn-visibility {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 900;
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: inherit;
+        color: #fff;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .btn-visibility.hide-state {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+    .btn-visibility.hide-state:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
+    }
+    .btn-visibility.show-state {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+        animation: pulse-show 2s infinite;
+    }
+    .btn-visibility.show-state:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6);
+    }
+    @keyframes pulse-show {
+        0%, 100% { box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
+        50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.8); }
+    }
+
+    .btn-view-details {
+        background: linear-gradient(135deg, #25968b, #1b736a);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 3px 8px rgba(37, 150, 139, 0.3);
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+    .btn-view-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.5);
+    }
+
     .empty-cards-state { text-align: center; padding: 40px 20px; color: var(--text-gray); font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
 
     .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
@@ -424,9 +821,10 @@
     .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px dashed #e2e8f0; display: flex; flex-direction: column; }
     .publish-data-item:last-child { border-bottom: none; }
     .publish-data-label { color: var(--text-gray); font-weight: 900; font-size: 13px; margin-bottom: 4px; }
-    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex-wrap: wrap; }
     .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; box-shadow: inset 0 2px 4px rgba(37, 150, 139, 0.04); }
     .publish-data-value.address-detail { background: #FFFBEB; border-color: #FCD34D; color: #92400E; display: block; box-shadow: inset 0 2px 4px rgba(217, 119, 6, 0.04); }
+    .publish-data-value.center-value { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); color: #1b736a; border-color: #b2dfdb; }
     .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; display: flex; gap: 10px; }
     .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: all 0.2s; box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
     .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
@@ -472,8 +870,15 @@
     @media (max-width: 768px) {
         .form-grid-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
         .booking-card { padding: 16px; }
-        .days div.cell { min-height: 60px; font-size: 13px; padding: 2px; }
+        .days div.cell { min-height: 85px; font-size: 13px; padding: 5px; }
         .appts-cards-grid { grid-template-columns: 1fr; }
+        .sc-details-grid { grid-template-columns: 1fr; }
+        .sc-detail-item.full { grid-column: span 1; }
+        .sc-footer-actions { flex-direction: column; }
+        .sc-actions-sub { width: 100%; }
+        .btn-visibility { width: 100%; }
+        .status-message { font-size: 13px; padding: 10px 12px; }
+        .status-message .status-icon { font-size: 20px; }
     }
 </style>
 </head>
@@ -535,26 +940,34 @@
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
-        <!-- Row 1: اسم المجموعة & اسم المستر -->
+        <!-- Row 1: اسم المجموعة + اسم السنتر (ديناميكي) + اسم المستر -->
         <div class="form-grid-row">
           <div class="form-group">
             <label><span class="step-num">1</span> اسم المجموعة</label>
             <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة هنا">
           </div>
-          <div class="form-group">
-            <label><span class="step-num">2</span> اسم المستر / السنتر</label>
-            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو المركز">
+          
+          <!-- 🏫 حقل اسم السنتر (يظهر فقط عند اختيار السنتر) -->
+          <div class="form-group" id="center-name-group" style="display: none;">
+            <label><span class="step-num" id="center-step-num">2</span> اسم السنتر</label>
+            <input type="text" id="center-name" class="form-control" placeholder="مثال: سنتر النخبة التعليمي">
+          </div>
+          
+          <!-- 👨‍🏫 حقل اسم المستر (يظهر دائماً) -->
+          <div class="form-group" id="teacher-name-group">
+            <label><span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر</label>
+            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو اسم المركز">
           </div>
         </div>
 
         <!-- Row 2: العدد & الفئات -->
         <div class="form-grid-row">
           <div class="form-group">
-            <label><span class="step-num">3</span> العدد المطلوب (السعة)</label>
+            <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب (السعة)</label>
             <input type="number" id="students-count" class="form-control" placeholder="مثال: 20" min="1" value="20">
           </div>
           <div class="form-group">
-            <label><span class="step-num">4</span> الفئات المسموح بها</label>
+            <label><span class="step-num" id="gender-num">4</span> الفئات المسموح بها</label>
             <div class="cards-grid">
               <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
               <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد فقط</label></div>
@@ -566,16 +979,16 @@
         <!-- Row 3: المكان & الموقع -->
         <div class="form-grid-row">
           <div class="form-group full-width">
-            <label><span class="step-num">5</span> مكان الدرس</label>
+            <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
             <div class="cards-grid">
-              <div><input type="radio" name="location" id="loc-center" value="السنتر" checked><label for="loc-center"><i>🏫</i> السنتر</label></div>
-              <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
-              <div><input type="radio" name="location" id="loc-student" value="منزل الطالب"><label for="loc-student"><i>🚗</i> منزل الطالب</label></div>
+              <div><input type="radio" name="location" id="loc-center" value="السنتر" checked onchange="toggleCenterNameField()"><label for="loc-center"><i>🏫</i> السنتر</label></div>
+              <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر" onchange="toggleCenterNameField()"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
+              <div><input type="radio" name="location" id="loc-student" value="منزل الطالب" onchange="toggleCenterNameField()"><label for="loc-student"><i>🚗</i> منزل الطالب</label></div>
             </div>
           </div>
           
           <div class="form-group full-width">
-            <label><span class="step-num">6</span> الموقع الجغرافي واسم الشارع</label>
+            <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي واسم الشارع</label>
             <!-- 🗺️ خريطة Leaflet -->
             <div id="map-container">
               <div id="map"></div>
@@ -611,7 +1024,7 @@
 
         <!-- Section 7: توقيت الحصة -->
         <div class="form-section-title" style="margin-top: 15px;">
-            <span class="step-num-lg">7</span> توقيت الحصة
+            <span class="step-num-lg" id="time-num">7</span> توقيت الحصة
         </div>
         <div class="time-row-cal">
           <div class="form-group">
@@ -634,7 +1047,7 @@
         <!-- Section 8: جدول التقويم -->
         <div class="calendar-container-block">
             <div class="selected-day-banner">
-              <span class="title"><span class="step-num-lg">8</span> تحديد اليوم من التقويم</span>
+              <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم من التقويم</span>
               <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
             </div>
 
@@ -755,6 +1168,52 @@
       }
       return '';
   }
+
+  // ==========================================
+  // 🏫 إظهار/إخفاء حقل اسم السنتر حسب مكان الدرس
+  // ==========================================
+  window.toggleCenterNameField = function() {
+      const locationValue = document.querySelector('input[name="location"]:checked').value;
+      const centerGroup = document.getElementById('center-name-group');
+      const centerInput = document.getElementById('center-name');
+      const teacherLabel = document.getElementById('teacher-name-group').querySelector('label');
+      const teacherInput = document.getElementById('teacher-name');
+      
+      if (locationValue === 'السنتر') {
+          // 🏫 إظهار حقل اسم السنتر
+          centerGroup.style.display = 'block';
+          centerInput.required = true;
+          
+          // تحديث عناوين الحقول
+          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">3</span> اسم المستر';
+          teacherInput.placeholder = 'أدخل اسمك هنا';
+          
+          // تحديث أرقام باقي الخطوات
+          document.getElementById('students-count-num').textContent = '4';
+          document.getElementById('gender-num').textContent = '5';
+          document.getElementById('location-num').textContent = '6';
+          document.getElementById('map-num').textContent = '7';
+          document.getElementById('time-num').textContent = '8';
+          document.getElementById('cal-num').textContent = '9';
+      } else {
+          // 🏠 إخفاء حقل اسم السنتر
+          centerGroup.style.display = 'none';
+          centerInput.required = false;
+          centerInput.value = '';
+          
+          // إعادة عناوين الحقول
+          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر';
+          teacherInput.placeholder = 'أدخل اسمك أو اسم المركز';
+          
+          // إعادة أرقام باقي الخطوات
+          document.getElementById('students-count-num').textContent = '3';
+          document.getElementById('gender-num').textContent = '4';
+          document.getElementById('location-num').textContent = '5';
+          document.getElementById('map-num').textContent = '6';
+          document.getElementById('time-num').textContent = '7';
+          document.getElementById('cal-num').textContent = '8';
+      }
+  };
 
   // ==========================================
   // 🗺️ تهيئة خريطة Leaflet وتأكيد المكان
@@ -899,7 +1358,6 @@
   let editingAppt = null;
   let isAnimating = false;
 
-  // ✅ الاعتماد الكامل على Firebase فقط - لا يوجد تخزين محلي
   window.onlineAppointments = {};
   window.onlineRecurring = {};
 
@@ -974,7 +1432,6 @@
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 
-  // ✅ الاعتماد الكامل على Firebase فقط لجلب مواعيد اليوم
   function getDayAppointments(year, month, day) {
     const key = dateKey(year, month, day);
     const dayOfWeek = new Date(year, month, day).getDay();
@@ -1174,7 +1631,6 @@
     renderCalendar();
   }
 
-  // ✅ جلب البيانات من Firebase فقط
   window.loadLocalPublishedSlots = async function() {
       try {
           const teacherPhone = localStorage.getItem('current_teacher_phone');
@@ -1186,7 +1642,6 @@
           const groups = await getAllGroups(); 
           const myGroups = groups.filter(g => g.phone === teacherPhone);
 
-          // ✅ إعادة تعيين البيانات السحابية بالكامل
           window.onlineAppointments = {};
           window.onlineRecurring = {};
 
@@ -1225,20 +1680,26 @@
       }
   };
 
-  // ✅ نشر مباشر على Firebase (لا يوجد تخزين محلي)
   window.publishSingleApptOnline = async function(appt) {
       const groupName = appt.groupName || document.getElementById('group-name').value.trim();
       const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
+      const centerName = appt.centerName || document.getElementById('center-name')?.value.trim() || '';
       const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
 
       if (!groupName || !teacherName || !studentsCount) {
           alert('⚠️️ يرجى التأكد من استكمال اسم المجموعة واسم المستر والعدد المطلوب قبل النشر.');
           return;
       }
+      
+      const locationChecked = appt.location || document.querySelector('input[name="location"]:checked').value;
+      if (locationChecked === 'السنتر' && !centerName) {
+          alert('⚠️️ يرجى تعبئة اسم السنتر قبل النشر.');
+          return;
+      }
 
       const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
       const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
-      const location = appt.location || document.querySelector('input[name="location"]:checked').value;
+      const location = locationChecked;
       const gpsLocation = document.getElementById('gps-coords').value;
       const street = appt.street || document.getElementById('location-text').dataset.street || '';
       const detailedAddress = appt.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '';
@@ -1274,6 +1735,7 @@
 
       const classPayload = {
           teacherName: teacherName,
+          centerName: centerName,
           teacherTitle: teacherTitle,
           subject: subjectData.replace(/الصف:.*?\|/g, '').replace(/المواد:\s*/g, '').trim(),
           grade: grade,
@@ -1302,7 +1764,6 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          // ✅ إعادة تحميل من Firebase مباشرة (لا تخزين محلي)
           await window.loadLocalPublishedSlots();
           showPublishModalDetails(classPayload);
       } catch (error) {
@@ -1343,7 +1804,6 @@
       }
   };
 
-  // ✅ حذف مباشر من Firebase (لا يوجد تخزين محلي)
   window.deleteAppointmentOnline = async function(appt) {
       if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
 
@@ -1373,24 +1833,42 @@
       const detailedAddress = data.detailedAddress || '';
       const fullAddress = data.fullAddress || '';
 
-      let visibilityHtml = isVisible 
-          ? `<span style="color:#0284c7; font-weight:900;">👁 ظاهر للطلبة (الطلاب يمكنهم رؤيته والحجز)</span>`
-          : `<span style="color:#b91c1c; font-weight:900;">🙈 مخفي عن الطلبة (مخفي من تطبيق الطلاب)</span>`;
+      const statusMessageHtml = isVisible 
+          ? `<div class="status-message visible-msg">
+                <span class="status-icon">👁️</span>
+                <div class="status-text">
+                    <strong>أنت الآن ظاهر للطلبة</strong>
+                    <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها حالياً</small>
+                </div>
+             </div>`
+          : `<div class="status-message hidden-msg">
+                <span class="status-icon">🙈</span>
+                <div class="status-text">
+                    <strong>أنت الآن مخفي عن الطلبة</strong>
+                    <small>هذه المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                </div>
+             </div>`;
 
       document.getElementById('publishModalContent').innerHTML = `
+          ${statusMessageHtml}
           <div class="publish-data-item">
               <span class="publish-data-label">حالة الظهور للطلبة:</span>
               <div class="publish-data-value">
-                  ${visibilityHtml}
-                  <button class="btn-toggle-vis" onclick="window.toggleVisibilityOnline('${data.id || data.slotId}')">
+                  <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'}" onclick="window.toggleVisibilityOnline('${data.id || data.slotId}')">
                       ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
                   </button>
               </div>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">اسم المستر / السنتر:</span>
-              <span class="publish-data-value">${data.teacherName || 'غير محدد'}</span>
+              <span class="publish-data-label">اسم المستر:</span>
+              <span class="publish-data-value">👤 ${data.teacherName || 'غير محدد'}</span>
           </div>
+          ${data.centerName ? `
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم السنتر:</span>
+              <span class="publish-data-value center-value">🏫 ${data.centerName}</span>
+          </div>
+          ` : ''}
           <div class="publish-data-item">
               <span class="publish-data-label">المادة والصف:</span>
               <span class="publish-data-value">${data.subjectData || (data.grade + ' | ' + data.subject) || 'غير محدد'}</span>
@@ -1431,7 +1909,6 @@
       document.getElementById('publishModalOverlay').classList.add('active');
   }
 
-  // ✅ عرض الكروت من Firebase فقط (لا يوجد تخزين محلي)
   function renderAllCardsSummary() {
     const grid = document.getElementById('summaryCardsGrid');
     const badge = document.getElementById('summaryTotalBadge');
@@ -1466,13 +1943,16 @@
     allItems.forEach(item => {
         const card = document.createElement('div');
         const isRec = item.appointment ? item.appointment.type === 'recurring' : item.type === 'recurring';
+        const isVisible = item.isActive !== undefined ? item.isActive : item.isVisible;
+        
         card.classList.add('summary-card');
-        card.classList.add(isRec ? 'recurring-border' : 'normal-border');
+        card.classList.add(isRec ? 'recurring-card' : 'normal-card');
+        card.classList.add(isVisible ? 'visible-card' : 'hidden-card');
 
         const startTimeStr = item.startTime || item.start;
         const endTimeStr = item.endTime || item.end;
         const dur = calculateDuration(startTimeStr, endTimeStr);
-        const durBadge = dur ? `<span class="duration-pill">${dur}</span>` : '';
+        const durBadge = dur ? `<span class="duration-pill">⏱ ${dur}</span>` : '';
         
         let locIcon = '🏫';
         if (item.location === 'بيت المستر' || item.type === 'teacher_home') locIcon = '🏠';
@@ -1482,74 +1962,113 @@
         if (item.genderAllowed === 'أولاد فقط' || item.gender === 'boys') genderIcon = '👨‍🎓';
         if (item.genderAllowed === 'بنات فقط' || item.gender === 'girls') genderIcon = '👩‍🎓';
 
-        let visibilityBadge = '';
-        if (item.isOnline) {
-            const isVis = item.isActive !== undefined ? item.isActive : item.isVisible;
-            visibilityBadge = isVis 
-                ? '<span class="badge-status visible-student" title="يمكن للطلاب حجز هذه المجموعة">👁 ظاهر للطلبة</span>' 
-                : '<span class="badge-status hidden-student" title="مخفي من تطبيق الطالب">🙈 مخفي عن الطلبة</span>';
-        }
+        const typeBadge = isRec 
+            ? '<span class="badge-status recurring">🔁 أسبوعي</span>' 
+            : '<span class="badge-status one-time">📅 محدد</span>';
 
         const streetStr = item.street || item.address || '';
         const detailedStr = item.detailedAddress || '';
-        
-        let addressLine = '';
-        if (streetStr && detailedStr) {
-            addressLine = `<div class="sc-detail-item full"><span class="val">📍 ${streetStr} - <span style="color:#92400E;">${detailedStr}</span></span></div>`;
-        } else if (streetStr) {
-            addressLine = `<div class="sc-detail-item full"><span class="val">📍 ${streetStr}</span></div>`;
-        } else if (detailedStr) {
-            addressLine = `<div class="sc-detail-item full"><span class="val">📍 ${detailedStr}</span></div>`;
-        }
-
+        const subjectText = item.subjectData || (item.grade + ' | ' + item.subject) || 'المادة';
         const dayNameStr = item.appointment ? item.appointment.dayName : (item.daysNames ? item.daysNames[0] : '');
         const dateStr = item.appointment ? item.appointment.date : item.date;
+        const capacity = item.studentsCount || item.maxCapacity || 20;
+
+        let addressHtml = '';
+        if (streetStr) {
+            addressHtml += `<div class="sc-detail-item full address-item"><span>📍</span><span class="val">${streetStr}</span></div>`;
+        }
+        if (detailedStr) {
+            addressHtml += `<div class="sc-detail-item full detailed-address-item"><span>🏠</span><span class="val">${detailedStr}</span></div>`;
+        }
+        if (!addressHtml) {
+            addressHtml = `<div class="sc-detail-item full"><span>📍</span><span class="val">لم يتم تحديد العنوان</span></div>`;
+        }
+
+        // 🏫 بلوك اسم السنتر إذا موجود
+        const centerHtml = item.centerName 
+            ? `<div class="sc-detail-item full center-item"><span>🏫</span><span class="val">${item.centerName}</span></div>` 
+            : '';
+
+        const statusMessageHtml = isVisible 
+            ? `<div class="status-message visible-msg">
+                    <span class="status-icon">👁️</span>
+                    <div class="status-text">
+                        <strong>أنت الآن ظاهر للطلبة</strong>
+                        <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها</small>
+                    </div>
+               </div>`
+            : `<div class="status-message hidden-msg">
+                    <span class="status-icon">🙈</span>
+                    <div class="status-text">
+                        <strong>أنت الآن مخفي عن الطلبة</strong>
+                        <small>المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                    </div>
+               </div>`;
 
         card.innerHTML = `
+            <div class="sc-top-strip"></div>
+            
+            <div class="sc-status-row">
+                <span class="badge-status online">✅ منشور</span>
+                ${typeBadge}
+            </div>
+
             <div class="sc-header">
-                <div>
+                <div style="flex:1;">
                     <div class="sc-group-name">${item.groupName}</div>
-                    <div class="sc-teacher">${item.teacherName}</div>
-                </div>
-                <div class="sc-badges">
-                    <span class="badge-status online">منشور</span>
-                    ${visibilityBadge}
-                    ${isRec ? '<span class="badge-status recurring">أسبوعي</span>' : '<span class="badge-status" style="background:var(--light-teal); color:var(--dark-teal); border:1px solid var(--border-teal);">محدد</span>'}
+                    <div class="sc-teacher">
+                        👤 ${item.teacherName}
+                    </div>
                 </div>
             </div>
 
+            ${statusMessageHtml}
+
+            <div class="sc-subject-block">
+                <span class="subject-icon">📚</span> ${subjectText}
+            </div>
+
             <div class="sc-time-banner">
-                <span class="time-text">من ${formatTime(startTimeStr)} إلى ${formatTime(endTimeStr)}</span>
+                <span class="time-text">🕐 من ${formatTime(startTimeStr)} إلى ${formatTime(endTimeStr)}</span>
                 ${durBadge}
             </div>
 
             <div class="sc-details-grid">
-                <div class="sc-detail-item full">
-                    <span class="val">${item.subjectData || (item.grade + ' | ' + item.subject) || 'المادة'}</span>
-                </div>
-                ${addressLine}
+                ${centerHtml}
+                ${addressHtml}
+                
                 <div class="sc-detail-item">
-                    <span class="val">${isRec ? `كل يوم ${dayNameStr}` : `${dayNameStr} (${dateStr})`}</span>
+                    <span>📅</span>
+                    <span class="val">${isRec ? `كل ${dayNameStr}` : `${dayNameStr}`}</span>
                 </div>
+                ${!isRec && dateStr ? `<div class="sc-detail-item"><span>🗓</span><span class="val">${dateStr}</span></div>` : ''}
+                
                 <div class="sc-detail-item">
-                    <span class="val">${locIcon} ${item.location || (item.type === 'center' ? 'السنتر' : 'المنزل')}</span>
+                    <span>${locIcon}</span>
+                    <span class="val">${item.location || (item.type === 'center' ? 'السنتر' : 'المنزل')}</span>
                 </div>
+                
                 <div class="sc-detail-item">
-                    <span class="val">${genderIcon} ${item.genderAllowed || 'مختلط'}</span>
+                    <span>${genderIcon}</span>
+                    <span class="val">${item.genderAllowed || 'مختلط'}</span>
                 </div>
+                
                 <div class="sc-detail-item">
-                    <span class="val">السعة: ${item.studentsCount || item.maxCapacity} طالب</span>
+                    <span>👥</span>
+                    <span class="val">السعة: ${capacity} طالب</span>
                 </div>
             </div>
 
             <div class="sc-footer-actions">
                 <div class="sc-actions-sub">
-                    <button class="btn-action btn-edit btn-card-edit">تعديل</button>
-                    <button class="btn-action btn-delete btn-card-del">إلغاء</button>
+                    <button class="btn-action btn-edit btn-card-edit">✏️ تعديل</button>
+                    <button class="btn-action btn-delete btn-card-del">🗑 إلغاء</button>
                 </div>
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <button class="btn-action btn-toggle-vis btn-card-toggle" title="تغيير حالة الظهور">${(item.isActive !== undefined ? item.isActive : item.isVisible) ? '🙈 إخفاء' : '👁️ إظهار'}</button>
-                    <button class="btn-action btn-published btn-card-view">تفاصيل 👁</button>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'} btn-card-toggle" title="${isVisible ? 'إخفاء المجموعة عن الطلبة' : 'إظهار المجموعة للطلبة'}">
+                        ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
+                    </button>
+                    <button class="btn-view-details btn-card-view">👁 تفاصيل</button>
                 </div>
             </div>
         `;
@@ -1582,7 +2101,6 @@
     if (e.target.id === 'editModalOverlay') window.cancelEdit();
   };
 
-  // ✅ حفظ التعديل مباشرة على Firebase
   window.saveEdit = async function() {
     if (!editingAppt) return;
     const newStart = document.getElementById('editStart').value;
@@ -1611,7 +2129,6 @@
     window.cancelEdit();
   };
 
-  // ✅ إضافة الموعد ونشره مباشرة على Firebase
   window.addAppointment = async function() {
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
@@ -1624,6 +2141,8 @@
 
     const groupName = document.getElementById('group-name').value.trim();
     const teacherName = document.getElementById('teacher-name').value.trim();
+    const centerName = document.getElementById('center-name')?.value.trim() || '';
+    const locationChecked = document.querySelector('input[name="location"]:checked').value;
     const studentsCount = document.getElementById('students-count').value;
     
     const start = document.getElementById('startTime').value;
@@ -1636,36 +2155,51 @@
         return;
     }
     
+    // ✅ التحقق من اسم السنتر إذا كان المكان سنتر
+    if (locationChecked === 'السنتر' && !centerName) {
+        showAddError('يرجى تعبئة "اسم السنتر" في الخطوة رقم 2');
+        document.getElementById('center-name').focus();
+        return;
+    }
+    
     if (!teacherName) {
-        showAddError('يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2');
+        const errorMsg = locationChecked === 'السنتر' 
+            ? 'يرجى تعبئة "اسم المستر" في الخطوة رقم 3'
+            : 'يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2';
+        showAddError(errorMsg);
         document.getElementById('teacher-name').focus();
         return;
     }
     
     if (!studentsCount || studentsCount < 1) {
-        showAddError('يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم 3');
+        const num = locationChecked === 'السنتر' ? 4 : 3;
+        showAddError(`يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم ${num}`);
         document.getElementById('students-count').focus();
         return;
     }
 
     const gpsLocation = document.getElementById('gps-coords').value;
     if (!gpsLocation) {
-        showAddError('يرجى تحديد وتأكيد الموقع من الخريطة في الخطوة رقم 6 أولاً');
+        const num = locationChecked === 'السنتر' ? 7 : 6;
+        showAddError(`يرجى تحديد وتأكيد الموقع من الخريطة في الخطوة رقم ${num} أولاً`);
         document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
     if (!start || !end) { 
-        showAddError('يجب اختيار وقت البداية والنهاية في الخطوة رقم 7'); 
+        const num = locationChecked === 'السنتر' ? 8 : 7;
+        showAddError(`يجب اختيار وقت البداية والنهاية في الخطوة رقم ${num}`); 
         return; 
     }
     if (start >= end) { 
-        showAddError('وقت النهاية يجب أن يكون بعد وقت البداية في الخطوة رقم 7'); 
+        const num = locationChecked === 'السنتر' ? 8 : 7;
+        showAddError(`وقت النهاية يجب أن يكون بعد وقت البداية في الخطوة رقم ${num}`); 
         return; 
     }
 
     if (!selectedDateKey) {
-        showAddError('يرجى تحديد يوم من التقويم في الخطوة رقم 8');
+        const num = locationChecked === 'السنتر' ? 9 : 8;
+        showAddError(`يرجى تحديد يوم من التقويم في الخطوة رقم ${num}`);
         return;
     }
 
@@ -1680,7 +2214,7 @@
     }
 
     const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
-    const location = document.querySelector('input[name="location"]:checked').value;
+    const location = locationChecked;
     const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const street = document.getElementById('location-text').dataset.street || '';
     const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
@@ -1690,6 +2224,7 @@
         end, 
         groupName, 
         teacherName, 
+        centerName,
         studentsCount, 
         genderAllowed, 
         location, 
@@ -1702,7 +2237,6 @@
         type: isRecurring ? 'recurring' : 'normal'
     };
 
-    // ✅ نشر مباشر على Firebase (لا يوجد تخزين محلي)
     await window.publishSingleApptOnline(newApptObj);
     
     document.getElementById('startTime').value = ''; 
@@ -1761,6 +2295,9 @@
       renderCalendar();
       const initDate = new Date();
       selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
+      
+      // 🏫 تهيئة حالة حقل اسم السنتر بناءً على القيمة الافتراضية (السنتر محدد)
+      toggleCenterNameField();
       
       window.loadLocalPublishedSlots();
   }
