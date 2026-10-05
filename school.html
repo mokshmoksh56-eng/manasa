@@ -63,9 +63,7 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-box.green .stat-num{color:#128C7E}.stat-box.cyan .stat-num{color:#0891B2}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
-#adminMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
-#studentsMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
-
+#teachersMap,#studentsMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
 .marker-admin{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3);border:3px solid var(--primary);margin-left:-19px;margin-top:-19px}
 .marker-admin.teacher{border-color:#2563EB}
 .marker-admin.student{border-color:#F59E0B}
@@ -81,13 +79,9 @@ tr.locked td{background:#FEF2F2}
 .btn{padding:7px 12px;border-radius:8px;border:none;font-weight:900;font-size:12px;cursor:pointer;transition:.2s;font-family:'Cairo';display:inline-flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;text-decoration:none}
 .btn:active{transform:scale(.95)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff}
-.btn-call{background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff}
-.btn-lock{background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff}
-.btn-unlock{background:linear-gradient(135deg,#10B981,#047857);color:#fff}
-.btn-del{background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff}
 .btn-primary{background:linear-gradient(135deg,#10B981,#047857);color:#fff;padding:12px 20px;font-size:14px;border-radius:10px;width:100%;justify-content:center}
 .btn-ghost{background:#F1F5F9;color:var(--ink);border:1px solid var(--line)}
+.btn-del{background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff}
 
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
@@ -155,6 +149,118 @@ tr.locked td{background:#FEF2F2}
   background:#F1F5F9;
   color:#94A3B8;
   border-color:#E2E8F0;
+}
+
+/* ========================================== */
+/* 🎯 أزرار الإجراءات الأيقونية الرسمية */
+/* ========================================== */
+.actions-cell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+.icon-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+
+.icon-action-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+  transition: transform 0.2s;
+}
+
+.icon-action-btn:hover {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 8px 18px -4px rgba(0,0,0,0.3);
+}
+
+.icon-action-btn:hover svg {
+  transform: scale(1.15);
+}
+
+.icon-action-btn:active {
+  transform: translateY(0) scale(0.95);
+}
+
+.icon-action-btn.btn-lock-icon {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(245, 158, 11, 0.5);
+}
+.icon-action-btn.btn-lock-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(245, 158, 11, 0.7);
+}
+
+.icon-action-btn.btn-unlock-icon {
+  background: linear-gradient(135deg, #10B981, #047857);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(16, 185, 129, 0.5);
+}
+.icon-action-btn.btn-unlock-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(16, 185, 129, 0.7);
+}
+
+.icon-action-btn.btn-wa-icon {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(37, 211, 102, 0.5);
+}
+.icon-action-btn.btn-wa-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(37, 211, 102, 0.7);
+}
+
+.icon-action-btn.btn-call-icon {
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(59, 130, 246, 0.5);
+}
+.icon-action-btn.btn-call-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(59, 130, 246, 0.7);
+}
+
+.icon-action-btn.btn-del-icon {
+  background: linear-gradient(135deg, #EF4444, #B91C1C);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(239, 68, 68, 0.5);
+}
+.icon-action-btn.btn-del-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(239, 68, 68, 0.7);
+}
+
+.icon-action-btn.btn-lock-icon::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  opacity: 0;
+  animation: lockPulse 2.5s infinite;
+}
+@keyframes lockPulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@media (max-width: 640px) {
+  .actions-cell { gap: 4px; }
+  .icon-action-btn { width: 32px; height: 32px; }
+  .icon-action-btn svg { width: 16px; height: 16px; }
 }
 
 .stage-card{
@@ -362,32 +468,7 @@ tr.locked td{background:#FEF2F2}
     <div class="stat-box cyan"><div class="stat-num" id="statBookings">0</div><div class="stat-label">📅 الحصص المحجوزة</div></div>
   </div>
 
-  <!-- 🗺️ خريطة المعلمين فقط -->
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين فقط</h2>
-      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
-        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
-        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
-      </div>
-    </div>
-    <div id="adminMap"></div>
-  </div>
-
-  <!-- 🎓 خريطة الطلاب فقط -->
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🎓 خريطة الطلاب فقط</h2>
-      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
-        <span style="background:#FCE7F3;color:#9D174D;padding:4px 8px;border-radius:6px;font-weight:900">👧 بنت</span>
-        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">👦 ولد</span>
-        <button class="btn btn-ghost" onclick="window.fitStudentsMap()" style="font-size:11px">🔍 عرض الكل</button>
-        <span id="studentsMapCount" style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">0</span>
-      </div>
-    </div>
-    <div id="studentsMap"></div>
-  </div>
-
+  <!-- 🌟 قسم المعلمين -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
@@ -406,9 +487,8 @@ tr.locked td{background:#FEF2F2}
             <th>المواد</th>
             <th>💬 واتساب</th>
             <th>📅 الحصص</th>
-            <th>📍 الموقع</th>
             <th>الحالة</th>
-            <th>إجراءات</th>
+            <th>الإجراءات</th>
           </tr>
         </thead>
         <tbody id="teachersBody"></tbody>
@@ -416,6 +496,19 @@ tr.locked td{background:#FEF2F2}
     </div>
   </div>
 
+  <!-- 🗺️ خريطة المعلمين (تحت قائمة المعلمين) -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد المعلمين</h2>
+      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
+        <span style="background:#DBEAFE;color:#1E40AF;padding:4px 8px;border-radius:6px;font-weight:900">🔵 معلم</span>
+        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 محظور</span>
+      </div>
+    </div>
+    <div id="teachersMap"></div>
+  </div>
+
+  <!-- 🌟 قسم الطلاب -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
@@ -433,12 +526,24 @@ tr.locked td{background:#FEF2F2}
             <th>النوع</th>
             <th>الصف</th>
             <th>الحالة</th>
-            <th>إجراءات</th>
+            <th>الإجراءات</th>
           </tr>
         </thead>
         <tbody id="studentsBody"></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- 🗺️ خريطة الطلاب (تحت قائمة الطلاب) -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">🗺️ خريطة تواجد الطلاب</h2>
+      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap">
+        <span style="background:#FEF3C7;color:#92400E;padding:4px 8px;border-radius:6px;font-weight:900">🟡 طالب</span>
+        <span style="background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:6px;font-weight:900">🔴 مقفول</span>
+      </div>
+    </div>
+    <div id="studentsMap"></div>
   </div>
 </div>
 
@@ -469,6 +574,7 @@ tr.locked td{background:#FEF2F2}
         <button onclick="window.addStage()">إضافة المرحلة</button>
       </div>
 
+      <!-- ✅ مكتبة الألوان -->
       <div style="margin-top:14px">
         <div style="font-size:12px;font-weight:900;color:var(--primary-dark);margin-bottom:8px">🎨 اختر لون المرحلة:</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -681,7 +787,7 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ==========================================================
-// ✅ Tabs
+// ✅ Tabs — محفوظة في hash الرابط
 // ==========================================================
 function switchTab(pageId) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -692,8 +798,10 @@ function switchTab(pageId) {
     tab.classList.add('active');
     page.classList.add('active');
     if (pageId === 'page-users') {
-      if (window._map) setTimeout(() => window._map.invalidateSize(), 100);
-      if (window._studentsMap) setTimeout(() => window._studentsMap.invalidateSize(), 150);
+      setTimeout(() => {
+        if (window._teachersMap) window._teachersMap.invalidateSize();
+        if (window._studentsMap) window._studentsMap.invalidateSize();
+      }, 150);
     }
   }
 }
@@ -768,7 +876,7 @@ function renderTeachersTable() {
   const tbody = document.getElementById('teachersBody');
   document.getElementById('teachersCount').textContent = `${allTeachers.length} معلم`;
   if (allTeachers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
     return;
   }
   tbody.innerHTML = allTeachers.map(t => {
@@ -776,17 +884,7 @@ function renderTeachersTable() {
     const locked = t.isLocked === true;
     const waClicks = Number(t.waClicks) || 0;
     const bookings = Number(t.bookingsCount) || 0;
-
-    let address = t.address || '';
-    let teacherLat = t.lat, teacherLng = t.lng;
-    if ((!teacherLat || !teacherLng) && allGroups.length) {
-      const g = allGroups.find(x => x.phone === phone && x.lat && x.lng);
-      if (g) { teacherLat = g.lat; teacherLng = g.lng; if (!address) address = g.address || ''; }
-    }
-    const hasLocation = teacherLat && teacherLng;
-    const locationCell = hasLocation
-      ? `<a class="address-link" onclick="window.focusTeacherOnMap('${phone}');return false;" title="${address||'عرض على الخريطة'}">📍 ${address || 'عرض على الخريطة'}</a>`
-      : `<span class="address-cell">— لا يوجد موقع</span>`;
+    const safeName = (t.name || '').replace(/'/g, "\\'");
 
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${(t.name||'')} ${phone}">
@@ -796,15 +894,40 @@ function renderTeachersTable() {
         <td style="font-size:11px;color:var(--muted)">${getTeacherSubjects(phone)}</td>
         <td><span class="wa-clicks-badge">💬 ${waClicks}</span></td>
         <td><span class="booking-badge">📅 ${bookings}</span></td>
-        <td>${locationCell}</td>
         <td>${locked ? '<span class="badge badge-locked">🚫 محظور</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
-          <div style="display:flex;gap:4px;flex-wrap:wrap">
-            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" onclick="window.toggleLockTeacher('${phone}', ${!locked})" title="${locked ? 'فك الحظر' : 'حظر المعلم'}">${locked ? '🔓 فك الحظر' : '🚫 حظر'}</button>
-            <a class="btn btn-wa" href="https://wa.me/2${phone}" target="_blank" title="واتساب المعلم">💬 واتس</a>
-            <a class="btn btn-call" href="tel:${phone}" title="اتصال">📞</a>
-            ${hasLocation ? `<button class="btn btn-ghost" onclick="window.focusTeacherOnMap('${phone}')" title="عرض على الخريطة">📍</button>` : ''}
-            <button class="btn btn-del" onclick="window.deleteTeacher('${phone}', '${(t.name||'').replace(/'/g,"\\'")}')" title="حذف نهائي">🗑</button>
+          <div class="actions-cell">
+            <button 
+              class="icon-action-btn ${locked ? 'btn-unlock-icon' : 'btn-lock-icon'}" 
+              onclick="window.toggleLockTeacher('${phone}', ${!locked})" 
+              title="${locked ? 'فك الحظر' : 'حظر المعلم'}">
+              ${locked 
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+              }
+            </button>
+
+            <a 
+              class="icon-action-btn btn-wa-icon" 
+              href="https://wa.me/2${phone}" 
+              target="_blank" 
+              title="فتح واتساب">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+
+            <a 
+              class="icon-action-btn btn-call-icon" 
+              href="tel:${phone}" 
+              title="اتصال">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </a>
+
+            <button 
+              class="icon-action-btn btn-del-icon" 
+              onclick="window.deleteTeacher('${phone}', '${safeName}')" 
+              title="حذف نهائي">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 012-2h2a2 2 0 012 2v2"/></svg>
+            </button>
           </div>
         </td>
       </tr>
@@ -831,13 +954,14 @@ function renderStudentsTable() {
                   s.الصف || s.صف || s.gradeName || s.level || '—';
     
     const name = s.name || s.studentName || s.fullName || s.الاسم || '—';
-    
     const phone = s.phone || s.studentPhone || s.mobile || s.phoneNumber || 
                   s.الهاتف || s.whatsapp || '—';
     
     const gradeHtml = grade === '—' 
       ? '<span class="grade-tag empty">📖 غير محدد</span>'
       : `<span class="grade-tag">📖 ${grade}</span>`;
+    
+    const safeName = name.replace(/'/g, "\\'");
     
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${name} ${phone} ${grade}">
@@ -847,11 +971,40 @@ function renderStudentsTable() {
         <td>${gradeHtml}</td>
         <td>${locked ? '<span class="badge badge-locked">🔒 مقفول</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
-          <div style="display:flex;gap:4px;flex-wrap:wrap">
-            <button class="btn ${locked ? 'btn-unlock' : 'btn-lock'}" onclick="window.toggleLockStudent('${s.id}', ${!locked})" title="${locked ? 'فتح' : 'قفل'}">${locked ? '🔓 فتح' : '🔒 قفل'}</button>
-            ${phone !== '—' ? `<a class="btn btn-wa" href="https://wa.me/2${phone}" target="_blank" title="واتساب">💬</a>` : ''}
-            ${phone !== '—' ? `<a class="btn btn-call" href="tel:${phone}" title="اتصال">📞</a>` : ''}
-            <button class="btn btn-del" onclick="window.deleteStudent('${s.id}', '${name.replace(/'/g,"\\'")}')" title="حذف الطالب">🗑 حذف</button>
+          <div class="actions-cell">
+            <button 
+              class="icon-action-btn ${locked ? 'btn-unlock-icon' : 'btn-lock-icon'}" 
+              onclick="window.toggleLockStudent('${s.id}', ${!locked})" 
+              title="${locked ? 'فتح الحساب' : 'قفل الحساب'}">
+              ${locked 
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+              }
+            </button>
+
+            ${phone !== '—' ? `
+            <a 
+              class="icon-action-btn btn-wa-icon" 
+              href="https://wa.me/2${phone}" 
+              target="_blank" 
+              title="فتح واتساب">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+
+            <a 
+              class="icon-action-btn btn-call-icon" 
+              href="tel:${phone}" 
+              title="اتصال">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </a>
+            ` : ''}
+
+            <button 
+              class="icon-action-btn btn-del-icon" 
+              onclick="window.deleteStudent('${s.id}', '${safeName}')" 
+              title="حذف الطالب">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 012-2h2a2 2 0 012 2v2"/></svg>
+            </button>
           </div>
         </td>
       </tr>
@@ -868,7 +1021,7 @@ window.filterTable = function(tableId, query) {
   });
 };
 
-// ============ Lock/Unlock ============
+// ============ Lock/Unlock (Firestore) ============
 window.toggleLockTeacher = async function(phone, lockValue) {
   try {
     await setTeacherLock(phone, lockValue);
@@ -912,43 +1065,67 @@ window.deleteStudent = async function(id, name) {
   }
 };
 
-// ==========================================================
-// 🗺️ خريطة المعلمين فقط
-// ==========================================================
-window._map = null;
-let markersLayer = null;
+// ============ Maps (خريطتان منفصلتان) ============
+window._teachersMap = null;
+window._studentsMap = null;
+let teachersMarkersLayer = null;
+let studentsMarkersLayer = null;
 window._mapMarkers = {};
 
+function initTeachersMap() {
+  if (window._teachersMap) return;
+  window._teachersMap = L.map('teachersMap').setView([26.8206, 30.8025], 6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(window._teachersMap);
+  teachersMarkersLayer = L.markerClusterGroup({
+    iconCreateFunction: (cluster) => {
+      const c = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3)">${c}</div>`,
+        className: '', iconSize: [40, 40]
+      });
+    }
+  }).addTo(window._teachersMap);
+}
+
+function initStudentsMap() {
+  if (window._studentsMap) return;
+  window._studentsMap = L.map('studentsMap').setView([26.8206, 30.8025], 6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(window._studentsMap);
+  studentsMarkersLayer = L.markerClusterGroup({
+    iconCreateFunction: (cluster) => {
+      const c = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3)">${c}</div>`,
+        className: '', iconSize: [40, 40]
+      });
+    }
+  }).addTo(window._studentsMap);
+}
+
 function renderMap() {
-  if (!window._map) {
-    window._map = L.map('adminMap').setView([26.8206, 30.8025], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(window._map);
-    markersLayer = L.markerClusterGroup({
-      iconCreateFunction: (cluster) => {
-        const c = cluster.getChildCount();
-        return L.divIcon({
-          html: `<div style="background:linear-gradient(135deg,#10B981,#047857);color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3)">${c}</div>`,
-          className: '', iconSize: [40, 40]
-        });
-      }
-    }).addTo(window._map);
-  }
-  markersLayer.clearLayers();
-  window._mapMarkers = {};
-  const bounds = L.latLngBounds();
-  let count = 0;
+  initTeachersMap();
+  initStudentsMap();
+
+  // ============== خريطة المعلمين ==============
+  teachersMarkersLayer.clearLayers();
+  const teacherBounds = L.latLngBounds();
+  let teacherCount = 0;
   const addedTeachers = new Set();
 
-  // ✅ المعلمين من المجموعات
   allGroups.forEach(g => {
     if (!g.lat || !g.lng) return;
     const phone = g.phone;
+    if (addedTeachers.has(phone)) return;
+    
     const teacher = allTeachers.find(t => (t.id || t.phone) === phone) || { name: g.teacherName, title: g.teacherTitle };
     const locked = teacher.isLocked === true;
     const waClicks = Number(teacher.waClicks) || 0;
     const bookings = Number(teacher.bookingsCount) || 0;
+    
     const iconHtml = `<div class="marker-admin teacher ${locked ? 'locked' : ''}">👨‍🏫</div>`;
     const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
     const m = L.marker([g.lat, g.lng], { icon });
@@ -968,14 +1145,13 @@ function renderMap() {
         ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
       </div>
     `);
-    markersLayer.addLayer(m);
-    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: g.lat, lng: g.lng };
-    bounds.extend([g.lat, g.lng]);
-    count++;
+    teachersMarkersLayer.addLayer(m);
+    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: g.lat, lng: g.lng, map: 'teachers' };
+    teacherBounds.extend([g.lat, g.lng]);
+    teacherCount++;
     addedTeachers.add(phone);
   });
 
-  // ✅ المعلمين من بياناتهم المباشرة
   allTeachers.forEach(t => {
     const phone = t.id || t.phone;
     if (addedTeachers.has(phone)) return;
@@ -1002,129 +1178,57 @@ function renderMap() {
         ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🚫 محظور</div>' : ''}
       </div>
     `);
-    markersLayer.addLayer(m);
-    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: t.lat, lng: t.lng };
-    bounds.extend([t.lat, t.lng]);
-    count++;
+    teachersMarkersLayer.addLayer(m);
+    window._mapMarkers[`teacher_${phone}`] = { marker: m, lat: t.lat, lng: t.lng, map: 'teachers' };
+    teacherBounds.extend([t.lat, t.lng]);
+    teacherCount++;
+    addedTeachers.add(phone);
   });
 
-  // ✅❌ تم إزالة الطلاب من هذه الخريطة
-
-  if (count > 0 && bounds.isValid()) {
-    window._map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 14 });
-  }
-}
-
-window.focusTeacherOnMap = function(phone) {
-  const ref = window._mapMarkers[`teacher_${phone}`];
-  if (!ref || !window._map) {
-    window.toast('📍 لا يوجد موقع محفوظ لهذا المعلم', '#D97706');
-    return;
-  }
-  switchTab('page-users');
-  if (location.hash !== '#page-users') {
-    history.replaceState(null, '', '#page-users');
+  if (teacherCount > 0 && teacherBounds.isValid()) {
+    window._teachersMap.flyToBounds(teacherBounds, { padding: [40, 40], maxZoom: 14 });
   }
 
-  setTimeout(() => {
-    window._map.invalidateSize();
-    window._map.flyTo([ref.lat, ref.lng], 15, { duration: 0.8 });
-    setTimeout(() => ref.marker.openPopup(), 900);
-  }, 200);
-};
-
-// ==========================================================
-// 🎓 خريطة الطلاب فقط
-// ==========================================================
-window._studentsMap = null;
-let studentsMapLayer = null;
-window._studentsMapMarkers = {};
-
-function renderStudentsMap() {
-  if (!window._studentsMap) {
-    window._studentsMap = L.map('studentsMap').setView([26.8206, 30.8025], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(window._studentsMap);
-    
-    studentsMapLayer = L.markerClusterGroup({
-      iconCreateFunction: (cluster) => {
-        const c = cluster.getChildCount();
-        return L.divIcon({
-          html: `<div style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3)">${c}</div>`,
-          className: '', iconSize: [40, 40]
-        });
-      }
-    }).addTo(window._studentsMap);
-  }
-  
-  studentsMapLayer.clearLayers();
-  window._studentsMapMarkers = {};
-  const bounds = L.latLngBounds();
-  let count = 0;
+  // ============== خريطة الطلاب ==============
+  studentsMarkersLayer.clearLayers();
+  const studentBounds = L.latLngBounds();
+  let studentCount = 0;
 
   allStudents.forEach(s => {
     if (!s.lat || !s.lng) return;
-    
     const locked = s.isLocked === true;
+    const iconHtml = `<div class="marker-admin student ${locked ? 'locked' : ''}">🎓</div>`;
+    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
+    const m = L.marker([s.lat, s.lng], { icon });
     const sName = s.name || s.studentName || s.fullName || '—';
     const sGrade = s.grade || s.studentGrade || s.gradeLevel || s.classGrade || '—';
     const sPhone = s.phone || s.studentPhone || s.mobile || '';
-    const sStage = s.stage || '';
-    const sGender = s.gender || 'boy';
-    
-    const isGirl = (sGender === 'girl' || sGender === 'بنت' || sGender === 'أنثى' || sGender === 'female');
-    const genderIcon = isGirl ? '👧' : '👦';
-    const borderColor = isGirl ? '#EC4899' : '#F59E0B';
-    const bgColor = isGirl ? '#FCE7F3' : '#FEF3C7';
-    
-    const iconHtml = `<div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;background:${bgColor};border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.3);border:3px solid ${borderColor};margin-left:-19px;margin-top:-19px;${locked ? 'opacity:.6;' : ''}">${genderIcon}</div>`;
-    const icon = L.divIcon({ className:'', html:iconHtml, iconSize:[38,38], iconAnchor:[19,19] });
-    
-    const m = L.marker([s.lat, s.lng], { icon });
     m.bindPopup(`
-      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:180px">
-        <div style="font-weight:900;font-size:14px;color:${borderColor}">
-          ${genderIcon} ${sName}
-        </div>
-        <div style="font-size:12px;color:#64748B;margin:6px 0">
-          📖 ${sStage ? sStage + ' — ' : ''}${sGrade}
-        </div>
-        ${sPhone ? `
-        <div style="font-size:11px;color:#64748B;margin-bottom:6px">📱 ${sPhone}</div>
+      <div style="direction:rtl;text-align:right;font-family:Cairo;min-width:160px">
+        <div style="font-weight:900;font-size:14px;color:#D97706">🎓 ${sName}</div>
+        <div style="font-size:12px;color:#64748B;margin:4px 0">📖 ${sGrade}</div>
         <div style="display:flex;gap:4px;margin-top:6px">
-          <a href="https://wa.me/2${sPhone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬 واتس</a>
-          <a href="tel:${sPhone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞 اتصال</a>
-        </div>` : ''}
+          ${sPhone ? `<a href="https://wa.me/2${sPhone}" target="_blank" style="background:#25D366;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">💬</a>` : ''}
+          ${sPhone ? `<a href="tel:${sPhone}" style="background:#3B82F6;color:#fff;padding:5px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:900">📞</a>` : ''}
+        </div>
         ${locked ? '<div style="color:#DC2626;font-size:11px;font-weight:900;margin-top:6px">🔒 مقفول</div>' : ''}
       </div>
     `);
-    
-    studentsMapLayer.addLayer(m);
-    window._studentsMapMarkers[s.id] = { marker: m, lat: s.lat, lng: s.lng };
-    bounds.extend([s.lat, s.lng]);
-    count++;
+    studentsMarkersLayer.addLayer(m);
+    window._mapMarkers[`student_${s.id}`] = { marker: m, lat: s.lat, lng: s.lng, map: 'students' };
+    studentBounds.extend([s.lat, s.lng]);
+    studentCount++;
   });
 
-  const countEl = document.getElementById('studentsMapCount');
-  if (countEl) countEl.textContent = `${count} طالب على الخريطة`;
-
-  if (count > 0 && bounds.isValid()) {
-    setTimeout(() => {
-      if (window._studentsMap) {
-        window._studentsMap.invalidateSize();
-        window._studentsMap.flyToBounds(bounds, { padding: [40, 40], maxZoom: 14 });
-      }
-    }, 200);
+  if (studentCount > 0 && studentBounds.isValid()) {
+    window._studentsMap.flyToBounds(studentBounds, { padding: [40, 40], maxZoom: 14 });
   }
-}
 
-window.fitStudentsMap = function() {
-  if (!window._studentsMap) return;
-  const points = Object.values(window._studentsMapMarkers).map(x => [x.lat, x.lng]);
-  if (points.length === 0) return window.toast('📍 لا يوجد طلاب بمواقع محفوظة', '#D97706');
-  window._studentsMap.flyToBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 14 });
-};
+  setTimeout(() => {
+    if (window._teachersMap) window._teachersMap.invalidateSize();
+    if (window._studentsMap) window._studentsMap.invalidateSize();
+  }, 200);
+}
 
 // ==========================================================
 // ✅ Curriculum Management
@@ -1413,6 +1517,9 @@ window.saveCurriculum = async function() {
   }
 };
 
+// ==========================================================
+// 🔄 ترحيل البيانات القديمة
+// ==========================================================
 function migrateCurriculum(cur) {
   if (!cur) return cur;
   const colors = ['#047857','#2563EB','#7C3AED','#DC2626','#D97706','#0891B2','#DB2777','#65A30D'];
@@ -1465,7 +1572,7 @@ async function init() {
       allStudents = students;
       renderStats();
       renderStudentsTable();
-      renderStudentsMap();
+      renderMap();
     });
 
     unsubGroups = subscribeGroups((groups) => {
