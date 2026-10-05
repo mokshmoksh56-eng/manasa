@@ -461,19 +461,107 @@
         teacherExists,
         checkTeacherDevice,
         updateTeacherDevice,
-        generateDeviceId
+        generateDeviceId,
+        db, doc, updateDoc
     } from './firebase-config.js';
 
+    // ==========================================================
+    // ✅ دالة مساعدة: فحص حالة الحظر/الاشتراك للمعلم
+    // ==========================================================
+    async function checkTeacherBlockStatus(phone) {
+        // القيمة الافتراضية: مش محظور
+        const result = { isBlocked: false, reason: null, teacherDoc: null };
+
+        try {
+            const teacherDoc = await getTeacher(phone);
+            result.teacherDoc = teacherDoc;
+
+            if (!teacherDoc) {
+                // مش موجود - نخليها للمعالجة في المكان اللي يستدعيها
+                return result;
+            }
+
+            // ✅ 1) فحص الاشتراك المؤقت (unlockUntil) أولاً
+            if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
+                const until = typeof teacherDoc.unlockUntil === 'number'
+                    ? teacherDoc.unlockUntil
+                    : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
+
+                if (until && until <= Date.now()) {
+                    // ⏰ انتهت المدة — قفل تلقائي
+                    try {
+                        await updateDoc(doc(db, 'teachers', phone), {
+                            isLocked: true,
+                            lockType: 'auto_expired',
+                            autoLockedAt: Date.now()
+                        });
+                    } catch(e) {
+                        console.warn('فشل القفل التلقائي:', e);
+                    }
+                    result.isBlocked = true;
+                    result.reason = 'auto_expired';
+                    localStorage.setItem('teacher_is_blocked', 'true');
+                    return result;
+                } else {
+                    // ✅ الاشتراك ساري — نمسح علامة الحظر
+                    localStorage.removeItem('teacher_is_blocked');
+                    result.isBlocked = false;
+                    return result;
+                }
+            }
+
+            // ✅ 2) فحص الحظر اليدوي من الإدارة
+            if (teacherDoc.isLocked === true) {
+                result.isBlocked = true;
+                result.reason = 'manual_lock';
+                localStorage.setItem('teacher_is_blocked', 'true');
+                return result;
+            }
+
+            // ✅ 3) نشط عادي
+            localStorage.removeItem('teacher_is_blocked');
+            return result;
+
+        } catch (e) {
+            console.warn('فشل فحص حالة الحظر:', e);
+            // في حالة الخطأ، نعتمد على localStorage كـ fallback
+            if (localStorage.getItem('teacher_is_blocked') === 'true') {
+                result.isBlocked = true;
+                result.reason = 'from_localStorage';
+            }
+            return result;
+        }
+    }
+
+    // ==========================================================
     // ✅ التحقق من الجلسة عند فتح الصفحة
+    // ==========================================================
     window.addEventListener('DOMContentLoaded', async () => {
         const savedPhone = localStorage.getItem('current_teacher_phone');
         if (savedPhone) {
             try {
+                // ✅ 1) فحص الحظر/الاشتراك أولاً
+                const blockStatus = await checkTeacherBlockStatus(savedPhone);
+                
+                if (blockStatus.isBlocked) {
+                    window.location.href = 'mester2.html';
+                    return;
+                }
+
+                // ✅ 2) فحص الجهاز
                 const check = await checkTeacherDevice(savedPhone);
+                
                 if (!check.ok) {
                     localStorage.removeItem('current_teacher_profile');
                     localStorage.removeItem('current_teacher_phone');
+                    localStorage.removeItem('teacher_is_blocked');
                 } else {
+                    // ✅ لو محظور حسب فحص الجهاز
+                    if (check.locked === true) {
+                        localStorage.setItem('teacher_is_blocked', 'true');
+                        window.location.href = 'mester2.html';
+                        return;
+                    }
                     window.location.href = 'mester1.html';
                 }
             } catch (e) {
@@ -554,7 +642,9 @@
         document.getElementById('successMsg').classList.remove('show');
     };
 
+    // ==========================================================
     // ✅ تسجيل الدخول
+    // ==========================================================
     window.handleLogin = async function(e) {
         e.preventDefault();
         window.hideMessages();
@@ -593,7 +683,56 @@
                 return;
             }
 
-            // ✅ التحقق من الجهاز
+            // ✅ 1) فحص حالة الحظر/الاشتراك بالمنطق الجديد
+            let isBlocked = false;
+
+            // فحص الاشتراك المؤقت
+            if (user.unlockUntil && user.isLocked !== true) {
+                const until = typeof user.unlockUntil === 'number'
+                    ? user.unlockUntil
+                    : (user.unlockUntil.seconds ? user.unlockUntil.seconds * 1000 : 0);
+
+                if (until && until <= Date.now()) {
+                    // ⏰ انتهت المدة — قفل تلقائي
+                    try {
+                        await updateDoc(doc(db, 'teachers', phone), {
+                            isLocked: true,
+                            lockType: 'auto_expired',
+                            autoLockedAt: Date.now()
+                        });
+                    } catch(_) {}
+                    isBlocked = true;
+                    console.log('⏰ انتهى الاشتراك المؤقت');
+                } else {
+                    // ✅ الاشتراك ساري
+                    localStorage.removeItem('teacher_is_blocked');
+                    console.log('✅ الاشتراك نشط حتى:', new Date(until).toLocaleDateString('ar-EG'));
+                }
+            }
+            // فحص الحظر اليدوي
+            else if (user.isLocked === true) {
+                isBlocked = true;
+                console.log('🚫 المعلم محظور يدوياً');
+            }
+            else {
+                localStorage.removeItem('teacher_is_blocked');
+            }
+
+            // ✅ لو محظور: نسجله دخول عادي ونوديه لصفحة mester2.html
+            if (isBlocked) {
+                localStorage.setItem('teacher_is_blocked', 'true');
+                localStorage.setItem('current_teacher_profile', JSON.stringify(user));
+                localStorage.setItem('current_teacher_phone', user.phone);
+
+                window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
+
+                setTimeout(() => {
+                    window.location.href = 'mester2.html';
+                }, 1200);
+                return;
+            }
+
+            // ✅ 2) التحقق من الجهاز
             try {
                 const deviceCheck = await checkTeacherDevice(phone);
 
@@ -609,6 +748,18 @@
                         window.showError('تم إلغاء تسجيل الدخول.');
                         return;
                     }
+                }
+
+                // ✅ لو الجهاز رجع locked
+                if (deviceCheck.locked === true) {
+                    localStorage.setItem('teacher_is_blocked', 'true');
+                    localStorage.setItem('current_teacher_profile', JSON.stringify(user));
+                    localStorage.setItem('current_teacher_phone', user.phone);
+                    window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
+                    setTimeout(() => {
+                        window.location.href = 'mester2.html';
+                    }, 1200);
+                    return;
                 }
 
                 // ✅ تحديث الجهاز النشط
@@ -629,13 +780,14 @@
             console.error("❌ خطأ في تسجيل الدخول:", error);
             window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
         } finally {
-            // ✅ الزر يرجع دايماً
             btn.disabled = false;
             btnText.textContent = originalText;
         }
     };
 
+    // ==========================================================
     // ✅ إنشاء حساب جديد
+    // ==========================================================
     window.handleRegister = async function(e) {
         e.preventDefault();
         window.hideMessages();
@@ -702,6 +854,7 @@
 
             localStorage.setItem('current_teacher_profile', JSON.stringify(teacherData));
             localStorage.setItem('current_teacher_phone', phone);
+            localStorage.removeItem('teacher_is_blocked');
             window.showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
 
             setTimeout(() => {
@@ -712,13 +865,14 @@
             console.error("❌ خطأ في إنشاء الحساب:", error);
             window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
         } finally {
-            // ✅ الزر يرجع دايماً
             btn.disabled = false;
             btnText.textContent = originalText;
         }
     };
 
-    // ✅ دالة تسجيل الخروج
+    // ==========================================================
+    // ✅ تسجيل الخروج
+    // ==========================================================
     window.logoutAccount = function() {
         const savedPhone = localStorage.getItem('current_teacher_phone');
         
@@ -733,6 +887,7 @@
         
         localStorage.removeItem('current_teacher_profile');
         localStorage.removeItem('current_teacher_phone');
+        localStorage.removeItem('teacher_is_blocked');
         
         window.showSuccess('✅ تم تسجيل الخروج بنجاح.');
         
@@ -741,7 +896,9 @@
         }, 1000);
     };
 
+    // ==========================================================
     // ✅ حذف الحساب
+    // ==========================================================
     window.deleteAccount = async function() {
         const phone = prompt('لحذف حسابك، يرجى إدخال رقم التليفون الخاص بك:');
         if (!phone) return;
@@ -768,6 +925,7 @@
             if (localStorage.getItem('current_teacher_phone') === phone) {
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('current_teacher_phone');
+                localStorage.removeItem('teacher_is_blocked');
             }
 
             alert('✅ تم حذف الحساب بنجاح.');
