@@ -588,31 +588,12 @@ tr.locked td{background:#FEF2F2}
     50%{box-shadow:0 4px 22px rgba(220,38,38,.55)}
 }
 
-.teacher-mini-card{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 14px;
-    background:#F8FAFC;
-    border:1px solid var(--line);
-    border-radius:10px;
-    margin-bottom:8px;
-    gap:10px;
-    flex-wrap:wrap;
-    transition:.2s;
-}
-.teacher-mini-card:hover{background:#F1F5F9;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-.teacher-mini-card strong{font-size:14px;color:var(--primary-dark)}
-.teacher-mini-card.contact-pending{
-    border-color:#DC2626;
-    background:#FEF2F2;
-    animation:pulse-danger-card 2s infinite;
-}
-
-/* 🆕 كروت إدارة اشتراك المعلمين */
-.teacher-sub-card{
-    background:#fff;
-    border:2px solid var(--line);
+/* 🎨 كارت ملون حسب لون المعلم */
+.teacher-sub-card {
+    --card-color: #10B981;
+    --card-color-light: #D1FAE5;
+    background: linear-gradient(180deg, var(--card-color-light) 0%, #ffffff 25%) !important;
+    border: 2px solid var(--card-color) !important;
     border-radius:16px;
     padding:14px;
     margin-bottom:12px;
@@ -621,19 +602,22 @@ tr.locked td{background:#FEF2F2}
     position:relative;
     overflow:hidden;
 }
-.teacher-sub-card::before{
+.teacher-sub-card::before {
     content:'';
     position:absolute;
     top:0;right:0;
-    width:5px;height:100%;
-    background:linear-gradient(180deg,#10B981,#047857);
+    width:6px;height:100%;
+    background: linear-gradient(180deg, var(--card-color), color-mix(in srgb, var(--card-color) 70%, black));
 }
-.teacher-sub-card.contact-pending::before{
-    background:linear-gradient(180deg,#F59E0B,#DC2626);
+.teacher-sub-card .tsc-info strong {
+    color: color-mix(in srgb, var(--card-color) 70%, black) !important;
+}
+.teacher-sub-card.contact-pending::before {
+    background: linear-gradient(180deg, #F59E0B, #DC2626) !important;
 }
 .teacher-sub-card:hover{
     transform:translateY(-2px);
-    box-shadow:0 8px 22px rgba(0,0,0,.1);
+    box-shadow:0 8px 22px rgba(0,0,0,.12);
 }
 
 .tsc-header{
@@ -647,7 +631,6 @@ tr.locked td{background:#FEF2F2}
 .tsc-info{flex:1;min-width:150px}
 .tsc-info strong{
     font-size:15px;
-    color:var(--primary-dark);
     display:block;
     margin-bottom:2px;
 }
@@ -789,6 +772,136 @@ tr.locked td{background:#FEF2F2}
     color:#fff;
 }
 .tsc-contact-btn:hover{transform:translateY(-2px)}
+
+/* 📅 Timeline جميل للاشتراك */
+.tsc-timeline {
+    background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+}
+.tsc-timeline .tl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 900;
+    color: #475569;
+}
+.tsc-timeline .tl-header .tl-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tsc-timeline .tl-bar-wrap {
+    position: relative;
+    height: 14px;
+    background: #E2E8F0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    margin: 6px 0;
+}
+.tsc-timeline .tl-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #10B981, #047857);
+    border-radius: 20px;
+    transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+.tsc-timeline .tl-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: tlShimmer 2s infinite;
+}
+@keyframes tlShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+.tsc-timeline .tl-bar.warning {
+    background: linear-gradient(90deg, #F59E0B, #D97706);
+}
+.tsc-timeline .tl-bar.danger {
+    background: linear-gradient(90deg, #EF4444, #B91C1C);
+}
+.tsc-timeline .tl-dates {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+}
+.tsc-timeline .tl-date {
+    flex: 1;
+    text-align: center;
+    padding: 8px 6px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1.5px solid #E2E8F0;
+    font-size: 10.5px;
+    font-weight: 900;
+    color: #64748B;
+}
+.tsc-timeline .tl-date strong {
+    display: block;
+    font-size: 12.5px;
+    margin-top: 3px;
+    color: #0F172A;
+    direction: ltr;
+}
+.tsc-timeline .tl-date.start {
+    background: linear-gradient(180deg, #DCFCE7, #fff);
+    border-color: #86EFAC;
+    color: #166534;
+}
+.tsc-timeline .tl-date.start strong { color: #14532D; }
+.tsc-timeline .tl-date.end {
+    background: linear-gradient(180deg, #FEE2E2, #fff);
+    border-color: #FCA5A5;
+    color: #991B1B;
+}
+.tsc-timeline .tl-date.end strong { color: #7F1D1D; }
+.tsc-timeline .tl-days-left {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12.5px;
+    font-weight: 900;
+    padding: 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #DCFCE7, #BBF7D0);
+    color: #166534;
+    border: 2px dashed #86EFAC;
+}
+.tsc-timeline .tl-days-left.warning {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+    border-color: #FCD34D;
+}
+.tsc-timeline .tl-days-left.danger {
+    background: linear-gradient(135deg, #FEE2E2, #FECACA);
+    color: #991B1B;
+    border-color: #F87171;
+    animation: tlPulse 1.5s infinite;
+}
+@keyframes tlPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,.5); }
+    50% { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+}
+.tsc-timeline.permanent {
+    background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+    border-color: #86EFAC;
+}
+.tsc-timeline.permanent .tl-days-left {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    color: #065F46;
+    border-color: #10B981;
+}
 </style>
 </head>
 <body>
@@ -2344,7 +2457,7 @@ window.rejectReq = async function(reqId) {
 };
 
 // ==========================================================
-// 🆕 🆘 طلبات التواصل من المعلمين المحظورين
+// 🆘 طلبات التواصل من المعلمين المحظورين
 // ==========================================================
 function renderContactRequests() {
     const card = document.getElementById('contactRequestsCard');
@@ -2430,7 +2543,37 @@ window.markContactHandled = async function(phone) {
 };
 
 // ==========================================================
-// 🆕 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك (فتح/حظر + تواريخ)
+// 🎨 ألوان المعلمين
+// ==========================================================
+const TEACHER_COLORS = [
+    { main: '#DC2626', light: '#FEE2E2' },
+    { main: '#EA580C', light: '#FFEDD5' },
+    { main: '#D97706', light: '#FEF3C7' },
+    { main: '#65A30D', light: '#ECFCCB' },
+    { main: '#16A34A', light: '#DCFCE7' },
+    { main: '#047857', light: '#D1FAE5' },
+    { main: '#0891B2', light: '#CFFAFE' },
+    { main: '#2563EB', light: '#DBEAFE' },
+    { main: '#4F46E5', light: '#E0E7FF' },
+    { main: '#7C3AED', light: '#EDE9FE' },
+    { main: '#C026D3', light: '#FAE8FF' },
+    { main: '#DB2777', light: '#FCE7F3' },
+    { main: '#0F766E', light: '#CCFBF1' },
+    { main: '#B45309', light: '#FEF3C7' },
+];
+
+function getTeacherColor(phone) {
+    if (!phone) return TEACHER_COLORS[0];
+    let hash = 0;
+    for (let i = 0; i < phone.length; i++) {
+        hash = ((hash << 5) - hash) + phone.charCodeAt(i);
+        hash = hash & hash;
+    }
+    return TEACHER_COLORS[Math.abs(hash) % TEACHER_COLORS.length];
+}
+
+// ==========================================================
+// 📅 بناء الـ Timeline
 // ==========================================================
 function formatDateNice(ts) {
     if (!ts) return '—';
@@ -2469,6 +2612,124 @@ function getTeacherStatus(t) {
     return { status:'permanent', label:'♾️ فتح دائم', color:'#047857' };
 }
 
+function buildSubscriptionTimeline(t) {
+    const now = Date.now();
+
+    if (!t.unlockUntil && t.isLocked !== true) {
+        return `
+            <div class="tsc-timeline permanent">
+                <div class="tl-header">
+                    <span class="tl-title">♾️ صلاحية الاشتراك</span>
+                    <span style="color:#047857">دائم</span>
+                </div>
+                <div class="tl-days-left">🎉 هذا الحساب مفتوح بشكل دائم — بدون تاريخ انتهاء</div>
+            </div>
+        `;
+    }
+
+    if (t.isLocked === true) {
+        return `
+            <div class="tsc-timeline" style="background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border-color:#FCA5A5">
+                <div class="tl-header">
+                    <span class="tl-title">🚫 صلاحية الاشتراك</span>
+                    <span style="color:#DC2626">محظور</span>
+                </div>
+                <div class="tl-days-left danger">⛔ الحساب محظور حالياً — لا يمكن الدخول</div>
+            </div>
+        `;
+    }
+
+    const until = typeof t.unlockUntil === 'number'
+        ? t.unlockUntil
+        : (t.unlockUntil?.seconds ? t.unlockUntil.seconds * 1000 : 0);
+
+    if (!until) return '';
+
+    let startTs = null;
+    if (t.unlockedAt) {
+        startTs = typeof t.unlockedAt === 'number'
+            ? t.unlockedAt
+            : (t.unlockedAt?.seconds ? t.unlockedAt.seconds * 1000 : 0);
+    }
+    if (!startTs) {
+        const lockType = t.lockType || '';
+        let days = 90;
+        if (lockType === '3months') days = 90;
+        else if (lockType === '6months') days = 180;
+        else if (lockType === '1year') days = 365;
+        startTs = until - (days * 24 * 60 * 60 * 1000);
+    }
+
+    const total = until - startTs;
+    const elapsed = now - startTs;
+    const remaining = until - now;
+
+    const percentUsed = Math.min(100, Math.max(0, (elapsed / total) * 100));
+    const percentLeft = 100 - percentUsed;
+
+    const daysLeft = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+
+    let barClass = '';
+    let daysClass = '';
+    let statusText = '';
+    let statusEmoji = '';
+
+    if (remaining <= 0) {
+        barClass = 'danger';
+        daysClass = 'danger';
+        statusText = 'منتهي';
+        statusEmoji = '⏰';
+    } else if (daysLeft <= 7) {
+        barClass = 'danger';
+        daysClass = 'danger';
+        statusText = 'ينتهي قريباً جداً';
+        statusEmoji = '🚨';
+    } else if (daysLeft <= 30) {
+        barClass = 'warning';
+        daysClass = 'warning';
+        statusText = 'ينتهي قريباً';
+        statusEmoji = '⚠️';
+    } else {
+        statusText = 'نشط';
+        statusEmoji = '✅';
+    }
+
+    const startStr = formatDateNice(startTs);
+    const endStr = formatDateNice(until);
+
+    return `
+        <div class="tsc-timeline">
+            <div class="tl-header">
+                <span class="tl-title">📅 صلاحية الاشتراك</span>
+                <span style="color:${remaining <= 7 ? '#DC2626' : remaining <= 30 ? '#D97706' : '#047857'}">
+                    ${statusEmoji} ${statusText}
+                </span>
+            </div>
+            <div class="tl-bar-wrap">
+                <div class="tl-bar ${barClass}" style="width:${percentLeft.toFixed(1)}%"></div>
+            </div>
+            <div class="tl-dates">
+                <div class="tl-date start">
+                    🟢 بداية الاشتراك
+                    <strong>${startStr}</strong>
+                </div>
+                <div class="tl-date end">
+                    🔴 نهاية الاشتراك
+                    <strong>${endStr}</strong>
+                </div>
+            </div>
+            <div class="tl-days-left ${daysClass}">
+                ${remaining > 0
+                    ? `⏳ باقي <b>${daysLeft}</b> يوم على انتهاء الاشتراك`
+                    : `⛔ انتهى الاشتراك — يرجى التجديد`}
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================================
+// 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك
+// ==========================================================
 window.renderSubscriptionsTeachersList = function() {
     const container = document.getElementById('teachersListContainer');
     const countEl = document.getElementById('subTeachersCount');
@@ -2499,11 +2760,15 @@ window.renderSubscriptionsTeachersList = function() {
         const phone = t.id || t.phone;
         const statusInfo = getTeacherStatus(t);
         const regDate = formatDateNice(t.createdAt || t.registeredAt || t.joinedAt);
-        const untilDate = statusInfo.until ? formatDateNice(statusInfo.until) : '';
         const hasContactReq = t.contactRequest?.requested === true && t.contactRequest?.handled !== true;
 
+        const color = getTeacherColor(phone);
+        const timelineHtml = buildSubscriptionTimeline(t);
+
         return `
-            <div class="teacher-sub-card ${hasContactReq ? 'contact-pending' : ''}">
+            <div class="teacher-sub-card ${hasContactReq ? 'contact-pending' : ''}"
+                 style="--card-color:${color.main};--card-color-light:${color.light}">
+
                 <div class="tsc-header">
                     <div class="tsc-info">
                         <strong>${hasContactReq ? '🆘 ' : ''}${t.title || 'مستر'} ${t.name || '—'}</strong>
@@ -2520,13 +2785,9 @@ window.renderSubscriptionsTeachersList = function() {
                         <span>📅 التسجيل:</span>
                         <strong>${regDate}</strong>
                     </div>
-                    ${untilDate ? `
-                        <div class="tsc-date-chip ${statusInfo.status === 'expired' ? 'expired' : ''}">
-                            <span>⏰ ينتهي:</span>
-                            <strong>${untilDate}</strong>
-                        </div>
-                    ` : ''}
                 </div>
+
+                ${timelineHtml}
 
                 <div class="tsc-actions">
                     <button class="tsc-btn tsc-lock" onclick="window.lockTeacherPermanent('${phone}')" title="حظر المعلم حتى تفتحه يدوياً">
@@ -2568,7 +2829,6 @@ window.renderSubscriptionsTeachersList = function() {
 // 🔒♾️📅 دوال إدارة اشتراك المعلم يدوياً
 // ==========================================================
 
-// 🔒 حظر (يظل محظوراً حتى تفتحه يدوياً)
 window.lockTeacherPermanent = async function(phone) {
     if (!confirm(`⚠️ سيتم حظر المعلم بشكل دائم حتى تقوم بفتحه يدوياً.\n\nهل أنت متأكد؟`)) return;
     try {
@@ -2585,7 +2845,6 @@ window.lockTeacherPermanent = async function(phone) {
     }
 };
 
-// ♾️ فتح دائم (بدون تاريخ انتهاء)
 window.unlockTeacherPermanent = async function(phone) {
     try {
         await updateDoc(doc(db, 'teachers', phone), {
@@ -2601,10 +2860,10 @@ window.unlockTeacherPermanent = async function(phone) {
     }
 };
 
-// 📅 فتح لمدة عدد شهور (مع إغلاق تلقائي بعد المدة)
 window.unlockTeacherForMonths = async function(phone, months) {
     const days = months * 30;
-    const until = Date.now() + days * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const until = now + days * 24 * 60 * 60 * 1000;
     const untilStr = new Date(until).toLocaleDateString('ar-EG');
 
     const monthsText = months === 1 ? 'شهر واحد'
@@ -2613,17 +2872,18 @@ window.unlockTeacherForMonths = async function(phone, months) {
                     : months === 12 ? 'سنة كاملة'
                     : `${months} شهر`;
 
-    if (!confirm(`⏰ سيتم فتح الحساب لمدة ${monthsText}\n📅 حتى تاريخ: ${untilStr}\n\nبعد هذا التاريخ سيتم إغلاق الحساب تلقائياً.\n\nهل أنت متأكد؟`)) return;
+    if (!confirm(`⏰ سيتم فتح الحساب لمدة ${monthsText}\n📅 من: ${new Date(now).toLocaleDateString('ar-EG')}\n📅 حتى: ${untilStr}\n\nبعد هذا التاريخ سيتم إغلاق الحساب تلقائياً.\n\nهل أنت متأكد؟`)) return;
 
     try {
         await updateDoc(doc(db, 'teachers', phone), {
             isLocked: false,
+            unlockedAt: now,
             unlockUntil: until,
             lockType: months === 3 ? '3months'
                     : months === 6 ? '6months'
                     : months === 12 ? '1year'
                     : `${months}months`,
-            unlockedAt: Date.now()
+            unlockedBy: 'admin'
         });
         window.toast(`✅ تم الفتح حتى ${untilStr}`, '#10B981');
     } catch (e) {
