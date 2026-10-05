@@ -1048,35 +1048,79 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر -->
+<!-- ✅ سكريبت حماية الجهاز + الحظر (نسخة محسّنة) -->
 <script type="module">
-    import { checkTeacherDevice } from './firebase-config.js';
-    
-    (async () => {
+    import { checkTeacherDevice, getTeacher } from './firebase-config.js';
+
+    // ✅ دالة مساعدة لتفعيل شاشة الحظر بشكل آمن
+    function showBlockedScreen() {
         const overlay = document.getElementById('securityOverlay');
         const blockedOverlay = document.getElementById('blockedOverlay');
-        
+
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+
+        if (blockedOverlay) {
+            blockedOverlay.classList.add('show');
+        }
+
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+
+        console.log('🚫 تم عرض شاشة الحظر');
+    }
+
+    // ✅ دالة مساعدة لإخفاء كل الشاشات (دخول ناجح)
+    function hideAllOverlays() {
+        const overlay = document.getElementById('securityOverlay');
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+        console.log('✅ تم إخفاء شاشة الحماية');
+    }
+
+    (async () => {
         const phone = localStorage.getItem('current_teacher_phone');
         if (!phone) {
             window.location.href = 'teacher-login.html';
             return;
         }
-        
-        try {
-            const check = await checkTeacherDevice(phone);
 
-            // 🚫 الحالة 1: المعلم محظور من قبل الإدارة
-            if (check.locked === true) {
-                overlay.remove(); // إزالة شاشة التحميل
-                blockedOverlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                // منع أي تفاعل مع باقي الصفحة
-                document.documentElement.style.overflow = 'hidden';
+        try {
+            // ==========================================
+            // 🔥 الفحص الأول: هل المعلم محظور؟ (مباشر من Firestore)
+            // ==========================================
+            let isLocked = false;
+            try {
+                const teacherDoc = await getTeacher(phone);
+                if (teacherDoc && teacherDoc.isLocked === true) {
+                    isLocked = true;
+                    console.log('🚫 المعلم محظور — isLocked =', teacherDoc.isLocked);
+                }
+            } catch (e) {
+                console.warn('فشل فحص الحظر المباشر:', e);
+            }
+
+            if (isLocked) {
+                showBlockedScreen();
                 return;
             }
 
-            // ⚠️ الحالة 2: تسجيل دخول من جهاز آخر
-            if (!check.ok) {
+            // ==========================================
+            // ⚠️ الفحص الثاني: الجهاز (Single Device Login)
+            // ==========================================
+            const check = await checkTeacherDevice(phone);
+
+            // حماية إضافية: لو checkTeacherDevice أرجعت locked
+            if (check && check.locked === true) {
+                showBlockedScreen();
+                return;
+            }
+
+            if (!check || !check.ok) {
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('current_teacher_phone');
                 alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
@@ -1084,13 +1128,20 @@
                 return;
             }
 
-            // ✅ الحالة 3: كل شيء سليم
-            overlay.classList.add('hide');
-            setTimeout(() => overlay.remove(), 300);
+            // ✅ كل شيء سليم
+            hideAllOverlays();
+
         } catch (e) {
             console.error('خطأ في التحقق:', e);
-            overlay.classList.add('hide');
-            setTimeout(() => overlay.remove(), 300);
+            // في حالة الخطأ — نتحقق مرة أخيرة من الحظر
+            try {
+                const teacherDoc = await getTeacher(phone);
+                if (teacherDoc && teacherDoc.isLocked === true) {
+                    showBlockedScreen();
+                    return;
+                }
+            } catch (_) {}
+            hideAllOverlays();
         }
     })();
 </script>
@@ -1321,23 +1372,67 @@
   import { publishGroup, getAllGroups, deleteGroup, updateGroup, isTeacherLocked } from './firebase-config.js';
 
   // ==========================================
-  // 🚫 فحص إضافي لحالة الحظر (لأي تعديل من الإدارة بعد التحميل)
+  // 🔄 فحص دوري لحالة الحظر (كل 20 ثانية) مع إمكانية الإلغاء
   // ==========================================
-  const teacherPhone = localStorage.getItem('current_teacher_phone');
-  if (teacherPhone) {
-      // فحص كل 30 ثانية
-      setInterval(async () => {
+  let _lockCheckInterval = null;
+
+  function startLockCheck() {
+      const teacherPhone = localStorage.getItem('current_teacher_phone');
+      if (!teacherPhone) return;
+
+      // إلغاء أي interval سابق
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+
+      _lockCheckInterval = setInterval(async () => {
           try {
               const locked = await isTeacherLocked(teacherPhone);
               if (locked) {
-                  document.getElementById('blockedOverlay').classList.add('show');
-                  document.body.style.overflow = 'hidden';
+                  const blockedOverlay = document.getElementById('blockedOverlay');
+                  if (blockedOverlay && !blockedOverlay.classList.contains('show')) {
+                      blockedOverlay.classList.add('show');
+                      document.body.style.overflow = 'hidden';
+                      document.documentElement.style.overflow = 'hidden';
+
+                      // إيقاف الفحص الدوري بعد الحظر
+                      if (_lockCheckInterval) {
+                          clearInterval(_lockCheckInterval);
+                          _lockCheckInterval = null;
+                      }
+                  }
               }
           } catch (e) {
               console.warn('فشل فحص الحظر الدوري:', e);
           }
-      }, 30000);
+      }, 20000);
   }
+
+  // بدء الفحص الدوري فقط إذا لم يكن المعلم محظوراً أصلاً
+  const _initPhone = localStorage.getItem('current_teacher_phone');
+  if (_initPhone) {
+      const _initialBlock = document.getElementById('blockedOverlay');
+      if (_initialBlock && !_initialBlock.classList.contains('show')) {
+          startLockCheck();
+      }
+  }
+
+  // ✅ تنظيف الـ interval عند مغادرة الصفحة (يحل مشكلة التعليق)
+  window.addEventListener('beforeunload', () => {
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+  });
+
+  // ✅ تنظيف إضافي عند hide/show الصفحة (للـ PWA)
+  window.addEventListener('pagehide', () => {
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+  });
 
   // ==========================================
   // 🗺 جلب اسم الشارع والعنوان بالتفصيل
