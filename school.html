@@ -243,6 +243,26 @@ tr.locked td{background:#FEF2F2}
   box-shadow: 0 8px 18px -4px rgba(239, 68, 68, 0.7);
 }
 
+/* 🎯 زر GPS */
+.icon-action-btn.btn-gps-icon {
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(139, 92, 246, 0.5);
+}
+.icon-action-btn.btn-gps-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(139, 92, 246, 0.7);
+}
+.icon-action-btn.btn-gps-icon:disabled {
+  background: #CBD5E1;
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.icon-action-btn.btn-gps-icon:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .icon-action-btn.btn-lock-icon::after {
   content: '';
   position: absolute;
@@ -261,6 +281,58 @@ tr.locked td{background:#FEF2F2}
   .actions-cell { gap: 4px; }
   .icon-action-btn { width: 32px; height: 32px; }
   .icon-action-btn svg { width: 16px; height: 16px; }
+}
+
+/* 📅 تاريخ التسجيل */
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #F1F5F9;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 900;
+  border: 1px solid #E2E8F0;
+  white-space: nowrap;
+  direction: ltr;
+}
+.date-chip.unknown {
+  background: #FEF3C7;
+  color: #92400E;
+  border-color: #FDE68A;
+}
+
+/* 🎯 وميض GPS */
+@keyframes gpsPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(0,0,0,.3); }
+  50%      { transform: scale(1.4); box-shadow: 0 0 0 12px rgba(139, 92, 246, 0.4), 0 0 0 24px rgba(139, 92, 246, 0.15); }
+}
+.marker-admin.gps-highlight {
+  animation: gpsPulse 0.9s ease-in-out 2;
+  border-color: #8B5CF6 !important;
+  z-index: 9999;
+}
+
+/* 🔊 تأثير بصري خفيف عند النقر */
+.click-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.click-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255,255,255,.5) 10%, transparent 70%);
+  opacity: 0;
+  animation: rippleFlash 0.35s ease-out;
+  pointer-events: none;
+}
+@keyframes rippleFlash {
+  0%   { opacity: 0.7; transform: scale(0.5); }
+  100% { opacity: 0;   transform: scale(1.6); }
 }
 
 .stage-card{
@@ -487,6 +559,7 @@ tr.locked td{background:#FEF2F2}
             <th>المواد</th>
             <th>💬 واتساب</th>
             <th>📅 الحصص</th>
+            <th>🗓️ التسجيل</th>
             <th>الحالة</th>
             <th>الإجراءات</th>
           </tr>
@@ -525,6 +598,7 @@ tr.locked td{background:#FEF2F2}
             <th>الهاتف</th>
             <th>النوع</th>
             <th>الصف</th>
+            <th>🗓️ التسجيل</th>
             <th>الحالة</th>
             <th>الإجراءات</th>
           </tr>
@@ -787,6 +861,116 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ==========================================================
+// 🔊 صوت النقر الرفيع — Web Audio API (بدون ملفات)
+// ==========================================================
+(function initClickSound() {
+  let audioCtx = null;
+
+  function getCtx() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        return null;
+      }
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  }
+
+  window.playClick = function(freq = 1400, duration = 0.045, volume = 0.12) {
+    const ctx = getCtx();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.6, now + duration);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(volume, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 800;
+    filter.Q.value = 0.7;
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + duration + 0.02);
+  };
+
+  function attachClickSound() {
+    const clickableSelectors = [
+      '.tab',
+      '.icon-action-btn',
+      '.btn',
+      '.color-btn',
+      '.icon-btn',
+      '.stage-action-btn',
+      '.stage-card-header',
+      '.modal-buttons button',
+      'button:not([disabled])',
+      'a.icon-action-btn'
+    ].join(', ');
+
+    document.querySelectorAll(clickableSelectors).forEach(el => {
+      if (el.dataset.soundAttached === '1') return;
+      el.dataset.soundAttached = '1';
+
+      el.addEventListener('click', () => {
+        if (el.disabled) return;
+
+        if (el.classList.contains('btn-del') || el.classList.contains('btn-del-icon') || el.classList.contains('delete-stage')) {
+          window.playClick(900, 0.06, 0.14);
+        } else if (el.classList.contains('btn-wa-icon')) {
+          window.playClick(1800, 0.05, 0.10);
+        } else if (el.classList.contains('btn-gps-icon')) {
+          window.playClick(2200, 0.06, 0.10);
+        } else if (el.classList.contains('icon-btn')) {
+          window.playClick(1600, 0.04, 0.10);
+        } else if (el.classList.contains('color-btn')) {
+          window.playClick(2000, 0.035, 0.09);
+        } else if (el.classList.contains('tab')) {
+          window.playClick(1100, 0.05, 0.12);
+        } else {
+          window.playClick(1500, 0.045, 0.11);
+        }
+
+        if (el.classList.contains('btn-primary') || el.classList.contains('modal-btn-save')) {
+          el.classList.add('click-ripple');
+          setTimeout(() => el.classList.remove('click-ripple'), 350);
+        }
+      }, { passive: true });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachClickSound);
+  } else {
+    attachClickSound();
+  }
+
+  window._attachClickSound = attachClickSound;
+
+  const observer = new MutationObserver(() => {
+    clearTimeout(window._soundAttachTimer);
+    window._soundAttachTimer = setTimeout(attachClickSound, 150);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+})();
+
+// ==========================================================
 // ✅ Tabs — محفوظة في hash الرابط
 // ==========================================================
 function switchTab(pageId) {
@@ -871,12 +1055,36 @@ function getTeacherSubjects(phone) {
   return Array.from(subs).slice(0, 3).join(' • ') || '—';
 }
 
+// ============ 📅 تنسيق تاريخ التسجيل ============
+function formatRegDate(ts) {
+  if (!ts) return '<span class="date-chip unknown">📅 —</span>';
+  let d;
+  try {
+    if (typeof ts === 'number') {
+      d = new Date(ts < 1e12 ? ts * 1000 : ts);
+    } else if (ts?.toDate) {
+      d = ts.toDate();
+    } else if (ts?.seconds) {
+      d = new Date(ts.seconds * 1000);
+    } else {
+      d = new Date(ts);
+    }
+    if (isNaN(d.getTime())) throw new Error('invalid');
+  } catch {
+    return '<span class="date-chip unknown">📅 —</span>';
+  }
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `<span class="date-chip">📅 ${dd}/${mm}/${yyyy}</span>`;
+}
+
 // ============ Teachers Table ============
 function renderTeachersTable() {
   const tbody = document.getElementById('teachersBody');
   document.getElementById('teachersCount').textContent = `${allTeachers.length} معلم`;
   if (allTeachers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">لا يوجد معلمون مسجلون</td></tr>`;
     return;
   }
   tbody.innerHTML = allTeachers.map(t => {
@@ -886,6 +1094,10 @@ function renderTeachersTable() {
     const bookings = Number(t.bookingsCount) || 0;
     const safeName = (t.name || '').replace(/'/g, "\\'");
 
+    const hasLocation = (t.lat && t.lng) || allGroups.some(g => g.phone === phone && g.lat && g.lng);
+
+    const regDate = t.createdAt || t.registeredAt || t.joinedAt || t.timestamp || t.created_at;
+
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${(t.name||'')} ${phone}">
         <td>${t.name || '—'}</td>
@@ -894,6 +1106,7 @@ function renderTeachersTable() {
         <td style="font-size:11px;color:var(--muted)">${getTeacherSubjects(phone)}</td>
         <td><span class="wa-clicks-badge">💬 ${waClicks}</span></td>
         <td><span class="booking-badge">📅 ${bookings}</span></td>
+        <td>${formatRegDate(regDate)}</td>
         <td>${locked ? '<span class="badge badge-locked">🚫 محظور</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
           <div class="actions-cell">
@@ -905,6 +1118,17 @@ function renderTeachersTable() {
                 ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`
                 : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
               }
+            </button>
+
+            <button 
+              class="icon-action-btn btn-gps-icon" 
+              onclick="window.focusOnMap('teacher_${phone}', 'teachers')" 
+              title="عرض الموقع على الخريطة"
+              ${hasLocation ? '' : 'disabled'}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
             </button>
 
             <a 
@@ -940,7 +1164,7 @@ function renderStudentsTable() {
   const tbody = document.getElementById('studentsBody');
   document.getElementById('studentsCount').textContent = `${allStudents.length} طالب`;
   if (allStudents.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">لا يوجد طلاب مسجلون</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">لا يوجد طلاب مسجلون</td></tr>`;
     return;
   }
   tbody.innerHTML = allStudents.map(s => {
@@ -962,6 +1186,10 @@ function renderStudentsTable() {
       : `<span class="grade-tag">📖 ${grade}</span>`;
     
     const safeName = name.replace(/'/g, "\\'");
+
+    const hasLocation = !!(s.lat && s.lng);
+
+    const regDate = s.createdAt || s.registeredAt || s.joinedAt || s.timestamp || s.created_at;
     
     return `
       <tr class="${locked ? 'locked' : ''}" data-search="${name} ${phone} ${grade}">
@@ -969,6 +1197,7 @@ function renderStudentsTable() {
         <td dir="ltr" style="text-align:right;font-size:12px">${phone}</td>
         <td>${genderBadge}</td>
         <td>${gradeHtml}</td>
+        <td>${formatRegDate(regDate)}</td>
         <td>${locked ? '<span class="badge badge-locked">🔒 مقفول</span>' : '<span class="badge badge-active">✅ نشط</span>'}</td>
         <td>
           <div class="actions-cell">
@@ -980,6 +1209,17 @@ function renderStudentsTable() {
                 ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`
                 : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
               }
+            </button>
+
+            <button 
+              class="icon-action-btn btn-gps-icon" 
+              onclick="window.focusOnMap('student_${s.id}', 'students')" 
+              title="عرض الموقع على الخريطة"
+              ${hasLocation ? '' : 'disabled'}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
             </button>
 
             ${phone !== '—' ? `
@@ -1229,6 +1469,59 @@ function renderMap() {
     if (window._studentsMap) window._studentsMap.invalidateSize();
   }, 200);
 }
+
+// ============ 🎯 التركيز على عنصر على الخريطة ============
+window._gpsHighlight = null;
+
+window.focusOnMap = function(markerKey, mapType) {
+  const entry = window._mapMarkers[markerKey];
+  if (!entry) {
+    window.toast('⚠️ لا يوجد موقع محفوظ لهذا الحساب', '#D97706');
+    return;
+  }
+
+  const { marker, lat, lng } = entry;
+  const map = mapType === 'teachers' ? window._teachersMap : window._studentsMap;
+  const mapEl = mapType === 'teachers' 
+    ? document.getElementById('teachersMap') 
+    : document.getElementById('studentsMap');
+
+  if (!map || !mapEl) return;
+
+  switchTab('page-users');
+
+  setTimeout(() => {
+    map.invalidateSize();
+
+    if (window._gpsHighlight) {
+      window._gpsHighlight.classList.remove('gps-highlight');
+      window._gpsHighlight = null;
+    }
+
+    map.flyTo([lat, lng], 16, { duration: 1.2 });
+
+    setTimeout(() => {
+      marker.openPopup();
+
+      const markerEl = marker.getElement();
+      if (markerEl) {
+        const inner = markerEl.querySelector('.marker-admin');
+        if (inner) {
+          inner.classList.add('gps-highlight');
+          window._gpsHighlight = inner;
+          setTimeout(() => {
+            inner.classList.remove('gps-highlight');
+            window._gpsHighlight = null;
+          }, 2400);
+        }
+      }
+
+      mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1300);
+
+    window.toast('📍 تم التركيز على الموقع', '#6D28D9');
+  }, 250);
+};
 
 // ==========================================================
 // ✅ Curriculum Management
