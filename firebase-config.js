@@ -210,13 +210,37 @@ export function generateDeviceId() {
     return deviceId;
 }
 
+// ==========================================================
+// ✅ محدّثة: checkTeacherDevice مع دعم حالة الحظر (isLocked)
+// ==========================================================
 export async function checkTeacherDevice(phone) {
     const teacher = await getTeacher(phone);
-    if (!teacher) return { ok: false, reason: 'not_found' };
+    if (!teacher) return { ok: false, locked: false, reason: 'not_found' };
+
+    // 🚫 الحالة الأولى: المعلم محظور من قبل الإدارة
+    if (teacher.isLocked === true) {
+        return { 
+            ok: false, 
+            locked: true, 
+            reason: 'locked',
+            teacher 
+        };
+    }
+
     const currentDeviceId = generateDeviceId();
-    if (!teacher.activeDeviceId) return { ok: true, isFirst: true, teacher };
-    if (teacher.activeDeviceId === currentDeviceId) return { ok: true, isSame: true, teacher };
-    return { ok: false, reason: 'different_device', teacher };
+
+    // ✅ أول تسجيل دخول (لا يوجد جهاز مسجل)
+    if (!teacher.activeDeviceId) {
+        return { ok: true, locked: false, isFirst: true, teacher };
+    }
+
+    // ✅ نفس الجهاز
+    if (teacher.activeDeviceId === currentDeviceId) {
+        return { ok: true, locked: false, isSame: true, teacher };
+    }
+
+    // ⚠️ جهاز مختلف
+    return { ok: false, locked: false, reason: 'different_device', teacher };
 }
 
 export async function updateTeacherDevice(phone) {
@@ -228,11 +252,23 @@ export async function updateTeacherDevice(phone) {
     return deviceId;
 }
 
-// ✅ محدّثة: مع مزامنة بيانات localStorage مع Firestore تلقائياً
+// ==========================================================
+// ✅ محدّثة: checkStudentDevice مع دعم حالة الحظر (isLocked)
+// ==========================================================
 export async function checkStudentDevice(accountKey) {
     const student = await getStudentByKey(accountKey);
-    if (!student) return { ok: false, reason: 'not_found' };
-    
+    if (!student) return { ok: false, locked: false, reason: 'not_found' };
+
+    // 🚫 الحالة الأولى: الطالب مقفول من قبل الإدارة
+    if (student.isLocked === true) {
+        return { 
+            ok: false, 
+            locked: true, 
+            reason: 'locked',
+            student 
+        };
+    }
+
     const currentDeviceId = generateDeviceId();
     
     // ✅ مزامنة بيانات localStorage مع Firestore (للحسابات القديمة)
@@ -254,9 +290,9 @@ export async function checkStudentDevice(accountKey) {
         console.warn('⚠️ فشل المزامنة (تم تجاهله):', e);
     }
     
-    if (!student.activeDeviceId) return { ok: true, isFirst: true, student };
-    if (student.activeDeviceId === currentDeviceId) return { ok: true, isSame: true, student };
-    return { ok: false, reason: 'different_device', student };
+    if (!student.activeDeviceId) return { ok: true, locked: false, isFirst: true, student };
+    if (student.activeDeviceId === currentDeviceId) return { ok: true, locked: false, isSame: true, student };
+    return { ok: false, locked: false, reason: 'different_device', student };
 }
 
 export async function updateStudentDevice(accountKey) {
@@ -266,6 +302,32 @@ export async function updateStudentDevice(accountKey) {
         lastLoginAt: new Date().toISOString()
     });
     return deviceId;
+}
+
+// ==========================================================
+// ✅ دالة جديدة: فحص حالة حظر المعلم فقط (بدون فحص الجهاز)
+// ==========================================================
+export async function isTeacherLocked(phone) {
+    try {
+        const teacher = await getTeacher(phone);
+        if (!teacher) return false;
+        return teacher.isLocked === true;
+    } catch (e) {
+        console.error('خطأ في فحص حالة الحظر:', e);
+        return false;
+    }
+}
+
+// ✅ دالة جديدة: فحص حالة قفل الطالب فقط
+export async function isStudentLocked(accountKey) {
+    try {
+        const student = await getStudentByKey(accountKey);
+        if (!student) return false;
+        return student.isLocked === true;
+    } catch (e) {
+        console.error('خطأ في فحص حالة قفل الطالب:', e);
+        return false;
+    }
 }
 
 // ==========================================================
@@ -346,6 +408,9 @@ export function subscribeCurriculum(callback) {
     });
 }
 
+// ==========================================================
+// ✅ دوال الحظر (Lock/Unlock)
+// ==========================================================
 export async function setTeacherLock(phone, isLocked) {
     await updateDoc(doc(db, "teachers", phone), {
         isLocked: isLocked,
