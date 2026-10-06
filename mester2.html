@@ -1010,6 +1010,10 @@
         border-radius: 8px;
         border: 1.5px solid #86EFAC;
         direction: ltr;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .plan-duration {
@@ -1017,6 +1021,7 @@
         font-weight: 800;
         color: #64748B;
         margin-bottom: 10px;
+        min-height: 15px;
     }
 
     .plan-btn {
@@ -1137,6 +1142,23 @@
         to { transform: scale(1); opacity: 1; }
     }
 
+    /* ✅ حالة التحميل للباقات */
+    .plan-price.loading {
+        background: #F1F5F9;
+        border-color: #CBD5E1;
+        color: #94A3B8;
+    }
+    .plan-price.loading::after {
+        content: '';
+        width: 14px;
+        height: 14px;
+        border: 2px solid #CBD5E1;
+        border-top-color: #64748B;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+    }
+
     .subscription-banner {
         width: 100%;
         max-width: 900px;
@@ -1247,38 +1269,38 @@
         <div class="support-label">💎 اختر باقة الاشتراك المناسبة للمتابعة</div>
         
         <div class="plans-grid">
-            <!-- باقة 3 شهور -->
+            <!-- باقة 3 شهور — كل القيم ديناميكية من السحابة -->
             <div class="plan-card plan-3m">
-                <div class="plan-icon">📅</div>
+                <div class="plan-icon" id="planIcon3m">📅</div>
                 <div>
-                    <div class="plan-name">3 شهور</div>
-                    <div class="plan-price" id="priceText3m">150 جنيه</div>
-                    <div class="plan-duration">⏱ 90 يوم</div>
+                    <div class="plan-name" id="planName3m">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText3m"></div>
+                    <div class="plan-duration" id="planDuration3m">⏱ ...</div>
                 </div>
-                <button class="plan-btn" onclick="window.requestPlan('3months')">اشترك الآن</button>
+                <button class="plan-btn" id="planBtn3m" onclick="window.requestPlan('3months')" disabled>جاري التحميل...</button>
             </div>
 
             <!-- باقة 6 شهور -->
             <div class="plan-card plan-6m">
-                <div class="plan-icon">📅</div>
+                <div class="plan-icon" id="planIcon6m">📅</div>
                 <div>
-                    <div class="plan-name">6 شهور</div>
-                    <div class="plan-price" id="priceText6m">250 جنيه</div>
-                    <div class="plan-duration">⏱ 180 يوم</div>
+                    <div class="plan-name" id="planName6m">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText6m"></div>
+                    <div class="plan-duration" id="planDuration6m">⏱ ...</div>
                 </div>
-                <button class="plan-btn" onclick="window.requestPlan('6months')">اشترك الآن</button>
+                <button class="plan-btn" id="planBtn6m" onclick="window.requestPlan('6months')" disabled>جاري التحميل...</button>
             </div>
 
             <!-- باقة سنة -->
             <div class="plan-card plan-1y">
-                <div class="plan-badge">⭐ الأفضل</div>
-                <div class="plan-icon">👑</div>
+                <div class="plan-badge" id="planBadge1y">⭐ الأفضل</div>
+                <div class="plan-icon" id="planIcon1y">👑</div>
                 <div>
-                    <div class="plan-name">سنة كاملة</div>
-                    <div class="plan-price" id="priceText1y">400 جنيه</div>
-                    <div class="plan-duration">⏱ 365 يوم</div>
+                    <div class="plan-name" id="planName1y">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText1y"></div>
+                    <div class="plan-duration" id="planDuration1y">⏱ ...</div>
                 </div>
-                <button class="plan-btn" onclick="window.requestPlan('1year')">اشترك الآن</button>
+                <button class="plan-btn" id="planBtn1y" onclick="window.requestPlan('1year')" disabled>جاري التحميل...</button>
             </div>
         </div>
 
@@ -1309,42 +1331,84 @@
     } from './firebase-config.js';
 
     // ==========================================================
-    // 💰 تحديث واجهة أسعار الباقات (مع المدة الزمنية)
+    // 💾 تخزين أسعار الباقات الحالية في الذاكرة (للوصول السريع)
+    // ==========================================================
+    window.currentPricing = null;
+
+    // ==========================================================
+    // 💰 تحديث واجهة أسعار الباقات — كل القيم ديناميكية
     // ==========================================================
     function updatePricingUI(pricing) {
         if (!pricing) {
-            console.log('⚠️ لا توجد أسعار محفوظة — استخدام القيم الافتراضية');
+            console.log('⚠️ لا توجد أسعار محفوظة — في انتظار البيانات...');
             return;
         }
 
-        // باقة 3 شهور
-        const p3m = pricing['3months'];
-        if (p3m) {
-            const el = document.getElementById('priceText3m');
-            if (el) el.textContent = p3m.priceText || `${p3m.price} جنيه`;
-            const durEl = document.querySelector('.plan-3m .plan-duration');
-            if (durEl && p3m.days) durEl.textContent = `⏱ ${p3m.days} يوم`;
+        // حفظ في الذاكرة
+        window.currentPricing = pricing;
+
+        // 🔹 أسماء افتراضية مؤقتة لو القيم ناقصة
+        const defaultLabels = {
+            '3months': '3 شهور',
+            '6months': '6 شهور',
+            '1year': 'سنة كاملة'
+        };
+        const defaultIcons = {
+            '3months': '📅',
+            '6months': '📅',
+            '1year': '👑'
+        };
+
+        const mapSuffix = { '3months': '3m', '6months': '6m', '1year': '1y' };
+
+        for (const planId of ['3months', '6months', '1year']) {
+            const data = pricing[planId] || {};
+            const suffix = mapSuffix[planId];
+
+            // 📛 الاسم (لو موجود) — وإلا الافتراضي
+            const nameEl = document.getElementById(`planName${suffix}`);
+            if (nameEl) {
+                nameEl.textContent = data.label || defaultLabels[planId];
+            }
+
+            // 🎨 الأيقونة (لو موجودة) — وإلا الافتراضية
+            const iconEl = document.getElementById(`planIcon${suffix}`);
+            if (iconEl) {
+                iconEl.textContent = data.icon || defaultIcons[planId];
+            }
+
+            // 💵 السعر (نص العرض)
+            const priceEl = document.getElementById(`priceText${suffix}`);
+            if (priceEl) {
+                priceEl.classList.remove('loading');
+                if (data.priceText) {
+                    priceEl.textContent = data.priceText;
+                } else if (data.price !== undefined && data.price !== null) {
+                    priceEl.textContent = `${data.price} جنيه`;
+                } else {
+                    priceEl.textContent = 'السعر عند الطلب';
+                }
+            }
+
+            // ⏱ المدة
+            const durEl = document.getElementById(`planDuration${suffix}`);
+            if (durEl) {
+                if (data.days) {
+                    durEl.textContent = `⏱ ${data.days} يوم`;
+                } else {
+                    durEl.textContent = '';
+                }
+            }
+
+            // 🔘 زر الطلب — نفعّله بعد ما البيانات توصل
+            const btnEl = document.getElementById(`planBtn${suffix}`);
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.textContent = 'اشترك الآن';
+            }
         }
 
-        // باقة 6 شهور
-        const p6m = pricing['6months'];
-        if (p6m) {
-            const el = document.getElementById('priceText6m');
-            if (el) el.textContent = p6m.priceText || `${p6m.price} جنيه`;
-            const durEl = document.querySelector('.plan-6m .plan-duration');
-            if (durEl && p6m.days) durEl.textContent = `⏱ ${p6m.days} يوم`;
-        }
-
-        // باقة سنة كاملة
-        const p1y = pricing['1year'];
-        if (p1y) {
-            const el = document.getElementById('priceText1y');
-            if (el) el.textContent = p1y.priceText || `${p1y.price} جنيه`;
-            const durEl = document.querySelector('.plan-1y .plan-duration');
-            if (durEl && p1y.days) durEl.textContent = `⏱ ${p1y.days} يوم`;
-        }
-
-        console.log('✅ تم تحديث أسعار الباقات من السحابة');
+        console.log('✅ تم تحديث أسعار الباقات من السحابة:', pricing);
     }
 
     async function loadPricing() {
@@ -1373,7 +1437,7 @@
     }
 
     // ==========================================================
-    // 💎 دالة طلب باقة (بدون تحويل لأي صفحة)
+    // 💎 دالة طلب باقة — تقرأ القيم من السحابة (لا شيء ثابت)
     // ==========================================================
     window.requestPlan = async function(planId) {
         const phone = localStorage.getItem('current_teacher_phone');
@@ -1382,24 +1446,35 @@
             return;
         }
 
-        const planNames = {
-            '3months': { name: 'باقة 3 شهور', days: 90 },
-            '6months': { name: 'باقة 6 شهور', days: 180 },
-            '1year': { name: 'باقة سنة كاملة', days: 365 }
-        };
+        // ✅ منع الطلب قبل تحميل الأسعار
+        if (!window.currentPricing) {
+            alert('⏳ يرجى الانتظار قليلاً حتى يتم تحميل بيانات الباقة...');
+            return;
+        }
 
-        const plan = planNames[planId];
-        if (!plan) return;
+        const pricing = window.currentPricing;
+        const planData = pricing[planId];
+        
+        if (!planData) {
+            alert('⚠️ بيانات هذه الباقة غير متوفرة حالياً، يرجى المحاولة لاحقاً.');
+            return;
+        }
 
-        // جلب السعر من الصفحة
-        const priceEl = document.getElementById(`priceText${planId === '3months' ? '3m' : planId === '6months' ? '6m' : '1y'}`);
-        const price = priceEl?.textContent || '';
+        // 🔹 استخدام القيم من السحابة (لا شيء ثابت)
+        const planName = planData.label || planData.name || ({
+            '3months': 'باقة 3 شهور',
+            '6months': 'باقة 6 شهور',
+            '1year': 'باقة سنة كاملة'
+        })[planId];
+
+        const planDays = planData.days || 0;
+        const planPrice = planData.priceText || (planData.price !== undefined ? `${planData.price} جنيه` : 'غير محدد');
 
         if (!confirm(
             `📋 تأكيد طلب الاشتراك\n\n` +
-            `💎 الباقة: ${plan.name}\n` +
-            `⏱️ المدة: ${plan.days} يوم\n` +
-            `💰 السعر: ${price}\n\n` +
+            `💎 الباقة: ${planName}\n` +
+            `⏱️ المدة: ${planDays} يوم\n` +
+            `💰 السعر: ${planPrice}\n\n` +
             `سيتم إرسال طلبك للإدارة، وسيتم التواصل معك خلال 24 ساعة.\n\n` +
             `هل تريد إرسال الطلب؟`
         )) return;
@@ -1443,8 +1518,8 @@
                 teacherName: teacherName,
                 teacherTitle: teacherTitle,
                 planId: planId,
-                planName: plan.name,
-                priceText: price,
+                planName: planName,
+                priceText: planPrice,
                 requestedAt: serverTimestamp(),
                 requestedAtMs: Date.now(),
                 handled: false,
@@ -1547,7 +1622,7 @@
             if (isLocked) {
                 await loadPricing();
                 showBlockedScreen();
-                startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار في شاشة الحظر
+                startPricingLiveUpdates();
                 return;
             }
 
@@ -1562,7 +1637,7 @@
                 localStorage.setItem('teacher_is_blocked', 'true');
                 await loadPricing();
                 showBlockedScreen();
-                startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار في شاشة الحظر
+                startPricingLiveUpdates();
                 return;
             }
 
@@ -1578,7 +1653,7 @@
             }
 
             hideAllOverlays();
-            startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار حتى لو المعلم غير محظور
+            startPricingLiveUpdates();
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
