@@ -839,6 +839,7 @@
         opacity: 0.9;
     }
 
+    /* 🚫 شاشة الحظر */
     .blocked-overlay {
         position: fixed;
         inset: 0;
@@ -862,8 +863,8 @@
     }
 
     .blocked-overlay .blocked-icon {
-        font-size: 90px;
-        margin-bottom: 20px;
+        font-size: 80px;
+        margin-bottom: 16px;
         animation: blockedPulse 1.5s infinite;
         filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
     }
@@ -873,78 +874,181 @@
     }
 
     .blocked-overlay h1 {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 900;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         text-shadow: 0 3px 10px rgba(0,0,0,0.4);
         letter-spacing: 0.5px;
     }
 
     .blocked-overlay p {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
-        line-height: 1.8;
+        line-height: 1.7;
         max-width: 520px;
         margin-bottom: 10px;
         opacity: 0.95;
     }
 
+    /* 💎 صندوق الباقات */
     .blocked-overlay .support-box {
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.35);
-        border-radius: 16px;
-        padding: 20px 26px;
-        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 22px;
+        margin-top: 22px;
         backdrop-filter: blur(10px);
         box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        max-width: 100%;
+        max-width: 760px;
+        width: 100%;
     }
 
     .blocked-overlay .support-box .support-label {
-        font-size: 13px;
-        font-weight: 800;
-        opacity: 0.85;
-        margin-bottom: 8px;
-        letter-spacing: 1px;
-    }
-
-    .blocked-overlay .support-email {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: #fff;
-        color: #991b1b;
-        padding: 14px 22px;
-        border-radius: 12px;
         font-size: 15px;
         font-weight: 900;
-        text-decoration: none;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        direction: ltr;
-        font-family: 'Cairo', sans-serif;
-        word-break: break-all;
-    }
-    .blocked-overlay .support-email:hover {
-        transform: translateY(-4px) scale(1.03);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-        background: #fef2f2;
-    }
-    .blocked-overlay .support-email:active {
-        transform: translateY(0) scale(0.98);
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        opacity: 0.98;
     }
 
-    .blocked-overlay .support-email svg {
-        width: 22px;
-        height: 22px;
-        flex-shrink: 0;
+    /* 💎 شبكة الباقات */
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 8px;
+    }
+
+    .plan-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px 12px 16px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 3px solid transparent;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-8px) scale(1.04);
+        box-shadow: 0 16px 35px rgba(0,0,0,0.4);
+    }
+
+    .plan-card.plan-3m {
+        border-color: #3B82F6;
+        background: linear-gradient(180deg, #EFF6FF 0%, #fff 40%);
+    }
+    .plan-card.plan-3m .plan-name { color: #1D4ED8; }
+    .plan-card.plan-3m .plan-btn {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    }
+
+    .plan-card.plan-6m {
+        border-color: #8B5CF6;
+        background: linear-gradient(180deg, #F5F3FF 0%, #fff 40%);
+    }
+    .plan-card.plan-6m .plan-name { color: #6D28D9; }
+    .plan-card.plan-6m .plan-btn {
+        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    }
+
+    .plan-card.plan-1y {
+        border-color: #F59E0B;
+        background: linear-gradient(180deg, #FFFBEB 0%, #fff 40%);
+        transform: scale(1.05);
+    }
+    .plan-card.plan-1y:hover {
+        transform: translateY(-8px) scale(1.1);
+    }
+    .plan-card.plan-1y .plan-name { color: #B45309; }
+    .plan-card.plan-1y .plan-btn {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+
+    .plan-badge {
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 0 14px 0 14px;
+        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.5);
+        animation: badgePulse 1.5s infinite;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+    }
+
+    .plan-icon {
+        font-size: 38px;
+        margin-bottom: 4px;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+    }
+
+    .plan-name {
+        font-size: 16px;
+        font-weight: 900;
+        margin-bottom: 2px;
+        letter-spacing: 0.3px;
+    }
+
+    .plan-price {
+        font-size: 14px;
+        font-weight: 900;
+        color: #047857;
+        margin-bottom: 6px;
+        padding: 6px 8px;
+        background: #DCFCE7;
+        border-radius: 8px;
+        border: 1.5px solid #86EFAC;
+        direction: ltr;
+    }
+
+    .plan-duration {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748B;
+        margin-bottom: 10px;
+    }
+
+    .plan-btn {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 8px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 900;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+        margin-top: auto;
+    }
+    .plan-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        filter: brightness(1.1);
+    }
+    .plan-btn:active {
+        transform: translateY(0) scale(0.97);
     }
 
     .blocked-overlay .blocked-note {
-        margin-top: 26px;
-        font-size: 13px;
+        margin-top: 22px;
+        font-size: 12.5px;
         font-weight: 700;
-        opacity: 0.8;
+        opacity: 0.85;
         line-height: 1.7;
         max-width: 480px;
     }
@@ -958,8 +1062,48 @@
         border-radius: 30px;
         font-size: 12px;
         font-weight: 900;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
         letter-spacing: 1px;
+    }
+
+    /* 📱 Responsive للحظر */
+    @media (max-width: 640px) {
+        .plans-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .plan-card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            text-align: right;
+        }
+        .plan-card.plan-1y {
+            transform: scale(1);
+        }
+        .plan-card.plan-1y:hover {
+            transform: translateY(-4px);
+        }
+        .plan-icon {
+            font-size: 32px;
+            margin-bottom: 0;
+        }
+        .plan-card > div:not(.plan-icon) {
+            flex: 1;
+        }
+        .plan-name { font-size: 15px; }
+        .plan-price { font-size: 13px; margin-bottom: 0; padding: 4px 6px; }
+        .plan-duration { display: none; }
+        .plan-btn {
+            padding: 10px 14px;
+            white-space: nowrap;
+            margin-top: 0;
+        }
+        .blocked-overlay h1 { font-size: 20px; }
+        .blocked-overlay .blocked-icon { font-size: 60px; }
+        .blocked-overlay .support-box { padding: 16px; }
     }
 
     .contact-sent-msg {
@@ -1074,9 +1218,6 @@
         .btn-visibility { width: 100%; }
         .status-message { font-size: 13px; padding: 10px 12px; }
         .status-message .status-icon { font-size: 20px; }
-        .blocked-overlay h1 { font-size: 22px; }
-        .blocked-overlay .blocked-icon { font-size: 70px; }
-        .blocked-overlay .support-email { font-size: 13px; padding: 12px 16px; }
         .subscription-banner { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
         .subscription-banner .sb-btn { width: 100%; justify-content: center; }
     }
@@ -1096,23 +1237,52 @@
     </p>
 
     <div class="support-box">
-        <div class="support-label">📧 للتواصل مع الدعم الفني</div>
-        <a href="mailto:mmoksh162@gmail.com" class="support-email" id="supportEmailLink">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-            </svg>
-            mmoksh162@gmail.com
-        </a>
+        <div class="support-label">💎 اختر باقة الاشتراك المناسبة للمتابعة</div>
+        
+        <div class="plans-grid">
+            <!-- باقة 3 شهور -->
+            <div class="plan-card plan-3m">
+                <div class="plan-icon">📅</div>
+                <div>
+                    <div class="plan-name">3 شهور</div>
+                    <div class="plan-price" id="priceText3m">150 جنيه</div>
+                    <div class="plan-duration">⏱ 90 يوم</div>
+                </div>
+                <a href="subscription.html?plan=3months" class="plan-btn" id="planBtn3m">اشترك الآن</a>
+            </div>
+
+            <!-- باقة 6 شهور -->
+            <div class="plan-card plan-6m">
+                <div class="plan-icon">📅</div>
+                <div>
+                    <div class="plan-name">6 شهور</div>
+                    <div class="plan-price" id="priceText6m">250 جنيه</div>
+                    <div class="plan-duration">⏱ 180 يوم</div>
+                </div>
+                <a href="subscription.html?plan=6months" class="plan-btn" id="planBtn6m">اشترك الآن</a>
+            </div>
+
+            <!-- باقة سنة -->
+            <div class="plan-card plan-1y">
+                <div class="plan-badge">⭐ الأفضل</div>
+                <div class="plan-icon">👑</div>
+                <div>
+                    <div class="plan-name">سنة كاملة</div>
+                    <div class="plan-price" id="priceText1y">400 جنيه</div>
+                    <div class="plan-duration">⏱ 365 يوم</div>
+                </div>
+                <a href="subscription.html?plan=1year" class="plan-btn" id="planBtn1y">اشترك الآن</a>
+            </div>
+        </div>
 
         <div class="contact-sent-msg" id="contactSentMsg">
-            ✅ تم إرسال تنبيه للإدارة — سيتم التواصل معك قريباً
+            ✅ تم تسجيل طلب الاشتراك — سيتم التواصل معك قريباً
         </div>
     </div>
 
     <div class="blocked-note">
-        💡 يرجى التواصل مع الدعم الفني عبر البريد الإلكتروني لمراجعة حالة حسابك.<br>
-        سيتم إعادة تفعيل حسابك فور انتهاء سبب الحظر.
+        💡 بعد إتمام الاشتراك، سيتم إعادة تفعيل حسابك تلقائياً.<br>
+        للاستفسار تواصل مع الدعم الفني.
     </div>
 </div>
 
@@ -1123,9 +1293,52 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر (المنطق الجديد) -->
+<!-- ✅ سكريبت حماية الجهاز + الحظر + جلب الأسعار -->
 <script type="module">
-    import { checkTeacherDevice, getTeacher, db, doc, updateDoc, setDoc, serverTimestamp } from './firebase-config.js';
+    import { 
+        checkTeacherDevice, 
+        getTeacher, 
+        db, doc, updateDoc, setDoc, serverTimestamp,
+        getPricingSettings
+    } from './firebase-config.js';
+
+    // ==========================================================
+    // 💰 جلب أسعار الباقات من السحابة
+    // ==========================================================
+    async function loadPricing() {
+        try {
+            const pricing = await getPricingSettings();
+            if (!pricing) {
+                console.log('⚠️ لا توجد أسعار محفوظة — استخدام القيم الافتراضية');
+                return;
+            }
+
+            // باقة 3 شهور
+            const p3m = pricing['3months'];
+            if (p3m) {
+                const el = document.getElementById('priceText3m');
+                if (el) el.textContent = p3m.priceText || `${p3m.price} جنيه`;
+            }
+
+            // باقة 6 شهور
+            const p6m = pricing['6months'];
+            if (p6m) {
+                const el = document.getElementById('priceText6m');
+                if (el) el.textContent = p6m.priceText || `${p6m.price} جنيه`;
+            }
+
+            // باقة سنة
+            const p1y = pricing['1year'];
+            if (p1y) {
+                const el = document.getElementById('priceText1y');
+                if (el) el.textContent = p1y.priceText || `${p1y.price} جنيه`;
+            }
+
+            console.log('✅ تم تحديث أسعار الباقات من السحابة');
+        } catch (e) {
+            console.warn('فشل جلب الأسعار:', e);
+        }
+    }
 
     function showBlockedScreen() {
         const overlay = document.getElementById('securityOverlay');
@@ -1151,6 +1364,75 @@
         }
     }
 
+    // ==========================================================
+    // ✅ تسجيل طلب التواصل عند الضغط على اشترك
+    // ==========================================================
+    async function trackPlanClick(planId) {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) return;
+
+        try {
+            let teacherName = '';
+            let teacherTitle = '';
+            try {
+                const teacherDoc = await getTeacher(phone);
+                if (teacherDoc) {
+                    teacherName = teacherDoc.name || '';
+                    teacherTitle = teacherDoc.title || '';
+                }
+            } catch (e) {}
+
+            await updateDoc(doc(db, 'teachers', phone), {
+                contactRequest: {
+                    requested: true,
+                    at: Date.now(),
+                    handled: false,
+                    planId: planId
+                }
+            });
+
+            try {
+                const reqId = `contact_${phone}_${Date.now()}`;
+                await setDoc(doc(db, 'contact_requests', reqId), {
+                    id: reqId,
+                    phone: phone,
+                    teacherName: teacherName,
+                    teacherTitle: teacherTitle,
+                    planId: planId,
+                    requestedAt: serverTimestamp(),
+                    requestedAtMs: Date.now(),
+                    handled: false,
+                    handledAt: null
+                });
+            } catch (e) {}
+
+            const msgEl = document.getElementById('contactSentMsg');
+            if (msgEl) {
+                msgEl.classList.remove('error');
+                msgEl.classList.add('show');
+                msgEl.textContent = '✅ تم تسجيل طلبك — سيتم التواصل معك لتفعيل الاشتراك';
+            }
+        } catch (e) {
+            console.error('فشل تسجيل الطلب:', e);
+        }
+    }
+
+    // ربط الأزرار بتسجيل الطلبات
+    document.addEventListener('DOMContentLoaded', () => {
+        ['3m','6m','1y'].forEach(suffix => {
+            const btn = document.getElementById(`planBtn${suffix}`);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const planMap = { '3m': '3months', '6m': '6months', '1y': '1year' };
+                    trackPlanClick(planMap[suffix]);
+                });
+            }
+        });
+    });
+
+    // ==========================================================
+    // ✅ الفحص الرئيسي للجهاز والحظر
+    // ==========================================================
     (async () => {
         const phone = localStorage.getItem('current_teacher_phone');
         if (!phone) {
@@ -1212,8 +1494,9 @@
                 }
             }
 
-            // ✅ لو محظور: نعرض الشاشة ونوقف أي كود تاني (مفيش تسجيل خروج)
+            // ✅ لو محظور: نعرض الشاشة ونحمّل الأسعار
             if (isLocked) {
+                await loadPricing();
                 showBlockedScreen();
                 return;
             }
@@ -1229,6 +1512,7 @@
             // ✅ لو الحساب محظور حسب فحص الجهاز
             if (check && check.locked === true) {
                 localStorage.setItem('teacher_is_blocked', 'true');
+                await loadPricing();
                 showBlockedScreen();
                 return;
             }
@@ -1254,6 +1538,7 @@
                 const teacherDoc = await getTeacher(phone);
                 if (teacherDoc && teacherDoc.isLocked === true) {
                     localStorage.setItem('teacher_is_blocked', 'true');
+                    await loadPricing();
                     showBlockedScreen();
                     return;
                 }
@@ -1261,72 +1546,6 @@
             } catch (_) {}
             hideAllOverlays();
         }
-    })();
-
-    // ==========================================================
-    // 🆘 تسجيل طلب التواصل
-    // ==========================================================
-    (function initSupportContactTracker() {
-        const link = document.getElementById('supportEmailLink');
-        const msgEl = document.getElementById('contactSentMsg');
-        if (!link) return;
-
-        let isSending = false;
-
-        link.addEventListener('click', async () => {
-            if (isSending) return;
-            isSending = true;
-
-            const phone = localStorage.getItem('current_teacher_phone');
-            if (!phone) { isSending = false; return; }
-
-            try {
-                let teacherName = '';
-                let teacherTitle = '';
-                try {
-                    const teacherDoc = await getTeacher(phone);
-                    if (teacherDoc) {
-                        teacherName = teacherDoc.name || '';
-                        teacherTitle = teacherDoc.title || '';
-                    }
-                } catch (e) {}
-
-                await updateDoc(doc(db, 'teachers', phone), {
-                    contactRequest: {
-                        requested: true,
-                        at: Date.now(),
-                        handled: false
-                    }
-                });
-
-                try {
-                    const reqId = `contact_${phone}_${Date.now()}`;
-                    await setDoc(doc(db, 'contact_requests', reqId), {
-                        id: reqId,
-                        phone: phone,
-                        teacherName: teacherName,
-                        teacherTitle: teacherTitle,
-                        requestedAt: serverTimestamp(),
-                        requestedAtMs: Date.now(),
-                        handled: false,
-                        handledAt: null
-                    });
-                } catch (e) {}
-
-                if (msgEl) {
-                    msgEl.classList.remove('error');
-                    msgEl.classList.add('show');
-                    msgEl.textContent = '✅ تم إرسال تنبيه للإدارة — سيتم التواصل معك قريباً';
-                }
-            } catch (e) {
-                if (msgEl) {
-                    msgEl.classList.add('show', 'error');
-                    msgEl.textContent = '⚠️ فشل الإرسال — جرب تاني';
-                }
-            } finally {
-                setTimeout(() => { isSending = false; }, 3000);
-            }
-        });
     })();
 </script>
 
