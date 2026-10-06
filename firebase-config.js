@@ -722,6 +722,70 @@ export function subscribeSubscriptionRequests(callback) {
 }
 
 // ==========================================================
+// 💰 إعدادات الأسعار (Pricing Settings) — جديد
+// ==========================================================
+
+export const DEFAULT_PRICING = {
+    '3months': { 
+        price: 150, 
+        priceText: '150 جنيه', 
+        days: 90, 
+        label: '3 شهور',
+        icon: '📅',
+        color: '#3B82F6'
+    },
+    '6months': { 
+        price: 250, 
+        priceText: '250 جنيه', 
+        days: 180, 
+        label: '6 شهور',
+        icon: '📅',
+        color: '#8B5CF6'
+    },
+    '1year': { 
+        price: 400, 
+        priceText: '400 جنيه', 
+        days: 365, 
+        label: 'سنة كاملة',
+        icon: '👑',
+        color: '#F59E0B'
+    }
+};
+
+export async function getPricingSettings() {
+    try {
+        const snap = await getDoc(doc(db, SETTINGS_COLLECTION, "pricing_settings"));
+        if (snap.exists()) {
+            return snap.data();
+        }
+        return null;
+    } catch (e) {
+        console.error('فشل جلب الأسعار:', e);
+        return null;
+    }
+}
+
+export async function savePricingSettings(pricing) {
+    await setDoc(doc(db, SETTINGS_COLLECTION, "pricing_settings"), {
+        ...pricing,
+        updatedAt: Date.now()
+    }, { merge: true });
+}
+
+export function subscribePricing(callback) {
+    return onSnapshot(doc(db, SETTINGS_COLLECTION, "pricing_settings"), (snap) => {
+        if (snap.exists()) {
+            callback(snap.data());
+        } else {
+            callback(null);
+        }
+    }, (error) => {
+        console.error('خطأ في subscription الأسعار:', error);
+        callback(null);
+    });
+}
+
+// ==========================================================
 // التصدير النهائي
 // ==========================================================
 export { 
