@@ -22,7 +22,6 @@
   --primary:#047857; --primary-dark:#064E3B; --primary-light:#D1FAE5;
   --danger:#DC2626; --warning:#D97706; --info:#2563EB; --gold:#F59E0B;
   --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#fff; --bg:#F8FAFC;
-  --gmail:#EA4335; --gmail-dark:#C5221F;
 }
 *{font-family:'Cairo',sans-serif;font-weight:800;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh;color:var(--ink);margin:0;padding:16px}
@@ -58,11 +57,9 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-box::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:var(--primary)}
 .stat-box.blue::before{background:var(--info)}.stat-box.amber::before{background:var(--gold)}.stat-box.rose::before{background:var(--danger)}.stat-box.purple::before{background:#7C3AED}
 .stat-box.green::before{background:#25D366}.stat-box.cyan::before{background:#06B6D4}
-.stat-box.gmail::before{background:var(--gmail)}
 .stat-num{font-size:28px;font-weight:900;color:var(--primary)}
 .stat-box.blue .stat-num{color:var(--info)}.stat-box.amber .stat-num{color:var(--gold)}.stat-box.rose .stat-num{color:var(--danger)}.stat-box.purple .stat-num{color:#7C3AED}
 .stat-box.green .stat-num{color:#128C7E}.stat-box.cyan .stat-num{color:#0891B2}
-.stat-box.gmail .stat-num{color:var(--gmail)}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
 #teachersMap,#studentsMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
@@ -78,7 +75,6 @@ td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink)}
 tr:hover td{background:#F8FAFC}
 tr.locked td{background:#FEF2F2}
 
-/* 📱 تكبير وتنسيق خلية الهاتف في الجداول */
 #teachersTable td[dir="ltr"],
 #studentsTable td[dir="ltr"] {
     font-size: 16px !important;
@@ -94,7 +90,6 @@ tr.locked td{background:#FEF2F2}
 .btn-primary{background:linear-gradient(135deg,#10B981,#047857);color:#fff;padding:12px 20px;font-size:14px;border-radius:10px;width:100%;justify-content:center}
 .btn-ghost{background:#F1F5F9;color:var(--ink);border:1px solid var(--line)}
 .btn-del{background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff}
-.btn-gmail{background:linear-gradient(135deg,var(--gmail),var(--gmail-dark));color:#fff}
 
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
@@ -239,15 +234,6 @@ tr.locked td{background:#FEF2F2}
 }
 .icon-action-btn.btn-call-icon:hover {
   box-shadow: 0 8px 18px -4px rgba(59, 130, 246, 0.7);
-}
-
-.icon-action-btn.btn-gmail-icon {
-  background: linear-gradient(135deg, #EA4335, #C5221F);
-  color: #fff;
-  box-shadow: 0 3px 8px -2px rgba(234, 67, 53, 0.5);
-}
-.icon-action-btn.btn-gmail-icon:hover {
-  box-shadow: 0 8px 18px -4px rgba(234, 67, 53, 0.7);
 }
 
 .icon-action-btn.btn-del-icon {
@@ -572,16 +558,13 @@ tr.locked td{background:#FEF2F2}
 .req-btn{
   padding:10px 18px;border-radius:10px;border:none;
   font-family:'Cairo';font-weight:900;font-size:13px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:6px;transition:.2s;
-  text-decoration:none
+  display:inline-flex;align-items:center;gap:6px;transition:.2s
 }
 .req-btn:hover{transform:translateY(-2px)}
 .req-btn:active{transform:translateY(0) scale(.97)}
 .req-btn.approve{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
 .req-btn.reject{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;box-shadow:0 4px 12px -4px rgba(220,38,38,.6)}
 .req-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px -4px rgba(37,211,102,.6)}
-.req-btn.call{background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff;box-shadow:0 4px 12px -4px rgba(59,130,246,.6)}
-.req-btn.gmail{background:linear-gradient(135deg,var(--gmail),var(--gmail-dark));color:#fff;box-shadow:0 4px 12px -4px rgba(234,67,53,.6)}
 
 .pending-badge-tab{
   background:#DC2626;color:#fff;padding:2px 8px;border-radius:10px;
@@ -611,7 +594,6 @@ tr.locked td{background:#FEF2F2}
     50%{box-shadow:0 4px 22px rgba(220,38,38,.55)}
 }
 
-/* 🎨 كارت ملون حسب لون المعلم */
 .teacher-sub-card {
     --card-color: #10B981;
     --card-color-light: #D1FAE5;
@@ -644,14 +626,12 @@ tr.locked td{background:#FEF2F2}
     box-shadow:0 8px 22px rgba(0,0,0,.12);
 }
 
-/* Bold لكل النصوص */
 .teacher-sub-card, .teacher-sub-card * {
     font-weight: 900 !important;
 }
 .teacher-sub-card .tsc-phone { font-weight: 900 !important; }
 .teacher-sub-card strong { font-weight: 900 !important; }
 
-/* 🗂️ كارت قابل للطي (Collapsible) */
 .tsc-collapse-header {
     display: flex;
     justify-content: space-between;
@@ -724,7 +704,6 @@ tr.locked td{background:#FEF2F2}
     padding: 0 14px 14px;
 }
 
-/* شارة تنبيه في الكارت */
 .tsc-alert-badge {
     display: inline-flex;
     align-items: center;
@@ -834,6 +813,20 @@ tr.locked td{background:#FEF2F2}
     background:linear-gradient(135deg,#F59E0B,#D97706);
     color:#fff;
     box-shadow:0 3px 8px -2px rgba(245,158,11,.5);
+    position:relative;
+}
+.tsc-1y::after{
+    content:'⭐';
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    font-size:14px;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    animation:starTwinkle 1.5s infinite;
+}
+@keyframes starTwinkle{
+    0%,100%{transform:scale(1) rotate(0deg);}
+    50%{transform:scale(1.2) rotate(10deg);}
 }
 .tsc-1y:hover{box-shadow:0 6px 16px -4px rgba(245,158,11,.7)}
 
@@ -866,22 +859,12 @@ tr.locked td{background:#FEF2F2}
     background:linear-gradient(135deg,#3B82F6,#1D4ED8);
     color:#fff;
 }
-.tsc-contact-btn.gmail{
-    background:linear-gradient(135deg,#EA4335,#C5221F);
-    color:#fff;
-    box-shadow:0 3px 8px -2px rgba(234,67,53,.5);
-}
-.tsc-contact-btn.gmail:hover{
-    transform:translateY(-2px);
-    box-shadow:0 6px 16px -4px rgba(234,67,53,.7);
-}
 .tsc-contact-btn.done{
     background:linear-gradient(135deg,#10B981,#047857);
     color:#fff;
 }
 .tsc-contact-btn:hover{transform:translateY(-2px)}
 
-/* 📅 Timeline جميل للاشتراك */
 .tsc-timeline {
     background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
     border: 2px solid #E2E8F0;
@@ -1011,7 +994,6 @@ tr.locked td{background:#FEF2F2}
     border-color: #10B981;
 }
 
-/* 🔔 وميض التنبيه في الهيدر */
 .main-header.has-alert {
     animation: headerGlow 1.8s ease-in-out infinite;
 }
@@ -1029,7 +1011,6 @@ tr.locked td{background:#FEF2F2}
     }
 }
 
-/* شارة تنبيه عائمة في الهيدر */
 .header-alert-badge {
     position: absolute;
     top: 12px;
@@ -1065,6 +1046,635 @@ tr.locked td{background:#FEF2F2}
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(1.3); }
 }
+
+/* ========================================================== */
+/* 💰 كروت الأسعار */
+/* ========================================================== */
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pricing-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  border: 3px solid;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.pricing-3m {
+  border-color: #3B82F6;
+  background: linear-gradient(180deg, #EFF6FF 0%, #fff 30%);
+}
+.pricing-3m .pricing-header { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+
+.pricing-6m {
+  border-color: #8B5CF6;
+  background: linear-gradient(180deg, #F5F3FF 0%, #fff 30%);
+}
+.pricing-6m .pricing-header { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+
+.pricing-1y {
+  border-color: #F59E0B;
+  background: linear-gradient(180deg, #FFFBEB 0%, #fff 30%);
+}
+.pricing-1y .pricing-header { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
+.pricing-header {
+  padding: 14px 16px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.pricing-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+  flex: 1;
+}
+
+.pricing-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.pricing-best {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  animation: bestPulse 1.8s infinite;
+}
+
+@keyframes bestPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.pricing-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pricing-body label {
+  font-size: 12px;
+  font-weight: 900;
+  color: #334155;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.pricing-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #E2E8F0;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+  background: #fff;
+  color: #0F172A;
+  margin-bottom: 6px;
+}
+
+.pricing-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(16,185,129,0.15);
+  background: #F0FDF4;
+}
+
+.pricing-3m .pricing-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 4px rgba(59,130,246,0.15); }
+.pricing-6m .pricing-input:focus { border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
+.pricing-1y .pricing-input:focus { border-color: #F59E0B; box-shadow: 0 0 0 4px rgba(245,158,11,0.15); }
+
+/* ========================================================== */
+/* 📊 لوحة الإحصائيات */
+/* ========================================================== */
+
+.analytics-filter.active {
+  background: linear-gradient(135deg, #10B981, #047857) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 12px -4px rgba(16, 185, 129, 0.6);
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.analytics-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  border-right: 5px solid;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.analytics-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.analytics-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.analytics-card:hover::before {
+  opacity: 1;
+}
+
+.analytics-primary {
+  border-right-color: #10B981;
+  background: linear-gradient(180deg, #F0FDF4 0%, #fff 40%);
+}
+.analytics-primary .analytics-icon { background: linear-gradient(135deg, #10B981, #047857); }
+.analytics-primary .analytics-value { color: #047857; }
+
+.analytics-success {
+  border-right-color: #3B82F6;
+  background: linear-gradient(180deg, #EFF6FF 0%, #fff 40%);
+}
+.analytics-success .analytics-icon { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+.analytics-success .analytics-value { color: #1D4ED8; }
+
+.analytics-info {
+  border-right-color: #8B5CF6;
+  background: linear-gradient(180deg, #F5F3FF 0%, #fff 40%);
+}
+.analytics-info .analytics-icon { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+.analytics-info .analytics-value { color: #6D28D9; }
+
+.analytics-warning {
+  border-right-color: #F59E0B;
+  background: linear-gradient(180deg, #FFFBEB 0%, #fff 40%);
+}
+.analytics-warning .analytics-icon { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.analytics-warning .analytics-value { color: #B45309; }
+
+.analytics-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 15px -4px rgba(0,0,0,0.3);
+}
+
+.analytics-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.analytics-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.analytics-value {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.1;
+  transition: all 0.3s;
+  direction: ltr;
+  text-align: right;
+}
+
+.analytics-unit {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.plans-revenue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.plan-revenue-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  border: 2px solid;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-revenue-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.plan-rev-3m {
+  border-color: #3B82F6;
+  background: linear-gradient(180deg, #EFF6FF 0%, #fff 30%);
+}
+.plan-rev-3m .plan-rev-value { color: #1D4ED8; }
+.plan-rev-3m .plan-rev-fill { background: linear-gradient(90deg, #3B82F6, #1D4ED8); }
+
+.plan-rev-6m {
+  border-color: #8B5CF6;
+  background: linear-gradient(180deg, #F5F3FF 0%, #fff 30%);
+}
+.plan-rev-6m .plan-rev-value { color: #6D28D9; }
+.plan-rev-6m .plan-rev-fill { background: linear-gradient(90deg, #8B5CF6, #6D28D9); }
+
+.plan-rev-1y {
+  border-color: #F59E0B;
+  background: linear-gradient(180deg, #FFFBEB 0%, #fff 30%);
+}
+.plan-rev-1y .plan-rev-value { color: #B45309; }
+.plan-rev-1y .plan-rev-fill { background: linear-gradient(90deg, #F59E0B, #D97706); }
+
+.plan-rev-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.plan-rev-icon {
+  font-size: 22px;
+}
+
+.plan-rev-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.plan-rev-value {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  direction: ltr;
+  text-align: right;
+  transition: all 0.3s;
+}
+
+.plan-rev-unit {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.plan-rev-count {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.plan-rev-count span {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.plan-rev-bar {
+  width: 100%;
+  height: 8px;
+  background: #E2E8F0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.plan-rev-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-rev-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: shimmerBar 2s infinite;
+}
+
+@keyframes shimmerBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.chart-wrapper {
+  display: flex;
+  gap: 12px;
+  height: 240px;
+  margin-bottom: 16px;
+  padding: 10px 0;
+}
+
+.chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 30px;
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--muted);
+  min-width: 50px;
+  direction: ltr;
+}
+
+.chart-container {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 8px;
+  padding-bottom: 30px;
+  position: relative;
+  border-bottom: 2px solid #E2E8F0;
+  border-right: 2px solid #E2E8F0;
+  padding-right: 8px;
+}
+
+.chart-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 60px;
+  background: linear-gradient(180deg, #10B981, #047857);
+  border-radius: 8px 8px 0 0;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  min-height: 4px;
+  box-shadow: 0 -4px 12px -4px rgba(16, 185, 129, 0.5);
+  cursor: pointer;
+}
+
+.chart-bar:hover {
+  filter: brightness(1.15);
+  transform: scaleY(1.02);
+  transform-origin: bottom;
+}
+
+.chart-bar::before {
+  content: attr(data-value);
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0F172A;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  direction: ltr;
+  pointer-events: none;
+}
+
+.chart-bar:hover::before {
+  opacity: 1;
+}
+
+.chart-bar-label {
+  position: absolute;
+  bottom: -26px;
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.top-teacher-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.top-teacher-card:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.top-teacher-card.rank-1 {
+  background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+  border-color: #F59E0B;
+  box-shadow: 0 4px 15px -4px rgba(245, 158, 11, 0.4);
+}
+.top-teacher-card.rank-2 {
+  background: linear-gradient(135deg, #F1F5F9, #E2E8F0);
+  border-color: #94A3B8;
+}
+.top-teacher-card.rank-3 {
+  background: linear-gradient(135deg, #FEF3C7, #FED7AA);
+  border-color: #D97706;
+}
+
+.rank-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  background: #F1F5F9;
+  color: var(--ink);
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.rank-1 .rank-badge { background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; }
+.rank-2 .rank-badge { background: linear-gradient(135deg, #94A3B8, #64748B); color: #fff; }
+.rank-3 .rank-badge { background: linear-gradient(135deg, #D97706, #92400E); color: #fff; }
+
+.top-teacher-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-teacher-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-teacher-phone {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 800;
+  direction: ltr;
+  text-align: right;
+}
+
+.top-teacher-revenue {
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.top-teacher-amount {
+  font-size: 18px;
+  font-weight: 900;
+  color: #047857;
+  direction: ltr;
+  line-height: 1;
+}
+
+.top-teacher-count {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+.empty-analytics {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  background: #F8FAFC;
+  border-radius: 12px;
+  border: 2px dashed #CBD5E1;
+}
+
+@media (max-width: 640px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .analytics-card {
+    padding: 12px;
+    flex-direction: column;
+    text-align: center;
+    border-right: none;
+    border-top: 4px solid;
+    gap: 8px;
+  }
+  .analytics-primary { border-top-color: #10B981; border-right: none; }
+  .analytics-success { border-top-color: #3B82F6; border-right: none; }
+  .analytics-info { border-top-color: #8B5CF6; border-right: none; }
+  .analytics-warning { border-top-color: #F59E0B; border-right: none; }
+  
+  .analytics-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+  .analytics-value {
+    font-size: 20px;
+    text-align: center;
+  }
+  .analytics-label { font-size: 10.5px; }
+  
+  .plans-revenue-grid {
+    grid-template-columns: 1fr;
+  }
+  .plan-rev-value { font-size: 24px; }
+  
+  .chart-wrapper { height: 180px; }
+  .chart-bar-label { font-size: 9px; }
+  
+  .top-teacher-amount { font-size: 15px; }
+  .top-teacher-name { font-size: 12.5px; }
+}
 </style>
 </head>
 <body>
@@ -1081,7 +1691,6 @@ tr.locked td{background:#FEF2F2}
     <span id="cloudStatusText">جاري الاتصال...</span>
   </div>
 
-  <!-- 🔔 شارة التنبيه العائمة -->
   <div class="header-alert-badge" id="headerAlertBadge">
     <span class="badge-dot"></span>
     <span id="headerAlertText">تنبيهات جديدة</span>
@@ -1099,6 +1708,8 @@ tr.locked td{background:#FEF2F2}
     💎 طلبات الاشتراك
     <span id="pendingBadge" class="pending-badge-tab" style="display:none">0</span>
   </button>
+  <button class="tab" data-page="page-pricing">💰 إدارة الباقات والأسعار</button>
+  <button class="tab" data-page="page-analytics">📊 إحصائيات الأرباح</button>
 </div>
 
 <!-- ============ الصفحة الأولى: المستخدمين ============ -->
@@ -1427,6 +2038,271 @@ tr.locked td{background:#FEF2F2}
   </div>
 </div>
 
+<!-- ============ الصفحة الرابعة: إدارة الأسعار ============ -->
+<div id="page-pricing" class="page">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div>
+        <h2 style="margin:0;font-size:18px;font-weight:900;color:var(--primary-dark)">
+          💰 إدارة أسعار باقات الاشتراك <span class="sync-badge">☁️ محفوظ سحابياً</span>
+        </h2>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">
+          الأسعار دي هتظهر لكل المعلمين المحظورين في شاشة الباقات
+        </p>
+      </div>
+      <button class="btn btn-primary" style="width:auto;padding:10px 20px" onclick="window.savePricing(event)">
+        💾 حفظ الأسعار
+      </button>
+    </div>
+
+    <div class="pricing-grid">
+
+      <div class="pricing-card pricing-3m">
+        <div class="pricing-header">
+          <span class="pricing-icon">📅</span>
+          <h3>باقة 3 شهور</h3>
+        </div>
+        <div class="pricing-body">
+          <label>💰 السعر (جنيه)</label>
+          <input type="number" id="price3m" class="pricing-input" 
+                 placeholder="مثال: 150" min="0" step="1">
+          
+          <label>📝 نص السعر (للعرض)</label>
+          <input type="text" id="priceText3m" class="pricing-input" 
+                 placeholder="مثال: 150 جنيه" maxlength="30">
+          
+          <label>⏱️ عدد الأيام</label>
+          <input type="number" id="days3m" class="pricing-input" 
+                 value="90" min="1" max="365">
+        </div>
+      </div>
+
+      <div class="pricing-card pricing-6m">
+        <div class="pricing-header">
+          <span class="pricing-icon">📅</span>
+          <h3>باقة 6 شهور</h3>
+        </div>
+        <div class="pricing-body">
+          <label>💰 السعر (جنيه)</label>
+          <input type="number" id="price6m" class="pricing-input" 
+                 placeholder="مثال: 250" min="0" step="1">
+          
+          <label>📝 نص السعر (للعرض)</label>
+          <input type="text" id="priceText6m" class="pricing-input" 
+                 placeholder="مثال: 250 جنيه" maxlength="30">
+          
+          <label>⏱️ عدد الأيام</label>
+          <input type="number" id="days6m" class="pricing-input" 
+                 value="180" min="1" max="365">
+        </div>
+      </div>
+
+      <div class="pricing-card pricing-1y">
+        <div class="pricing-header">
+          <span class="pricing-icon">👑</span>
+          <h3>باقة سنة كاملة</h3>
+          <span class="pricing-best">⭐ الأفضل</span>
+        </div>
+        <div class="pricing-body">
+          <label>💰 السعر (جنيه)</label>
+          <input type="number" id="price1y" class="pricing-input" 
+                 placeholder="مثال: 400" min="0" step="1">
+          
+          <label>📝 نص السعر (للعرض)</label>
+          <input type="text" id="priceText1y" class="pricing-input" 
+                 placeholder="مثال: 400 جنيه" maxlength="30">
+          
+          <label>⏱️ عدد الأيام</label>
+          <input type="number" id="days1y" class="pricing-input" 
+                 value="365" min="1" max="730">
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:20px;padding:14px;background:#FFFBEB;border:2px dashed #FCD34D;border-radius:12px">
+      <div style="font-size:13px;font-weight:900;color:#92400E;margin-bottom:6px">
+        💡 ملاحظة مهمة:
+      </div>
+      <div style="font-size:12px;color:#92400E;line-height:1.7;font-weight:700">
+        • <b>السعر</b> الرقمي بيُستخدم في الحسابات الداخلية.<br>
+        • <b>نص السعر</b> بيظهر للمعلم في شاشة الباقات (مثلاً "150 جنيه" أو "150ج").<br>
+        • <b>عدد الأيام</b> بيحدد مدة التفعيل لما الأدمن يضغط على زر الباقة.<br>
+        • بعد الحفظ، الأسعار تظهر فوراً لكل المعلمين في <b>شاشة الحظر الحمراء</b>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ الصفحة الخامسة: إحصائيات الأرباح ============ -->
+<div id="page-analytics" class="page">
+
+  <div class="card" style="padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <h2 style="margin:0;font-size:16px;font-weight:900;color:var(--primary-dark)">
+        📊 إحصائيات الأرباح <span class="sync-badge">🔄 مباشر</span>
+      </h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost analytics-filter active" data-range="today" onclick="window.filterAnalytics('today', this)">📅 اليوم</button>
+        <button class="btn btn-ghost analytics-filter" data-range="week" onclick="window.filterAnalytics('week', this)">📅 الأسبوع</button>
+        <button class="btn btn-ghost analytics-filter" data-range="month" onclick="window.filterAnalytics('month', this)">📅 الشهر</button>
+        <button class="btn btn-ghost analytics-filter" data-range="3months" onclick="window.filterAnalytics('3months', this)">📅 3 شهور</button>
+        <button class="btn btn-ghost analytics-filter" data-range="year" onclick="window.filterAnalytics('year', this)">📅 السنة</button>
+        <button class="btn btn-ghost analytics-filter" data-range="all" onclick="window.filterAnalytics('all', this)">♾️ الكل</button>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center" id="analyticsRangeLabel">
+      📅 عرض أرباح اليوم
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="analytics-card analytics-primary">
+      <div class="analytics-icon">💰</div>
+      <div class="analytics-info">
+        <div class="analytics-label">إجمالي الأرباح</div>
+        <div class="analytics-value" id="totalRevenue">0</div>
+        <div class="analytics-unit">جنيه</div>
+      </div>
+    </div>
+
+    <div class="analytics-card analytics-success">
+      <div class="analytics-icon">✅</div>
+      <div class="analytics-info">
+        <div class="analytics-label">اشتراكات مكتملة</div>
+        <div class="analytics-value" id="totalSubscriptions">0</div>
+        <div class="analytics-unit">اشتراك</div>
+      </div>
+    </div>
+
+    <div class="analytics-card analytics-info">
+      <div class="analytics-icon">📈</div>
+      <div class="analytics-info">
+        <div class="analytics-label">متوسط قيمة الاشتراك</div>
+        <div class="analytics-value" id="avgRevenue">0</div>
+        <div class="analytics-unit">جنيه</div>
+      </div>
+    </div>
+
+    <div class="analytics-card analytics-warning">
+      <div class="analytics-icon">👥</div>
+      <div class="analytics-info">
+        <div class="analytics-label">معلمون مشتركون</div>
+        <div class="analytics-value" id="uniqueTeachers">0</div>
+        <div class="analytics-unit">معلم</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 16px;font-size:16px;font-weight:900;color:var(--primary-dark)">
+      💎 الأرباح حسب الباقة
+    </h2>
+    <div class="plans-revenue-grid">
+      <div class="plan-revenue-card plan-rev-3m">
+        <div class="plan-rev-header">
+          <span class="plan-rev-icon">📅</span>
+          <span class="plan-rev-name">باقة 3 شهور</span>
+        </div>
+        <div class="plan-rev-value" id="revenue3m">0</div>
+        <div class="plan-rev-unit">جنيه</div>
+        <div class="plan-rev-count">
+          <span id="count3m">0</span> مشترك
+        </div>
+        <div class="plan-rev-bar">
+          <div class="plan-rev-fill" id="bar3m" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="plan-revenue-card plan-rev-6m">
+        <div class="plan-rev-header">
+          <span class="plan-rev-icon">📅</span>
+          <span class="plan-rev-name">باقة 6 شهور</span>
+        </div>
+        <div class="plan-rev-value" id="revenue6m">0</div>
+        <div class="plan-rev-unit">جنيه</div>
+        <div class="plan-rev-count">
+          <span id="count6m">0</span> مشترك
+        </div>
+        <div class="plan-rev-bar">
+          <div class="plan-rev-fill" id="bar6m" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="plan-revenue-card plan-rev-1y">
+        <div class="plan-rev-header">
+          <span class="plan-rev-icon">👑</span>
+          <span class="plan-rev-name">باقة سنة كاملة</span>
+        </div>
+        <div class="plan-rev-value" id="revenue1y">0</div>
+        <div class="plan-rev-unit">جنيه</div>
+        <div class="plan-rev-count">
+          <span id="count1y">0</span> مشترك
+        </div>
+        <div class="plan-rev-bar">
+          <div class="plan-rev-fill" id="bar1y" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 16px;font-size:16px;font-weight:900;color:var(--primary-dark)">
+      📈 الأرباح آخر 6 شهور
+    </h2>
+    <div class="chart-wrapper">
+      <div class="chart-y-axis">
+        <span id="yMax">1000</span>
+        <span id="yMid">500</span>
+        <span>0</span>
+      </div>
+      <div class="chart-container" id="monthlyChart"></div>
+    </div>
+    <div class="chart-legend">
+      <span class="legend-item">
+        <span class="legend-dot" style="background:linear-gradient(135deg,#10B981,#047857)"></span>
+        الأرباح (جنيه)
+      </span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 16px;font-size:16px;font-weight:900;color:var(--primary-dark)">
+      🏆 أفضل 10 معلمين (حسب الأرباح)
+    </h2>
+    <div id="topTeachersContainer"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0;font-size:16px;font-weight:900;color:var(--primary-dark)">
+        📋 سجل الاشتراكات
+      </h2>
+      <span style="font-size:11px;color:var(--muted)" id="transactionsCount"></span>
+    </div>
+    <input type="text" class="search-box" id="searchTransactions" 
+           placeholder="🔍 ابحث باسم المعلم أو رقم الهاتف..." 
+           oninput="window.renderTransactions()">
+    <div class="table-wrapper">
+      <table id="transactionsTable">
+        <thead>
+          <tr>
+            <th>المعلم</th>
+            <th>الهاتف</th>
+            <th>الباقة</th>
+            <th>السعر</th>
+            <th>تاريخ التفعيل</th>
+            <th>ينتهي في</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
 <!-- Modal تعديل المرحلة -->
 <div class="modal-overlay" id="editStageModal">
   <div class="modal-box">
@@ -1471,11 +2347,11 @@ import {
   subscribeSubscriptionRequests,
   approveSubscription,
   rejectSubscription,
-  ADMIN_EMAIL
+  ADMIN_EMAIL,
+  getPricingSettings,
+  savePricingSettings,
+  subscribePricing
 } from './firebase-config.js';
-
-// ============ 📧 إيميل الإدارة للتواصل ============
-const ADMIN_GMAIL = 'mmoksh162@gmail.com';
 
 // ============ Cloud Status ============
 window.setCloudStatus = function(status, text) {
@@ -1487,7 +2363,7 @@ window.setCloudStatus = function(status, text) {
 };
 
 // ==========================================================
-// 🔊 صوت النقر الرفيع
+// 🔊 صوت النقر
 // ==========================================================
 (function initClickSound() {
   let audioCtx = null;
@@ -1536,20 +2412,10 @@ window.setCloudStatus = function(status, text) {
 
   function attachClickSound() {
     const clickableSelectors = [
-      '.tab',
-      '.icon-action-btn',
-      '.btn',
-      '.color-btn',
-      '.icon-btn',
-      '.stage-action-btn',
-      '.stage-card-header',
-      '.modal-buttons button',
-      '.req-btn',
-      '.tsc-btn',
-      '.tsc-contact-btn',
-      '.tsc-collapse-header',
-      'button:not([disabled])',
-      'a.icon-action-btn'
+      '.tab', '.icon-action-btn', '.btn', '.color-btn', '.icon-btn',
+      '.stage-action-btn', '.stage-card-header', '.modal-buttons button',
+      '.req-btn', '.tsc-btn', '.tsc-contact-btn', '.tsc-collapse-header',
+      'button:not([disabled])', 'a.icon-action-btn'
     ].join(', ');
 
     document.querySelectorAll(clickableSelectors).forEach(el => {
@@ -1563,8 +2429,6 @@ window.setCloudStatus = function(status, text) {
           window.playClick(900, 0.06, 0.14);
         } else if (el.classList.contains('btn-wa-icon') || el.classList.contains('wa') || el.classList.contains('tsc-contact-btn')) {
           window.playClick(1800, 0.05, 0.10);
-        } else if (el.classList.contains('btn-gmail-icon') || el.classList.contains('gmail')) {
-          window.playClick(1700, 0.05, 0.10);
         } else if (el.classList.contains('btn-gps-icon')) {
           window.playClick(2200, 0.06, 0.10);
         } else if (el.classList.contains('icon-btn')) {
@@ -1627,6 +2491,12 @@ function switchTab(pageId) {
       renderContactRequests();
       window.renderSubscriptionsTeachersList();
     }
+    if (pageId === 'page-pricing') {
+      renderPricingForm();
+    }
+    if (pageId === 'page-analytics') {
+      renderAnalytics();
+    }
   }
 }
 
@@ -1642,7 +2512,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 window.addEventListener('hashchange', () => {
   const hash = location.hash.replace('#', '');
-  if (hash === 'page-users' || hash === 'page-curriculum' || hash === 'page-subscriptions') {
+  if (['page-users','page-curriculum','page-subscriptions','page-pricing','page-analytics'].includes(hash)) {
     switchTab(hash);
   }
 });
@@ -1664,11 +2534,16 @@ let allGroups = [];
 let allRequests = [];
 let currentReqFilter = 'all';
 window.curriculum = null;
+let pricingSettings = null;
+let allTransactions = [];
+let analyticsFilter = 'today';
+
 let unsubCurriculum = null;
 let unsubTeachers = null;
 let unsubStudents = null;
 let unsubGroups = null;
 let unsubRequests = null;
+let unsubPricing = null;
 
 // ============ Render Stats ============
 function renderStats() {
@@ -1788,16 +2663,6 @@ function renderTeachersTable() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
             </a>
 
-            <a 
-              class="icon-action-btn btn-gmail-icon" 
-              href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لمعلم - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nالرسالة:\n')}"
-              title="إرسال Gmail للإدارة">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"/>
-                <path d="m22 6-10 7L2 6"/>
-              </svg>
-            </a>
-
             <button 
               class="icon-action-btn btn-del-icon" 
               onclick="window.deleteTeacher('${phone}', '${safeName}')" 
@@ -1883,16 +2748,6 @@ function renderStudentsTable() {
               href="tel:${phone}" 
               title="اتصال">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-            </a>
-
-            <a 
-              class="icon-action-btn btn-gmail-icon" 
-              href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لطالب - ' + name)}&body=${encodeURIComponent('الطالب: ' + name + '\nرقم الهاتف: ' + phone + '\nالصف: ' + grade + '\n\nالرسالة:\n')}"
-              title="إرسال Gmail للإدارة">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"/>
-                <path d="m22 6-10 7L2 6"/>
-              </svg>
             </a>
             ` : ''}
 
@@ -2467,6 +3322,89 @@ window.saveCurriculum = async function() {
 };
 
 // ==========================================================
+// 💰 إدارة الأسعار
+// ==========================================================
+
+const DEFAULT_PRICING = {
+  '3months': { price: 150, priceText: '150 جنيه', days: 90, label: '3 شهور' },
+  '6months': { price: 250, priceText: '250 جنيه', days: 180, label: '6 شهور' },
+  '1year':   { price: 400, priceText: '400 جنيه', days: 365, label: 'سنة كاملة' }
+};
+
+function renderPricingForm() {
+  const p = pricingSettings || DEFAULT_PRICING;
+
+  const el3m = document.getElementById('price3m');
+  const elText3m = document.getElementById('priceText3m');
+  const elDays3m = document.getElementById('days3m');
+  if (el3m) el3m.value = p['3months']?.price || '';
+  if (elText3m) elText3m.value = p['3months']?.priceText || '';
+  if (elDays3m) elDays3m.value = p['3months']?.days || 90;
+
+  const el6m = document.getElementById('price6m');
+  const elText6m = document.getElementById('priceText6m');
+  const elDays6m = document.getElementById('days6m');
+  if (el6m) el6m.value = p['6months']?.price || '';
+  if (elText6m) elText6m.value = p['6months']?.priceText || '';
+  if (elDays6m) elDays6m.value = p['6months']?.days || 180;
+
+  const el1y = document.getElementById('price1y');
+  const elText1y = document.getElementById('priceText1y');
+  const elDays1y = document.getElementById('days1y');
+  if (el1y) el1y.value = p['1year']?.price || '';
+  if (elText1y) elText1y.value = p['1year']?.priceText || '';
+  if (elDays1y) elDays1y.value = p['1year']?.days || 365;
+}
+
+window.savePricing = async function(ev) {
+  const btn = ev?.target;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الحفظ...';
+  }
+
+  try {
+    const newPricing = {
+      '3months': {
+        price: Number(document.getElementById('price3m').value) || 0,
+        priceText: document.getElementById('priceText3m').value.trim() || '0 جنيه',
+        days: Number(document.getElementById('days3m').value) || 90,
+        label: '3 شهور',
+        icon: '📅',
+        color: '#3B82F6'
+      },
+      '6months': {
+        price: Number(document.getElementById('price6m').value) || 0,
+        priceText: document.getElementById('priceText6m').value.trim() || '0 جنيه',
+        days: Number(document.getElementById('days6m').value) || 180,
+        label: '6 شهور',
+        icon: '📅',
+        color: '#8B5CF6'
+      },
+      '1year': {
+        price: Number(document.getElementById('price1y').value) || 0,
+        priceText: document.getElementById('priceText1y').value.trim() || '0 جنيه',
+        days: Number(document.getElementById('days1y').value) || 365,
+        label: 'سنة كاملة',
+        icon: '👑',
+        color: '#F59E0B'
+      }
+    };
+
+    await savePricingSettings(newPricing);
+    window.toast('✅ تم حفظ الأسعار سحابياً', '#047857');
+  } catch (e) {
+    console.error(e);
+    window.toast('❌ فشل الحفظ', '#DC2626');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '💾 حفظ الأسعار';
+    }
+  }
+};
+
+// ==========================================================
 // 💎 Subscription Requests Management
 // ==========================================================
 window.filterReqs = function(filter) {
@@ -2603,12 +3541,8 @@ function renderSubscriptionRequests() {
           <a class="req-btn wa" href="https://wa.me/2${req.phone}" target="_blank">
             💬 واتساب
           </a>
-          <a class="req-btn call" href="tel:${req.phone}">
+          <a class="req-btn" style="background:#F1F5F9;color:var(--ink)" href="tel:${req.phone}">
             📞 اتصال
-          </a>
-          <a class="req-btn gmail"
-             href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('💎 طلب اشتراك - ' + (req.teacherName || ''))}&body=${encodeURIComponent('المعلم: ' + (req.teacherName || '') + '\nالهاتف: ' + (req.phone || '') + '\nالباقة: ' + (req.planName || '') + '\n\nرسالة:')}">
-            📧 Gmail
           </a>
         </div>
       </div>
@@ -2717,12 +3651,8 @@ function renderContactRequests() {
                         💬 واتساب
                     </a>
                     <a href="tel:${phone}"
-                       class="req-btn call" style="padding:8px 14px;font-size:12px">
+                       class="req-btn" style="background:#3B82F6;color:#fff;padding:8px 14px;font-size:12px">
                         📞 اتصال
-                    </a>
-                    <a href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('🆘 طلب تواصل من معلم محظور - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nرسالة المعلم:')}"
-                       class="req-btn gmail" style="padding:8px 14px;font-size:12px">
-                        📧 Gmail
                     </a>
                     <button class="req-btn approve" style="padding:8px 14px;font-size:12px"
                             onclick="window.markContactHandled('${phone}')">
@@ -2966,7 +3896,7 @@ function updateHeaderAlert() {
 }
 
 // ==========================================================
-// 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك (Collapsible)
+// 👨‍🏫 قائمة المعلمين مع إدارة الاشتراك
 // ==========================================================
 window.renderSubscriptionsTeachersList = function() {
     const container = document.getElementById('teachersListContainer');
@@ -2976,7 +3906,6 @@ window.renderSubscriptionsTeachersList = function() {
 
     const q = (searchInput?.value || '').trim().toLowerCase();
 
-    // ✅ الحفاظ على حالة الكروت المفتوحة
     const openCards = new Set();
     document.querySelectorAll('.teacher-sub-card.open').forEach(c => {
         const phone = c.dataset.phone;
@@ -3011,7 +3940,6 @@ window.renderSubscriptionsTeachersList = function() {
         const timelineHtml = buildSubscriptionTimeline(t);
         const isOpen = openCards.has(phone);
 
-        // ✅ نص الشارة المختصرة (بدون ternary معقد)
         let compactStatus = '✅';
         if (statusInfo.status === 'locked') {
             compactStatus = '🚫';
@@ -3031,7 +3959,6 @@ window.renderSubscriptionsTeachersList = function() {
                  data-phone="${phone}"
                  style="--card-color:${color.main};--card-color-light:${color.light}">
 
-                <!-- 🗂️ الرأس القابل للنقر (Collapsible Header) -->
                 <div class="tsc-collapse-header" onclick="window.toggleTeacherCard('${phone}')">
                     <div class="tsc-info">
                         <strong>${hasContactReq ? '🆘 ' : ''}${t.title || 'مستر'} ${t.name || '—'}</strong>
@@ -3047,7 +3974,6 @@ window.renderSubscriptionsTeachersList = function() {
                     </div>
                 </div>
 
-                <!-- 📦 الجسم القابل للطي -->
                 <div class="tsc-collapse-body">
 
                     <div class="tsc-dates">
@@ -3088,10 +4014,6 @@ window.renderSubscriptionsTeachersList = function() {
                         <a href="tel:${phone}" class="tsc-contact-btn call">
                             📞 اتصال
                         </a>
-                        <a href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لمعلم - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nالرسالة:\n')}"
-                           class="tsc-contact-btn gmail">
-                            📧 Gmail
-                        </a>
                         ${hasContactReq ? `
                             <button class="tsc-contact-btn done" onclick="window.markContactHandled('${phone}')">
                                 ✅ تم التواصل
@@ -3105,7 +4027,6 @@ window.renderSubscriptionsTeachersList = function() {
     }).join('');
 };
 
-// 🗂️ دالة فتح/طي الكارت
 window.toggleTeacherCard = function(phone) {
     const card = document.querySelector(`.teacher-sub-card[data-phone="${phone}"]`);
     if (!card) return;
@@ -3180,6 +4101,360 @@ window.unlockTeacherForMonths = async function(phone, months) {
 };
 
 // ==========================================================
+// 📊 إحصائيات الأرباح
+// ==========================================================
+
+window.filterAnalytics = function(range, btn) {
+  analyticsFilter = range;
+  document.querySelectorAll('.analytics-filter').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  
+  const labels = {
+    'today': '📅 عرض أرباح اليوم',
+    'week': '📅 عرض أرباح الأسبوع',
+    'month': '📅 عرض أرباح الشهر',
+    '3months': '📅 عرض أرباح آخر 3 شهور',
+    'year': '📅 عرض أرباح السنة',
+    'all': '♾️ عرض كل الأرباح'
+  };
+  const labelEl = document.getElementById('analyticsRangeLabel');
+  if (labelEl) labelEl.textContent = labels[range] || '';
+
+  renderAnalytics();
+};
+
+function isInRange(timestamp, range) {
+  if (range === 'all') return true;
+  if (!timestamp) return false;
+
+  const now = new Date();
+  const ts = new Date(timestamp);
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  switch (range) {
+    case 'today':
+      return ts >= startOfToday;
+    case 'week': {
+      const weekAgo = new Date(startOfToday);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return ts >= weekAgo;
+    }
+    case 'month': {
+      const monthAgo = new Date(startOfToday);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return ts >= monthAgo;
+    }
+    case '3months': {
+      const threeMonthsAgo = new Date(startOfToday);
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      return ts >= threeMonthsAgo;
+    }
+    case 'year': {
+      const yearAgo = new Date(startOfToday);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return ts >= yearAgo;
+    }
+    default:
+      return true;
+  }
+}
+
+function getTeacherActivationData(teacher, pricing) {
+  if (!teacher.unlockedAt && !teacher.unlockUntil) return null;
+
+  let activationTime = teacher.unlockedAt;
+  let expiryTime = teacher.unlockUntil;
+
+  if (typeof activationTime === 'object' && activationTime?.seconds) {
+    activationTime = activationTime.seconds * 1000;
+  }
+  if (typeof expiryTime === 'object' && expiryTime?.seconds) {
+    expiryTime = expiryTime.seconds * 1000;
+  }
+
+  if (!activationTime || !expiryTime) return null;
+
+  let planId = teacher.lockType || '';
+  const durationDays = Math.round((expiryTime - activationTime) / (1000 * 60 * 60 * 24));
+
+  if (!['3months', '6months', '1year'].includes(planId)) {
+    if (durationDays <= 100) planId = '3months';
+    else if (durationDays <= 200) planId = '6months';
+    else planId = '1year';
+  }
+
+  const price = pricing?.[planId]?.price || 0;
+  const priceText = pricing?.[planId]?.priceText || `${price} جنيه`;
+  const planLabel = pricing?.[planId]?.label || planId;
+
+  return {
+    teacherPhone: teacher.id || teacher.phone,
+    teacherName: teacher.name || '—',
+    teacherTitle: teacher.title || '',
+    planId,
+    planLabel,
+    price,
+    priceText,
+    activationTime,
+    expiryTime,
+    isActive: expiryTime > Date.now() && teacher.isLocked !== true
+  };
+}
+
+function buildTransactionsList() {
+  const pricing = pricingSettings || DEFAULT_PRICING;
+  const list = [];
+
+  allTeachers.forEach(t => {
+    const data = getTeacherActivationData(t, pricing);
+    if (data) {
+      if (t.lockType === 'permanent_open' || t.lockType === 'permanent_locked') return;
+      list.push(data);
+    }
+  });
+
+  return list.sort((a, b) => b.activationTime - a.activationTime);
+}
+
+function renderAnalytics() {
+  const pricing = pricingSettings || DEFAULT_PRICING;
+  allTransactions = buildTransactionsList();
+
+  const filtered = allTransactions.filter(t => isInRange(t.activationTime, analyticsFilter));
+
+  const totalRevenue = filtered.reduce((sum, t) => sum + (t.price || 0), 0);
+  const totalSubscriptions = filtered.length;
+  const avgRevenue = totalSubscriptions > 0 ? Math.round(totalRevenue / totalSubscriptions) : 0;
+  const uniqueTeachers = new Set(filtered.map(t => t.teacherPhone)).size;
+
+  animateNumber('totalRevenue', totalRevenue);
+  animateNumber('totalSubscriptions', totalSubscriptions);
+  animateNumber('avgRevenue', avgRevenue);
+  animateNumber('uniqueTeachers', uniqueTeachers);
+
+  const plans = ['3months', '6months', '1year'];
+  const planRevenue = {};
+  const planCount = {};
+  plans.forEach(p => {
+    planRevenue[p] = filtered.filter(t => t.planId === p).reduce((sum, t) => sum + (t.price || 0), 0);
+    planCount[p] = filtered.filter(t => t.planId === p).length;
+  });
+
+  const maxPlanRev = Math.max(...Object.values(planRevenue), 1);
+
+  const mapPlan = { '3months': '3m', '6months': '6m', '1year': '1y' };
+  plans.forEach(p => {
+    const suffix = mapPlan[p];
+    const revEl = document.getElementById(`revenue${suffix}`);
+    const countEl = document.getElementById(`count${suffix}`);
+    const barEl = document.getElementById(`bar${suffix}`);
+
+    if (revEl) animateNumber(`revenue${suffix}`, planRevenue[p]);
+    if (countEl) countEl.textContent = planCount[p];
+    if (barEl) barEl.style.width = `${(planRevenue[p] / maxPlanRev) * 100}%`;
+  });
+
+  renderMonthlyChart();
+  renderTopTeachers(filtered);
+  window.renderTransactions();
+}
+
+function animateNumber(elementId, target) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  
+  const current = parseInt(el.textContent.replace(/[^\d]/g, '')) || 0;
+  if (current === target) {
+    el.textContent = target.toLocaleString('en-US');
+    return;
+  }
+
+  const duration = 700;
+  const steps = 25;
+  const increment = (target - current) / steps;
+  let step = 0;
+
+  const timer = setInterval(() => {
+    step++;
+    const value = Math.round(current + increment * step);
+    el.textContent = value.toLocaleString('en-US');
+    if (step >= steps) {
+      clearInterval(timer);
+      el.textContent = target.toLocaleString('en-US');
+    }
+  }, duration / steps);
+}
+
+function renderMonthlyChart() {
+  const container = document.getElementById('monthlyChart');
+  if (!container) return;
+
+  const monthNamesAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      label: monthNamesAr[d.getMonth()],
+      revenue: 0
+    });
+  }
+
+  allTransactions.forEach(t => {
+    const date = new Date(t.activationTime);
+    const m = months.find(x => x.year === date.getFullYear() && x.month === date.getMonth());
+    if (m) m.revenue += (t.price || 0);
+  });
+
+  const maxRev = Math.max(...months.map(m => m.revenue), 1);
+  const yMax = document.getElementById('yMax');
+  const yMid = document.getElementById('yMid');
+  if (yMax) yMax.textContent = maxRev.toLocaleString('en-US');
+  if (yMid) yMid.textContent = Math.round(maxRev / 2).toLocaleString('en-US');
+
+  container.innerHTML = months.map(m => {
+    const heightPct = maxRev > 0 ? (m.revenue / maxRev) * 100 : 0;
+    return `
+      <div class="chart-bar-wrapper">
+        <div class="chart-bar" 
+             style="height:${Math.max(heightPct, 2)}%"
+             data-value="${m.revenue.toLocaleString('en-US')} جنيه">
+        </div>
+        <div class="chart-bar-label">${m.label}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTopTeachers(filtered) {
+  const container = document.getElementById('topTeachersContainer');
+  if (!container) return;
+
+  const byTeacher = {};
+  filtered.forEach(t => {
+    if (!byTeacher[t.teacherPhone]) {
+      byTeacher[t.teacherPhone] = {
+        name: t.teacherName,
+        title: t.teacherTitle,
+        phone: t.teacherPhone,
+        total: 0,
+        count: 0
+      };
+    }
+    byTeacher[t.teacherPhone].total += t.price || 0;
+    byTeacher[t.teacherPhone].count += 1;
+  });
+
+  const top = Object.values(byTeacher)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
+
+  if (top.length === 0) {
+    container.innerHTML = `<div class="empty-analytics">لا توجد بيانات في هذه الفترة</div>`;
+    return;
+  }
+
+  const medals = ['🥇', '🥈', '🥉'];
+
+  container.innerHTML = top.map((t, i) => {
+    const rankClass = i < 3 ? `rank-${i + 1}` : '';
+    const rankContent = i < 3 ? medals[i] : `<span>#${i + 1}</span>`;
+
+    return `
+      <div class="top-teacher-card ${rankClass}">
+        <div class="rank-badge">${rankContent}</div>
+        <div class="top-teacher-info">
+          <div class="top-teacher-name">${t.title || ''} ${t.name || '—'}</div>
+          <div class="top-teacher-phone">📱 ${t.phone}</div>
+        </div>
+        <div class="top-teacher-revenue">
+          <div class="top-teacher-amount">${t.total.toLocaleString('en-US')} ج</div>
+          <div class="top-teacher-count">${t.count} اشتراك</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.renderTransactions = function() {
+  const tbody = document.getElementById('transactionsBody');
+  const countEl = document.getElementById('transactionsCount');
+  const searchInput = document.getElementById('searchTransactions');
+  if (!tbody) return;
+
+  const q = (searchInput?.value || '').trim().toLowerCase();
+
+  let list = allTransactions.filter(t => isInRange(t.activationTime, analyticsFilter));
+
+  if (q) {
+    list = list.filter(t => 
+      (t.teacherName || '').toLowerCase().includes(q) ||
+      (t.teacherPhone || '').includes(q)
+    );
+  }
+
+  if (countEl) countEl.textContent = `${list.length} اشتراك`;
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">لا توجد اشتراكات في هذه الفترة</td></tr>`;
+    return;
+  }
+
+  const planColors = {
+    '3months': { bg: '#EFF6FF', color: '#1D4ED8', border: '#3B82F6' },
+    '6months': { bg: '#F5F3FF', color: '#6D28D9', border: '#8B5CF6' },
+    '1year': { bg: '#FFFBEB', color: '#B45309', border: '#F59E0B' }
+  };
+
+  tbody.innerHTML = list.map(t => {
+    const c = planColors[t.planId] || planColors['3months'];
+    const actDate = new Date(t.activationTime);
+    const expDate = new Date(t.expiryTime);
+    const fmtDate = (d) => {
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    };
+    const fmtTime = (d) => {
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mn = String(d.getMinutes()).padStart(2, '0');
+      return `${hh}:${mn}`;
+    };
+
+    const daysLeft = Math.ceil((t.expiryTime - Date.now()) / (1000 * 60 * 60 * 24));
+    const isExpired = daysLeft <= 0;
+
+    return `
+      <tr>
+        <td><strong>${t.teacherTitle || ''} ${t.teacherName}</strong></td>
+        <td dir="ltr" style="text-align:right;font-size:14px;font-weight:900">${t.teacherPhone}</td>
+        <td>
+          <span style="background:${c.bg};color:${c.color};border:1px solid ${c.border};padding:4px 10px;border-radius:6px;font-size:12px;font-weight:900;white-space:nowrap">
+            ${t.planLabel}
+          </span>
+        </td>
+        <td style="color:#047857;font-weight:900;font-size:15px">${t.price} ج</td>
+        <td><span class="date-chip">📅 ${fmtDate(actDate)} • ${fmtTime(actDate)}</span></td>
+        <td><span class="date-chip">📅 ${fmtDate(expDate)}</span></td>
+        <td>
+          ${isExpired 
+            ? `<span class="badge badge-locked">⏰ منتهي</span>` 
+            : t.isActive 
+              ? `<span class="badge badge-active">✅ نشط • ${daysLeft} يوم</span>`
+              : `<span class="badge badge-locked">🚫 محظور</span>`
+          }
+        </td>
+      </tr>
+    `;
+  }).join('');
+};
+
+// ==========================================================
 // 🔄 ترحيل البيانات القديمة
 // ==========================================================
 function migrateCurriculum(cur) {
@@ -3203,7 +4478,7 @@ async function init() {
     window.setCloudStatus(null, 'جاري الاتصال...');
 
     const initialHash = location.hash.replace('#', '');
-    if (initialHash === 'page-users' || initialHash === 'page-curriculum' || initialHash === 'page-subscriptions') {
+    if (['page-users','page-curriculum','page-subscriptions','page-pricing','page-analytics'].includes(initialHash)) {
       switchTab(initialHash);
     }
 
@@ -3216,10 +4491,30 @@ async function init() {
       window.renderCurriculum();
     }
 
+    try {
+      pricingSettings = await getPricingSettings();
+      if (!pricingSettings) pricingSettings = DEFAULT_PRICING;
+      renderPricingForm();
+    } catch(e) {
+      console.warn('فشل تحميل الأسعار، استخدام الافتراضي:', e);
+      pricingSettings = DEFAULT_PRICING;
+      renderPricingForm();
+    }
+
     unsubCurriculum = subscribeCurriculum((newCurriculum) => {
       window.curriculum = migrateCurriculum(newCurriculum);
       window.renderCurriculum();
       window.setCloudStatus('online', 'متصل ☁️');
+    });
+
+    unsubPricing = subscribePricing((pricing) => {
+      pricingSettings = pricing || DEFAULT_PRICING;
+      renderPricingForm();
+      console.log('✅ تم تحديث الأسعار من السحابة');
+      
+      if (document.getElementById('page-analytics')?.classList.contains('active')) {
+        renderAnalytics();
+      }
     });
 
     unsubTeachers = subscribeTeachers((teachers) => {
@@ -3231,6 +4526,10 @@ async function init() {
       window.renderSubscriptionsTeachersList();
       updateHeaderAlert();
       window.setCloudStatus('online', 'متصل ☁️');
+      
+      if (document.getElementById('page-analytics')?.classList.contains('active')) {
+        renderAnalytics();
+      }
     });
 
     unsubStudents = subscribeStudents((students) => {
@@ -3274,12 +4573,12 @@ window.addEventListener('beforeunload', () => {
   if (unsubStudents) unsubStudents();
   if (unsubGroups) unsubGroups();
   if (unsubRequests) unsubRequests();
+  if (unsubPricing) unsubPricing();
 });
 
 init();
 </script>
 
-<!-- ✅ منع الرجوع من الكاش -->
 <script>
 window.addEventListener('pageshow', (e) => {
   if (e.persisted) window.location.reload();
