@@ -2127,6 +2127,10 @@
     // ✅ تحميل الأسعار فوراً عند فتح الصفحة
     loadPricing();
 
+    // ✅ إتاحة الدوال للسكريبتات الأخرى (عشان نقدر نستخدمها في addAppointment)
+    window.loadPricing = loadPricing;
+    window.startPricingLiveUpdates = startPricingLiveUpdates;
+
     // ✅ تنظيف الاشتراك عند إغلاق الصفحة
     window.addEventListener('beforeunload', () => {
         if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
@@ -3482,7 +3486,7 @@
   };
 
   // ==========================================
-  // ✅ addAppointment — مع فحص الاشتراك
+  // ✅ addAppointment — مع فحص الاشتراك (بدون توجيه خارجي)
   // ==========================================
   window.addAppointment = async function() {
     const phone = localStorage.getItem('current_teacher_phone');
@@ -3490,14 +3494,32 @@
         try {
             const active = await isSubscriptionActive(phone);
             if (!active) {
-                const sub = await getTeacherSubscription(phone);
-                const msg = sub?.status === 'expired'
-                    ? '⚠️ اشتراكك منتهي! يرجى التجديد للمتابعة.'
-                    : '⚠️ لا يوجد اشتراك نشط! يرجى اختيار باقة أولاً.';
-                
-                if (confirm(msg + '\n\nهل تريد الانتقال لصفحة الباقات الآن؟')) {
-                    window.location.href = 'subscription.html';
+                // ✅ بدل التوجيه لصفحة خارجية — نعرض شاشة الحظر الموجودة في الصفحة نفسها
+                console.log('🚫 لا يوجد اشتراك نشط — عرض شاشة الحظر');
+
+                // 1) نحمّل الأسعار لو لسه ما اتحملتش
+                if (!window.currentPricing && typeof window.loadPricing === 'function') {
+                    try {
+                        await window.loadPricing();
+                    } catch(e) {
+                        console.warn('فشل تحميل الأسعار:', e);
+                    }
                 }
+
+                // 2) نفعّل التحديث اللحظي للأسعار
+                if (typeof window.startPricingLiveUpdates === 'function') {
+                    window.startPricingLiveUpdates();
+                }
+
+                // 3) نعرض شاشة الحظر
+                const blockedOverlay = document.getElementById('blockedOverlay');
+                if (blockedOverlay) {
+                    blockedOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.overflow = 'hidden';
+                    blockedOverlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
                 return;
             }
         } catch (e) {
