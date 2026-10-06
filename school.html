@@ -22,6 +22,7 @@
   --primary:#047857; --primary-dark:#064E3B; --primary-light:#D1FAE5;
   --danger:#DC2626; --warning:#D97706; --info:#2563EB; --gold:#F59E0B;
   --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --surface:#fff; --bg:#F8FAFC;
+  --gmail:#EA4335; --gmail-dark:#C5221F;
 }
 *{font-family:'Cairo',sans-serif;font-weight:800;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh;color:var(--ink);margin:0;padding:16px}
@@ -57,9 +58,11 @@ body{background:linear-gradient(180deg,#F8FAFC 0%,#E2E8F0 100%);min-height:100vh
 .stat-box::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:var(--primary)}
 .stat-box.blue::before{background:var(--info)}.stat-box.amber::before{background:var(--gold)}.stat-box.rose::before{background:var(--danger)}.stat-box.purple::before{background:#7C3AED}
 .stat-box.green::before{background:#25D366}.stat-box.cyan::before{background:#06B6D4}
+.stat-box.gmail::before{background:var(--gmail)}
 .stat-num{font-size:28px;font-weight:900;color:var(--primary)}
 .stat-box.blue .stat-num{color:var(--info)}.stat-box.amber .stat-num{color:var(--gold)}.stat-box.rose .stat-num{color:var(--danger)}.stat-box.purple .stat-num{color:#7C3AED}
 .stat-box.green .stat-num{color:#128C7E}.stat-box.cyan .stat-num{color:#0891B2}
+.stat-box.gmail .stat-num{color:var(--gmail)}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
 
 #teachersMap,#studentsMap{width:100%;height:420px;border-radius:14px;border:2px solid var(--line);z-index:1}
@@ -91,6 +94,7 @@ tr.locked td{background:#FEF2F2}
 .btn-primary{background:linear-gradient(135deg,#10B981,#047857);color:#fff;padding:12px 20px;font-size:14px;border-radius:10px;width:100%;justify-content:center}
 .btn-ghost{background:#F1F5F9;color:var(--ink);border:1px solid var(--line)}
 .btn-del{background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff}
+.btn-gmail{background:linear-gradient(135deg,var(--gmail),var(--gmail-dark));color:#fff}
 
 .search-box{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;outline:none;margin-bottom:12px;font-family:'Cairo'}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
@@ -235,6 +239,15 @@ tr.locked td{background:#FEF2F2}
 }
 .icon-action-btn.btn-call-icon:hover {
   box-shadow: 0 8px 18px -4px rgba(59, 130, 246, 0.7);
+}
+
+.icon-action-btn.btn-gmail-icon {
+  background: linear-gradient(135deg, #EA4335, #C5221F);
+  color: #fff;
+  box-shadow: 0 3px 8px -2px rgba(234, 67, 53, 0.5);
+}
+.icon-action-btn.btn-gmail-icon:hover {
+  box-shadow: 0 8px 18px -4px rgba(234, 67, 53, 0.7);
 }
 
 .icon-action-btn.btn-del-icon {
@@ -559,13 +572,16 @@ tr.locked td{background:#FEF2F2}
 .req-btn{
   padding:10px 18px;border-radius:10px;border:none;
   font-family:'Cairo';font-weight:900;font-size:13px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:6px;transition:.2s
+  display:inline-flex;align-items:center;gap:6px;transition:.2s;
+  text-decoration:none
 }
 .req-btn:hover{transform:translateY(-2px)}
 .req-btn:active{transform:translateY(0) scale(.97)}
 .req-btn.approve{background:linear-gradient(135deg,#10B981,#047857);color:#fff;box-shadow:0 4px 12px -4px rgba(16,185,129,.6)}
 .req-btn.reject{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;box-shadow:0 4px 12px -4px rgba(220,38,38,.6)}
 .req-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 4px 12px -4px rgba(37,211,102,.6)}
+.req-btn.call{background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff;box-shadow:0 4px 12px -4px rgba(59,130,246,.6)}
+.req-btn.gmail{background:linear-gradient(135deg,var(--gmail),var(--gmail-dark));color:#fff;box-shadow:0 4px 12px -4px rgba(234,67,53,.6)}
 
 .pending-badge-tab{
   background:#DC2626;color:#fff;padding:2px 8px;border-radius:10px;
@@ -849,6 +865,15 @@ tr.locked td{background:#FEF2F2}
 .tsc-contact-btn.call{
     background:linear-gradient(135deg,#3B82F6,#1D4ED8);
     color:#fff;
+}
+.tsc-contact-btn.gmail{
+    background:linear-gradient(135deg,#EA4335,#C5221F);
+    color:#fff;
+    box-shadow:0 3px 8px -2px rgba(234,67,53,.5);
+}
+.tsc-contact-btn.gmail:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px -4px rgba(234,67,53,.7);
 }
 .tsc-contact-btn.done{
     background:linear-gradient(135deg,#10B981,#047857);
@@ -1449,6 +1474,9 @@ import {
   ADMIN_EMAIL
 } from './firebase-config.js';
 
+// ============ 📧 إيميل الإدارة للتواصل ============
+const ADMIN_GMAIL = 'mmoksh162@gmail.com';
+
 // ============ Cloud Status ============
 window.setCloudStatus = function(status, text) {
   const el = document.getElementById('cloudStatus');
@@ -1535,6 +1563,8 @@ window.setCloudStatus = function(status, text) {
           window.playClick(900, 0.06, 0.14);
         } else if (el.classList.contains('btn-wa-icon') || el.classList.contains('wa') || el.classList.contains('tsc-contact-btn')) {
           window.playClick(1800, 0.05, 0.10);
+        } else if (el.classList.contains('btn-gmail-icon') || el.classList.contains('gmail')) {
+          window.playClick(1700, 0.05, 0.10);
         } else if (el.classList.contains('btn-gps-icon')) {
           window.playClick(2200, 0.06, 0.10);
         } else if (el.classList.contains('icon-btn')) {
@@ -1758,6 +1788,16 @@ function renderTeachersTable() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
             </a>
 
+            <a 
+              class="icon-action-btn btn-gmail-icon" 
+              href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لمعلم - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nالرسالة:\n')}"
+              title="إرسال Gmail للإدارة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 6-10 7L2 6"/>
+              </svg>
+            </a>
+
             <button 
               class="icon-action-btn btn-del-icon" 
               onclick="window.deleteTeacher('${phone}', '${safeName}')" 
@@ -1843,6 +1883,16 @@ function renderStudentsTable() {
               href="tel:${phone}" 
               title="اتصال">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </a>
+
+            <a 
+              class="icon-action-btn btn-gmail-icon" 
+              href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لطالب - ' + name)}&body=${encodeURIComponent('الطالب: ' + name + '\nرقم الهاتف: ' + phone + '\nالصف: ' + grade + '\n\nالرسالة:\n')}"
+              title="إرسال Gmail للإدارة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 6-10 7L2 6"/>
+              </svg>
             </a>
             ` : ''}
 
@@ -2553,8 +2603,12 @@ function renderSubscriptionRequests() {
           <a class="req-btn wa" href="https://wa.me/2${req.phone}" target="_blank">
             💬 واتساب
           </a>
-          <a class="req-btn" style="background:#F1F5F9;color:var(--ink)" href="tel:${req.phone}">
+          <a class="req-btn call" href="tel:${req.phone}">
             📞 اتصال
+          </a>
+          <a class="req-btn gmail"
+             href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('💎 طلب اشتراك - ' + (req.teacherName || ''))}&body=${encodeURIComponent('المعلم: ' + (req.teacherName || '') + '\nالهاتف: ' + (req.phone || '') + '\nالباقة: ' + (req.planName || '') + '\n\nرسالة:')}">
+            📧 Gmail
           </a>
         </div>
       </div>
@@ -2663,8 +2717,12 @@ function renderContactRequests() {
                         💬 واتساب
                     </a>
                     <a href="tel:${phone}"
-                       class="req-btn" style="background:#3B82F6;color:#fff;padding:8px 14px;font-size:12px">
+                       class="req-btn call" style="padding:8px 14px;font-size:12px">
                         📞 اتصال
+                    </a>
+                    <a href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('🆘 طلب تواصل من معلم محظور - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nرسالة المعلم:')}"
+                       class="req-btn gmail" style="padding:8px 14px;font-size:12px">
+                        📧 Gmail
                     </a>
                     <button class="req-btn approve" style="padding:8px 14px;font-size:12px"
                             onclick="window.markContactHandled('${phone}')">
@@ -3029,6 +3087,10 @@ window.renderSubscriptionsTeachersList = function() {
                         </a>
                         <a href="tel:${phone}" class="tsc-contact-btn call">
                             📞 اتصال
+                        </a>
+                        <a href="mailto:${ADMIN_GMAIL}?subject=${encodeURIComponent('📧 رسالة لمعلم - ' + (t.title||'مستر') + ' ' + (t.name||''))}&body=${encodeURIComponent('المعلم: ' + (t.title||'مستر') + ' ' + (t.name||'') + '\nرقم الهاتف: ' + phone + '\n\nالرسالة:\n')}"
+                           class="tsc-contact-btn gmail">
+                            📧 Gmail
                         </a>
                         ${hasContactReq ? `
                             <button class="tsc-contact-btn done" onclick="window.markContactHandled('${phone}')">
