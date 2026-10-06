@@ -1624,6 +1624,47 @@
     window.currentPricing = null;
 
     // ==========================================================
+    // 🔑 دالة موحّدة لفحص حالة الحظر والاشتراك (تعتمد على teachers)
+    // ==========================================================
+    window.checkTeacherActiveStatus = async function(phone) {
+        try {
+            const teacher = await getTeacher(phone);
+            if (!teacher) {
+                return { active: false, reason: 'not_found' };
+            }
+
+            // 🚫 محظور صريحاً
+            if (teacher.isLocked === true) {
+                return { active: false, reason: 'locked' };
+            }
+
+            // ♾️ فتح دائم
+            if (teacher.lockType === 'permanent_open') {
+                return { active: true, reason: 'permanent_open' };
+            }
+
+            // ⏰ تفعيل مؤقت
+            if (teacher.unlockUntil) {
+                const until = typeof teacher.unlockUntil === 'number'
+                    ? teacher.unlockUntil
+                    : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
+
+                if (until && until > Date.now()) {
+                    return { active: true, reason: 'time_limited', until };
+                } else if (until && until <= Date.now()) {
+                    return { active: false, reason: 'expired', until };
+                }
+            }
+
+            // 🆓 مفيش تفعيل — نعتبرها غير نشطة
+            return { active: false, reason: 'no_activation' };
+        } catch (e) {
+            console.error('خطأ في فحص حالة الحظر:', e);
+            return { active: false, reason: 'error' };
+        }
+    };
+
+    // ==========================================================
     // 💰 تحديث واجهة أسعار الباقات — كل القيم ديناميكية
     // ==========================================================
     function updatePricingUI(pricing) {
@@ -1632,10 +1673,8 @@
             return;
         }
 
-        // حفظ في الذاكرة
         window.currentPricing = pricing;
 
-        // 🔹 أسماء افتراضية مؤقتة لو القيم ناقصة
         const defaultLabels = {
             '3months': '3 شهور',
             '6months': '6 شهور',
@@ -1653,19 +1692,12 @@
             const data = pricing[planId] || {};
             const suffix = mapSuffix[planId];
 
-            // 📛 الاسم (لو موجود) — وإلا الافتراضي
             const nameEl = document.getElementById(`planName${suffix}`);
-            if (nameEl) {
-                nameEl.textContent = data.label || defaultLabels[planId];
-            }
+            if (nameEl) nameEl.textContent = data.label || defaultLabels[planId];
 
-            // 🎨 الأيقونة (لو موجودة) — وإلا الافتراضية
             const iconEl = document.getElementById(`planIcon${suffix}`);
-            if (iconEl) {
-                iconEl.textContent = data.icon || defaultIcons[planId];
-            }
+            if (iconEl) iconEl.textContent = data.icon || defaultIcons[planId];
 
-            // 💵 السعر (نص العرض)
             const priceEl = document.getElementById(`priceText${suffix}`);
             if (priceEl) {
                 priceEl.classList.remove('loading');
@@ -1678,17 +1710,11 @@
                 }
             }
 
-            // ⏱ المدة
             const durEl = document.getElementById(`planDuration${suffix}`);
             if (durEl) {
-                if (data.days) {
-                    durEl.textContent = `⏱ ${data.days} يوم`;
-                } else {
-                    durEl.textContent = '';
-                }
+                durEl.textContent = data.days ? `⏱ ${data.days} يوم` : '';
             }
 
-            // 🔘 زر الطلب — نفعّله بعد ما البيانات توصل
             const btnEl = document.getElementById(`planBtn${suffix}`);
             if (btnEl) {
                 btnEl.disabled = false;
@@ -1713,7 +1739,7 @@
     // ==========================================================
     let _unsubPricing = null;
     function startPricingLiveUpdates() {
-        if (_unsubPricing) return; // منع الاشتراكات المكررة
+        if (_unsubPricing) return;
         try {
             _unsubPricing = subscribePricing((pricing) => {
                 updatePricingUI(pricing);
@@ -1725,7 +1751,7 @@
     }
 
     // ==========================================================
-    // 💎 دالة طلب باقة — تقرأ القيم من السحابة (لا شيء ثابت)
+    // 💎 دالة طلب باقة
     // ==========================================================
     window.requestPlan = async function(planId) {
         const phone = localStorage.getItem('current_teacher_phone');
@@ -1734,7 +1760,6 @@
             return;
         }
 
-        // ✅ منع الطلب قبل تحميل الأسعار
         if (!window.currentPricing) {
             alert('⏳ يرجى الانتظار قليلاً حتى يتم تحميل بيانات الباقة...');
             return;
@@ -1748,7 +1773,6 @@
             return;
         }
 
-        // 🔹 استخدام القيم من السحابة (لا شيء ثابت)
         const planName = planData.label || planData.name || ({
             '3months': 'باقة 3 شهور',
             '6months': 'باقة 6 شهور',
@@ -1770,14 +1794,12 @@
         const msgEl = document.getElementById('contactSentMsg');
 
         try {
-            // إظهار رسالة "جاري الإرسال"
             if (msgEl) {
                 msgEl.classList.remove('error');
                 msgEl.classList.add('show');
                 msgEl.textContent = '⏳ جاري إرسال طلبك...';
             }
 
-            // جلب بيانات المعلم
             let teacherName = '';
             let teacherTitle = '';
             try {
@@ -1788,7 +1810,6 @@
                 }
             } catch (e) {}
 
-            // تحديث بيانات المعلم في Firestore
             await updateDoc(doc(db, 'teachers', phone), {
                 contactRequest: {
                     requested: true,
@@ -1798,7 +1819,6 @@
                 }
             });
 
-            // إنشاء طلب في مجموعة contact_requests
             const reqId = `contact_${phone}_${Date.now()}`;
             await setDoc(doc(db, 'contact_requests', reqId), {
                 id: reqId,
@@ -1814,7 +1834,6 @@
                 handledAt: null
             });
 
-            // رسالة نجاح
             if (msgEl) {
                 msgEl.classList.remove('error');
                 msgEl.classList.add('show');
@@ -1835,18 +1854,13 @@
     // ==========================================================
     window.selectedContactType = null;
 
-    // ==========================================================
-    // 🎯 اختيار نوع التواصل
-    // ==========================================================
     window.selectContactType = function(type, event) {
         window.selectedContactType = type;
 
-        // إزالة selected من الكل
         document.querySelectorAll('.contact-type-btn').forEach(btn => {
             btn.classList.remove('selected');
         });
 
-        // إضافة selected للزر المختار
         if (event?.currentTarget) {
             event.currentTarget.classList.add('selected');
         } else {
@@ -1854,7 +1868,6 @@
             if (btn) btn.classList.add('selected');
         }
 
-        // إظهار حقل التفاصيل (للاستفسار والمشكلة فقط)
         const detailsInput = document.getElementById('contactDetailsInput');
         const btnText = document.getElementById('emailBtnText');
 
@@ -1876,14 +1889,10 @@
             if (btnText) btnText.textContent = 'إرسال طلب الاشتراك';
         }
 
-        // تفعيل زر الإرسال
         const sendBtn = document.getElementById('emailContactBtn');
         if (sendBtn) sendBtn.disabled = false;
     };
 
-    // ==========================================================
-    // 📧 إرسال الرسالة عبر Gmail
-    // ==========================================================
     window.sendEmailContact = async function(e) {
         if (e) e.preventDefault();
 
@@ -1893,7 +1902,6 @@
             return;
         }
 
-        // التحقق من اختيار نوع التواصل
         if (!window.selectedContactType) {
             alert('⚠️ يرجى اختيار نوع التواصل أولاً (استفسار / مشكلة / اشتراك)');
             return;
@@ -1903,14 +1911,12 @@
         const type = window.selectedContactType;
         const detailsText = (document.getElementById('contactDetailsInput')?.value || '').trim();
 
-        // التحقق من كتابة التفاصيل لو استفسار أو مشكلة
         if ((type === 'inquiry' || type === 'problem') && !detailsText) {
             alert('⚠️ يرجى كتابة التفاصيل في المربع النصي');
             document.getElementById('contactDetailsInput')?.focus();
             return;
         }
 
-        // جمع بيانات المعلم
         let teacherName = '';
         let teacherTitle = '';
         try {
@@ -1921,13 +1927,11 @@
             }
         } catch (err) {}
 
-        // بيانات الباقات
         const pricing = window.currentPricing || {};
         const p3m = pricing['3months']  || {};
         const p6m = pricing['6months']  || {};
         const p1y = pricing['1year']    || {};
 
-        // معلومات حسب نوع التواصل
         const typeInfo = {
             'inquiry':      { label: '💬 استفسار',        emoji: '💬' },
             'problem':      { label: '⚠️ مشكلة تقنية',    emoji: '⚠️' },
@@ -1937,7 +1941,6 @@
 
         const subject = `${tInfo.emoji} ${tInfo.label} من ${teacherTitle} ${teacherName}`;
 
-        // بناء نص الرسالة
         let bodyLines = [
             `السلام عليكم،`,
             ``,
@@ -1950,7 +1953,6 @@
             `📱 رقم الهاتف: ${phone}`,
         ];
 
-        // تفاصيل الاستفسار أو المشكلة
         if (type === 'inquiry' || type === 'problem') {
             bodyLines.push(
                 ``,
@@ -1961,7 +1963,6 @@
             );
         }
 
-        // لو اشتراك — نضيف الباقات
         if (type === 'subscription') {
             bodyLines.push(
                 ``,
@@ -1986,8 +1987,6 @@
         );
 
         const body = bodyLines.join('\n');
-
-        // فتح Gmail
         const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ADMIN_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         window.open(gmailUrl, '_blank');
@@ -2018,7 +2017,7 @@
     }
 
     // ==========================================================
-    // ✅ الفحص الرئيسي للجهاز والحظر
+    // ✅ الفحص الرئيسي للجهاز والحظر (باستخدام الدالة الموحّدة)
     // ==========================================================
     (async () => {
         const phone = localStorage.getItem('current_teacher_phone');
@@ -2028,55 +2027,34 @@
         }
 
         try {
-            let isLocked = false;
-            let teacherDoc = null;
+            // ✅ فحص الحالة (باستخدام الدالة الموحّدة)
+            const status = await window.checkTeacherActiveStatus(phone);
 
-            try {
-                teacherDoc = await getTeacher(phone);
-            } catch (e) {
-                console.warn('فشل جلب بيانات المعلم:', e);
-            }
+            if (!status.active) {
+                console.log('🚫 غير نشط — السبب:', status.reason);
 
-            if (teacherDoc) {
-                if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
-                    const until = typeof teacherDoc.unlockUntil === 'number'
-                        ? teacherDoc.unlockUntil
-                        : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
-
-                    if (until && until <= Date.now()) {
-                        try {
-                            await updateDoc(doc(db, 'teachers', phone), {
-                                isLocked: true,
-                                lockType: 'auto_expired',
-                                autoLockedAt: Date.now()
-                            });
-                        } catch(_) {}
-                        isLocked = true;
-                        localStorage.setItem('teacher_is_blocked', 'true');
-                    } else {
-                        localStorage.removeItem('teacher_is_blocked');
-                    }
-                } 
-                else if (teacherDoc.isLocked === true) {
-                    isLocked = true;
-                    localStorage.setItem('teacher_is_blocked', 'true');
-                } 
-                else {
-                    localStorage.removeItem('teacher_is_blocked');
+                // ✅ لو التفاعل انتهى — نقفل الحساب تلقائياً
+                if (status.reason === 'expired') {
+                    try {
+                        await updateDoc(doc(db, 'teachers', phone), {
+                            isLocked: true,
+                            lockType: 'auto_expired',
+                            autoLockedAt: Date.now()
+                        });
+                    } catch(_) {}
                 }
-            } else {
-                if (localStorage.getItem('teacher_is_blocked') === 'true') {
-                    isLocked = true;
-                }
-            }
 
-            if (isLocked) {
+                localStorage.setItem('teacher_is_blocked', 'true');
                 await loadPricing();
                 showBlockedScreen();
                 startPricingLiveUpdates();
                 return;
             }
 
+            // ✅ نشط — نمسح علامة الحظر
+            localStorage.removeItem('teacher_is_blocked');
+
+            // ✅ فحص الجهاز
             let check = null;
             try {
                 check = await checkTeacherDevice(phone);
@@ -2103,22 +2081,12 @@
                 return;
             }
 
+            // ✅ كله تمام
             hideAllOverlays();
             startPricingLiveUpdates();
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
-            try {
-                const teacherDoc = await getTeacher(phone);
-                if (teacherDoc && teacherDoc.isLocked === true) {
-                    localStorage.setItem('teacher_is_blocked', 'true');
-                    await loadPricing();
-                    showBlockedScreen();
-                    startPricingLiveUpdates();
-                    return;
-                }
-                localStorage.removeItem('teacher_is_blocked');
-            } catch (_) {}
             hideAllOverlays();
             startPricingLiveUpdates();
         }
@@ -2127,7 +2095,7 @@
     // ✅ تحميل الأسعار فوراً عند فتح الصفحة
     loadPricing();
 
-    // ✅ إتاحة الدوال للسكريبتات الأخرى (عشان نقدر نستخدمها في addAppointment)
+    // ✅ إتاحة الدوال للسكريبتات الأخرى
     window.loadPricing = loadPricing;
     window.startPricingLiveUpdates = startPricingLiveUpdates;
 
@@ -2392,7 +2360,16 @@
 
       _lockCheckInterval = setInterval(async () => {
           try {
-              const locked = await isTeacherLocked(teacherPhone);
+              // ✅ استخدام الدالة الموحّدة
+              let locked = false;
+
+              if (typeof window.checkTeacherActiveStatus === 'function') {
+                  const status = await window.checkTeacherActiveStatus(teacherPhone);
+                  locked = !status.active;
+              } else {
+                  locked = await isTeacherLocked(teacherPhone);
+              }
+
               if (locked) {
                   localStorage.setItem('teacher_is_blocked', 'true');
                   const blockedOverlay = document.getElementById('blockedOverlay');
@@ -3486,32 +3463,49 @@
   };
 
   // ==========================================
-  // ✅ addAppointment — مع فحص الاشتراك (بدون توجيه خارجي)
+  // ✅ addAppointment — مع فحص الاشتراك (حماية مزدوجة)
   // ==========================================
   window.addAppointment = async function() {
     const phone = localStorage.getItem('current_teacher_phone');
     if (phone) {
         try {
-            const active = await isSubscriptionActive(phone);
-            if (!active) {
-                // ✅ بدل التوجيه لصفحة خارجية — نعرض شاشة الحظر الموجودة في الصفحة نفسها
-                console.log('🚫 لا يوجد اشتراك نشط — عرض شاشة الحظر');
+            // ✅ 1) فحص أولاً باستخدام الدالة الموحّدة (teachers.unlockUntil)
+            let isActive = false;
 
-                // 1) نحمّل الأسعار لو لسه ما اتحملتش
-                if (!window.currentPricing && typeof window.loadPricing === 'function') {
+            if (typeof window.checkTeacherActiveStatus === 'function') {
+                const status = await window.checkTeacherActiveStatus(phone);
+                isActive = status.active;
+                console.log('🔍 فحص الحالة (موحّد):', status.reason);
+
+                if (!isActive) {
+                    // ✅ ملاذ أخير: نستخدم isSubscriptionActive الأصلي
                     try {
-                        await window.loadPricing();
+                        const subActive = await isSubscriptionActive(phone);
+                        if (subActive) {
+                            isActive = true;
+                            console.log('✅ نشط حسب isSubscriptionActive (fallback)');
+                        }
                     } catch(e) {
-                        console.warn('فشل تحميل الأسعار:', e);
+                        console.warn('فشل isSubscriptionActive:', e);
                     }
                 }
+            } else {
+                // fallback لو الدالة الموحّدة مش موجودة
+                isActive = await isSubscriptionActive(phone);
+            }
 
-                // 2) نفعّل التحديث اللحظي للأسعار
+            if (!isActive) {
+                // ✅ عرض شاشة الحظر
+                console.log('🚫 لا يوجد اشتراك نشط — عرض شاشة الحظر');
+
+                if (!window.currentPricing && typeof window.loadPricing === 'function') {
+                    try { await window.loadPricing(); } catch(e) {}
+                }
+
                 if (typeof window.startPricingLiveUpdates === 'function') {
                     window.startPricingLiveUpdates();
                 }
 
-                // 3) نعرض شاشة الحظر
                 const blockedOverlay = document.getElementById('blockedOverlay');
                 if (blockedOverlay) {
                     blockedOverlay.classList.add('show');
@@ -3522,8 +3516,13 @@
 
                 return;
             }
+
+            // ✅ المعلم نشط — نكمل عادي
+            console.log('✅ المعلم نشط — متابعة حفظ الموعد');
+
         } catch (e) {
             console.error('خطأ فحص الاشتراك:', e);
+            // في حالة الخطأ، نكمل عادي (مش نعرض شاشة حمراء)
         }
     }
 
