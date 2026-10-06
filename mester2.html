@@ -839,7 +839,6 @@
         opacity: 0.9;
     }
 
-    /* 🚫 شاشة الحظر */
     .blocked-overlay {
         position: fixed;
         inset: 0;
@@ -890,7 +889,6 @@
         opacity: 0.95;
     }
 
-    /* 💎 صندوق الباقات */
     .blocked-overlay .support-box {
         background: rgba(255, 255, 255, 0.12);
         border: 2px solid rgba(255, 255, 255, 0.3);
@@ -912,7 +910,6 @@
         opacity: 0.98;
     }
 
-    /* 💎 شبكة الباقات */
     .plans-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -1024,12 +1021,16 @@
 
     .plan-btn {
         display: block;
+        width: 100%;
         color: #fff;
         text-decoration: none;
         padding: 11px 8px;
         border-radius: 10px;
         font-size: 13px;
         font-weight: 900;
+        border: none;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         transition: all 0.2s;
         letter-spacing: 0.3px;
@@ -1042,6 +1043,12 @@
     }
     .plan-btn:active {
         transform: translateY(0) scale(0.97);
+    }
+    .plan-btn:disabled {
+        background: #94A3B8 !important;
+        cursor: not-allowed;
+        transform: none;
+        opacity: 0.7;
     }
 
     .blocked-overlay .blocked-note {
@@ -1066,7 +1073,6 @@
         letter-spacing: 1px;
     }
 
-    /* 📱 Responsive للحظر */
     @media (max-width: 640px) {
         .plans-grid {
             grid-template-columns: 1fr;
@@ -1100,6 +1106,7 @@
             padding: 10px 14px;
             white-space: nowrap;
             margin-top: 0;
+            width: auto;
         }
         .blocked-overlay h1 { font-size: 20px; }
         .blocked-overlay .blocked-icon { font-size: 60px; }
@@ -1248,7 +1255,7 @@
                     <div class="plan-price" id="priceText3m">150 جنيه</div>
                     <div class="plan-duration">⏱ 90 يوم</div>
                 </div>
-                <a href="subscription.html?plan=3months" class="plan-btn" id="planBtn3m">اشترك الآن</a>
+                <button class="plan-btn" onclick="window.requestPlan('3months')">اشترك الآن</button>
             </div>
 
             <!-- باقة 6 شهور -->
@@ -1259,7 +1266,7 @@
                     <div class="plan-price" id="priceText6m">250 جنيه</div>
                     <div class="plan-duration">⏱ 180 يوم</div>
                 </div>
-                <a href="subscription.html?plan=6months" class="plan-btn" id="planBtn6m">اشترك الآن</a>
+                <button class="plan-btn" onclick="window.requestPlan('6months')">اشترك الآن</button>
             </div>
 
             <!-- باقة سنة -->
@@ -1271,13 +1278,11 @@
                     <div class="plan-price" id="priceText1y">400 جنيه</div>
                     <div class="plan-duration">⏱ 365 يوم</div>
                 </div>
-                <a href="subscription.html?plan=1year" class="plan-btn" id="planBtn1y">اشترك الآن</a>
+                <button class="plan-btn" onclick="window.requestPlan('1year')">اشترك الآن</button>
             </div>
         </div>
 
-        <div class="contact-sent-msg" id="contactSentMsg">
-            ✅ تم تسجيل طلب الاشتراك — سيتم التواصل معك قريباً
-        </div>
+        <div class="contact-sent-msg" id="contactSentMsg"></div>
     </div>
 
     <div class="blocked-note">
@@ -1293,7 +1298,7 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر + جلب الأسعار -->
+<!-- ✅ سكريبت حماية الجهاز + الحظر + طلب الباقات -->
 <script type="module">
     import { 
         checkTeacherDevice, 
@@ -1313,21 +1318,18 @@
                 return;
             }
 
-            // باقة 3 شهور
             const p3m = pricing['3months'];
             if (p3m) {
                 const el = document.getElementById('priceText3m');
                 if (el) el.textContent = p3m.priceText || `${p3m.price} جنيه`;
             }
 
-            // باقة 6 شهور
             const p6m = pricing['6months'];
             if (p6m) {
                 const el = document.getElementById('priceText6m');
                 if (el) el.textContent = p6m.priceText || `${p6m.price} جنيه`;
             }
 
-            // باقة سنة
             const p1y = pricing['1year'];
             if (p1y) {
                 const el = document.getElementById('priceText1y');
@@ -1339,6 +1341,101 @@
             console.warn('فشل جلب الأسعار:', e);
         }
     }
+
+    // ==========================================================
+    // 💎 دالة طلب باقة (بدون تحويل لأي صفحة)
+    // ==========================================================
+    window.requestPlan = async function(planId) {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) {
+            alert('⚠️ يجب تسجيل الدخول أولاً');
+            return;
+        }
+
+        const planNames = {
+            '3months': { name: 'باقة 3 شهور', days: 90 },
+            '6months': { name: 'باقة 6 شهور', days: 180 },
+            '1year': { name: 'باقة سنة كاملة', days: 365 }
+        };
+
+        const plan = planNames[planId];
+        if (!plan) return;
+
+        // جلب السعر من الصفحة
+        const priceEl = document.getElementById(`priceText${planId === '3months' ? '3m' : planId === '6months' ? '6m' : '1y'}`);
+        const price = priceEl?.textContent || '';
+
+        if (!confirm(
+            `📋 تأكيد طلب الاشتراك\n\n` +
+            `💎 الباقة: ${plan.name}\n` +
+            `⏱️ المدة: ${plan.days} يوم\n` +
+            `💰 السعر: ${price}\n\n` +
+            `سيتم إرسال طلبك للإدارة، وسيتم التواصل معك خلال 24 ساعة.\n\n` +
+            `هل تريد إرسال الطلب؟`
+        )) return;
+
+        const msgEl = document.getElementById('contactSentMsg');
+
+        try {
+            // إظهار رسالة "جاري الإرسال"
+            if (msgEl) {
+                msgEl.classList.remove('error');
+                msgEl.classList.add('show');
+                msgEl.textContent = '⏳ جاري إرسال طلبك...';
+            }
+
+            // جلب بيانات المعلم
+            let teacherName = '';
+            let teacherTitle = '';
+            try {
+                const teacherDoc = await getTeacher(phone);
+                if (teacherDoc) {
+                    teacherName = teacherDoc.name || '';
+                    teacherTitle = teacherDoc.title || '';
+                }
+            } catch (e) {}
+
+            // تحديث بيانات المعلم في Firestore
+            await updateDoc(doc(db, 'teachers', phone), {
+                contactRequest: {
+                    requested: true,
+                    at: Date.now(),
+                    handled: false,
+                    planId: planId
+                }
+            });
+
+            // إنشاء طلب في مجموعة contact_requests
+            const reqId = `contact_${phone}_${Date.now()}`;
+            await setDoc(doc(db, 'contact_requests', reqId), {
+                id: reqId,
+                phone: phone,
+                teacherName: teacherName,
+                teacherTitle: teacherTitle,
+                planId: planId,
+                planName: plan.name,
+                priceText: price,
+                requestedAt: serverTimestamp(),
+                requestedAtMs: Date.now(),
+                handled: false,
+                handledAt: null
+            });
+
+            // رسالة نجاح
+            if (msgEl) {
+                msgEl.classList.remove('error');
+                msgEl.classList.add('show');
+                msgEl.innerHTML = `✅ تم إرسال طلبك بنجاح!<br>📧 سيتم التواصل معك خلال 24 ساعة على رقم: ${phone}`;
+            }
+
+        } catch (e) {
+            console.error('فشل إرسال الطلب:', e);
+            if (msgEl) {
+                msgEl.classList.add('show', 'error');
+                msgEl.textContent = '❌ فشل إرسال الطلب — جرب تاني';
+            }
+        }
+    };
 
     function showBlockedScreen() {
         const overlay = document.getElementById('securityOverlay');
@@ -1365,72 +1462,6 @@
     }
 
     // ==========================================================
-    // ✅ تسجيل طلب التواصل عند الضغط على اشترك
-    // ==========================================================
-    async function trackPlanClick(planId) {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) return;
-
-        try {
-            let teacherName = '';
-            let teacherTitle = '';
-            try {
-                const teacherDoc = await getTeacher(phone);
-                if (teacherDoc) {
-                    teacherName = teacherDoc.name || '';
-                    teacherTitle = teacherDoc.title || '';
-                }
-            } catch (e) {}
-
-            await updateDoc(doc(db, 'teachers', phone), {
-                contactRequest: {
-                    requested: true,
-                    at: Date.now(),
-                    handled: false,
-                    planId: planId
-                }
-            });
-
-            try {
-                const reqId = `contact_${phone}_${Date.now()}`;
-                await setDoc(doc(db, 'contact_requests', reqId), {
-                    id: reqId,
-                    phone: phone,
-                    teacherName: teacherName,
-                    teacherTitle: teacherTitle,
-                    planId: planId,
-                    requestedAt: serverTimestamp(),
-                    requestedAtMs: Date.now(),
-                    handled: false,
-                    handledAt: null
-                });
-            } catch (e) {}
-
-            const msgEl = document.getElementById('contactSentMsg');
-            if (msgEl) {
-                msgEl.classList.remove('error');
-                msgEl.classList.add('show');
-                msgEl.textContent = '✅ تم تسجيل طلبك — سيتم التواصل معك لتفعيل الاشتراك';
-            }
-        } catch (e) {
-            console.error('فشل تسجيل الطلب:', e);
-        }
-    }
-
-    // ربط الأزرار بتسجيل الطلبات
-    document.addEventListener('DOMContentLoaded', () => {
-        ['3m','6m','1y'].forEach(suffix => {
-            const btn = document.getElementById(`planBtn${suffix}`);
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    const planMap = { '3m': '3months', '6m': '6months', '1y': '1year' };
-                    trackPlanClick(planMap[suffix]);
-                });
-            }
-        });
-    });
-
-    // ==========================================================
     // ✅ الفحص الرئيسي للجهاز والحظر
     // ==========================================================
     (async () => {
@@ -1444,7 +1475,6 @@
             let isLocked = false;
             let teacherDoc = null;
 
-            // ✅ 1) نقرأ من قاعدة البيانات دايماً (المصدر الأساسي للحقيقة)
             try {
                 teacherDoc = await getTeacher(phone);
             } catch (e) {
@@ -1452,14 +1482,12 @@
             }
 
             if (teacherDoc) {
-                // ✅ فحص الاشتراك المؤقت أولاً
                 if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
                     const until = typeof teacherDoc.unlockUntil === 'number'
                         ? teacherDoc.unlockUntil
                         : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
 
                     if (until && until <= Date.now()) {
-                        // ⏰ انتهت المدة — قفل تلقائي
                         try {
                             await updateDoc(doc(db, 'teachers', phone), {
                                 isLocked: true,
@@ -1469,39 +1497,29 @@
                         } catch(_) {}
                         isLocked = true;
                         localStorage.setItem('teacher_is_blocked', 'true');
-                        console.log('⏰ انتهت مدة الاشتراك — تم القفل تلقائياً');
                     } else {
-                        // ✅ الاشتراك ساري — نمسح علامة الحظر من localStorage
                         localStorage.removeItem('teacher_is_blocked');
-                        console.log('✅ الاشتراك نشط حتى:', new Date(until).toLocaleDateString('ar-EG'));
                     }
                 } 
                 else if (teacherDoc.isLocked === true) {
-                    // 🚫 محظور من الإدارة
                     isLocked = true;
                     localStorage.setItem('teacher_is_blocked', 'true');
-                    console.log('🚫 المعلم محظور — isLocked = true');
                 } 
                 else {
-                    // ✅ نشط — نمسح علامة الحظر
                     localStorage.removeItem('teacher_is_blocked');
-                    console.log('✅ المعلم نشط');
                 }
             } else {
-                // لو فشل جلب البيانات، نعتمد على الـ localStorage كحل مؤقت
                 if (localStorage.getItem('teacher_is_blocked') === 'true') {
                     isLocked = true;
                 }
             }
 
-            // ✅ لو محظور: نعرض الشاشة ونحمّل الأسعار
             if (isLocked) {
                 await loadPricing();
                 showBlockedScreen();
                 return;
             }
 
-            // ✅ 2) فحص الجهاز
             let check = null;
             try {
                 check = await checkTeacherDevice(phone);
@@ -1509,7 +1527,6 @@
                 console.warn('فشل فحص الجهاز:', e);
             }
 
-            // ✅ لو الحساب محظور حسب فحص الجهاز
             if (check && check.locked === true) {
                 localStorage.setItem('teacher_is_blocked', 'true');
                 await loadPricing();
@@ -1517,7 +1534,6 @@
                 return;
             }
 
-            // ✅ لو الجهاز مختلف (ومش محظور)، نعمل تسجيل خروج عادي
             if (!check || !check.ok) {
                 if (localStorage.getItem('teacher_is_blocked') !== 'true') {
                     localStorage.removeItem('current_teacher_profile');
@@ -1533,7 +1549,6 @@
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
-            // في حالة الخطأ، نحاول نتأكد من الحظر
             try {
                 const teacherDoc = await getTeacher(phone);
                 if (teacherDoc && teacherDoc.isLocked === true) {
@@ -1816,7 +1831,6 @@
                       }
                   }
               } else {
-                  // ✅ لو الأدمن فك الحظر، نظهر المحتوى عادي
                   const blockedOverlay = document.getElementById('blockedOverlay');
                   if (blockedOverlay && blockedOverlay.classList.contains('show')) {
                       blockedOverlay.classList.remove('show');
