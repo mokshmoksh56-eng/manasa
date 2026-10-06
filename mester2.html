@@ -1159,6 +1159,235 @@
         display: inline-block;
     }
 
+    /* ========================================================== */
+    /* 🆘 زر التواصل مع الإدارة (استفسار/مشكلة/اشتراك) */
+    /* ========================================================== */
+    .email-contact-box {
+        margin-top: 16px;
+        padding: 14px;
+        background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+        border: 2px dashed #FCA5A5;
+        border-radius: 14px;
+        text-align: center;
+    }
+
+    .email-contact-box .ec-title {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #7F1D1D;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .email-contact-box .ec-hint {
+        font-size: 11.5px;
+        color: #991B1B;
+        margin-top: 8px;
+        font-weight: 700;
+        opacity: 0.85;
+        line-height: 1.5;
+    }
+
+    /* 🔽 قائمة أنواع التواصل */
+    .contact-type-selector {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .contact-type-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        background: #fff;
+        border: 2px solid #FECACA;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Cairo', sans-serif;
+        text-align: right;
+        width: 100%;
+        position: relative;
+    }
+
+    .contact-type-btn:hover {
+        border-color: #F87171;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+    }
+
+    .contact-type-btn.selected {
+        background: linear-gradient(135deg, #FEE2E2, #FECACA);
+        border-color: #DC2626;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    .contact-type-btn .ct-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .contact-type-btn .ct-info {
+        flex: 1;
+        min-width: 0;
+        text-align: right;
+    }
+
+    .contact-type-btn .ct-info strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 900;
+        color: #7F1D1D;
+        margin-bottom: 2px;
+    }
+
+    .contact-type-btn .ct-info small {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #991B1B;
+        opacity: 0.85;
+    }
+
+    .contact-type-btn .ct-check {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #FECACA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 12px;
+        color: transparent;
+        transition: all 0.2s;
+        background: #fff;
+    }
+
+    .contact-type-btn.selected .ct-check {
+        background: #DC2626;
+        border-color: #DC2626;
+        color: #fff;
+    }
+
+    /* 🔽 حقل تفاصيل المشكلة */
+    .contact-details-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #FECACA;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 12.5px;
+        outline: none;
+        background: #fff;
+        color: #0F172A;
+        resize: vertical;
+        min-height: 60px;
+        max-height: 140px;
+        margin-bottom: 12px;
+        transition: all 0.2s;
+        display: none;
+    }
+
+    .contact-details-input.show { display: block; }
+
+    .contact-details-input:focus {
+        border-color: #DC2626;
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    }
+
+    .contact-details-input::placeholder {
+        color: #94A3B8;
+        font-weight: 700;
+    }
+
+    /* 🔽 زر الإرسال */
+    .btn-email-contact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #EA4335, #C5221F);
+        color: #fff;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 12px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 900;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 6px 18px rgba(234, 67, 53, 0.45);
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        letter-spacing: 0.3px;
+        width: 100%;
+    }
+
+    .btn-email-contact:hover:not(:disabled) {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 25px rgba(234, 67, 53, 0.65);
+        filter: brightness(1.08);
+    }
+
+    .btn-email-contact:active:not(:disabled) {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn-email-contact:disabled {
+        background: #94A3B8;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .btn-email-contact .email-icon {
+        font-size: 18px;
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    }
+
+    .btn-email-contact .email-label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.2;
+    }
+
+    .btn-email-contact .email-label small {
+        font-size: 10.5px;
+        font-weight: 700;
+        opacity: 0.9;
+    }
+
+    @media (min-width: 500px) {
+        .contact-type-selector {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .contact-type-btn {
+            flex-direction: column;
+            text-align: center;
+            gap: 6px;
+            padding: 14px 8px;
+        }
+        .contact-type-btn .ct-info { text-align: center; }
+        .contact-type-btn .ct-info strong { font-size: 12px; }
+        .contact-type-btn .ct-info small { display: none; }
+        .contact-type-btn .ct-icon { font-size: 26px; }
+        .contact-type-btn .ct-check {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+        }
+    }
+
     .subscription-banner {
         width: 100%;
         max-width: 900px;
@@ -1305,6 +1534,65 @@
         </div>
 
         <div class="contact-sent-msg" id="contactSentMsg"></div>
+
+        <!-- 🆘 صندوق التواصل مع الإدارة -->
+        <div class="email-contact-box">
+            <div class="ec-title">
+                <span>🆘</span>
+                <span>تواصل مع الإدارة</span>
+            </div>
+
+            <!-- اختيار نوع التواصل -->
+            <div class="contact-type-selector" id="contactTypeSelector">
+                <button type="button" class="contact-type-btn" data-type="inquiry" onclick="window.selectContactType('inquiry', event)">
+                    <span class="ct-icon">💬</span>
+                    <div class="ct-info">
+                        <strong>استفسار</strong>
+                        <small>سؤال عن المنصة أو المميزات</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+
+                <button type="button" class="contact-type-btn" data-type="problem" onclick="window.selectContactType('problem', event)">
+                    <span class="ct-icon">⚠️</span>
+                    <div class="ct-info">
+                        <strong>مشكلة تقنية</strong>
+                        <small>خطأ أو عطل في المنصة</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+
+                <button type="button" class="contact-type-btn" data-type="subscription" onclick="window.selectContactType('subscription', event)">
+                    <span class="ct-icon">💎</span>
+                    <div class="ct-info">
+                        <strong>اشتراك</strong>
+                        <small>طلب باقة أو تجديد</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+            </div>
+
+            <!-- حقل تفاصيل المشكلة/الاستفسار -->
+            <textarea 
+                id="contactDetailsInput" 
+                class="contact-details-input" 
+                placeholder="اكتب تفاصيل المشكلة أو الاستفسار هنا..."
+                maxlength="500"
+            ></textarea>
+
+            <!-- زر الإرسال -->
+            <button id="emailContactBtn" class="btn-email-contact" onclick="window.sendEmailContact(event)" disabled>
+                <span class="email-icon">✉️</span>
+                <span class="email-label">
+                    <span id="emailBtnText">اختر نوع التواصل أولاً</span>
+                    <small id="emailBtnHint">سيتم فتح Gmail برسالة جاهزة</small>
+                </span>
+            </button>
+
+            <div class="ec-hint">
+                💡 الرسالة هتتفتح ببياناتك تلقائياً — كل اللي عليك تضغط "إرسال" في Gmail
+            </div>
+        </div>
     </div>
 
     <div class="blocked-note">
@@ -1540,6 +1828,169 @@
                 msgEl.textContent = '❌ فشل إرسال الطلب — جرب تاني';
             }
         }
+    };
+
+    // ==========================================================
+    // 🆘 متغيرات التواصل مع الإدارة
+    // ==========================================================
+    window.selectedContactType = null;
+
+    // ==========================================================
+    // 🎯 اختيار نوع التواصل
+    // ==========================================================
+    window.selectContactType = function(type, event) {
+        window.selectedContactType = type;
+
+        // إزالة selected من الكل
+        document.querySelectorAll('.contact-type-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+
+        // إضافة selected للزر المختار
+        if (event?.currentTarget) {
+            event.currentTarget.classList.add('selected');
+        } else {
+            const btn = document.querySelector(`.contact-type-btn[data-type="${type}"]`);
+            if (btn) btn.classList.add('selected');
+        }
+
+        // إظهار حقل التفاصيل (للاستفسار والمشكلة فقط)
+        const detailsInput = document.getElementById('contactDetailsInput');
+        const btnText = document.getElementById('emailBtnText');
+
+        if (type === 'inquiry' || type === 'problem') {
+            if (detailsInput) {
+                detailsInput.classList.add('show');
+                if (type === 'problem') {
+                    detailsInput.placeholder = 'اكتب تفاصيل المشكلة هنا... (مثال: لما أضغط على زر كذا، الصفحة بتقف)';
+                } else {
+                    detailsInput.placeholder = 'اكتب استفسارك هنا...';
+                }
+            }
+            if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة للإدارة' : 'إرسال الاستفسار للإدارة';
+        } else if (type === 'subscription') {
+            if (detailsInput) {
+                detailsInput.classList.remove('show');
+                detailsInput.value = '';
+            }
+            if (btnText) btnText.textContent = 'إرسال طلب الاشتراك';
+        }
+
+        // تفعيل زر الإرسال
+        const sendBtn = document.getElementById('emailContactBtn');
+        if (sendBtn) sendBtn.disabled = false;
+    };
+
+    // ==========================================================
+    // 📧 إرسال الرسالة عبر Gmail
+    // ==========================================================
+    window.sendEmailContact = async function(e) {
+        if (e) e.preventDefault();
+
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) {
+            alert('⚠️ يجب تسجيل الدخول أولاً');
+            return;
+        }
+
+        // التحقق من اختيار نوع التواصل
+        if (!window.selectedContactType) {
+            alert('⚠️ يرجى اختيار نوع التواصل أولاً (استفسار / مشكلة / اشتراك)');
+            return;
+        }
+
+        const ADMIN_EMAIL = 'mmoksh162@gmail.com';
+        const type = window.selectedContactType;
+        const detailsText = (document.getElementById('contactDetailsInput')?.value || '').trim();
+
+        // التحقق من كتابة التفاصيل لو استفسار أو مشكلة
+        if ((type === 'inquiry' || type === 'problem') && !detailsText) {
+            alert('⚠️ يرجى كتابة التفاصيل في المربع النصي');
+            document.getElementById('contactDetailsInput')?.focus();
+            return;
+        }
+
+        // جمع بيانات المعلم
+        let teacherName = '';
+        let teacherTitle = '';
+        try {
+            const t = await getTeacher(phone);
+            if (t) {
+                teacherName = t.name || '';
+                teacherTitle = t.title || '';
+            }
+        } catch (err) {}
+
+        // بيانات الباقات
+        const pricing = window.currentPricing || {};
+        const p3m = pricing['3months']  || {};
+        const p6m = pricing['6months']  || {};
+        const p1y = pricing['1year']    || {};
+
+        // معلومات حسب نوع التواصل
+        const typeInfo = {
+            'inquiry':      { label: '💬 استفسار',        emoji: '💬' },
+            'problem':      { label: '⚠️ مشكلة تقنية',    emoji: '⚠️' },
+            'subscription': { label: '💎 طلب اشتراك',     emoji: '💎' }
+        };
+        const tInfo = typeInfo[type] || typeInfo['inquiry'];
+
+        const subject = `${tInfo.emoji} ${tInfo.label} من ${teacherTitle} ${teacherName}`;
+
+        // بناء نص الرسالة
+        let bodyLines = [
+            `السلام عليكم،`,
+            ``,
+            `📌 نوع التواصل: ${tInfo.label}`,
+            ``,
+            `━━━━━━━━━━━━━━━━━━`,
+            `📋 بياناتي:`,
+            `━━━━━━━━━━━━━━━━━━`,
+            `👤 الاسم: ${teacherTitle} ${teacherName}`,
+            `📱 رقم الهاتف: ${phone}`,
+        ];
+
+        // تفاصيل الاستفسار أو المشكلة
+        if (type === 'inquiry' || type === 'problem') {
+            bodyLines.push(
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                type === 'problem' ? `⚠️ تفاصيل المشكلة:` : `💬 تفاصيل الاستفسار:`,
+                `━━━━━━━━━━━━━━━━━━`,
+                detailsText,
+            );
+        }
+
+        // لو اشتراك — نضيف الباقات
+        if (type === 'subscription') {
+            bodyLines.push(
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                `💎 الباقات المتاحة:`,
+                `━━━━━━━━━━━━━━━━━━`,
+                `📅 باقة 3 شهور   → ${p3m.priceText || 'غير محدد'}  (${p3m.days || 90} يوم)`,
+                `📅 باقة 6 شهور   → ${p6m.priceText || 'غير محدد'}  (${p6m.days || 180} يوم)`,
+                `👑 باقة سنة كاملة → ${p1y.priceText || 'غير محدد'}  (${p1y.days || 365} يوم)`,
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                `💬 الباقة المطلوبة: [اكتب اسم الباقة هنا]`,
+                `━━━━━━━━━━━━━━━━━━`,
+            );
+        }
+
+        bodyLines.push(
+            ``,
+            `برجاء التواصل معي في أقرب وقت.`,
+            ``,
+            `شكراً لكم 🌹`
+        );
+
+        const body = bodyLines.join('\n');
+
+        // فتح Gmail
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ADMIN_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.open(gmailUrl, '_blank');
     };
 
     function showBlockedScreen() {
