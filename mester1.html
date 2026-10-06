@@ -1182,7 +1182,6 @@
 
         window.unlockForEdit = function() {
             enterEditMode();
-            // Scroll للـ stages
             setTimeout(() => {
                 const el = document.getElementById('pageTitle');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1190,7 +1189,6 @@
         };
 
         window.cancelEditMode = function() {
-            // لو فيه تعديلات — نسأل المستخدم
             const saved = getSavedSelections();
             const current = {};
             for (const stageId in selections) {
@@ -1203,7 +1201,6 @@
             
             if (hasChanges) {
                 if (!confirm('⚠️ سيتم إلغاء التعديلات غير المحفوظة.\n\nهل أنت متأكد؟')) return;
-                // إعادة تحميل الاختيارات المحفوظة
                 selections = {};
                 subjectsOpen = {};
                 dynamicStages.forEach(stage => {
@@ -1470,8 +1467,6 @@
 
             localStorage.setItem('teacherSelections', JSON.stringify(finalData));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
-
-            // ✅ نسجل إن القفل كان مطبق
             localStorage.setItem('mester1_is_locked', 'true');
 
             window.location.href = "mester2.html";
@@ -1506,8 +1501,6 @@
                         .find(b => b.textContent.trim() === grade);
                     if (gradeBtn) gradeBtn.classList.add('selected');
 
-                    // ❌ مش بنفتح المرحلة (بنخليها مقفولة - collapsed)
-                    // الـ badges فقط هي اللي بتظهر
                     renderSubjects(grade, stageId, false);
 
                     setTimeout(() => {
@@ -1583,13 +1576,11 @@
                 if (isFirstLoad) {
                     buildStagesUI();
                     
-                    // ✅ لو فيه اختيارات محفوظة → ندخل وضع القفل
                     const hasSaved = hasSavedSelections();
                     if (hasSaved) {
                         restoreMester1();
                         enterLockedMode();
                     } else {
-                        // مفيش اختيارات → وضع التعديل العادي
                         enterEditMode(true);
                     }
                     
@@ -1597,7 +1588,6 @@
                 } else {
                     rebuildUIWithPreserve();
 
-                    // لو محتفظين بالوضع المقفول، نحدث الكارت
                     if (isLocked) {
                         renderLockedCard();
                     }
@@ -1643,5 +1633,114 @@
             });
         });
     </script>
+
+    <!-- 🔊 صوت ضغط رفيع لكل الأزرار -->
+    <script>
+    (function initClickSound() {
+        let audioCtx = null;
+
+        function getCtx() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    return null;
+                }
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        // 🔊 دالة تشغيل الصوت الرفيع
+        window.playClick = function(freq = 1800, duration = 0.035, volume = 0.08) {
+            const ctx = getCtx();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
+
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(volume, now + 0.004);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 1000;
+            filter.Q.value = 0.7;
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + duration + 0.02);
+        };
+
+        // 🎯 ربط الصوت بكل الأزرار
+        function attachClickSound() {
+            const selectors = [
+                '.grade-btn',
+                '.subject-btn',
+                '.stage-header',
+                '.btn-save-inline',
+                '.save-btn',
+                '.step.clickable',
+                '.banner-cancel',
+                '.locked-btn-edit',
+                '.locked-btn-continue',
+                'button:not([disabled])'
+            ].join(', ');
+
+            document.querySelectorAll(selectors).forEach(el => {
+                if (el.dataset.soundAttached === '1') return;
+                el.dataset.soundAttached = '1';
+
+                el.addEventListener('click', () => {
+                    if (el.disabled) return;
+
+                    // 🔊 نغمة مختلفة حسب نوع الزر
+                    if (el.classList.contains('subject-btn')) {
+                        window.playClick(2000, 0.035, 0.09);
+                    } else if (el.classList.contains('grade-btn')) {
+                        window.playClick(1700, 0.04, 0.09);
+                    } else if (el.classList.contains('save-btn') || el.classList.contains('locked-btn-continue')) {
+                        window.playClick(1400, 0.06, 0.13);
+                    } else if (el.classList.contains('locked-btn-edit')) {
+                        window.playClick(1600, 0.05, 0.11);
+                    } else if (el.classList.contains('stage-header')) {
+                        window.playClick(1500, 0.04, 0.09);
+                    } else {
+                        window.playClick(1800, 0.035, 0.08);
+                    }
+                }, { passive: true });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', attachClickSound);
+        } else {
+            attachClickSound();
+        }
+
+        // 🔄 إعادة الربط لما تُضاف أزرار جديدة
+        const observer = new MutationObserver(() => {
+            clearTimeout(window._soundAttachTimer);
+            window._soundAttachTimer = setTimeout(attachClickSound, 100);
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // 🎯 تأكيد تفعيل الصوت عند أول لمسة
+        document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
+        document.addEventListener('click', () => getCtx(), { once: true, passive: true });
+
+    })();
+    </script>
+
 </body>
 </html>
