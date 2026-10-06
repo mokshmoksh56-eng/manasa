@@ -1304,41 +1304,71 @@
         checkTeacherDevice, 
         getTeacher, 
         db, doc, updateDoc, setDoc, serverTimestamp,
-        getPricingSettings
+        getPricingSettings,
+        subscribePricing
     } from './firebase-config.js';
 
     // ==========================================================
-    // 💰 جلب أسعار الباقات من السحابة
+    // 💰 تحديث واجهة أسعار الباقات (مع المدة الزمنية)
     // ==========================================================
+    function updatePricingUI(pricing) {
+        if (!pricing) {
+            console.log('⚠️ لا توجد أسعار محفوظة — استخدام القيم الافتراضية');
+            return;
+        }
+
+        // باقة 3 شهور
+        const p3m = pricing['3months'];
+        if (p3m) {
+            const el = document.getElementById('priceText3m');
+            if (el) el.textContent = p3m.priceText || `${p3m.price} جنيه`;
+            const durEl = document.querySelector('.plan-3m .plan-duration');
+            if (durEl && p3m.days) durEl.textContent = `⏱ ${p3m.days} يوم`;
+        }
+
+        // باقة 6 شهور
+        const p6m = pricing['6months'];
+        if (p6m) {
+            const el = document.getElementById('priceText6m');
+            if (el) el.textContent = p6m.priceText || `${p6m.price} جنيه`;
+            const durEl = document.querySelector('.plan-6m .plan-duration');
+            if (durEl && p6m.days) durEl.textContent = `⏱ ${p6m.days} يوم`;
+        }
+
+        // باقة سنة كاملة
+        const p1y = pricing['1year'];
+        if (p1y) {
+            const el = document.getElementById('priceText1y');
+            if (el) el.textContent = p1y.priceText || `${p1y.price} جنيه`;
+            const durEl = document.querySelector('.plan-1y .plan-duration');
+            if (durEl && p1y.days) durEl.textContent = `⏱ ${p1y.days} يوم`;
+        }
+
+        console.log('✅ تم تحديث أسعار الباقات من السحابة');
+    }
+
     async function loadPricing() {
         try {
             const pricing = await getPricingSettings();
-            if (!pricing) {
-                console.log('⚠️ لا توجد أسعار محفوظة — استخدام القيم الافتراضية');
-                return;
-            }
-
-            const p3m = pricing['3months'];
-            if (p3m) {
-                const el = document.getElementById('priceText3m');
-                if (el) el.textContent = p3m.priceText || `${p3m.price} جنيه`;
-            }
-
-            const p6m = pricing['6months'];
-            if (p6m) {
-                const el = document.getElementById('priceText6m');
-                if (el) el.textContent = p6m.priceText || `${p6m.price} جنيه`;
-            }
-
-            const p1y = pricing['1year'];
-            if (p1y) {
-                const el = document.getElementById('priceText1y');
-                if (el) el.textContent = p1y.priceText || `${p1y.price} جنيه`;
-            }
-
-            console.log('✅ تم تحديث أسعار الباقات من السحابة');
+            updatePricingUI(pricing);
         } catch (e) {
             console.warn('فشل جلب الأسعار:', e);
+        }
+    }
+
+    // ==========================================================
+    // 🔄 اشتراك لحظي في تغييرات الأسعار
+    // ==========================================================
+    let _unsubPricing = null;
+    function startPricingLiveUpdates() {
+        if (_unsubPricing) return; // منع الاشتراكات المكررة
+        try {
+            _unsubPricing = subscribePricing((pricing) => {
+                updatePricingUI(pricing);
+            });
+            console.log('🔄 تم تفعيل التحديث اللحظي للأسعار');
+        } catch (e) {
+            console.warn('فشل بدء الاشتراك اللحظي بالأسعار:', e);
         }
     }
 
@@ -1517,6 +1547,7 @@
             if (isLocked) {
                 await loadPricing();
                 showBlockedScreen();
+                startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار في شاشة الحظر
                 return;
             }
 
@@ -1531,6 +1562,7 @@
                 localStorage.setItem('teacher_is_blocked', 'true');
                 await loadPricing();
                 showBlockedScreen();
+                startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار في شاشة الحظر
                 return;
             }
 
@@ -1546,6 +1578,7 @@
             }
 
             hideAllOverlays();
+            startPricingLiveUpdates();   // ✅ تحديث لحظي للأسعار حتى لو المعلم غير محظور
 
         } catch (e) {
             console.error('خطأ في التحقق:', e);
@@ -1555,13 +1588,26 @@
                     localStorage.setItem('teacher_is_blocked', 'true');
                     await loadPricing();
                     showBlockedScreen();
+                    startPricingLiveUpdates();
                     return;
                 }
                 localStorage.removeItem('teacher_is_blocked');
             } catch (_) {}
             hideAllOverlays();
+            startPricingLiveUpdates();
         }
     })();
+
+    // ✅ تحميل الأسعار فوراً عند فتح الصفحة
+    loadPricing();
+
+    // ✅ تنظيف الاشتراك عند إغلاق الصفحة
+    window.addEventListener('beforeunload', () => {
+        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
+    });
+    window.addEventListener('pagehide', () => {
+        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
+    });
 </script>
 
 <header class="header-3d">
