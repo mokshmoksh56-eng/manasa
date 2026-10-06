@@ -285,7 +285,19 @@ export async function isTeacherLocked(phone) {
     try {
         const teacher = await getTeacher(phone);
         if (!teacher) return false;
-        return teacher.isLocked === true;
+
+        // ✅ فحص الحظر الصريح
+        if (teacher.isLocked === true) return true;
+
+        // ✅ فحص انتهاء مدة التفعيل المؤقت
+        if (teacher.unlockUntil) {
+            const until = typeof teacher.unlockUntil === 'number'
+                ? teacher.unlockUntil
+                : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
+            if (until && until <= Date.now()) return true;
+        }
+
+        return false;
     } catch (e) {
         console.error('خطأ في فحص حالة الحظر:', e);
         return false;
@@ -601,7 +613,13 @@ export async function approveSubscription(requestId, adminNote = '') {
         subscriptionPlan: req.planId,
         subscriptionStatus: 'active',
         subscriptionEnd: endDate.toISOString(),
-        isPremium: true
+        isPremium: true,
+        // ✅ نضيف كمان تحديث الـ unlockUntil للتناسق مع باقي النظام
+        isLocked: false,
+        unlockedAt: now.getTime(),
+        unlockUntil: endDate.getTime(),
+        lockType: req.planId,
+        unlockedBy: 'admin'
     });
 
     await updateDoc(reqRef, {
@@ -680,13 +698,87 @@ export async function getTeacherSubscription(phone) {
     }
 }
 
+// ==========================================================
+// ✅ دالة فحص الاشتراك النشط (المُحدّثة - تقرأ من المصدرين)
+// ==========================================================
 export async function isSubscriptionActive(phone) {
-    const sub = await getTeacherSubscription(phone);
-    if (!sub) return false;
-    if (sub.planId === 'free') return true;
-    if (sub.status !== 'active') return false;
-    if (!sub.endDate) return true;
-    return new Date(sub.endDate) > new Date();
+    try {
+        // ============================================
+        // ✅ 1) فحص أولاً: هل التفعيل من الإدارة اليدوية (teachers.unlockUntil)؟
+        // ============================================
+        const teacher = await getTeacher(phone);
+        if (teacher) {
+            // 🚫 الحساب محظور يدوياً → مش نشط
+            if (teacher.isLocked === true) {
+                console.log('🚫 الاشتراك غير نشط — المعلم محظور يدوياً');
+                return false;
+            }
+
+            // ♾️ فتح دائم من الإدارة → نشط
+            if (teacher.lockType === 'permanent_open') {
+                console.log('♾️ الاشتراك نشط — فتح دائم من الإدارة');
+                return true;
+            }
+
+            // ⏰ تفعيل مؤقت (3 شهور / 6 شهور / سنة) من الإدارة
+            if (teacher.unlockUntil) {
+                const until = typeof teacher.unlockUntil === 'number'
+                    ? teacher.unlockUntil
+                    : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
+
+                if (until && until > Date.now()) {
+                    const daysLeft = Math.ceil((until - Date.now()) / (1000 * 60 * 60 * 24));
+                    console.log(`✅ الاشتراك نشط — تفعيل إدارة (باقي ${daysLeft} يوم)`);
+                    return true;
+                } else if (until && until <= Date.now()) {
+                    console.log('⏰ الاشتراك منتهي — انتهت مدة التفعيل من الإدارة');
+                    // نكمل للفحص التالي بدل ما نرجع false مباشرة
+                }
+            }
+        }
+
+        // ============================================
+        // ✅ 2) فحص ثانياً: الاشتراك من نظام الاشتراكات (subscriptions collection)
+        // ============================================
+        const sub = await getTeacherSubscription(phone);
+
+        if (!sub) {
+            console.log('⚠️ لا يوجد سجل اشتراك ولا تفعيل إدارة');
+            return false;
+        }
+
+        // 🆓 الباقة المجانية → نشطة دائماً
+        if (sub.planId === 'free') {
+            console.log('🆓 الباقة المجانية نشطة');
+            return true;
+        }
+
+        // ❌ لو الحالة مش active
+        if (sub.status !== 'active') {
+            console.log(`❌ الاشتراك غير نشط — الحالة: ${sub.status}`);
+            return false;
+        }
+
+        // ✅ لو مفيش endDate → نشط
+        if (!sub.endDate) {
+            console.log('✅ الاشتراك نشط — بدون تاريخ انتهاء');
+            return true;
+        }
+
+        // ✅ فحص التاريخ
+        const isActive = new Date(sub.endDate) > new Date();
+        if (isActive) {
+            const daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+            console.log(`✅ الاشتراك نشط — باقي ${daysLeft} يوم`);
+        } else {
+            console.log('⏰ الاشتراك منتهي — التاريخ فات');
+        }
+        return isActive;
+
+    } catch (e) {
+        console.error('خطأ في فحص الاشتراك:', e);
+        return false;
+    }
 }
 
 export async function hasUsedTrial(phone) {
@@ -722,7 +814,7 @@ export function subscribeSubscriptionRequests(callback) {
 }
 
 // ==========================================================
-// 💰 إعدادات الأسعار (Pricing Settings) — جديد
+// 💰 إعدادات الأسعار (Pricing Settings)
 // ==========================================================
 
 export const DEFAULT_PRICING = {
