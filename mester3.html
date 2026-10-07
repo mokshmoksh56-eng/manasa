@@ -287,7 +287,7 @@
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
 
     /* ========================================================== */
-    /* 📝 جدول التذكرة (الحصص بس) */
+    /* 📝 جدول الحصص */
     /* ========================================================== */
     .reminder-table {
         margin-top: 24px;
@@ -332,7 +332,6 @@
         padding: 2px 0;
     }
 
-    /* 🟢 الحالة العادية */
     .lesson-chip {
         display: inline-flex;
         align-items: center;
@@ -345,14 +344,17 @@
         font-weight: 900;
         color: #065F46;
         cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
         box-shadow: 0 2px 6px -2px rgba(16,185,129,0.35);
         white-space: nowrap;
         font-family: inherit;
         position: relative;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
     }
     .lesson-chip:hover {
-        transform: translateY(-2px) scale(1.05);
+        transform: translateY(-2px) scale(1.03);
         box-shadow: 0 6px 14px -2px rgba(16,185,129,0.6);
     }
     .lesson-chip:active { transform: scale(0.96); }
@@ -384,7 +386,6 @@
         border-color: #F59E0B;
         color: #92400E;
         animation: chipSoonPulse 1.2s ease-in-out infinite;
-        box-shadow: 0 0 0 0 rgba(245,158,11,0.7);
     }
     .lesson-chip.chip-soon .chip-num {
         background: #F59E0B;
@@ -419,19 +420,17 @@
         background: rgba(220,38,38,0.15);
         color: #7F1D1D;
     }
-    .lesson-chip.chip-ended:hover {
-        box-shadow: 0 6px 14px -2px rgba(220,38,38,0.5);
-    }
 
-    /* 🎯 نافذة تفاصيل الحصة */
+    /* ========================================================== */
+    /* 🎯 نافذة تفاصيل الحصة — سريعة */
+    /* ========================================================== */
     .lesson-modal-overlay {
         display: none;
         position: fixed; inset: 0;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.55);
         z-index: 100000;
         justify-content: center; align-items: center;
         padding: 16px;
-        backdrop-filter: blur(6px);
     }
     .lesson-modal-overlay.active { display: flex; }
 
@@ -441,11 +440,12 @@
         width: 100%; max-width: 400px; max-height: 85vh;
         display: flex; flex-direction: column; overflow: hidden;
         box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-        animation: lessonModalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: lessonModalPop 0.15s ease-out;
+        will-change: transform, opacity;
     }
     @keyframes lessonModalPop {
-        from { transform: scale(0.85) translateY(30px); opacity: 0; }
-        to { transform: scale(1) translateY(0); opacity: 1; }
+        from { transform: scale(0.96); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
     }
 
     .lesson-modal-header {
@@ -473,6 +473,7 @@
         font-size: 20px; cursor: pointer;
         transition: transform 0.2s;
         padding: 0; line-height: 1;
+        font-family: inherit;
     }
     .lesson-close-btn:hover { transform: scale(1.2); }
 
@@ -578,7 +579,7 @@
         display: none; position: fixed; inset: 0;
         background: rgba(0,0,0,0.55); z-index: 100001;
         justify-content: center; align-items: center;
-        padding: 20px; backdrop-filter: blur(4px);
+        padding: 20px;
     }
     .logout-modal-overlay.active { display: flex; }
     .logout-modal-box {
@@ -586,9 +587,9 @@
         width: 100%; max-width: 380px;
         padding: 26px 22px; text-align: center;
         box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: modalPopIn 0.2s ease-out;
     }
-    @keyframes modalPopIn { from { transform: scale(0.85) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    @keyframes modalPopIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .logout-icon-wrap {
         width: 70px; height: 70px; border-radius: 50%;
         background: linear-gradient(135deg, #FEE2E2, #FECACA);
@@ -661,7 +662,6 @@
         <div class="decorative-lines"></div>
     </div>
 
-    <!-- 🚪 تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
@@ -676,7 +676,6 @@
         </div>
     </div>
 
-    <!-- 🎯 نافذة تفاصيل الحصة -->
     <div class="lesson-modal-overlay" id="lessonModalOverlay" onclick="closeLessonModal(event)">
         <div class="lesson-modal-box">
             <div class="lesson-modal-header" id="lessonModalHeader">
@@ -739,7 +738,6 @@
             </a>
         </div>
 
-        <!-- 📝 جدول الحصص -->
         <div class="reminder-table" id="reminderTable">
             <div class="rt-title">
                 <div class="rt-title-left">
@@ -762,18 +760,12 @@
     (function() {
         'use strict';
 
-        // ==========================================================
-        // 🕐 تحليل الوقت — حساب حالة الحصة
-        // ==========================================================
         function parseLessonDateTime(appt) {
-            // بيرجع التاريخ/الوقت للبداية والنهاية (Date objects)
             try {
                 const now = new Date();
 
-                // نحدد اليوم
                 let dateStr = appt.date;
                 if (!dateStr && appt.daysNames && appt.daysNames.length > 0) {
-                    // لو أسبوعي، نحسب أقرب يوم بنفس الاسم
                     const daysMap = {
                         'الأحد': 0, 'الاثنين': 1, 'الثلاثاء': 2, 'الأربعاء': 3,
                         'الخميس': 4, 'الجمعة': 5, 'السبت': 6
@@ -792,7 +784,6 @@
 
                 if (!dateStr) return null;
 
-                // الوقت
                 const startTimeStr = appt.startTime || appt.start || '';
                 const endTimeStr = appt.endTime || appt.end || '';
 
@@ -805,7 +796,6 @@
                 const startDate = new Date(y, m - 1, d, sh, sm, 0);
                 const endDate = new Date(y, m - 1, d, eh, em, 0);
 
-                // حساب الفروق بالدقايق
                 const nowMs = now.getTime();
                 const startMs = startDate.getTime();
                 const endMs = endDate.getTime();
@@ -813,25 +803,22 @@
                 const minutesToStart = Math.round((startMs - nowMs) / 60000);
                 const minutesToEnd = Math.round((endMs - nowMs) / 60000);
 
-                let status = 'upcoming'; // 'upcoming' | 'soon' | 'active' | 'ended'
+                let status = 'upcoming';
 
                 if (minutesToEnd < 0) {
-                    status = 'ended'; // خلصت
+                    status = 'ended';
                 } else if (minutesToStart <= 30 && minutesToStart > 0) {
-                    status = 'soon'; // قريبة جداً
+                    status = 'soon';
                 } else if (minutesToStart <= 0 && minutesToEnd >= 0) {
-                    status = 'active'; // شغالة دلوقتي
+                    status = 'active';
                 } else {
-                    status = 'upcoming'; // بعيدة
+                    status = 'upcoming';
                 }
 
                 return {
                     startDate, endDate, startMs, endMs, nowMs,
                     minutesToStart, minutesToEnd,
-                    status,
-                    dateStr,
-                    startTimeStr,
-                    endTimeStr
+                    status, dateStr, startTimeStr, endTimeStr
                 };
             } catch(e) {
                 console.warn('⚠️ خطأ في تحليل الوقت:', e);
@@ -839,9 +826,6 @@
             }
         }
 
-        // ==========================================================
-        // 📅 تحديث قائمة الحصص
-        // ==========================================================
         function updateLessonsList() {
             try {
                 const lessonsList = document.getElementById('lessonsList');
@@ -887,7 +871,6 @@
                             extraClass = 'chip-soon';
                         }
                     } else {
-                        // مفيش وقت محدد، نستخدم النص الأصلي
                         timeDisplay = appt.startTime || appt.start || '';
                     }
 
@@ -908,9 +891,6 @@
             }
         }
 
-        // ==========================================================
-        // 📚 تحديث كارت التخصص
-        // ==========================================================
         function updateSpecialtyCard() {
             try {
                 const card = document.getElementById('specialtyCard');
@@ -978,9 +958,6 @@
             }
         }
 
-        // ==========================================================
-        // 📅 تحديث كارت المواعيد
-        // ==========================================================
         function updateScheduleCard() {
             try {
                 const card = document.getElementById('scheduleCard');
@@ -1041,9 +1018,6 @@
             }
         }
 
-        // ==========================================================
-        // 🎯 عرض تفاصيل الحصة
-        // ==========================================================
         window.showLessonDetails = function(index) {
             try {
                 const apptRaw = localStorage.getItem('teacher_appointments_summary');
@@ -1057,7 +1031,9 @@
                 const title = document.getElementById('lessonModalTitle');
                 const content = document.getElementById('lessonModalContent');
 
-                // ============ تحديد الحالة ============
+                // ✅ نعرض النافذة فوراً
+                overlay.classList.add('active');
+
                 const timeInfo = parseLessonDateTime(appt);
                 let headerClass = '';
                 let statusBanner = '';
@@ -1117,7 +1093,6 @@
                     }
                 }
 
-                // نطبق الـ class على الهيدر
                 header.className = 'lesson-modal-header';
                 if (headerClass) header.classList.add(headerClass);
 
@@ -1137,7 +1112,6 @@
                 const genderText = genderLabels[appt.gender] || appt.genderAllowed || 'مختلط';
                 const locationText = locationLabels[appt.type] || appt.location || 'غير محدد';
 
-                // ============ الوقت ============
                 let timeText = 'غير محدد';
                 const startT = appt.startTime || appt.start || '';
                 const endT = appt.endTime || appt.end || '';
@@ -1145,12 +1119,11 @@
                     timeText = `من ${startT} إلى ${endT}`;
                 }
 
-                // ============ اليوم ============
                 let dayText = appt.dayName || 'غير محدد';
                 if (appt.daysNames && appt.daysNames.length > 0) dayText = appt.daysNames[0];
                 if (appt.date) dayText = `${dayText} (${appt.date})`;
 
-                // ============ المكان (من تحديد الموقع) ============
+                // ✅ المكان من الـ GPS
                 let fullAddress = appt.fullAddress || appt.address || appt.street || '';
                 let detailedAddress = appt.detailedAddress || '';
                 let locationFullText = '';
@@ -1214,18 +1187,7 @@
                         </div>
                     </div>
                     ` : ''}
-                    ${appt.groupName ? `
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">👥</span>
-                        <div>
-                            <span class="ld-label">اسم المجموعة</span>
-                            <span class="ld-value">${appt.groupName}</span>
-                        </div>
-                    </div>
-                    ` : ''}
                 `;
-
-                overlay.classList.add('active');
             } catch(e) {
                 console.warn('⚠️ فشل عرض تفاصيل الحصة:', e);
             }
@@ -1237,9 +1199,6 @@
             }
         };
 
-        // ==========================================================
-        // 👤 عرض اسم المعلم
-        // ==========================================================
         function showTeacherName() {
             try {
                 const profile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
@@ -1256,9 +1215,6 @@
             } catch(e) {}
         }
 
-        // ==========================================================
-        // 🚪 تسجيل الخروج
-        // ==========================================================
         window.openLogoutModal = function() {
             document.getElementById('logoutModalOverlay')?.classList.add('active');
         };
@@ -1290,9 +1246,6 @@
             if (modal && e.target === modal) closeLogoutModal();
         });
 
-        // ==========================================================
-        // 🎯 التهيئة
-        // ==========================================================
         function updateAll() {
             updateSpecialtyCard();
             updateScheduleCard();
@@ -1309,7 +1262,6 @@
             updateAll();
         });
 
-        // تحديث دوري كل 30 ثانية (عشان حالة الحصص تتحدث)
         setInterval(updateLessonsList, 30000);
         setInterval(() => {
             updateSpecialtyCard();
