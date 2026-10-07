@@ -2129,17 +2129,22 @@
 (function() {
     'use strict';
 
+    // ✅ نضيف history entry عشان زر الرجوع يشتغل صح
+    try {
+        history.pushState({ page: 'mester2' }, '', location.href);
+    } catch(e) {}
+
     // ✅ زر الرجوع العادي → يروح mester3.html
     window.addEventListener('popstate', function(e) {
         console.log('🔙 رجوع من mester2 → mester3');
-        window.location.replace('mester3.html');
+        window.location.href = 'mester3.html';
     });
 
     // ✅ لو الصفحة رجعت من cache → تروح mester3
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            console.log('🔙 الصفحة رجعت من cache → mester3');
-            window.location.replace('mester3.html');
+            console.log('🔙 cache → mester3');
+            window.location.href = 'mester3.html';
         }
     });
 
