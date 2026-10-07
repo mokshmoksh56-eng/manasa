@@ -3,27 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>احجزلي - مساعد ذكي</title>
+<title>🎓 المساعد التعليمي الذكي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <style>
 :root {
-    --primary: #25968b;
-    --dark: #1b736a;
-    --light: #e0f2f0;
-    --border: #b2dfdb;
-    --bg: #e5ddd5;
-    --bubble-teacher: #dcf8c6;
-    --bubble-bot: #ffffff;
-    --text: #2c3e50;
-    --gray: #64748b;
+    --primary: #7c3aed;
+    --dark: #6d28d9;
+    --light: #ede9fe;
+    --border: #c4b5fd;
+    --bg: #f5f3ff;
     --success: #10b981;
     --warning: #f59e0b;
-    --ai-glow: #8b5cf6;
+    --student-color: #3b82f6;
+    --teacher-color: #f59e0b;
+    --text: #2c3e50;
+    --gray: #64748b;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -36,8 +33,8 @@ body {
     overflow: hidden;
 }
 
-/* Header */
-.chat-header {
+/* ============ Header ============ */
+.tutor-header {
     background: linear-gradient(135deg, var(--dark), var(--primary));
     color: #fff;
     padding: 12px 16px;
@@ -48,7 +45,7 @@ body {
     z-index: 100;
     flex-shrink: 0;
 }
-.chat-header .avatar {
+.tutor-header .avatar {
     width: 44px; height: 44px;
     border-radius: 50%;
     background: #fff;
@@ -58,13 +55,12 @@ body {
     flex-shrink: 0;
     position: relative;
 }
-.chat-header .avatar.ai-mode::after {
-    content: '⚡';
+.tutor-header .avatar::after {
+    content: '🎓';
     position: absolute;
     bottom: -2px;
     left: -2px;
-    background: var(--ai-glow);
-    color: #fff;
+    background: var(--primary);
     width: 20px; height: 20px;
     border-radius: 50%;
     display: flex;
@@ -72,16 +68,11 @@ body {
     justify-content: center;
     font-size: 11px;
     border: 2px solid #fff;
-    animation: aiPulse 2s infinite;
 }
-@keyframes aiPulse {
-    0%,100% { box-shadow: 0 0 5px var(--ai-glow); }
-    50% { box-shadow: 0 0 15px var(--ai-glow); }
-}
-.chat-header .info { flex: 1; min-width: 0; }
-.chat-header .info h2 { font-size: 16px; font-weight: 900; }
-.chat-header .info p { font-size: 12px; opacity: 0.85; font-weight: 700; display: flex; align-items: center; gap: 5px; }
-.chat-header .info .dot {
+.tutor-header .info { flex: 1; min-width: 0; }
+.tutor-header .info h2 { font-size: 16px; font-weight: 900; }
+.tutor-header .info p { font-size: 12px; opacity: 0.85; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.tutor-header .info .dot {
     width: 8px; height: 8px;
     border-radius: 50%;
     background: #22C55E;
@@ -89,15 +80,11 @@ body {
     animation: pulse 1.5s infinite;
     flex-shrink: 0;
 }
-.chat-header .info.ai-active .dot {
-    background: var(--ai-glow);
-    box-shadow: 0 0 8px var(--ai-glow);
-}
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-.toggle-groups-btn, .ai-toggle-btn, .key-btn {
+.mode-btn, .action-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
     color: #fff;
@@ -114,46 +101,13 @@ body {
     backdrop-filter: blur(6px);
     flex-shrink: 0;
 }
-.toggle-groups-btn:hover, .ai-toggle-btn:hover, .key-btn:hover { background: rgba(255,255,255,0.35); }
-.key-btn { padding: 8px 10px; font-size: 14px; }
+.mode-btn:hover, .action-btn:hover { background: rgba(255,255,255,0.35); }
 
-.ai-toggle-btn.active {
-    background: var(--ai-glow);
-    border-color: #a78bfa;
-    box-shadow: 0 0 15px rgba(139,92,246,0.5);
-    animation: aiBtnPulse 2s infinite;
-}
-@keyframes aiBtnPulse {
-    0%,100% { box-shadow: 0 0 15px rgba(139,92,246,0.5); }
-    50% { box-shadow: 0 0 25px rgba(139,92,246,0.8); }
-}
+.mode-btn.student-mode { background: var(--student-color); border-color: #93c5fd; }
+.mode-btn.teacher-mode { background: var(--teacher-color); border-color: #fcd34d; }
+.mode-btn { font-size: 12px; padding: 6px 10px; }
 
-.toggle-groups-btn .badge-count {
-    background: #fbbf24;
-    color: #78350f;
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 10px;
-    font-weight: 900;
-    min-width: 18px;
-    text-align: center;
-}
-
-.progress-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.2);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.progress-bar .fill {
-    height: 100%;
-    background: #fbbf24;
-    transition: width 0.4s ease;
-    box-shadow: 0 0 10px #fbbf24;
-}
-
-/* Main Layout */
+/* ============ Main Layout ============ */
 .main-layout {
     flex: 1;
     display: flex;
@@ -162,75 +116,66 @@ body {
     position: relative;
 }
 
-/* ============ Live Summary Bar (ثابت فوق) ============ */
-.live-summary {
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    border-bottom: 3px solid var(--success);
+/* ============ Quick Category Bar ============ */
+.category-bar {
+    background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+    border-bottom: 2px solid var(--border);
     padding: 10px 12px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     flex-shrink: 0;
-    max-height: 110px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.1);
+    max-height: 130px;
     overflow-y: auto;
-    position: relative;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(16,185,129,0.15);
 }
-.live-summary::-webkit-scrollbar { width: 4px; }
-.live-summary::-webkit-scrollbar-thumb { background: var(--success); border-radius: 10px; }
+.category-bar::-webkit-scrollbar { width: 4px; }
+.category-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-.live-summary .ls-header {
+.cat-header {
     width: 100%;
-    font-size: 11px;
-    color: #065f46;
+    font-size: 12px;
+    color: var(--dark);
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 4px;
-    flex-shrink: 0;
+    margin-bottom: 2px;
 }
-.live-summary .ls-header .progress-text {
-    background: var(--success);
+.cat-header .level-badge {
+    background: var(--primary);
     color: #fff;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 900;
-    box-shadow: 0 2px 6px rgba(16,185,129,0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
 }
 
-.live-summary .ls-item {
+.cat-chip {
     background: #fff;
-    border: 1.5px solid #6ee7b7;
-    border-radius: 12px;
-    padding: 4px 10px;
-    font-size: 11.5px;
-    color: #065f46;
-    font-weight: 800;
+    border: 2px solid var(--border);
+    color: var(--dark);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 4px;
-    box-shadow: 0 2px 4px rgba(16,185,129,0.1);
-    animation: popIn 0.3s ease;
-    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(124,58,237,0.1);
 }
-@keyframes popIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.cat-chip:hover {
+    background: var(--light);
+    border-color: var(--primary);
+    transform: translateY(-2px);
 }
-
-.live-summary .ls-empty {
-    width: 100%;
-    text-align: center;
-    padding: 6px;
-    font-size: 11.5px;
-    color: #047857;
-    font-weight: 800;
-    background: rgba(255,255,255,0.5);
-    border-radius: 8px;
-    border: 1.5px dashed #6ee7b7;
+.cat-chip.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--dark);
 }
 
 /* ============ Chat Area ============ */
@@ -241,18 +186,18 @@ body {
     scroll-behavior: smooth;
     min-width: 0;
     background: var(--bg);
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2325968b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 .chat-area::-webkit-scrollbar { width: 6px; }
-.chat-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+.chat-area::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.2); border-radius: 10px; }
 
 .msg {
-    max-width: 85%;
+    max-width: 88%;
     margin-bottom: 12px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     border-radius: 16px;
     font-size: 14.5px;
-    line-height: 1.5;
+    line-height: 1.65;
     position: relative;
     word-wrap: break-word;
     animation: msgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -263,226 +208,99 @@ body {
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.msg.bot { background: var(--bubble-bot); color: var(--text); border-bottom-right-radius: 4px; margin-left: auto; }
-.msg.teacher { background: var(--bubble-teacher); color: var(--text); border-bottom-left-radius: 4px; margin-right: auto; }
-.msg.ai-msg {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 2px solid var(--ai-glow);
-    box-shadow: 0 4px 12px rgba(139,92,246,0.15);
+.msg.user {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    border-bottom-left-radius: 4px;
+    margin-right: auto;
+    margin-left: 0;
 }
-.msg.ai-msg::before {
-    content: '⚡ AI';
+.msg.ai {
+    background: #fff;
+    color: var(--text);
+    border-bottom-right-radius: 4px;
+    margin-left: auto;
+    margin-right: 0;
+    border: 2px solid var(--light);
+}
+.msg.ai::before {
+    content: '🎓 AI';
     position: absolute;
     top: -10px;
     left: 10px;
-    background: var(--ai-glow);
+    background: var(--primary);
     color: #fff;
     font-size: 9px;
     font-weight: 900;
     padding: 2px 8px;
     border-radius: 8px;
 }
-.msg.bot .time, .msg.teacher .time {
+.msg.user .time, .msg.ai .time {
     font-size: 10px;
     color: var(--gray);
     text-align: left;
-    margin-top: 4px;
-    font-weight: 700;
-}
-.msg.teacher .time { text-align: right; }
-
-/* Options */
-.options-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.option-btn {
-    background: #fff;
-    border: 2px solid var(--primary);
-    color: var(--dark);
-    padding: 10px 16px;
-    border-radius: 22px;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(37,150,139,0.1);
-}
-.option-btn:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
-
-/* ============ منتقي الوقت ============ */
-.time-picker {
-    background: #fff;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 2px solid var(--light);
-    animation: msgIn 0.3s ease;
-    max-width: 95%;
-}
-.time-picker .tp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-    border-bottom: 2px dashed var(--border);
-    font-size: 14px;
-    font-weight: 900;
-    color: var(--dark);
-}
-.time-picker .tp-value {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 15px;
-    font-weight: 900;
-    min-width: 90px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(37,150,139,0.3);
-}
-
-.time-picker .tp-section {
-    margin-bottom: 12px;
-}
-.time-picker .tp-label {
-    font-size: 12px;
-    color: var(--gray);
-    font-weight: 900;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.time-picker .tp-grid {
-    display: grid;
-    gap: 6px;
-}
-.time-picker .tp-hours {
-    grid-template-columns: repeat(6, 1fr);
-}
-.time-picker .tp-minutes {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-.time-picker .tp-num-btn {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 10px 4px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 900;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-}
-.time-picker .tp-num-btn:hover {
-    background: var(--light);
-    border-color: var(--primary);
-    transform: translateY(-2px);
-}
-.time-picker .tp-num-btn.selected {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    border-color: var(--dark);
-    box-shadow: 0 4px 10px rgba(37,150,139,0.35);
-    transform: translateY(-2px);
-}
-
-.time-picker .tp-period-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-.time-picker .tp-period-btn {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 900;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-}
-.time-picker .tp-period-btn:hover {
-    background: var(--light);
-    border-color: var(--primary);
-}
-.time-picker .tp-period-btn.selected {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    border-color: var(--dark);
-    box-shadow: 0 4px 10px rgba(37,150,139,0.35);
-}
-
-.time-picker .tp-confirm {
-    width: 100%;
-    background: linear-gradient(135deg, var(--success), #047857);
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
     margin-top: 6px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 10px rgba(16,185,129,0.3);
+    font-weight: 700;
+    opacity: 0.7;
 }
-.time-picker .tp-confirm:not(:disabled):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(16,185,129,0.4);
+.msg.user .time { text-align: right; }
+
+/* Message styling */
+.msg.ai b { color: var(--dark); font-weight: 900; }
+.msg.ai code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #dc2626;
+    direction: ltr;
+    display: inline-block;
 }
-.time-picker .tp-confirm:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.msg.ai ul, .msg.ai ol {
+    margin: 8px 0;
+    padding-right: 20px;
+}
+.msg.ai li { margin-bottom: 4px; }
+.msg.ai hr {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 10px 0;
 }
 
-/* Quick actions */
-.quick-actions {
-    background: #f0f0f0;
-    padding: 8px 12px 0;
+/* ============ Suggested questions ============ */
+.suggestions {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
-    overflow-x: auto;
-    border-top: 1px solid #d0d0d0;
-    scrollbar-width: none;
-    flex-shrink: 0;
+    margin-bottom: 12px;
+    animation: msgIn 0.3s ease;
 }
-.quick-actions::-webkit-scrollbar { display: none; }
-.quick-btn {
+.suggestion-chip {
     background: #fff;
     border: 2px solid var(--primary);
     color: var(--dark);
-    padding: 7px 14px;
-    border-radius: 18px;
+    padding: 8px 14px;
+    border-radius: 20px;
     font-family: inherit;
     font-size: 12.5px;
     font-weight: 900;
     cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(124,58,237,0.1);
     display: flex;
     align-items: center;
     gap: 5px;
+    text-align: right;
+    direction: rtl;
 }
-.quick-btn:hover { background: var(--primary); color: #fff; }
-.quick-btn.ai-mode {
-    background: linear-gradient(135deg, var(--ai-glow), #7c3aed);
+.suggestion-chip:hover {
+    background: var(--primary);
     color: #fff;
-    border-color: #6d28d9;
+    transform: translateY(-2px);
 }
 
-/* Input area */
+/* ============ Input area ============ */
 .input-area {
     background: #f0f0f0;
     padding: 10px 12px;
@@ -492,10 +310,6 @@ body {
     border-top: 1px solid #d0d0d0;
     flex-shrink: 0;
 }
-.input-area.ai-active {
-    background: linear-gradient(135deg, #ede9fe, #f5f3ff);
-    border-top: 2px solid var(--ai-glow);
-}
 .input-area .input-wrap {
     flex: 1;
     background: #fff;
@@ -504,10 +318,12 @@ body {
     display: flex;
     align-items: center;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
 }
-.input-area.ai-active .input-wrap {
-    border: 2px solid var(--ai-glow);
-    box-shadow: 0 0 15px rgba(139,92,246,0.2);
+.input-area .input-wrap:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(124,58,237,0.15);
 }
 .input-area input {
     flex: 1;
@@ -532,160 +348,25 @@ body {
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(124,58,237,0.3);
+    transition: all 0.2s;
 }
-.send-btn.ai-active {
-    background: var(--ai-glow);
-    box-shadow: 0 4px 10px rgba(139,92,246,0.3);
-}
+.send-btn:active { transform: scale(0.9); }
 .send-btn:disabled { opacity: 0.5; }
 
 .typing {
     display: inline-flex; gap: 4px; padding: 12px 16px;
     background: #fff; border-radius: 16px; border-bottom-right-radius: 4px;
     margin-left: auto; margin-bottom: 12px; width: fit-content;
-}
-.typing.ai-typing {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 2px solid var(--ai-glow);
+    border: 2px solid var(--light);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 .typing span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: typing 1.4s infinite; }
-.typing.ai-typing span { background: var(--ai-glow); }
 .typing span:nth-child(2) { animation-delay: 0.2s; }
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
 
-/* Groups Modal */
-.groups-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    z-index: 999;
-    backdrop-filter: blur(4px);
-}
-.groups-modal.open { display: flex; }
-.groups-modal-content {
-    background: #fff;
-    width: 100%;
-    max-width: 480px;
-    max-height: 85vh;
-    margin: auto;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes modalPop {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-.groups-modal-header {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-.groups-modal-header .title { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-.groups-modal-header .title .count-badge {
-    background: #fbbf24;
-    color: #78350f;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-}
-.groups-modal-header .close-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.groups-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-}
-.groups-modal-body::-webkit-scrollbar { width: 6px; }
-.groups-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-.gm-add-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 10px rgba(37,150,139,0.25);
-}
-
-.gm-group-card {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-    position: relative;
-    overflow: hidden;
-}
-.gm-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
-.gm-group-card.recurring-group { border-right: 4px solid #8b5cf6; }
-.gm-group-card.normal-group { border-right: 4px solid #3b82f6; }
-.gm-group-card.hidden-group { border-right-color: #dc2626; }
-
-.gm-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
-.gm-card-name { font-size: 14px; font-weight: 900; color: var(--text); flex: 1; word-break: break-word; }
-.gm-card-badges { display: flex; gap: 3px; }
-.gm-badge { font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 900; }
-.gm-badge.rec { background: #8b5cf6; color: #fff; }
-.gm-badge.norm { background: #3b82f6; color: #fff; }
-.gm-badge.vis { background: #16a34a; color: #fff; }
-.gm-badge.hid { background: #dc2626; color: #fff; }
-
-.gm-card-info { font-size: 11.5px; color: var(--gray); display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
-.gm-card-info .row { display: flex; align-items: center; gap: 5px; }
-.gm-card-info .row b { color: var(--text); font-weight: 900; }
-
-.gm-card-actions { display: flex; gap: 4px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
-.gm-action-btn {
-    flex: 1;
-    padding: 6px 4px;
-    border-radius: 6px;
-    border: none;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-}
-.gm-action-btn.edit { background: #dbeafe; color: #1e40af; }
-.gm-action-btn.toggle { background: #fef3c7; color: #92400e; }
-.gm-action-btn.delete { background: #fee2e2; color: #b91c1c; }
-
-.gm-empty { text-align: center; padding: 40px 20px; color: var(--gray); }
-.gm-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
-
-/* Toast */
+/* ============ Toast ============ */
 .toast {
     position: fixed; bottom: 90px; left: 50%;
     transform: translateX(-50%) translateY(20px);
@@ -699,99 +380,91 @@ body {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; }
 
+/* ============ Welcome Card ============ */
+.welcome-card {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(124,58,237,0.15);
+    animation: msgIn 0.3s ease;
+}
+.welcome-card h3 {
+    color: var(--dark);
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.welcome-card .levels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+.welcome-card .level-item {
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--dark);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border);
+}
+
+/* ============ Mobile ============ */
 @media (max-width: 768px) {
     .header-actions { gap: 4px; }
-    .toggle-groups-btn, .ai-toggle-btn, .key-btn { padding: 6px 10px; font-size: 11px; }
-    .time-picker .tp-hours { grid-template-columns: repeat(4, 1fr); }
+    .mode-btn, .action-btn { padding: 6px 8px; font-size: 11px; }
+    .cat-chip { font-size: 11px; padding: 5px 10px; }
+    .msg { font-size: 14px; }
+    .welcome-card .levels { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div class="chat-header">
-    <div class="avatar" id="botAvatar">🤖</div>
-    <div class="info" id="botInfo">
-        <h2 id="botName">مساعد احجزلي</h2>
-        <p><span class="dot"></span> <span id="botStatus">معاك على طول</span></p>
+<div class="tutor-header">
+    <div class="avatar">🎓</div>
+    <div class="info">
+        <h2>المساعد التعليمي الذكي</h2>
+        <p><span class="dot"></span> <span id="statusText">جاهز يجاوب على أي سؤال</span></p>
     </div>
     <div class="header-actions">
-        <button class="key-btn" id="keyBtn" onclick="manageGroqKey()" title="إدارة مفتاح Groq">
-            <span>🔑</span>
-        </button>
-        <button class="ai-toggle-btn" id="aiToggleBtn" onclick="toggleAIMode()">
-            <span>⚡</span>
-            <span>AI</span>
-        </button>
-        <button class="toggle-groups-btn" onclick="openGroupsModal()">
-            <span>📚</span>
-            <span class="badge-count" id="groupsBadge" style="display:none;">0</span>
+        <button class="mode-btn student-mode" id="modeBtn" onclick="toggleMode()">
+            <span id="modeIcon">🎒</span>
+            <span id="modeText">طالب</span>
         </button>
     </div>
 </div>
-<div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%"></div></div>
 
 <div class="main-layout">
     
-    <!-- Live Summary Bar (ثابت) -->
-    <div class="live-summary" id="liveSummary">
-        <div class="ls-header">
-            <span>📋 بناء المجموعة</span>
-            <span class="progress-text">0/10</span>
+    <!-- Category Bar -->
+    <div class="category-bar" id="categoryBar">
+        <div class="cat-header">
+            <span>📚 اختر المرحلة والمادة</span>
+            <span class="level-badge" id="currentLevel">عام</span>
         </div>
-        <div class="ls-empty">اضغط "⚡ ابدأ الحجز بالـ AI" لبناء مجموعة جديدة</div>
+        <!-- Categories will be generated -->
     </div>
     
     <!-- Chat Area -->
     <div class="chat-area" id="chatArea"></div>
     
-    <!-- Quick Actions -->
-    <div class="quick-actions" id="quickActions">
-        <button class="quick-btn ai-mode" onclick="startAISBooking()">
-            <span>⚡</span><span>ابدأ الحجز بالـ AI</span>
-        </button>
-        <button class="quick-btn" onclick="showNextClass()">
-            <span>⏭️</span><span>الحصة القادمة</span>
-        </button>
-        <button class="quick-btn" onclick="showTodayClasses()">
-            <span>📆</span><span>النهاردة</span>
-        </button>
-        <button class="quick-btn" onclick="showAllAddresses()">
-            <span>📍</span><span>عناويني</span>
-        </button>
-        <button class="quick-btn" onclick="showQuestionMenu()">
-            <span>❓</span><span>أسئلة</span>
-        </button>
-    </div>
-    
     <!-- Input Area -->
-    <div class="input-area" id="inputArea" style="display:none;">
+    <div class="input-area" id="inputArea">
         <div class="input-wrap">
-            <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off" inputmode="text">
+            <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off" inputmode="text">
         </div>
         <button class="send-btn" id="sendBtn">➤</button>
     </div>
     
-</div>
-
-<!-- Groups Modal -->
-<div class="groups-modal" id="groupsModal" onclick="closeGroupsModal(event)">
-    <div class="groups-modal-content" onclick="event.stopPropagation()">
-        <div class="groups-modal-header">
-            <div class="title">
-                <span>📚</span>
-                <span>مجموعاتي</span>
-                <span class="count-badge" id="groupsModalCount">0</span>
-            </div>
-            <button class="close-btn" onclick="closeGroupsModal()">✖</button>
-        </div>
-        <div class="groups-modal-body" id="groupsModalBody">
-            <button class="gm-add-btn" onclick="startNewFromModal()">
-                <span>➕</span>
-                <span>اعمل مجموعة جديدة</span>
-            </button>
-            <div id="groupsModalList"></div>
-        </div>
-    </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -800,17 +473,10 @@ body {
 <script>try { eruda.init({ tool: ['console'], autoScale: true }); } catch(e) {}</script>
 
 <script type="module">
-import { 
-    publishGroup, 
-    getAllGroups, 
-    deleteGroup,
-    updateGroup,
-    saveTeacherData,
-    subscribeGroups
-} from './firebase-config.js';
+import { saveTeacherData } from './firebase-config.js';
 
 /* ============================================================ */
-/* ============ 🔑 إدارة مفتاح Groq ============ */
+/* ============ 🔑 Groq Configuration ============ */
 /* ============================================================ */
 
 const FALLBACK_KEY = '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';
@@ -825,86 +491,81 @@ const GROQ_MODELS = [
     'qwen/qwen3.8-27b'
 ];
 
-let aiModeActive = false;
-let aiBookingMode = false;
-let aiBookingStep = 0;
-let aiBookingData = {
-    groupName: '', teacherName: '', centerName: '',
-    studentsCount: '', gender: '', location: '',
-    startTime: '', endTime: '', dayName: '', repeatWeekly: null
+/* ============ حالة التطبيق ============ */
+const appState = {
+    mode: 'student', // student | teacher
+    level: 'general', // primary | preparatory | secondary | university | general
+    subject: '', // math | arabic | english | science | physics | chemistry | biology | history | philosophy | programming | general
+    chatHistory: []
 };
-
-let timePicker = {
-    hour: null,
-    minute: null,
-    period: null
-};
-
-window.manageGroqKey = function() {
-    const current = localStorage.getItem('groq_api_key') || '';
-    const currentPreview = current ? current.slice(0, 12) + '...' + current.slice(-6) : 'مش محفوظ';
-    
-    const choice = prompt(
-        `🔑 إدارة مفتاح Groq\n\n` +
-        `المفتاح الحالي: ${currentPreview}\n` +
-        `الطول: ${current.length} حرف\n\n` +
-        `الصق مفتاح جديد (يبدأ بـ gsk_) عشان تحفظه\n` +
-        `أو اكتب "حذف" لمسح المفتاح`,
-        current
-    );
-    
-    if (!choice) return;
-    const trimmed = choice.trim();
-    
-    if (trimmed === 'حذف' || trimmed.toLowerCase() === 'delete') {
-        localStorage.removeItem('groq_api_key');
-        localStorage.removeItem('groq_working_model');
-        GROQ_API_KEY = FALLBACK_KEY;
-        showToast('🗑️ اتمسح المفتاح المحفوظ');
-        return;
-    }
-    
-    if (trimmed.startsWith('gsk_')) {
-        if (trimmed.length < 40) {
-            alert('⚠️ المفتاح قصير أوي!\n\nالطول الحالي: ' + trimmed.length);
-            return;
-        }
-        localStorage.setItem('groq_api_key', trimmed);
-        localStorage.removeItem('groq_working_model');
-        GROQ_API_KEY = trimmed;
-        showToast('✅ تم حفظ المفتاح', true);
-    } else {
-        alert('⚠️ المفتاح لازم يبدأ بـ gsk_');
-    }
-};
-
-/* ============ الحالة ============ */
-const state = {
-    step: 0,
-    isEditing: false,
-    data: {
-        groupName: '', teacherName: '', centerName: '',
-        studentsCount: 20, gender: 'مختلط', location: 'السنتر',
-        startTime: '', endTime: '', date: '', dayOfWeek: 0, dayName: '',
-        repeatWeekly: false, gpsCoords: '', street: '', detailedAddress: '',
-        lat: null, lng: null, subject: '', editingId: null
-    },
-    originalGroup: null
-};
-
-let cachedGroups = [];
-let map, marker;
-let chatHistory = [];
 
 /* ============ DOM ============ */
 const chatArea = document.getElementById('chatArea');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
-const progressFill = document.getElementById('progressFill');
 const toastEl = document.getElementById('toast');
+const categoryBar = document.getElementById('categoryBar');
 const inputArea = document.getElementById('inputArea');
-const quickActions = document.getElementById('quickActions');
-const liveSummary = document.getElementById('liveSummary');
+
+/* ============ المراحل والمواد ============ */
+const LEVELS = {
+    primary: { 
+        name: 'ابتدائي', icon: '🎒', 
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'religion', name: 'تربية دينية', icon: '📿' }
+        ]
+    },
+    preparatory: { 
+        name: 'إعدادي', icon: '📗',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'computer', name: 'كمبيوتر', icon: '💻' }
+        ]
+    },
+    secondary: { 
+        name: 'ثانوي', icon: '📘',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'geology', name: 'جيولوجيا', icon: '🪨' },
+            { id: 'history', name: 'تاريخ', icon: '📜' },
+            { id: 'philosophy', name: 'فلسفة', icon: '🤔' },
+            { id: 'psychology', name: 'علم نفس', icon: '🧠' }
+        ]
+    },
+    university: { 
+        name: 'جامعة', icon: '🎓',
+        subjects: [
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'programming', name: 'برمجة', icon: '💻' },
+            { id: 'engineering', name: 'هندسة', icon: '⚙️' },
+            { id: 'medicine', name: 'طب', icon: '🏥' },
+            { id: 'business', name: 'تجارة', icon: '💼' },
+            { id: 'law', name: 'حقوق', icon: '⚖️' },
+            { id: 'education', name: 'تربية', icon: '📚' }
+        ]
+    },
+    general: {
+        name: 'عام', icon: '📚',
+        subjects: []
+    }
+};
 
 /* ============ أدوات ============ */
 function scrollBottom() {
@@ -918,37 +579,6 @@ function currentTime() {
     return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-function addBotMessage(text, showTyping = true) {
-    return new Promise(resolve => {
-        if (showTyping) {
-            const typing = document.createElement('div');
-            typing.className = 'typing';
-            typing.innerHTML = '<span></span><span></span><span></span>';
-            chatArea.appendChild(typing);
-            scrollBottom();
-            setTimeout(() => {
-                typing.remove();
-                _addMessage('bot', text);
-                resolve();
-            }, 500);
-        } else {
-            _addMessage('bot', text);
-            resolve();
-        }
-    });
-}
-
-function _addMessage(who, text, isAI = false) {
-    const msg = document.createElement('div');
-    msg.className = `msg ${who}${isAI ? ' ai-msg' : ''}`;
-    const formatted = text.replace(/\n/g, '<br>');
-    msg.innerHTML = formatted + `<div class="time">${currentTime()} ${who === 'bot' ? '✓✓' : ''}</div>`;
-    chatArea.appendChild(msg);
-    scrollBottom();
-}
-
-function addTeacherMessage(text) { _addMessage('teacher', text); }
-
 function showToast(text, isSuccess = false) {
     toastEl.textContent = text;
     toastEl.classList.toggle('success', isSuccess);
@@ -956,743 +586,324 @@ function showToast(text, isSuccess = false) {
     setTimeout(() => toastEl.classList.remove('show'), 2500);
 }
 
-function setProgress(p) { progressFill.style.width = p + '%'; }
-
-function formatTime(val) {
-    if (!val) return '';
-    const [h, m] = val.split(':').map(Number);
-    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
-    const period = h < 12 ? 'ص' : 'م';
-    return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
-}
-
-function setInputMode(mode, placeholder = '') {
-    if (mode === 'hidden') {
-        inputArea.style.display = 'none';
-        return;
-    }
+function _addMessage(who, text) {
+    const msg = document.createElement('div');
+    msg.className = `msg ${who}`;
+    // نحول النص لـ HTML آمن مع تحويل الأسطر
+    const formatted = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // نرجع الـ markdown
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^### (.+)$/gm, '<b>$1</b>')
+        .replace(/^## (.+)$/gm, '<b>$1</b>')
+        .replace(/^# (.+)$/gm, '<b>$1</b>')
+        .replace(/^- (.+)$/gm, '• $1')
+        .replace(/^\* (.+)$/gm, '• $1')
+        .replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`)
+        .replace(/---/g, '<hr>')
+        .replace(/\n/g, '<br>');
     
-    inputArea.style.display = 'flex';
-    chatInput.disabled = false;
-    chatInput.readOnly = false;
-    chatInput.value = '';
-    chatInput.placeholder = placeholder || 'اكتب هنا...';
-    
-    if (mode === 'number') {
-        chatInput.type = 'number';
-        chatInput.setAttribute('inputmode', 'numeric');
-    } else {
-        chatInput.type = 'text';
-        chatInput.setAttribute('inputmode', 'text');
-    }
-    
-    sendBtn.disabled = false;
-    
-    setTimeout(() => { try { chatInput.focus(); } catch(e) {} }, 200);
-    setTimeout(() => { try { if (document.activeElement !== chatInput) chatInput.focus(); } catch(e) {} }, 500);
-}
-
-function resetState() {
-    state.step = 0;
-    state.isEditing = false;
-    state.originalGroup = null;
-    state.data = {
-        groupName: '', teacherName: '', centerName: '',
-        studentsCount: 20, gender: 'مختلط', location: 'السنتر',
-        startTime: '', endTime: '', date: '', dayOfWeek: 0, dayName: '',
-        repeatWeekly: false, gpsCoords: '', street: '', detailedAddress: '',
-        lat: null, lng: null, subject: '', editingId: null
-    };
-    if (map) { try { map.remove(); } catch(e) {} map = null; marker = null; }
-}
-
-/* ============================================================ */
-/* ============ Live Summary Bar (ثابت) ============ */
-/* ============================================================ */
-function updateLiveSummary() {
-    const d = aiBookingMode ? aiBookingData : state.data;
-    
-    const items = [];
-    if (d.groupName) items.push({ icon: '📝', text: d.groupName });
-    if (d.teacherName) items.push({ icon: '👤', text: d.teacherName });
-    if (d.location) items.push({ icon: '📍', text: d.location });
-    if (d.centerName) items.push({ icon: '🏫', text: d.centerName });
-    if (d.studentsCount) items.push({ icon: '👥', text: `${d.studentsCount} طالب` });
-    if (d.gender) items.push({ icon: '👫', text: d.gender });
-    if (d.startTime && d.endTime) {
-        const st = /^\d{2}:\d{2}$/.test(d.startTime) ? formatTime(d.startTime) : d.startTime;
-        const et = /^\d{2}:\d{2}$/.test(d.endTime) ? formatTime(d.endTime) : d.endTime;
-        items.push({ icon: '🕐', text: `${st} - ${et}` });
-    }
-    if (d.dayName) items.push({ icon: '📅', text: d.dayName });
-    if (d.repeatWeekly !== null && d.repeatWeekly !== undefined && d.dayName) {
-        const isRec = d.repeatWeekly === 'أيوه' || d.repeatWeekly === true;
-        items.push({ icon: '🔁', text: isRec ? 'أسبوعي' : 'مرة واحدة' });
-    }
-    
-    const totalSteps = 10;
-    const progress = Math.min(items.length, totalSteps);
-    
-    if (items.length === 0) {
-        liveSummary.innerHTML = `
-            <div class="ls-header">
-                <span>📋 بناء المجموعة</span>
-                <span class="progress-text">0/${totalSteps}</span>
-            </div>
-            <div class="ls-empty">اضغط "⚡ ابدأ الحجز بالـ AI" لبناء مجموعة جديدة</div>
-        `;
-    } else {
-        liveSummary.innerHTML = `
-            <div class="ls-header">
-                <span>📋 بناء المجموعة</span>
-                <span class="progress-text">${progress}/${totalSteps}</span>
-            </div>
-            ${items.map(item => `<div class="ls-item">${item.icon} ${item.text}</div>`).join('')}
-        `;
-    }
-}
-
-/* ============================================================ */
-/* ============ 🤖 AI Booking Flow ============ */
-/* ============================================================ */
-
-window.startAISBooking = async function() {
-    if (!aiModeActive) {
-        aiModeActive = true;
-        updateAIUI(true);
-    }
-    
-    aiBookingMode = true;
-    aiBookingStep = 1;
-    aiBookingData = {
-        groupName: '', teacherName: '', centerName: '',
-        studentsCount: '', gender: '', location: '',
-        startTime: '', endTime: '', dayName: '', repeatWeekly: null
-    };
-    
-    chatHistory = [];
-    updateLiveSummary();
-    
-    addBotMessage(
-        '🤖 <b>أهلاً يا مستر!</b><br><br>' +
-        'أنا هسألك على بيانات المجموعة واحدة واحدة.<br>' +
-        'هتشوف إجاباتك بتتجمع فوق في الشريط الأخضر ✨<br><br>' +
-        '━━━━━━━━━━━━━━━<br><br>' +
-        '<b>السؤال 1/10:</b><br>' +
-        '🎯 اسم المجموعة إيه؟'
-    );
-    
-    setInputMode('text', 'اكتب اسم المجموعة...');
-};
-
-/* معلومات كل خطوة */
-function getStepInfo(step) {
-    const map = {
-        1: { field: 'groupName', question: '🎯 اسم المجموعة إيه؟', placeholder: 'اكتب اسم المجموعة...', type: 'text' },
-        2: { field: 'teacherName', question: '👤 اسمك إيه يا مستر؟', placeholder: 'اكتب اسمك...', type: 'text' },
-        3: { field: 'location', question: '📍 الدرس هيبقى فين؟', type: 'options', options: [
-            { label: 'السنتر', icon: '🏫', value: 'السنتر' },
-            { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
-            { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
-        ]},
-        4: { field: 'centerName', question: '🏫 اسم السنتر إيه؟', placeholder: 'اسم السنتر...', type: 'text' },
-        5: { field: 'studentsCount', question: '👥 عدد الطلبة في المجموعة؟', type: 'options', options: [
-            { label: '10 طلاب', value: 10 },
-            { label: '15 طالب', value: 15 },
-            { label: '20 طالب', value: 20 },
-            { label: '30 طالب', value: 30 }
-        ]},
-        6: { field: 'gender', question: '👫 الفئة المسموحة؟', type: 'options', options: [
-            { label: 'مختلط', icon: '👫', value: 'مختلط' },
-            { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
-            { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
-        ]},
-        7: { field: 'startTime', question: '⏰ الحصة بتبدأ الساعة كام؟', type: 'timepicker' },
-        8: { field: 'endTime', question: '⏰ وتنتهي الساعة كام؟', type: 'timepicker' },
-        9: { field: 'dayName', question: '📅 يوم الحصة إيه؟', type: 'options', options: [
-            { label: 'السبت', value: 'السبت' },
-            { label: 'الأحد', value: 'الأحد' },
-            { label: 'الاثنين', value: 'الاثنين' },
-            { label: 'الثلاثاء', value: 'الثلاثاء' },
-            { label: 'الأربعاء', value: 'الأربعاء' },
-            { label: 'الخميس', value: 'الخميس' },
-            { label: 'الجمعة', value: 'الجمعة' }
-        ]},
-        10: { field: 'repeatWeekly', question: '🔁 عايز تكرار أسبوعي؟', type: 'options', options: [
-            { label: 'أيوه، كل أسبوع', icon: '🔁', value: 'أيوه' },
-            { label: 'لا، مرة واحدة بس', icon: '📅', value: 'لا' }
-        ]}
-    };
-    return map[step];
-}
-
-/* منتقي الوقت بالأرقام */
-function showTimePicker(onSelect) {
-    timePicker = { hour: null, minute: null, period: null };
-    
-    const picker = document.createElement('div');
-    picker.className = 'time-picker';
-    picker.id = 'timePicker';
-    picker.innerHTML = `
-        <div class="tp-header">
-            <span>⏰ اختار الوقت</span>
-            <span class="tp-value" id="tpValue">--:-- --</span>
-        </div>
-        
-        <div class="tp-section">
-            <div class="tp-label">الساعة</div>
-            <div class="tp-grid tp-hours" id="tpHours"></div>
-        </div>
-        
-        <div class="tp-section">
-            <div class="tp-label">الدقايق</div>
-            <div class="tp-grid tp-minutes" id="tpMinutes"></div>
-        </div>
-        
-        <div class="tp-section">
-            <div class="tp-label">الفترة</div>
-            <div class="tp-period-row">
-                <button class="tp-period-btn" data-period="ص">🌅 صباحاً</button>
-                <button class="tp-period-btn" data-period="م">🌙 مساءً</button>
-            </div>
-        </div>
-        
-        <button class="tp-confirm" id="tpConfirm" disabled>✅ تمام، تأكيد</button>
-    `;
-    
-    chatArea.appendChild(picker);
+    msg.innerHTML = formatted + `<div class="time">${currentTime()}</div>`;
+    chatArea.appendChild(msg);
     scrollBottom();
+}
+
+function addUserMessage(text) { _addMessage('user', text); }
+function addAIMessage(text) { _addMessage('ai', text); }
+
+function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chatArea.appendChild(typing);
+    scrollBottom();
+    return typing;
+}
+
+/* ============ Category Bar ============ */
+function renderCategoryBar() {
+    categoryBar.innerHTML = '';
     
-    const hoursGrid = document.getElementById('tpHours');
-    for (let h = 1; h <= 12; h++) {
-        const btn = document.createElement('button');
-        btn.className = 'tp-num-btn';
-        btn.textContent = h;
-        btn.dataset.hour = h;
-        btn.onclick = () => {
-            hoursGrid.querySelectorAll('.tp-num-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            timePicker.hour = h;
-            updateTimePickerValue();
-        };
-        hoursGrid.appendChild(btn);
-    }
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML = `
+        <span>📚 اختر المرحلة والمادة</span>
+        <span class="level-badge" id="currentLevel">${LEVELS[appState.level]?.name || 'عام'}</span>
+    `;
+    categoryBar.appendChild(header);
     
-    const minsGrid = document.getElementById('tpMinutes');
-    [0, 15, 30, 45].forEach(m => {
-        const btn = document.createElement('button');
-        btn.className = 'tp-num-btn';
-        btn.textContent = String(m).padStart(2, '0');
-        btn.dataset.minute = m;
-        btn.onclick = () => {
-            minsGrid.querySelectorAll('.tp-num-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            timePicker.minute = m;
-            updateTimePickerValue();
+    // أزرار المراحل
+    const levelChips = document.createElement('div');
+    levelChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-bottom:6px;';
+    Object.keys(LEVELS).forEach(key => {
+        const level = LEVELS[key];
+        const chip = document.createElement('button');
+        chip.className = 'cat-chip' + (appState.level === key ? ' active' : '');
+        chip.innerHTML = `${level.icon} ${level.name}`;
+        chip.onclick = () => {
+            appState.level = key;
+            appState.subject = '';
+            renderCategoryBar();
+            updateStatusText();
         };
-        minsGrid.appendChild(btn);
+        levelChips.appendChild(chip);
     });
+    categoryBar.appendChild(levelChips);
     
-    picker.querySelectorAll('.tp-period-btn').forEach(btn => {
-        btn.onclick = () => {
-            picker.querySelectorAll('.tp-period-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            timePicker.period = btn.dataset.period;
-            updateTimePickerValue();
-        };
-    });
-    
-    document.getElementById('tpConfirm').onclick = () => {
-        if (!timePicker.hour || timePicker.minute === null || !timePicker.period) return;
-        
-        let hour24 = timePicker.hour;
-        if (timePicker.period === 'م' && timePicker.hour !== 12) {
-            hour24 = timePicker.hour + 12;
-        } else if (timePicker.period === 'ص' && timePicker.hour === 12) {
-            hour24 = 0;
-        }
-        
-        const value = `${String(hour24).padStart(2, '0')}:${String(timePicker.minute).padStart(2, '0')}`;
-        const display = `${timePicker.hour}:${String(timePicker.minute).padStart(2, '0')} ${timePicker.period}`;
-        
-        picker.remove();
-        onSelect({ value, display });
-    };
-}
-
-function updateTimePickerValue() {
-    const valEl = document.getElementById('tpValue');
-    const confirmBtn = document.getElementById('tpConfirm');
-    
-    if (timePicker.hour && timePicker.minute !== null && timePicker.period) {
-        valEl.textContent = `${timePicker.hour}:${String(timePicker.minute).padStart(2, '0')} ${timePicker.period}`;
-        confirmBtn.disabled = false;
-    } else {
-        const parts = [];
-        parts.push(timePicker.hour || '--');
-        parts.push(timePicker.minute !== null ? String(timePicker.minute).padStart(2, '0') : '--');
-        parts.push(timePicker.period || '--');
-        valEl.textContent = `${parts[0]}:${parts[1]} ${parts[2]}`;
-        confirmBtn.disabled = true;
-    }
-}
-
-/* معالجة رد المستر */
-async function processAISBookingResponse(userMessage) {
-    const stepInfo = getStepInfo(aiBookingStep);
-    if (!stepInfo) {
-        await aiBookingComplete();
-        return;
-    }
-    
-    // لو كانت خيارات، ابحث في الرد
-    let value = userMessage;
-    let unclear = false;
-    
-    // لو الرد فيه خيار من الخيارات
-    if (stepInfo.type === 'options') {
-        const matched = stepInfo.options.find(o => 
-            userMessage.includes(o.label) || 
-            userMessage.includes(String(o.value))
-        );
-        if (matched) {
-            value = matched.value;
-        }
-    }
-    
-    // لو حقل رقمي، تأكد إنه رقم
-    if (stepInfo.field === 'studentsCount') {
-        const num = parseInt(userMessage);
-        if (!isNaN(num) && num > 0 && num <= 100) {
-            value = num;
-        } else {
-            unclear = true;
-        }
-    }
-    
-    if (unclear) {
-        await addBotMessage(`🤔 <b>معلش، مفهمتش.</b><br>ممكن توضح تاني؟<br><br><b>${stepInfo.question}</b>`);
-        setInputMode('text', stepInfo.placeholder);
-        return;
-    }
-    
-    aiBookingData[stepInfo.field] = value;
-    updateLiveSummary();
-    
-    aiBookingStep++;
-    
-    if (aiBookingStep === 4 && aiBookingData.location !== 'السنتر') {
-        aiBookingStep = 5;
-    }
-    
-    await askNextAISBookingQuestion();
-}
-
-/* نطرح السؤال التالي */
-async function askNextAISBookingQuestion() {
-    if (aiBookingStep > 10) {
-        await aiBookingComplete();
-        return;
-    }
-    
-    const stepInfo = getStepInfo(aiBookingStep);
-    const progressBar = `[${aiBookingStep}/10]`;
-    
-    await addBotMessage(`━━━━━━━━━━━━━━━<br><br><b>السؤال ${progressBar}:</b><br>${stepInfo.question}`);
-    
-    if (stepInfo.type === 'options') {
-        showOptions(stepInfo.options, async (opt) => {
-            const val = opt.value;
-            addTeacherMessage(`${opt.icon || ''} ${opt.label}`.trim());
-            aiBookingData[stepInfo.field] = val;
-            updateLiveSummary();
-            aiBookingStep++;
-            
-            if (aiBookingStep === 4 && aiBookingData.location !== 'السنتر') {
-                aiBookingStep = 5;
-            }
-            
-            await askNextAISBookingQuestion();
+    // أزرار المواد (لو المرحلة مش general)
+    if (appState.level !== 'general' && LEVELS[appState.level]) {
+        const subjectChips = document.createElement('div');
+        subjectChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;';
+        LEVELS[appState.level].subjects.forEach(subj => {
+            const chip = document.createElement('button');
+            chip.className = 'cat-chip' + (appState.subject === subj.id ? ' active' : '');
+            chip.innerHTML = `${subj.icon} ${subj.name}`;
+            chip.onclick = () => {
+                appState.subject = appState.subject === subj.id ? '' : subj.id;
+                renderCategoryBar();
+                updateStatusText();
+            };
+            subjectChips.appendChild(chip);
         });
-        setInputMode('hidden');
-    } else if (stepInfo.type === 'timepicker') {
-        setInputMode('hidden');
-        showTimePicker(async (result) => {
-            addTeacherMessage(`🕐 ${result.display}`);
-            aiBookingData[stepInfo.field] = result.value;
-            updateLiveSummary();
-            aiBookingStep++;
-            await askNextAISBookingQuestion();
-        });
-    } else {
-        setInputMode('text', stepInfo.placeholder);
+        categoryBar.appendChild(subjectChips);
     }
 }
 
-/* خلصنا */
-async function aiBookingComplete() {
-    updateLiveSummary();
+function updateStatusText() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? (LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name || '')
+        : '';
     
-    const startF = formatTime(aiBookingData.startTime);
-    const endF = formatTime(aiBookingData.endTime);
+    const mode = appState.mode === 'student' ? '🎒 طالب' : '👨‍🏫 مستر';
     
-    await addBotMessage(
-        `🎉 <b>تمام يا مستر! جاهز أحفظ المجموعة</b><br><br>` +
-        `📋 <b>الملخص النهائي:</b><br><br>` +
-        `🎯 <b>${aiBookingData.groupName}</b><br>` +
-        `👤 ${aiBookingData.teacherName}<br>` +
-        (aiBookingData.centerName ? `🏫 ${aiBookingData.centerName}<br>` : '') +
-        `📍 ${aiBookingData.location}<br>` +
-        `👥 ${aiBookingData.studentsCount} طالب<br>` +
-        `👫 ${aiBookingData.gender}<br>` +
-        `🕐 ${startF} - ${endF}<br>` +
-        `📅 ${aiBookingData.dayName}<br>` +
-        `🔁 ${aiBookingData.repeatWeekly === 'أيوه' ? 'أسبوعي' : 'مرة واحدة'}`
+    let txt = mode;
+    if (level !== 'عام') txt += ` • ${level}`;
+    if (subject) txt += ` • ${subject}`;
+    
+    document.getElementById('statusText').textContent = txt;
+}
+
+/* ============ Mode Toggle ============ */
+window.toggleMode = function() {
+    appState.mode = appState.mode === 'student' ? 'teacher' : 'student';
+    
+    const btn = document.getElementById('modeBtn');
+    const icon = document.getElementById('modeIcon');
+    const text = document.getElementById('modeText');
+    
+    if (appState.mode === 'student') {
+        btn.className = 'mode-btn student-mode';
+        icon.textContent = '🎒';
+        text.textContent = 'طالب';
+        chatInput.placeholder = 'اسأل أي سؤال يا بطل...';
+    } else {
+        btn.className = 'mode-btn teacher-mode';
+        icon.textContent = '👨‍🏫';
+        text.textContent = 'مستر';
+        chatInput.placeholder = 'اكتب سؤالك أو طلب تحضير الدرس...';
+    }
+    
+    updateStatusText();
+    
+    addAIMessage(appState.mode === 'student' 
+        ? '🎒 <b>وضع الطالب</b><br>أنا هنا أساعدك تفهم أي حاجة في المنهج. اسأل بحرية!'
+        : '👨‍🏫 <b>وضع المستر</b><br>أقدر أساعدك تحضّر الدرس، تجهز أسئلة، تشرح مفاهيم صعبة، أو تجهز خطة درس.'
     );
-    
-    setInputMode('hidden');
-    showOptions([
-        { label: 'احفظ المجموعة', icon: '💾', value: 'save' },
-        { label: 'الغي', icon: '❌', value: 'cancel' }
-    ], async (opt) => {
-        if (opt.value === 'save') {
-            await aiBookingSave();
-        } else {
-            addTeacherMessage('الغي');
-            aiBookingMode = false;
-            updateAIUI(false);
-            aiModeActive = false;
-            updateLiveSummary();
-            await addBotMessage('ماشي، لغينا. لو عايز تبدأ من جديد دوس "⚡ ابدأ الحجز بالـ AI"');
-        }
-    });
-}
-
-/* نحفظ */
-async function aiBookingSave() {
-    addTeacherMessage('احفظ');
-    
-    state.data.groupName = aiBookingData.groupName;
-    state.data.teacherName = aiBookingData.teacherName;
-    state.data.location = aiBookingData.location || 'السنتر';
-    state.data.centerName = aiBookingData.centerName || '';
-    state.data.studentsCount = parseInt(aiBookingData.studentsCount) || 20;
-    state.data.gender = aiBookingData.gender || 'مختلط';
-    state.data.startTime = aiBookingData.startTime;
-    state.data.endTime = aiBookingData.endTime;
-    state.data.dayName = aiBookingData.dayName;
-    state.data.repeatWeekly = aiBookingData.repeatWeekly === 'أيوه';
-    
-    await finishSetup();
-    
-    aiBookingMode = false;
-    aiBookingStep = 0;
-    updateAIUI(false);
-    aiModeActive = false;
-    updateLiveSummary();
-}
-
-/* تحديث واجهة AI */
-function updateAIUI(active) {
-    const aiBtn = document.getElementById('aiToggleBtn');
-    const avatar = document.getElementById('botAvatar');
-    const botName = document.getElementById('botName');
-    const botStatus = document.getElementById('botStatus');
-    const botInfo = document.getElementById('botInfo');
-    const inputAreaEl = document.getElementById('inputArea');
-    const sendBtnEl = document.getElementById('sendBtn');
-    
-    if (active) {
-        aiBtn.classList.add('active');
-        avatar.classList.add('ai-mode');
-        avatar.textContent = '⚡';
-        botName.textContent = 'مساعد ذكي - حجز';
-        botStatus.textContent = 'بيسألك ويسجّل';
-        botInfo.classList.add('ai-active');
-        inputAreaEl.classList.add('ai-active');
-        sendBtnEl.classList.add('ai-active');
-    } else {
-        aiBtn.classList.remove('active');
-        avatar.classList.remove('ai-mode');
-        avatar.textContent = '🤖';
-        botName.textContent = 'مساعد احجزلي';
-        botStatus.textContent = 'معاك على طول';
-        botInfo.classList.remove('ai-active');
-        inputAreaEl.classList.remove('ai-active');
-        sendBtnEl.classList.remove('ai-active');
-    }
-}
-
-window.toggleAIMode = function() {
-    if (!aiModeActive) {
-        startAISBooking();
-    } else {
-        aiModeActive = false;
-        aiBookingMode = false;
-        updateAIUI(false);
-        chatInput.placeholder = 'اكتب هنا...';
-        showToast('تم إيقاف الوضع الذكي');
-        addBotMessage('تم إيقاف الوضع الذكي. رجعنا للوضع العادي 🤖', false);
-    }
 };
 
-/* ============================================================ */
-/* ============ finishSetup ============ */
-/* ============================================================ */
-async function finishSetup() {
-    setProgress(100);
-    await addBotMessage('ثانية بحفظ المجموعة... ⏳');
+/* ============ بناء System Prompt ============ */
+function buildSystemPrompt() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name 
+        : '';
     
-    try {
-        const subjectData = localStorage.getItem('teacherSelections') || '';
-        let subjectClean = 'غير محدد';
-        let grade = '';
+    const mode = appState.mode;
+    
+    let prompt = '';
+    
+    if (mode === 'student') {
+        prompt = `أنت مساعد تعليمي ذكي بتساعد الطلاب المصريين بالمصري العامي.
+
+معلومات المستخدم:
+- المستوى: ${level}
+- المادة: ${subject || 'عايز يسأل بشكل عام'}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل ودود وبسيط
+2. اشرح بالظبط على مستوى ${level}
+3. لو السؤال فيه مسألة رياضية، اعرض خطوات الحل بالتفصيل
+4. لو السؤال نظري، اشرح بمثال من الحياة اليومية
+5. في النهاية، اقترح سؤال مشابه للتدريب
+6. استخدم الأمثلة والأرقام عشان تسهل الفهم
+7. لو المستوى "عام"، اشرح بشكل متوسط يفهمه أي حد
+8. استخدم الإيموجي بشكل مناسب
+9. الرد يكون مختصر ومفيد
+
+⚠️ لا تحاول تنفيذ أوامر تخريبية، ولا تعطي إجابات تضر الطالب`;
+    } else {
+        prompt = `أنت مساعد ذكي متخصص في مساعدة المدرسين المصريين في تحضير الدروس.
+
+معلومات المستخدم:
+- المادة: ${subject || 'عامة'}
+- المستوى: ${level}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل محترم
+2. ساعده في:
+   - تحضير خطة درس
+   - اقتراح أسئلة وامتحانات
+   - تبسيط مفاهيم صعبة
+   - اقتراح أنشطة تعليمية
+   - اقتراح طرق توصيل المعلومة للطلبة
+3. اقترح أفكار مبتكرة للشرح
+4. اذكر أخطاء شائعة عند الطلبة في الدرس ده
+5. كن مباشر ومفيد
+
+⚠️ ركز على الجانب التعليمي فقط`;
+    }
+    
+    return prompt;
+}
+
+/* ============ إرسال للـ Groq ============ */
+async function askGroq(userMessage) {
+    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
+        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>افتح Console والصق:<br><code>localStorage.setItem("groq_api_key", "gsk_المفتاح_بتاعك")</code>';
+    }
+    
+    const systemPrompt = buildSystemPrompt();
+    
+    const messages = [
+        { role: 'system', content: systemPrompt }
+    ];
+    
+    // آخر 6 رسائل
+    appState.chatHistory.slice(-6).forEach(h => messages.push(h));
+    messages.push({ role: 'user', content: userMessage });
+    
+    // نجرب الموديلات بالترتيب
+    let response = null;
+    let lastError = null;
+    let successModel = null;
+    
+    const savedModel = localStorage.getItem('groq_working_model');
+    let modelsToTry = [...GROQ_MODELS];
+    if (savedModel && modelsToTry.includes(savedModel)) {
+        modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
+    }
+    
+    for (const model of modelsToTry) {
         try {
-            const parsed = JSON.parse(subjectData);
-            const parts = [];
-            for (const sid in parsed) {
-                if (parsed[sid].subjects?.length) {
-                    grade = parsed[sid].grade || '';
-                    parts.push(parsed[sid].subjects.join(' - '));
-                }
-            }
-            subjectClean = parts.join(' | ') || 'غير محدد';
-        } catch(e) {}
-        
-        let typeMapped = 'center';
-        if (state.data.location === 'بيت المستر') typeMapped = 'teacher_home';
-        else if (state.data.location === 'منزل الطالب') typeMapped = 'student_home';
-        
-        let genderMapped = 'all';
-        if (state.data.gender === 'أولاد فقط') genderMapped = 'boys';
-        else if (state.data.gender === 'بنات فقط') genderMapped = 'girls';
-        
-        // نحسب التاريخ
-        const dayMap = { 'الأحد': 0, 'الاثنين': 1, 'الثلاثاء': 2, 'الأربعاء': 3, 'الخميس': 4, 'الجمعة': 5, 'السبت': 6 };
-        const dayOfWeek = dayMap[state.data.dayName];
-        const today = new Date();
-        const diff = (dayOfWeek - today.getDay() + 7) % 7;
-        const targetDate = new Date(today);
-        targetDate.setDate(today.getDate() + diff);
-        const dateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth()+1).padStart(2,'0')}-${String(targetDate.getDate()).padStart(2,'0')}`;
-        
-        const payload = {
-            teacherName: state.data.teacherName,
-            centerName: state.data.centerName,
-            teacherTitle: 'مستر',
-            subject: subjectClean,
-            grade: grade,
-            groupName: state.data.groupName,
-            maxCapacity: parseInt(state.data.studentsCount) || 20,
-            gender: genderMapped,
-            type: typeMapped,
-            location: state.data.location,
-            address: state.data.street || '',
-            fullAddress: state.data.detailedAddress ? `${state.data.street} - ${state.data.detailedAddress}` : (state.data.street || ''),
-            detailedAddress: state.data.detailedAddress || '',
-            lat: state.data.lat,
-            lng: state.data.lng,
-            startTime: state.data.startTime,
-            endTime: state.data.endTime,
-            daysNames: [state.data.dayName],
-            apptType: state.data.repeatWeekly ? 'recurring' : 'normal',
-            date: dateStr,
-            phone: localStorage.getItem('current_teacher_phone') || '01000000000'
-        };
-        
-        if (state.data.editingId) {
-            await updateGroup(state.data.editingId, payload);
-            showToast('✅ اتحدثت المجموعة', true);
-            addBotMessage(`✏️ اتعدلت مجموعة <b>"${state.data.groupName}"</b> خلاص! ✅`);
-        } else {
-            payload.isActive = true;
-            payload.bookedBoys = 0;
-            payload.bookedGirls = 0;
-            await publishGroup(payload);
-            showToast('🎉 اتحفظت المجموعة', true);
-            addBotMessage(`🎉 <b>خلصنا يا مستر!</b><br><br>مجموعة <b>"${state.data.groupName}"</b> اتحفظت ✅<br><br>تقدر تشوفها في 📚 مجموعاتي فوق.`);
-        }
-        
-        chatHistory = [];
-        await updateGroupsBadge();
-        setInputMode('hidden');
-        
-        setTimeout(() => {
-            showOptions([
-                { label: 'زود مجموعة كمان', icon: '➕', value: 'new' },
-                { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
-            ], async (opt) => {
-                if (opt.value === 'new') {
-                    resetState();
-                    chatArea.innerHTML = '';
-                    await startAISBooking();
-                } else {
-                    window.location.href = 'mester3.html';
-                }
+            console.log(`🔄 بنجرب: ${model}`);
+            
+            response = await fetch(GROQ_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 1500,
+                    top_p: 0.9
+                })
             });
-        }, 500);
-        
-    } catch(err) {
-        console.error(err);
-        showToast('❌ في مشكلة، جرب تاني');
-    }
-}
-
-/* ============================================================ */
-/* ============ Groups Modal ============ */
-/* ============================================================ */
-
-window.openGroupsModal = async function() {
-    const modal = document.getElementById('groupsModal');
-    modal.classList.add('open');
-    await refreshGroupsModal();
-};
-
-window.closeGroupsModal = function(e) {
-    if (e && e.target.id !== 'groupsModal') return;
-    document.getElementById('groupsModal').classList.remove('open');
-};
-
-window.startNewFromModal = function() {
-    closeGroupsModal();
-    resetState();
-    chatArea.innerHTML = '';
-    startAISBooking();
-};
-
-async function refreshGroupsModal() {
-    const groups = await loadSavedGroups();
-    
-    document.getElementById('groupsModalCount').textContent = groups.length;
-    
-    const list = document.getElementById('groupsModalList');
-    
-    if (groups.length === 0) {
-        list.innerHTML = `
-            <div class="gm-empty">
-                <span class="icon">📭</span>
-                <p>لسه مفيش مجموعات</p>
-            </div>
-        `;
-        return;
+            
+            if (response.ok) {
+                successModel = model;
+                localStorage.setItem('groq_working_model', model);
+                console.log(`✅ نجح: ${model}`);
+                break;
+            } else if (response.status === 404) {
+                lastError = '404: model not found';
+                continue;
+            } else if (response.status === 401) {
+                lastError = '401';
+                break;
+            } else if (response.status === 429) {
+                lastError = '429';
+                break;
+            } else {
+                lastError = response.status;
+                continue;
+            }
+        } catch(e) {
+            lastError = e.message;
+            continue;
+        }
     }
     
-    list.innerHTML = '';
-    groups.forEach(g => {
-        const isRec = g.apptType === 'recurring';
-        const isVisible = g.isActive !== false;
-        const dayName = g.daysNames?.[0] || '';
-        
-        const card = document.createElement('div');
-        card.className = `gm-group-card ${isRec ? 'recurring-group' : 'normal-group'} ${!isVisible ? 'hidden-group' : ''}`;
-        card.innerHTML = `
-            <div class="gm-card-header">
-                <div class="gm-card-name">${g.groupName || 'بدون اسم'}</div>
-                <div class="gm-card-badges">
-                    <span class="gm-badge ${isRec ? 'rec' : 'norm'}">${isRec ? '🔁' : '📅'}</span>
-                    <span class="gm-badge ${isVisible ? 'vis' : 'hid'}">${isVisible ? '👁️' : '🙈'}</span>
-                </div>
-            </div>
-            <div class="gm-card-info">
-                <div class="row"><span>👤</span><b>${g.teacherName || '-'}</b></div>
-                <div class="row"><span>👥</span><span>${g.maxCapacity || 20} طالب</span></div>
-                <div class="row"><span>🕐</span><span>${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span></div>
-                <div class="row"><span>📅</span><span>${dayName}</span></div>
-            </div>
-            <div class="gm-card-actions">
-                <button class="gm-action-btn edit" data-action="edit" data-id="${g.id}">✏️ عدّل</button>
-                <button class="gm-action-btn toggle" data-action="toggle" data-id="${g.id}">${isVisible ? '🙈 اخفي' : '👁️ اظهر'}</button>
-                <button class="gm-action-btn delete" data-action="delete" data-id="${g.id}">🗑️ امسح</button>
-            </div>
-        `;
-        list.appendChild(card);
-    });
+    if (!response || !response.ok) {
+        if (lastError === '401') {
+            return '❌ <b>المفتاح غلط أو اتلغى</b><br>افتح console.groq.com/keys واعمل مفتاح جديد.';
+        }
+        if (lastError === '429') {
+            return '⏳ <b>وصلت للحد المجاني</b><br>استنى شوية وجرب تاني.';
+        }
+        return `❌ <b>فشل الاتصال</b><br>${lastError}<br><br>تأكد من الشبكة، أو جرب تحدّث الصفحة.`;
+    }
     
-    list.querySelectorAll('[data-action]').forEach(btn => {
-        btn.onclick = () => handleGroupAction(btn.dataset.action, btn.dataset.id);
-    });
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد.';
+    
+    // نحفظ في التاريخ
+    appState.chatHistory.push({ role: 'user', content: userMessage });
+    appState.chatHistory.push({ role: 'assistant', content: reply });
+    if (appState.chatHistory.length > 20) {
+        appState.chatHistory = appState.chatHistory.slice(-20);
+    }
+    
+    // نحفظ في Firebase
+    saveToFirebase(userMessage, reply);
+    
+    return reply;
 }
 
-async function loadSavedGroups() {
+/* ============ حفظ في Firebase ============ */
+async function saveToFirebase(question, answer) {
     try {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) return [];
-        const all = await getAllGroups();
-        cachedGroups = all.filter(g => g.phone === phone);
-        return cachedGroups;
-    } catch(e) { return []; }
-}
-
-async function handleGroupAction(action, id) {
-    const group = cachedGroups.find(g => g.id === id);
-    if (!group) return;
-    
-    if (action === 'delete') {
-        if (!confirm(`متأكد إنك عايز تمسح "${group.groupName}"؟`)) return;
-        try {
-            await deleteGroup(id);
-            showToast('✅ اتمسحت خلاص', true);
-            await refreshGroupsModal();
-            await updateGroupsBadge();
-        } catch(e) { showToast('❌ المسح مش نافع'); }
-    } else if (action === 'toggle') {
-        try {
-            const newVis = !group.isActive;
-            await updateGroup(id, { isActive: newVis });
-            showToast(newVis ? '👁️ بقت ظاهرة' : '🙈 بقت مخفية', true);
-            await refreshGroupsModal();
-        } catch(e) { showToast('❌ مش نافع'); }
-    } else if (action === 'edit') {
-        closeGroupsModal();
-        startEditFlow(group);
+        const phone = localStorage.getItem('current_teacher_phone') || 'guest_' + Date.now();
+        const key = 'tutor_history_' + Date.now();
+        
+        const data = {
+            [key]: JSON.stringify({
+                question: question,
+                answer: answer.slice(0, 2000),
+                mode: appState.mode,
+                level: appState.level,
+                subject: appState.subject,
+                timestamp: new Date().toISOString()
+            })
+        };
+        
+        // نحفظ في localStorage كمان (احتياطي)
+        let history = JSON.parse(localStorage.getItem('tutor_history') || '[]');
+        history.push({
+            question: question,
+            answer: answer.slice(0, 2000),
+            mode: appState.mode,
+            level: appState.level,
+            subject: appState.subject,
+            timestamp: new Date().toISOString()
+        });
+        if (history.length > 100) history = history.slice(-100);
+        localStorage.setItem('tutor_history', JSON.stringify(history));
+        
+    } catch(e) {
+        console.warn('⚠️ فشل حفظ السؤال:', e);
     }
 }
 
-async function updateGroupsBadge() {
-    const groups = await loadSavedGroups();
-    const badge = document.getElementById('groupsBadge');
-    badge.textContent = groups.length;
-    badge.style.display = groups.length > 0 ? 'inline-block' : 'none';
-}
-
-/* تعديل */
-async function startEditFlow(group) {
-    resetState();
-    state.isEditing = true;
-    state.data.editingId = group.id;
-    
-    chatArea.innerHTML = '';
-    
-    await addBotMessage(
-        `✏️ <b>تعديل مجموعة "${group.groupName}"</b><br><br>` +
-        `هنعيد كل الأسئلة عشان تحدّث البيانات.<br><br>` +
-        `<b>السؤال 1/10:</b><br>🎯 اسم المجموعة الجديد إيه؟`
-    );
-    
-    aiBookingMode = true;
-    aiBookingStep = 1;
-    aiBookingData = {
-        groupName: group.groupName || '',
-        teacherName: group.teacherName || '',
-        centerName: group.centerName || '',
-        studentsCount: group.maxCapacity || '',
-        gender: group.gender === 'boys' ? 'أولاد فقط' : group.gender === 'girls' ? 'بنات فقط' : 'مختلط',
-        location: group.location || 'السنتر',
-        startTime: group.startTime || '',
-        endTime: group.endTime || '',
-        dayName: group.daysNames?.[0] || '',
-        repeatWeekly: group.apptType === 'recurring' ? 'أيوه' : 'لا'
-    };
-    
-    updateLiveSummary();
-    setInputMode('text', 'اكتب الاسم الجديد...');
-}
-
-/* ============================================================ */
-/* ============ handleSend ============ */
-/* ============================================================ */
+/* ============ إرسال ============ */
 sendBtn.onclick = handleSend;
-chatInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); handleSend(); } };
+chatInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
 
 async function handleSend() {
     const val = chatInput.value.trim();
@@ -1700,209 +911,109 @@ async function handleSend() {
     
     chatInput.disabled = true;
     sendBtn.disabled = true;
-    setInputMode('hidden');
+    chatInput.value = '';
     
-    if (aiBookingMode) {
-        addTeacherMessage(val);
-        await processAISBookingResponse(val);
-        chatInput.disabled = false;
-        sendBtn.disabled = false;
-        return;
-    }
+    addUserMessage(val);
+    
+    const typing = showTyping();
+    const reply = await askGroq(val);
+    typing.remove();
+    addAIMessage(reply);
     
     chatInput.disabled = false;
     sendBtn.disabled = false;
+    chatInput.focus();
 }
 
-/* ============================================================ */
-/* ============ الأزرار السريعة ============ */
-/* ============================================================ */
+/* ============ Welcome + Suggestions ============ */
+function showWelcome() {
+    // Welcome card
+    const welcome = document.createElement('div');
+    welcome.className = 'welcome-card';
+    welcome.innerHTML = `
+        <h3>🎓 أهلاً! أنا المساعد التعليمي الذكي</h3>
+        <p style="font-size:13px;color:#6d28d9;line-height:1.6;">
+            جاهز أساعدك في أي حاجة في المنهج المصري والعربي.<br>
+            اختار المرحلة والمادة فوق، أو اسألني مباشرة.
+        </p>
+        <div class="levels">
+            <div class="level-item">🎒 ابتدائي</div>
+            <div class="level-item">📗 إعدادي</div>
+            <div class="level-item">📘 ثانوي</div>
+            <div class="level-item">🎓 جامعة</div>
+        </div>
+    `;
+    chatArea.appendChild(welcome);
+    scrollBottom();
+    
+    // اقتراحات
+    showSuggestions('general');
+}
 
-window.showNextClass = async function() {
-    await addBotMessage('⏭️ ثانية بشوف الحصة الجاية...');
+function showSuggestions(type) {
+    const suggestions = {
+        general: [
+            'اشرحلي الضرب والقسمة بطريقة سهلة',
+            'إيه الفرق بين الحيض والنفاس؟',
+            'احكيلي عن الحضارة الفرعونية',
+            'اشرحلي قوانين نيوتن للحركة',
+            'إيه هي الدالة اللوغاريتمية؟',
+            'علمني إنجليزي بطريقة سهلة',
+            'احكيلي عن دورة الماء في الطبيعة',
+            'إيه هي الخوارزميات في البرمجة؟'
+        ],
+        student: [
+            '❤️ عايز أفهم الرياضيات',
+            '📖 اشرحلي درس من العربي',
+            '🔬 عايز أفهم علوم',
+            '🌍 عايز أتعلم إنجليزي',
+            '💻 عايز أتعلم برمجة',
+            '🎯 عايز حل مسألة رياضية',
+            '🤔 عندي سؤال صعب',
+            '📝 ساعدني أراجع للامتحان'
+        ],
+        teacher: [
+            '📝 جهزلي خطة درس',
+            '❓ اقترح أسئلة للامتحان',
+            '🎨 اقترح أنشطة تعليمية',
+            '💡 افكار لشرح درس صعب',
+            '📊 اعمل لي جدول مراجعة',
+            '🎯 اذكر أخطاء شائعة عند الطلبة',
+            '📚 اقترح مراجع إضافية',
+            '🏆 طرق تحفيز الطلبة'
+        ]
+    };
     
-    const groups = await loadSavedGroups();
-    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات محفوظة 😕'); return; }
+    const list = suggestions[type] || suggestions.general;
     
-    const now = new Date();
-    const todayDow = now.getDay();
-    const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    
-    let nextClass = null, offsetFound = 0;
-    
-    for (let offset = 0; offset <= 7; offset++) {
-        const checkDow = (todayDow + offset) % 7;
-        const checkDayName = dayNames[checkDow];
-        let dayGroups = groups.filter(g => g.daysNames?.[0] === checkDayName && g.isActive !== false);
-        if (offset === 0) dayGroups = dayGroups.filter(g => (g.startTime || '') > currentTime);
-        dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-        if (dayGroups.length > 0) { nextClass = dayGroups[0]; offsetFound = offset; break; }
-    }
-    
-    if (!nextClass) { await addBotMessage('مفيش حصص قادمة في الأسبوع ده 😕'); return; }
-    
-    const whenText = offsetFound === 0 ? 'النهاردة' : offsetFound === 1 ? 'بكرة' : `بعد ${offsetFound} أيام`;
-    const dayName = nextClass.daysNames?.[0] || '';
-    let mapLink = (nextClass.lat && nextClass.lng) ? `<br>🗺️ <a href="https://www.google.com/maps?q=${nextClass.lat},${nextClass.lng}" target="_blank" style="color:#25968b;font-weight:900;">افتح على الخريطة</a>` : '';
-    const addr = [nextClass.address, nextClass.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
-    
-    await addBotMessage(
-        `⏭️ <b>الحصة القادمة:</b><br><br>` +
-        `🎯 <b>${nextClass.groupName}</b><br>` +
-        `📅 ${dayName} (${whenText})<br>` +
-        `🕐 ${formatTime(nextClass.startTime)} - ${formatTime(nextClass.endTime)}<br>` +
-        `👤 ${nextClass.teacherName || '-'}<br>` +
-        `👥 ${nextClass.maxCapacity || 20} طالب<br><br>` +
-        `📍 <b>العنوان:</b><br>${addr}${mapLink}`
-    );
-};
-
-window.showTodayClasses = async function() {
-    await addBotMessage('📆 ثانية بشوف حصص النهاردة...');
-    const groups = await loadSavedGroups();
-    const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const todayName = dayNames[new Date().getDay()];
-    
-    const todayGroups = groups.filter(g => g.daysNames?.[0] === todayName && g.isActive !== false)
-        .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-    
-    if (todayGroups.length === 0) { await addBotMessage(`مفيش حصص النهاردة (${todayName}) 😕`); return; }
-    
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    
-    let text = `📆 <b>حصص النهاردة (${todayName}):</b><br><br>`;
-    todayGroups.forEach((g, i) => {
-        const isNow = (g.startTime || '') <= currentTime && (g.endTime || '') >= currentTime;
-        const isPast = (g.endTime || '') < currentTime;
-        const status = isNow ? '🟢 بتحصل دلوقتي' : (isPast ? '⏹️ خلصت' : '⏳ جاية');
-        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
-        text += `${i+1}. <b>${g.groupName}</b><br>`;
-        text += `   🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}<br>`;
-        text += `   ${status}<br>`;
-        text += `   📍 ${addr}<br><br>`;
-    });
-    await addBotMessage(text);
-};
-
-window.showAllAddresses = async function() {
-    await addBotMessage('📍 ثانية بجيبلك عناوين مجموعاتك...');
-    const groups = await loadSavedGroups();
-    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
-    
-    const withAddr = groups.filter(g => g.address || g.detailedAddress || (g.lat && g.lng));
-    if (withAddr.length === 0) { await addBotMessage('مفيش مجموعات ليها عنوان محدد 😕'); return; }
-    
-    let text = `📍 <b>عناوين مجموعاتك (${withAddr.length}):</b><br><br>`;
-    withAddr.forEach((g, i) => {
-        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
-        let mapLink = '';
-        if (g.lat && g.lng) {
-            mapLink = ` <a href="https://www.google.com/maps?q=${g.lat},${g.lng}" target="_blank" style="color:#25968b;font-weight:900;">🗺️ خريطة</a>`;
-        }
-        text += `${i+1}. <b>${g.groupName}</b><br>`;
-        text += `   📍 ${addr}${mapLink}<br>`;
-        text += `   📅 ${g.daysNames?.[0] || ''} • 🕐 ${formatTime(g.startTime)}<br><br>`;
-    });
-    await addBotMessage(text);
-};
-
-window.showQuestionMenu = async function() {
-    await addBotMessage('❓ اتفضل اختار سؤالك:');
-    setInputMode('hidden');
-    showOptions([
-        { label: 'الحصة القادمة إمتى؟', icon: '⏭️', value: 'next' },
-        { label: 'النهاردة عندي إيه؟', icon: '📆', value: 'today' },
-        { label: 'بكرة عندي إيه؟', icon: '📅', value: 'tomorrow' },
-        { label: 'عناوين مجموعاتي فين؟', icon: '📍', value: 'addresses' },
-        { label: 'عندي كام مجموعة؟', icon: '📊', value: 'count' }
-    ], async (opt) => {
-        if (opt.value === 'next') await showNextClass();
-        else if (opt.value === 'today') await showTodayClasses();
-        else if (opt.value === 'tomorrow') await showTomorrowClasses();
-        else if (opt.value === 'addresses') await showAllAddresses();
-        else if (opt.value === 'count') await showGroupsCount();
-    });
-};
-
-window.showTomorrowClasses = async function() {
-    await addBotMessage('📅 ثانية بشوف حصص بكرة...');
-    const groups = await loadSavedGroups();
-    const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowName = dayNames[tomorrow.getDay()];
-    
-    const tGroups = groups.filter(g => g.daysNames?.[0] === tomorrowName && g.isActive !== false)
-        .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-    
-    if (tGroups.length === 0) { await addBotMessage(`مفيش حصص بكرة (${tomorrowName}) 😕`); return; }
-    
-    let text = `📅 <b>حصص بكرة (${tomorrowName}):</b><br><br>`;
-    tGroups.forEach((g, i) => {
-        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
-        text += `${i+1}. <b>${g.groupName}</b><br>`;
-        text += `   🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}<br>`;
-        text += `   📍 ${addr}<br><br>`;
-    });
-    await addBotMessage(text);
-};
-
-window.showGroupsCount = async function() {
-    await addBotMessage('📊 ثانية بحسبلك مجموعاتك...');
-    const groups = await loadSavedGroups();
-    const visible = groups.filter(g => g.isActive !== false).length;
-    const hidden = groups.length - visible;
-    const recurring = groups.filter(g => g.apptType === 'recurring').length;
-    const normal = groups.length - recurring;
-    const totalCapacity = groups.reduce((s, g) => s + (parseInt(g.maxCapacity) || 0), 0);
-    
-    await addBotMessage(
-        `📊 <b>إحصائيات مجموعاتك:</b><br><br>` +
-        `📚 إجمالي المجموعات: <b>${groups.length}</b><br>` +
-        `👁️ ظاهرة: <b>${visible}</b><br>` +
-        `🙈 مخفية: <b>${hidden}</b><br>` +
-        `🔁 تكرار أسبوعي: <b>${recurring}</b><br>` +
-        `📅 مرة واحدة: <b>${normal}</b><br>` +
-        `👥 إجمالي السعة: <b>${totalCapacity}</b> طالب`
-    );
-};
-
-/* ============ showOptions ============ */
-function showOptions(options, onSelect) {
     const container = document.createElement('div');
-    container.className = 'options-container';
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
-        btn.onclick = () => {
+    container.className = 'suggestions';
+    container.id = 'suggestionsBox';
+    
+    // ناخد 6 عشوائي
+    const shuffled = [...list].sort(() => Math.random() - 0.5).slice(0, 6);
+    
+    shuffled.forEach(text => {
+        const chip = document.createElement('button');
+        chip.className = 'suggestion-chip';
+        chip.textContent = text;
+        chip.onclick = () => {
+            chatInput.value = text;
             container.remove();
-            onSelect(opt);
+            handleSend();
         };
-        container.appendChild(btn);
+        container.appendChild(chip);
     });
+    
     chatArea.appendChild(container);
     scrollBottom();
 }
 
 /* ============ التهيئة ============ */
-async function init() {
-    const saved = localStorage.getItem('teacherSelections');
-    if (!saved || saved === '{}') {
-        addBotMessage('⚠️ <b>مش لاقي مواد مختارة!</b><br>ارجع للصفحة اللي فاتت اختار موادك.', false);
-        setTimeout(() => { window.location.href = 'mester1.html'; }, 2500);
-        return;
-    }
-    
-    updateLiveSummary();
-    
-    await addBotMessage(
-        'إزيك يا مستر 👋<br><br>' +
-        '💡 <b>ابدأ الحجز بالـ AI:</b> دوس على زر <b>⚡ ابدأ الحجز بالـ AI</b> تحت، وأنا هسألك على كل البيانات واحدة واحدة.'
-    );
-    
-    await updateGroupsBadge();
+function init() {
+    renderCategoryBar();
+    updateStatusText();
+    showWelcome();
 }
 
 init();
