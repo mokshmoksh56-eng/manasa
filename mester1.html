@@ -65,35 +65,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        .back-btn-header {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(6px);
-            transition: all 0.25s ease;
-            font-family: inherit;
-            z-index: 10;
-        }
-        .back-btn-header:hover { 
-            background: rgba(255,255,255,0.3); 
-            transform: translateY(-2px); 
-        }
-        .back-btn-header:active { 
-            transform: scale(0.96); 
-        }
-
         .cloud-badge {
             position: absolute;
             top: 12px;
@@ -493,11 +464,6 @@
     </div>
 
     <header class="header-3d">
-        <a href="mester3.html" class="back-btn-header">
-            <span>🏠</span>
-            <span>الرئيسية</span>
-        </a>
-
         <div class="cloud-badge" id="cloudBadge">
             <span class="dot"></span>
             <span id="cloudText">جاري الاتصال...</span>
@@ -1236,7 +1202,7 @@
     (function() {
         'use strict';
 
-        // ✅ مهم: نضيف history entry عشان زر الرجوع يشتغل صح
+        // ✅ نضيف history entry عشان زر الرجوع يشتغل صح
         try {
             history.pushState({ page: 'mester1' }, '', location.href);
         } catch(e) {}
