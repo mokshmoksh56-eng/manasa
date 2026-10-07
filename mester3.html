@@ -86,21 +86,51 @@
     .cloud-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulseDot 1.5s infinite; }
     @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .user-actions { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 10; }
-    .user-badge {
-        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-        color: #fff; padding: 6px 12px; border-radius: 20px;
-        font-size: 11px; font-weight: 900;
-        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
-        max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    /* ========================================================== */
+    /* ✨ شريط المستخدم (اسم + تسجيل خروج تحت) */
+    /* ========================================================== */
+    .user-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 14px;
+        flex-wrap: wrap;
     }
+
+    .user-badge {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .logout-btn {
-        background: rgba(220,38,38,0.85); border: 1px solid rgba(255,255,255,0.3);
-        color: #fff; padding: 6px 12px; border-radius: 20px;
-        font-size: 11px; font-weight: 900;
-        display: flex; align-items: center; gap: 5px;
-        backdrop-filter: blur(6px); cursor: pointer;
-        transition: all 0.25s ease; font-family: inherit;
+        background: rgba(220,38,38,0.85);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        font-family: inherit;
         box-shadow: 0 3px 10px rgba(220,38,38,0.35);
     }
     .logout-btn:hover { background: rgba(220,38,38,1); transform: translateY(-2px); }
@@ -133,10 +163,7 @@
     .launcher-card:hover { transform: translateY(-4px); border-color: var(--primary-teal); }
     .launcher-card:active { transform: translateY(-1px) scale(0.99); }
 
-    /* ✅ كارت التخصص بحالات مختلفة */
-    .launcher-card.specialty-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-    /* 🟢 كارت مكتمل (أخضر) */
+    /* 🟢 كارت مكتمل */
     .launcher-card.specialty-card.completed,
     .launcher-card.schedule-card.completed {
         background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
@@ -167,7 +194,7 @@
         color: #fff;
     }
 
-    /* 🟡 كارت ناقص (أصفر) */
+    /* 🟡 كارت ناقص */
     .launcher-card.specialty-card.incomplete,
     .launcher-card.schedule-card.incomplete {
         background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
@@ -212,7 +239,6 @@
     .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
     .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
 
-    /* 📝 بادج الحالة */
     .card-state-badge {
         display: inline-flex;
         align-items: center;
@@ -244,7 +270,6 @@
     }
     .card-state-badge .badge-icon { font-size: 12px; }
 
-    /* ملخص صغير */
     .card-specialty-summary,
     .card-schedule-summary {
         display: none;
@@ -274,6 +299,90 @@
         flex-shrink: 0; transition: all 0.3s ease;
     }
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
+
+    /* ========================================================== */
+    /* 📝 جدول التذكير الصغير تحت خالص */
+    /* ========================================================== */
+    .reminder-table {
+        margin-top: 24px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
+        animation: reminderFadeIn 0.5s ease;
+    }
+    @keyframes reminderFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .reminder-table .rt-title {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--dark-teal);
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1.5px dashed #cbd5e1;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .reminder-table .rt-title .rt-icon {
+        font-size: 14px;
+    }
+    .reminder-table table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+    }
+    .reminder-table table th {
+        text-align: right;
+        padding: 6px 8px;
+        background: #f1f5f9;
+        color: var(--text-dark);
+        font-weight: 900;
+        border-radius: 6px 0 0 6px;
+        font-size: 11px;
+        width: 35%;
+    }
+    .reminder-table table td {
+        padding: 6px 8px;
+        color: var(--text-dark);
+        font-weight: 800;
+        font-size: 11.5px;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+    .reminder-table table tr {
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    .reminder-table table tr:last-child {
+        border-bottom: none;
+    }
+    .reminder-table .rt-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 10.5px;
+        font-weight: 900;
+    }
+    .reminder-table .rt-badge.green {
+        background: #D1FAE5;
+        color: #065F46;
+        border: 1px solid #6EE7B7;
+    }
+    .reminder-table .rt-badge.orange {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FCD34D;
+    }
+    .reminder-table .rt-badge.gray {
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #cbd5e1;
+    }
 
     /* نافذة تسجيل الخروج */
     .logout-modal-overlay {
@@ -311,16 +420,10 @@
     .logout-btn-cancel:hover { background: #e2e8f0; transform: translateY(-2px); }
 
     .footer-note {
-        text-align: center; margin-top: 24px;
-        font-size: 11.5px; color: var(--text-gray); font-weight: 700;
+        text-align: center; margin-top: 20px;
+        font-size: 11px; color: var(--text-gray); font-weight: 700;
         line-height: 1.6; padding: 0 20px;
         position: relative; z-index: 10;
-    }
-    .footer-note .version {
-        display: inline-block; background: #f1f5f9;
-        padding: 3px 10px; border-radius: 20px;
-        font-size: 10.5px; margin-top: 6px;
-        border: 1px solid #e2e8f0;
     }
 
     @media (max-width: 480px) {
@@ -333,13 +436,16 @@
         .card-subtitle { font-size: 11.5px; }
         .card-arrow { width: 32px; height: 32px; font-size: 16px; }
         .page-title { font-size: 15px; padding: 12px 15px; }
-        .user-actions { gap: 5px; }
-        .user-badge { font-size: 10px; padding: 5px 9px; max-width: 120px; }
-        .logout-btn { font-size: 10px; padding: 5px 10px; }
-        .logout-btn .logout-label { display: none; }
+        .user-bar { gap: 6px; margin-top: 12px; }
+        .user-badge { font-size: 11px; padding: 5px 10px; max-width: 140px; }
+        .logout-btn { font-size: 11px; padding: 5px 10px; }
         .card-specialty-summary,
         .card-schedule-summary { font-size: 10px; padding: 4px 7px; }
         .card-state-badge { font-size: 9.5px; padding: 3px 8px; }
+        .reminder-table { padding: 10px 11px; }
+        .reminder-table table { font-size: 10.5px; }
+        .reminder-table table th,
+        .reminder-table table td { padding: 5px 6px; font-size: 10.5px; }
     }
 </style>
 </head>
@@ -375,18 +481,21 @@
             <span class="dot"></span>
             <span>متصل</span>
         </div>
-        <div class="user-actions">
+
+        <h1>منصة احجزلي</h1>
+        <p>بوابة المعلم - اختر القسم للبدء</p>
+
+        <!-- ✨ شريط المستخدم (اسم + تسجيل خروج تحت) -->
+        <div class="user-bar">
             <div class="user-badge" id="userBadge" style="display:none;">
                 <span>👤</span>
                 <span id="userName">المعلم</span>
             </div>
             <button class="logout-btn" onclick="openLogoutModal()" title="تسجيل الخروج">
                 <span>🚪</span>
-                <span class="logout-label">خروج</span>
+                <span>تسجيل الخروج</span>
             </button>
         </div>
-        <h1>منصة احجزلي</h1>
-        <p>بوابة المعلم - اختر القسم للبدء</p>
     </header>
 
     <!-- الحاوية -->
@@ -397,7 +506,7 @@
         </div>
 
         <div class="cards-grid">
-            <!-- ✅ كارت التخصص -->
+            <!-- كارت التخصص -->
             <a href="mester1.html" class="launcher-card specialty-card" id="specialtyCard">
                 <div class="card-icon">📚</div>
                 <div class="card-content">
@@ -408,7 +517,7 @@
                 <div class="card-arrow">‹</div>
             </a>
 
-            <!-- ✅ كارت المواعيد -->
+            <!-- كارت المواعيد -->
             <a href="mester2.html" class="launcher-card schedule-card" id="scheduleCard">
                 <div class="card-icon">📅</div>
                 <div class="card-content">
@@ -420,9 +529,30 @@
             </a>
         </div>
 
+        <!-- 📝 جدول التذكير الصغير -->
+        <div class="reminder-table" id="reminderTable">
+            <div class="rt-title">
+                <span class="rt-icon">📋</span>
+                <span>ملخص التذكرة</span>
+            </div>
+            <table>
+                <tr>
+                    <th>📚 التخصص</th>
+                    <td id="rtSpecialty">لم يتم اختيار تخصص بعد</td>
+                </tr>
+                <tr>
+                    <th>📅 عدد الحصص</th>
+                    <td id="rtSchedule">0 حصة</td>
+                </tr>
+                <tr>
+                    <th>✅ الحالة</th>
+                    <td id="rtStatus"><span class="rt-badge gray">غير مكتمل</span></td>
+                </tr>
+            </table>
+        </div>
+
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
-            <div class="version">v4.0</div>
         </div>
     </div>
 
@@ -515,7 +645,6 @@
                 const countStr = localStorage.getItem('teacher_groups_count') || '0';
                 const count = parseInt(countStr) || 0;
 
-                // شرط: لازم تخصص محفوظ كامل + فيه حصص
                 let hasSpecialty = false;
                 try {
                     const data = saved ? JSON.parse(saved) : null;
@@ -550,21 +679,92 @@
                     card.classList.add('incomplete');
                     let msg = '';
                     if (!hasSpecialty) {
-                        msg = '⚠️ أكمل التخصص أولاً';
+                        msg = 'أكمل التخصص أولاً';
                     } else if (count === 0) {
-                        msg = '⚠️ لم تضيف أي حصة بعد';
+                        msg = 'لم تضيف أي حصة بعد';
                     } else {
-                        msg = '⚠️ اضغط لإضافة مواعيد';
+                        msg = 'اضغط لإضافة مواعيد';
                     }
                     stateWrap.innerHTML = `
                         <span class="card-state-badge incomplete">
                             <span class="badge-icon">⚠️</span>
-                            <span>${msg.replace('⚠️ ', '')}</span>
+                            <span>${msg}</span>
                         </span>
                     `;
                 }
             } catch(e) {
                 console.warn('⚠️ فشل تحديث كارت المواعيد:', e);
+            }
+        }
+
+        // ==========================================================
+        // 📝 تحديث جدول التذكير الصغير
+        // ==========================================================
+        function updateReminderTable() {
+            try {
+                const rtSpecialty = document.getElementById('rtSpecialty');
+                const rtSchedule = document.getElementById('rtSchedule');
+                const rtStatus = document.getElementById('rtStatus');
+                if (!rtSpecialty || !rtSchedule || !rtStatus) return;
+
+                // === التخصص ===
+                const saved = localStorage.getItem('mester1_selections') 
+                           || localStorage.getItem('teacherSelections');
+                
+                let specialtyText = 'لم يتم اختيار تخصص بعد';
+                let hasSpecialty = false;
+
+                try {
+                    const data = saved ? JSON.parse(saved) : null;
+                    if (data && Object.keys(data).length > 0) {
+                        const stageNames = {
+                            'kg': 'رياض الأطفال',
+                            'primary': 'الابتدائية',
+                            'prep': 'الإعدادية',
+                            'secondary': 'الثانوية',
+                            'azhar': 'الأزهرية',
+                            'azhar_secondary': 'الأزهرية الثانوية'
+                        };
+
+                        let parts = [];
+                        for (const stageId in data) {
+                            const sel = data[stageId];
+                            if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
+                            if (!sel.grade || sel.grade.trim() === '') continue;
+
+                            const stageName = stageNames[stageId] || stageId;
+                            parts.push(`${stageName} - ${sel.grade} (${sel.subjects.length} مادة)`);
+                            hasSpecialty = true;
+                        }
+
+                        if (parts.length > 0) {
+                            specialtyText = parts.join(' • ');
+                        }
+                    }
+                } catch(e) {}
+
+                rtSpecialty.textContent = specialtyText;
+
+                // === المواعيد ===
+                const countStr = localStorage.getItem('teacher_groups_count') || '0';
+                const count = parseInt(countStr) || 0;
+                rtSchedule.textContent = `${count} حصة`;
+
+                // === الحالة العامة ===
+                let statusHtml = '';
+                if (hasSpecialty && count > 0) {
+                    statusHtml = '<span class="rt-badge green">✅ مكتمل</span>';
+                } else if (hasSpecialty && count === 0) {
+                    statusHtml = '<span class="rt-badge orange">⚠️ ناقص المواعيد</span>';
+                } else if (!hasSpecialty) {
+                    statusHtml = '<span class="rt-badge orange">⚠️ ناقص التخصص</span>';
+                } else {
+                    statusHtml = '<span class="rt-badge gray">—</span>';
+                }
+                rtStatus.innerHTML = statusHtml;
+
+            } catch(e) {
+                console.warn('⚠️ فشل تحديث جدول التذكير:', e);
             }
         }
 
@@ -621,22 +821,23 @@
         // ==========================================================
         // 🎯 التهيئة
         // ==========================================================
-        window.addEventListener('DOMContentLoaded', () => {
-            showTeacherName();
+        function updateAll() {
             updateSpecialtyCard();
             updateScheduleCard();
+            updateReminderTable();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showTeacherName();
+            updateAll();
             console.log('✅ mester3 جاهز');
         });
 
         window.addEventListener('pageshow', () => {
-            updateSpecialtyCard();
-            updateScheduleCard();
+            updateAll();
         });
 
-        setInterval(() => {
-            updateSpecialtyCard();
-            updateScheduleCard();
-        }, 3000);
+        setInterval(updateAll, 3000);
 
     })();
     </script>
