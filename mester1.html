@@ -432,6 +432,12 @@
         }
         .save-btn:active { transform: scale(0.97); }
 
+        .save-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .summary-box {
             background: var(--white); border: 1.5px solid var(--primary-teal); border-radius: 10px;
             padding: 10px 14px; margin-top: 6px; font-size: 13px; color: var(--text-dark);
@@ -856,7 +862,9 @@
             summaryContent.innerHTML = total === 0 ? 'لم تختر أي مادة بعد.' : html;
         }
 
-        // 💾 حفظ فقط — بدون انتقال + إعلام الصفحة الأم (لو موجودة)
+        // ==========================================================
+        // 💾 حفظ التخصص + رجوع لـ mester3
+        // ==========================================================
         window.saveSelection = function() {
             let total = 0;
             for (const stageId in selections) {
@@ -876,25 +884,32 @@
                 }
             }
 
+            // ✅ الحفظ في localStorage
             localStorage.setItem('teacherSelections', JSON.stringify(finalData));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
             localStorage.setItem('mester1_is_locked', 'true');
+            localStorage.setItem('mester1_last_saved', String(Date.now()));
 
-            // ✅ إعلام الصفحة الأم (لو جوه iframe)
-            if (window.parent && window.parent !== window) {
-                window.parent.postMessage({ type: 'specialty_saved' }, '*');
-            }
+            console.log('✅ تم حفظ التخصص:', finalData);
 
             // ✅ إشعار نجاح الحفظ
             const badge = document.getElementById('curriculumBadge');
             if (badge) {
-                badge.innerHTML = '<span>✅</span><span>تم حفظ اختياراتك بنجاح</span>';
+                badge.innerHTML = '<span>✅</span><span>تم حفظ اختياراتك بنجاح — جاري الرجوع...</span>';
                 badge.classList.add('show');
-                setTimeout(() => {
-                    badge.classList.remove('show');
-                    badge.innerHTML = '<span>☁️</span><span>تم تحديث المواد من السحابة</span>';
-                }, 2000);
             }
+
+            // ✅ تعطيل الزر مؤقتاً
+            const btn = document.getElementById('mainSaveBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>✅</span><span>تم الحفظ — جاري الرجوع لـ mester3...</span>';
+            }
+
+            // ✅ بعد ثانيتين → ارجع لـ mester3
+            setTimeout(() => {
+                window.location.href = 'mester3.html';
+            }, 1800);
         };
 
         // ==========================================================
