@@ -33,7 +33,6 @@
         position: relative;
     }
 
-    /* ✨ خلفية متحركة */
     .animated-bg {
         position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
         background: linear-gradient(135deg, #f7f9fa 0%, #e0f2f0 25%, #f7f9fa 50%, #fef3c7 75%, #f7f9fa 100%);
@@ -63,7 +62,6 @@
     .decorative-lines::after { width: 700px; height: 700px; bottom: -300px; right: -300px; border-color: rgba(245,158,11,0.12); animation: rotateSlow 80s linear infinite reverse; }
     @keyframes rotateSlow { to { transform: rotate(360deg); } }
 
-    /* الهيدر */
     .header-3d {
         width: 100%;
         background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%), url('teacher2.png') center/cover no-repeat;
@@ -130,12 +128,65 @@
         position: relative; overflow: hidden;
     }
     .launcher-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--primary-teal); transition: width 0.3s ease; }
-    .launcher-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px -10px rgba(0,150,136,0.4); border-color: var(--primary-teal); }
-    .launcher-card:hover::before { width: 8px; }
+    .launcher-card:hover { transform: translateY(-4px); border-color: var(--primary-teal); }
     .launcher-card:active { transform: translateY(-1px) scale(0.99); }
 
     .launcher-card.schedule-card::before { background: linear-gradient(180deg, var(--orange), var(--dark-orange)); }
     .launcher-card.schedule-card:hover { box-shadow: 0 15px 35px -10px rgba(245,158,11,0.4); border-color: var(--orange); }
+
+    /* ✅ كارت التخصص بحالات مختلفة */
+    .launcher-card.specialty-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+    /* 🟢 كارت مكتمل */
+    .launcher-card.specialty-card.completed {
+        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+        border-color: #10B981;
+        box-shadow: 0 10px 30px -8px rgba(16,185,129,0.5), 0 4px 12px rgba(16,185,129,0.2);
+    }
+    .launcher-card.specialty-card.completed::before {
+        background: linear-gradient(180deg, #10B981, #047857);
+        width: 8px;
+    }
+    .launcher-card.specialty-card.completed .card-icon {
+        background: linear-gradient(135deg, #10B981, #047857);
+        border-color: #047857;
+        color: #fff;
+        animation: iconPulseGreen 2s ease-in-out infinite;
+    }
+    @keyframes iconPulseGreen {
+        0%, 100% { box-shadow: 0 6px 18px -4px rgba(16,185,129,0.6); }
+        50% { box-shadow: 0 8px 25px -2px rgba(16,185,129,0.9); }
+    }
+    .launcher-card.specialty-card.completed .card-title { color: #065F46; }
+    .launcher-card.specialty-card.completed .card-arrow {
+        background: #10B981;
+        color: #fff;
+    }
+
+    /* 🟡 كارت ناقص */
+    .launcher-card.specialty-card.incomplete {
+        background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+        border-color: #F59E0B;
+        box-shadow: 0 10px 30px -8px rgba(245,158,11,0.4);
+    }
+    .launcher-card.specialty-card.incomplete::before {
+        background: linear-gradient(180deg, #F59E0B, #D97706);
+        width: 8px;
+    }
+    .launcher-card.specialty-card.incomplete .card-icon {
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        border-color: #FCD34D;
+        animation: iconPulseOrange 1.5s ease-in-out infinite;
+    }
+    @keyframes iconPulseOrange {
+        0%, 100% { box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4); }
+        50% { box-shadow: 0 8px 20px -2px rgba(245,158,11,0.8); }
+    }
+    .launcher-card.specialty-card.incomplete .card-title { color: #92400E; }
+    .launcher-card.specialty-card.incomplete .card-arrow {
+        background: #F59E0B;
+        color: #fff;
+    }
 
     .card-icon {
         width: 64px; height: 64px; border-radius: 16px;
@@ -153,14 +204,46 @@
     .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
     .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
 
-    /* ✅ ملخص التخصص الصغير جوه كارت التخصص */
+    /* 📝 حالة الكارت */
+    .card-state-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10.5px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-top: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        animation: stateBadgeIn 0.4s ease;
+    }
+    @keyframes stateBadgeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .card-state-badge.completed {
+        background: linear-gradient(135deg, #10B981, #047857);
+        color: #fff;
+    }
+    .card-state-badge.incomplete {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        animation: stateBadgePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes stateBadgePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.06); }
+    }
+    .card-state-badge .badge-icon { font-size: 12px; }
+
+    /* ملخص التخصص الصغير */
     .card-specialty-summary {
         display: none;
         margin-top: 6px;
         font-size: 11px;
         font-weight: 800;
-        color: #059669;
-        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+        color: #065F46;
+        background: rgba(255,255,255,0.7);
         border: 1px solid #6EE7B7;
         border-radius: 8px;
         padding: 5px 9px;
@@ -169,16 +252,9 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
-        animation: summaryFadeIn 0.4s ease;
     }
     .card-specialty-summary.show { display: block; }
-    .card-specialty-summary .s-icon {
-        margin-left: 3px;
-    }
-    @keyframes summaryFadeIn {
-        from { opacity: 0; transform: translateY(-5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    .card-specialty-summary .s-icon { margin-left: 3px; }
 
     .card-arrow {
         width: 36px; height: 36px; border-radius: 50%;
@@ -186,7 +262,7 @@
         color: var(--text-gray); font-size: 18px; font-weight: 900;
         flex-shrink: 0; transition: all 0.3s ease;
     }
-    .launcher-card:hover .card-arrow { background: var(--primary-teal); color: #fff; transform: translateX(-4px); }
+    .launcher-card:hover .card-arrow { transform: translateX(-4px); }
     .launcher-card.schedule-card:hover .card-arrow { background: var(--orange); color: #fff; }
 
     /* نافذة تسجيل الخروج */
@@ -252,12 +328,12 @@
         .logout-btn { font-size: 10px; padding: 5px 10px; }
         .logout-btn .logout-label { display: none; }
         .card-specialty-summary { font-size: 10px; padding: 4px 7px; }
+        .card-state-badge { font-size: 9.5px; padding: 3px 8px; }
     }
 </style>
 </head>
 <body>
 
-    <!-- ✨ الخلفية المتحركة -->
     <div class="animated-bg">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -266,7 +342,6 @@
         <div class="decorative-lines"></div>
     </div>
 
-    <!-- 🚪 نافذة تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
@@ -281,7 +356,6 @@
         </div>
     </div>
 
-    <!-- الهيدر -->
     <header class="header-3d">
         <div class="cloud-badge">
             <span class="dot"></span>
@@ -301,7 +375,6 @@
         <p>بوابة المعلم - اختر القسم للبدء</p>
     </header>
 
-    <!-- الحاوية -->
     <div class="main-container">
         <div class="page-title">
             <span>🏠</span>
@@ -309,14 +382,14 @@
         </div>
 
         <div class="cards-grid">
-            <!-- كارت التخصص -->
-            <a href="mester1.html" class="launcher-card">
+            <!-- ✅ كارت التخصص -->
+            <a href="mester1.html" class="launcher-card specialty-card" id="specialtyCard">
                 <div class="card-icon">📚</div>
                 <div class="card-content">
                     <div class="card-title"><span>التخصص</span></div>
                     <div class="card-subtitle">اختر الصف والمواد التي تدرسها</div>
-                    <!-- ✅ ملخص التخصص الصغير -->
-                    <div class="card-specialty-summary" id="cardSpecialtySummary"></div>
+                    <!-- ✅ الحالة + الملخص -->
+                    <div id="specialtyStateWrap"></div>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
@@ -334,7 +407,7 @@
 
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
-            <div class="version">v3.6</div>
+            <div class="version">v3.7</div>
         </div>
     </div>
 
@@ -343,65 +416,77 @@
         'use strict';
 
         // ==========================================================
-        // 📚 عرض ملخص التخصص جوه كارت التخصص
+        // 📚 تحديث حالة كارت التخصص
         // ==========================================================
-        function showSpecialtySummary() {
+        function updateSpecialtyCard() {
             try {
-                const el = document.getElementById('cardSpecialtySummary');
-                if (!el) return;
+                const card = document.getElementById('specialtyCard');
+                const stateWrap = document.getElementById('specialtyStateWrap');
+                if (!card || !stateWrap) return;
 
                 const saved = localStorage.getItem('mester1_selections') 
                            || localStorage.getItem('teacherSelections');
                 
-                if (!saved) {
-                    el.classList.remove('show');
-                    return;
-                }
+                let data = null;
+                try { data = saved ? JSON.parse(saved) : null; } catch(e) { data = null; }
 
-                let data;
-                try { data = JSON.parse(saved); } catch(e) {
-                    el.classList.remove('show');
-                    return;
-                }
-
-                if (!data || Object.keys(data).length === 0) {
-                    el.classList.remove('show');
-                    return;
-                }
-
-                const stageNames = {
-                    'kg': 'رياض الأطفال',
-                    'primary': 'الابتدائية',
-                    'prep': 'الإعدادية',
-                    'secondary': 'الثانوية',
-                    'azhar': 'الأزهرية',
-                    'azhar_secondary': 'الأزهرية الثانوية'
-                };
-
+                let isComplete = false;
                 let lines = [];
                 let totalSubjects = 0;
 
-                for (const stageId in data) {
-                    const sel = data[stageId];
-                    if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
+                if (data && Object.keys(data).length > 0) {
+                    const stageNames = {
+                        'kg': 'رياض الأطفال',
+                        'primary': 'الابتدائية',
+                        'prep': 'الإعدادية',
+                        'secondary': 'الثانوية',
+                        'azhar': 'الأزهرية',
+                        'azhar_secondary': 'الأزهرية الثانوية'
+                    };
 
-                    const stageName = stageNames[stageId] || stageId;
-                    const grade = sel.grade || '';
-                    lines.push(`${stageName}${grade ? ' - ' + grade : ''} (${sel.subjects.length} مادة)`);
-                    totalSubjects += sel.subjects.length;
+                    for (const stageId in data) {
+                        const sel = data[stageId];
+                        if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
+                        if (!sel.grade || sel.grade.trim() === '') continue;
+
+                        const stageName = stageNames[stageId] || stageId;
+                        lines.push(`${stageName} - ${sel.grade} (${sel.subjects.length} مادة)`);
+                        totalSubjects += sel.subjects.length;
+                        isComplete = true;
+                    }
                 }
 
-                if (lines.length === 0) {
-                    el.classList.remove('show');
-                    return;
+                // شيل الحالات القديمة
+                card.classList.remove('completed', 'incomplete');
+                stateWrap.innerHTML = '';
+
+                if (isComplete) {
+                    // 🟢 مكتمل
+                    card.classList.add('completed');
+                    stateWrap.innerHTML = `
+                        <span class="card-state-badge completed">
+                            <span class="badge-icon">✅</span>
+                            <span>مكتمل — ${totalSubjects} مادة</span>
+                        </span>
+                        <div class="card-specialty-summary show">
+                            <span class="s-icon">📖</span>
+                            ${lines.join(' • ')}
+                        </div>
+                    `;
+                    console.log(`✅ الكارت مكتمل — ${totalSubjects} مادة`);
+                } else {
+                    // 🟡 ناقص
+                    card.classList.add('incomplete');
+                    stateWrap.innerHTML = `
+                        <span class="card-state-badge incomplete">
+                            <span class="badge-icon">⚠️</span>
+                            <span>لم يكتمل — اضغط لإكمال التخصص</span>
+                        </span>
+                    `;
+                    console.log('⚠️ الكارت ناقص');
                 }
-
-                el.innerHTML = `<span class="s-icon">✅</span> ${lines.join(' • ')}`;
-                el.classList.add('show');
-
-                console.log('✅ ملخص التخصص:', lines.join(' • '));
             } catch(e) {
-                console.warn('⚠️ فشل عرض ملخص التخصص:', e);
+                console.warn('⚠️ فشل تحديث كارت التخصص:', e);
             }
         }
 
@@ -460,17 +545,15 @@
         // ==========================================================
         window.addEventListener('DOMContentLoaded', () => {
             showTeacherName();
-            showSpecialtySummary();
+            updateSpecialtyCard();
             console.log('✅ mester3 جاهز');
         });
 
-        // تحديث عند الرجوع من صفحة تانية
         window.addEventListener('pageshow', () => {
-            showSpecialtySummary();
+            updateSpecialtyCard();
         });
 
-        // تحديث دوري كل 3 ثواني
-        setInterval(showSpecialtySummary, 3000);
+        setInterval(updateSpecialtyCard, 3000);
 
     })();
     </script>
