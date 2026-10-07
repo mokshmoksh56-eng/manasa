@@ -33,6 +33,7 @@
         position: relative;
     }
 
+    /* ✨ خلفية متحركة */
     .animated-bg {
         position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
         background: linear-gradient(135deg, #f7f9fa 0%, #e0f2f0 25%, #f7f9fa 50%, #fef3c7 75%, #f7f9fa 100%);
@@ -62,6 +63,7 @@
     .decorative-lines::after { width: 700px; height: 700px; bottom: -300px; right: -300px; border-color: rgba(245,158,11,0.12); animation: rotateSlow 80s linear infinite reverse; }
     @keyframes rotateSlow { to { transform: rotate(360deg); } }
 
+    /* الهيدر */
     .header-3d {
         width: 100%;
         background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%), url('teacher2.png') center/cover no-repeat;
@@ -131,23 +133,23 @@
     .launcher-card:hover { transform: translateY(-4px); border-color: var(--primary-teal); }
     .launcher-card:active { transform: translateY(-1px) scale(0.99); }
 
-    .launcher-card.schedule-card::before { background: linear-gradient(180deg, var(--orange), var(--dark-orange)); }
-    .launcher-card.schedule-card:hover { box-shadow: 0 15px 35px -10px rgba(245,158,11,0.4); border-color: var(--orange); }
-
     /* ✅ كارت التخصص بحالات مختلفة */
     .launcher-card.specialty-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-    /* 🟢 كارت مكتمل */
-    .launcher-card.specialty-card.completed {
+    /* 🟢 كارت مكتمل (أخضر) */
+    .launcher-card.specialty-card.completed,
+    .launcher-card.schedule-card.completed {
         background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
         border-color: #10B981;
         box-shadow: 0 10px 30px -8px rgba(16,185,129,0.5), 0 4px 12px rgba(16,185,129,0.2);
     }
-    .launcher-card.specialty-card.completed::before {
+    .launcher-card.specialty-card.completed::before,
+    .launcher-card.schedule-card.completed::before {
         background: linear-gradient(180deg, #10B981, #047857);
         width: 8px;
     }
-    .launcher-card.specialty-card.completed .card-icon {
+    .launcher-card.specialty-card.completed .card-icon,
+    .launcher-card.schedule-card.completed .card-icon {
         background: linear-gradient(135deg, #10B981, #047857);
         border-color: #047857;
         color: #fff;
@@ -157,23 +159,28 @@
         0%, 100% { box-shadow: 0 6px 18px -4px rgba(16,185,129,0.6); }
         50% { box-shadow: 0 8px 25px -2px rgba(16,185,129,0.9); }
     }
-    .launcher-card.specialty-card.completed .card-title { color: #065F46; }
-    .launcher-card.specialty-card.completed .card-arrow {
+    .launcher-card.specialty-card.completed .card-title,
+    .launcher-card.schedule-card.completed .card-title { color: #065F46; }
+    .launcher-card.specialty-card.completed .card-arrow,
+    .launcher-card.schedule-card.completed .card-arrow {
         background: #10B981;
         color: #fff;
     }
 
-    /* 🟡 كارت ناقص */
-    .launcher-card.specialty-card.incomplete {
+    /* 🟡 كارت ناقص (أصفر) */
+    .launcher-card.specialty-card.incomplete,
+    .launcher-card.schedule-card.incomplete {
         background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
         border-color: #F59E0B;
         box-shadow: 0 10px 30px -8px rgba(245,158,11,0.4);
     }
-    .launcher-card.specialty-card.incomplete::before {
+    .launcher-card.specialty-card.incomplete::before,
+    .launcher-card.schedule-card.incomplete::before {
         background: linear-gradient(180deg, #F59E0B, #D97706);
         width: 8px;
     }
-    .launcher-card.specialty-card.incomplete .card-icon {
+    .launcher-card.specialty-card.incomplete .card-icon,
+    .launcher-card.schedule-card.incomplete .card-icon {
         background: linear-gradient(135deg, #FEF3C7, #FDE68A);
         border-color: #FCD34D;
         animation: iconPulseOrange 1.5s ease-in-out infinite;
@@ -182,8 +189,10 @@
         0%, 100% { box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4); }
         50% { box-shadow: 0 8px 20px -2px rgba(245,158,11,0.8); }
     }
-    .launcher-card.specialty-card.incomplete .card-title { color: #92400E; }
-    .launcher-card.specialty-card.incomplete .card-arrow {
+    .launcher-card.specialty-card.incomplete .card-title,
+    .launcher-card.schedule-card.incomplete .card-title { color: #92400E; }
+    .launcher-card.specialty-card.incomplete .card-arrow,
+    .launcher-card.schedule-card.incomplete .card-arrow {
         background: #F59E0B;
         color: #fff;
     }
@@ -198,13 +207,12 @@
         transition: transform 0.3s ease;
     }
     .launcher-card:hover .card-icon { transform: scale(1.08) rotate(-3deg); }
-    .launcher-card.schedule-card .card-icon { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #FCD34D; }
 
     .card-content { flex: 1; min-width: 0; }
     .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
     .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
 
-    /* 📝 حالة الكارت */
+    /* 📝 بادج الحالة */
     .card-state-badge {
         display: inline-flex;
         align-items: center;
@@ -236,8 +244,9 @@
     }
     .card-state-badge .badge-icon { font-size: 12px; }
 
-    /* ملخص التخصص الصغير */
-    .card-specialty-summary {
+    /* ملخص صغير */
+    .card-specialty-summary,
+    .card-schedule-summary {
         display: none;
         margin-top: 6px;
         font-size: 11px;
@@ -253,8 +262,10 @@
         text-overflow: ellipsis;
         max-width: 100%;
     }
-    .card-specialty-summary.show { display: block; }
-    .card-specialty-summary .s-icon { margin-left: 3px; }
+    .card-specialty-summary.show,
+    .card-schedule-summary.show { display: block; }
+    .card-specialty-summary .s-icon,
+    .card-schedule-summary .s-icon { margin-left: 3px; }
 
     .card-arrow {
         width: 36px; height: 36px; border-radius: 50%;
@@ -263,7 +274,6 @@
         flex-shrink: 0; transition: all 0.3s ease;
     }
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
-    .launcher-card.schedule-card:hover .card-arrow { background: var(--orange); color: #fff; }
 
     /* نافذة تسجيل الخروج */
     .logout-modal-overlay {
@@ -327,13 +337,15 @@
         .user-badge { font-size: 10px; padding: 5px 9px; max-width: 120px; }
         .logout-btn { font-size: 10px; padding: 5px 10px; }
         .logout-btn .logout-label { display: none; }
-        .card-specialty-summary { font-size: 10px; padding: 4px 7px; }
+        .card-specialty-summary,
+        .card-schedule-summary { font-size: 10px; padding: 4px 7px; }
         .card-state-badge { font-size: 9.5px; padding: 3px 8px; }
     }
 </style>
 </head>
 <body>
 
+    <!-- ✨ الخلفية المتحركة -->
     <div class="animated-bg">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -342,6 +354,7 @@
         <div class="decorative-lines"></div>
     </div>
 
+    <!-- 🚪 نافذة تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
@@ -356,6 +369,7 @@
         </div>
     </div>
 
+    <!-- الهيدر -->
     <header class="header-3d">
         <div class="cloud-badge">
             <span class="dot"></span>
@@ -375,6 +389,7 @@
         <p>بوابة المعلم - اختر القسم للبدء</p>
     </header>
 
+    <!-- الحاوية -->
     <div class="main-container">
         <div class="page-title">
             <span>🏠</span>
@@ -388,18 +403,18 @@
                 <div class="card-content">
                     <div class="card-title"><span>التخصص</span></div>
                     <div class="card-subtitle">اختر الصف والمواد التي تدرسها</div>
-                    <!-- ✅ الحالة + الملخص -->
                     <div id="specialtyStateWrap"></div>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
 
-            <!-- كارت المواعيد -->
-            <a href="mester2.html" class="launcher-card schedule-card">
+            <!-- ✅ كارت المواعيد -->
+            <a href="mester2.html" class="launcher-card schedule-card" id="scheduleCard">
                 <div class="card-icon">📅</div>
                 <div class="card-content">
                     <div class="card-title"><span>المواعيد والمجموعات</span></div>
                     <div class="card-subtitle">أضف المجموعات وحدد المواعيد والأماكن</div>
+                    <div id="scheduleStateWrap"></div>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
@@ -407,7 +422,7 @@
 
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
-            <div class="version">v3.7</div>
+            <div class="version">v4.0</div>
         </div>
     </div>
 
@@ -416,7 +431,7 @@
         'use strict';
 
         // ==========================================================
-        // 📚 تحديث حالة كارت التخصص
+        // 📚 تحديث كارت التخصص
         // ==========================================================
         function updateSpecialtyCard() {
             try {
@@ -456,12 +471,10 @@
                     }
                 }
 
-                // شيل الحالات القديمة
                 card.classList.remove('completed', 'incomplete');
                 stateWrap.innerHTML = '';
 
                 if (isComplete) {
-                    // 🟢 مكتمل
                     card.classList.add('completed');
                     stateWrap.innerHTML = `
                         <span class="card-state-badge completed">
@@ -473,9 +486,7 @@
                             ${lines.join(' • ')}
                         </div>
                     `;
-                    console.log(`✅ الكارت مكتمل — ${totalSubjects} مادة`);
                 } else {
-                    // 🟡 ناقص
                     card.classList.add('incomplete');
                     stateWrap.innerHTML = `
                         <span class="card-state-badge incomplete">
@@ -483,10 +494,77 @@
                             <span>لم يكتمل — اضغط لإكمال التخصص</span>
                         </span>
                     `;
-                    console.log('⚠️ الكارت ناقص');
                 }
             } catch(e) {
                 console.warn('⚠️ فشل تحديث كارت التخصص:', e);
+            }
+        }
+
+        // ==========================================================
+        // 📅 تحديث كارت المواعيد
+        // ==========================================================
+        function updateScheduleCard() {
+            try {
+                const card = document.getElementById('scheduleCard');
+                const stateWrap = document.getElementById('scheduleStateWrap');
+                if (!card || !stateWrap) return;
+
+                const saved = localStorage.getItem('mester1_selections') 
+                           || localStorage.getItem('teacherSelections');
+                
+                const countStr = localStorage.getItem('teacher_groups_count') || '0';
+                const count = parseInt(countStr) || 0;
+
+                // شرط: لازم تخصص محفوظ كامل + فيه حصص
+                let hasSpecialty = false;
+                try {
+                    const data = saved ? JSON.parse(saved) : null;
+                    if (data) {
+                        for (const sid in data) {
+                            if (data[sid]?.subjects?.length > 0 && data[sid]?.grade) {
+                                hasSpecialty = true;
+                                break;
+                            }
+                        }
+                    }
+                } catch(e) {}
+
+                const isComplete = hasSpecialty && count > 0;
+
+                card.classList.remove('completed', 'incomplete');
+                stateWrap.innerHTML = '';
+
+                if (isComplete) {
+                    card.classList.add('completed');
+                    stateWrap.innerHTML = `
+                        <span class="card-state-badge completed">
+                            <span class="badge-icon">✅</span>
+                            <span>مكتمل — ${count} حصة</span>
+                        </span>
+                        <div class="card-schedule-summary show">
+                            <span class="s-icon">📆</span>
+                            عدد الحصص: ${count} — إدارة المجموعات والمواعيد
+                        </div>
+                    `;
+                } else {
+                    card.classList.add('incomplete');
+                    let msg = '';
+                    if (!hasSpecialty) {
+                        msg = '⚠️ أكمل التخصص أولاً';
+                    } else if (count === 0) {
+                        msg = '⚠️ لم تضيف أي حصة بعد';
+                    } else {
+                        msg = '⚠️ اضغط لإضافة مواعيد';
+                    }
+                    stateWrap.innerHTML = `
+                        <span class="card-state-badge incomplete">
+                            <span class="badge-icon">⚠️</span>
+                            <span>${msg.replace('⚠️ ', '')}</span>
+                        </span>
+                    `;
+                }
+            } catch(e) {
+                console.warn('⚠️ فشل تحديث كارت المواعيد:', e);
             }
         }
 
@@ -546,14 +624,19 @@
         window.addEventListener('DOMContentLoaded', () => {
             showTeacherName();
             updateSpecialtyCard();
+            updateScheduleCard();
             console.log('✅ mester3 جاهز');
         });
 
         window.addEventListener('pageshow', () => {
             updateSpecialtyCard();
+            updateScheduleCard();
         });
 
-        setInterval(updateSpecialtyCard, 3000);
+        setInterval(() => {
+            updateSpecialtyCard();
+            updateScheduleCard();
+        }, 3000);
 
     })();
     </script>
