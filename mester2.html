@@ -431,7 +431,9 @@ body {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
 
+/* =============================== */
 /* Saved Groups List */
+/* =============================== */
 .groups-list-widget {
     background: #fff;
     border-radius: 16px;
@@ -443,6 +445,140 @@ body {
     max-width: 95%;
 }
 
+.groups-header {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--dark);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.groups-header .add-new {
+    flex: 0;
+    min-width: auto;
+    background: var(--primary);
+    color: #fff;
+    padding: 6px 12px;
+}
+
+/* 🗓️ الجدول الأسبوعي */
+.week-calendar {
+    background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 2px 6px rgba(37,150,139,0.05);
+}
+.week-calendar .wc-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--dark);
+    margin-bottom: 10px;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed var(--border);
+}
+
+.wc-day {
+    background: #fff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.2s;
+}
+.wc-day:last-child { margin-bottom: 0; }
+.wc-day.wc-empty { opacity: 0.6; background: #f8fafc; }
+
+.wc-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.wc-day-name {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--dark);
+}
+.wc-day-count {
+    background: var(--primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 24px;
+    text-align: center;
+}
+.wc-day.wc-empty .wc-day-count { background: #94a3b8; }
+
+.wc-day-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.wc-empty-text {
+    font-size: 11px;
+    color: var(--gray);
+    text-align: center;
+    padding: 4px;
+    font-weight: 700;
+}
+
+.wc-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 800;
+}
+.wc-item-rec {
+    background: #ede9fe;
+    border-right: 3px solid #8b5cf6;
+    color: #5b21b6;
+}
+.wc-item-norm {
+    background: #dbeafe;
+    border-right: 3px solid #3b82f6;
+    color: #1e40af;
+}
+.wc-item-hidden {
+    background: #fee2e2;
+    border-right-color: #dc2626;
+    color: #991b1b;
+    opacity: 0.8;
+}
+
+.wc-time {
+    background: rgba(255,255,255,0.7);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+.wc-group {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.wc-icon {
+    font-size: 12px;
+}
+
+/* =============================== */
+/* Saved group cards */
+/* =============================== */
 .saved-group-card {
     background: #f8fafc;
     border: 2px solid #e2e8f0;
@@ -859,6 +995,7 @@ async function stepMapLocation() {
             display.style.display = 'block';
             display.textContent = `📍 ${state.data.street}`;
             document.getElementById('confirmLocBtn').style.display = 'flex';
+            document.getElementById('addrExtra').value = state.data.detailedAddress || '';
         }
         
         map.on('click', e => {
@@ -900,7 +1037,6 @@ async function stepMapLocation() {
             }
         };
         
-        // ربط زر التأكيد لو كان ظاهر
         const confirmBtn = document.getElementById('confirmLocBtn');
         confirmBtn.onclick = async () => {
             const extra = document.getElementById('addrExtra').value.trim();
@@ -1215,20 +1351,19 @@ async function finishSetup() {
             addBotMessage(`🎉 تم حفظ مجموعة <b>"${state.data.groupName}"</b> بنجاح!`);
         }
         
+        // 🗓️ عرض المجموعات والجدول مباشرة بعد الحفظ
+        await addBotMessage('دي مجموعاتك والجدول الأسبوعي 👇');
+        await showSavedGroups(false, true);
+        
         setInputMode('hidden');
         showOptions([
             { label: 'إضافة مجموعة جديدة', icon: '➕', value: 'new' },
-            { label: 'عرض مجموعاتي', icon: '📋', value: 'list' },
             { label: 'الصفحة التالية', icon: '➡️', value: 'next' }
         ], async (opt) => {
             if (opt.value === 'new') {
                 addTeacherMessage('➕ إضافة مجموعة جديدة');
                 resetState();
                 await stepGroupName();
-            } else if (opt.value === 'list') {
-                addTeacherMessage('📋 عرض مجموعاتي');
-                await addBotMessage('دي مجموعاتك المحفوظة 👇');
-                await showSavedGroups(false);
             } else {
                 addTeacherMessage('➡️ الصفحة التالية');
                 window.location.href = 'mester3.html';
@@ -1256,12 +1391,72 @@ async function loadSavedGroups() {
     }
 }
 
-async function showSavedGroups(firstTime = false) {
+async function showSavedGroups(firstTime = false, showCalendar = true) {
     const groups = await loadSavedGroups();
     
     const widget = document.createElement('div');
     widget.className = 'groups-list-widget';
     widget.id = 'groupsListWidget';
+    
+    // 🗓️ الجدول الأسبوعي
+    let calendarHtml = '';
+    if (showCalendar && groups.length > 0) {
+        const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+        
+        const grouped = {};
+        weekOrder.forEach(d => grouped[d] = []);
+        
+        groups.forEach(g => {
+            const day = g.daysNames?.[0] || 'غير محدد';
+            if (grouped[day]) {
+                grouped[day].push(g);
+            } else {
+                if (!grouped[day]) grouped[day] = [];
+                grouped[day].push(g);
+            }
+        });
+        
+        // ترتيب المواعيد داخل كل يوم حسب الوقت
+        Object.keys(grouped).forEach(day => {
+            grouped[day].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+        });
+        
+        calendarHtml = `
+            <div class="week-calendar">
+                <div class="wc-title">🗓️ الجدول الأسبوعي</div>
+                ${weekOrder.map(day => {
+                    const dayGroups = grouped[day] || [];
+                    return `
+                        <div class="wc-day ${dayGroups.length === 0 ? 'wc-empty' : ''}">
+                            <div class="wc-day-header">
+                                <span class="wc-day-name">${day}</span>
+                                <span class="wc-day-count">${dayGroups.length}</span>
+                            </div>
+                            <div class="wc-day-body">
+                                ${dayGroups.length === 0 
+                                    ? '<span class="wc-empty-text">فاضي</span>'
+                                    : dayGroups.map(g => {
+                                        const isRec = g.apptType === 'recurring';
+                                        const isVisible = g.isActive !== false;
+                                        const typeClass = isRec ? 'wc-item-rec' : 'wc-item-norm';
+                                        const hiddenClass = !isVisible ? 'wc-item-hidden' : '';
+                                        return `
+                                            <div class="wc-item ${typeClass} ${hiddenClass}">
+                                                <span class="wc-time">${formatTime(g.startTime)}</span>
+                                                <span class="wc-group">${g.groupName || '-'}</span>
+                                                ${isRec ? '<span class="wc-icon">🔁</span>' : ''}
+                                                ${!isVisible ? '<span class="wc-icon">🙈</span>' : ''}
+                                            </div>
+                                        `;
+                                    }).join('')
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
     
     if (groups.length === 0) {
         widget.innerHTML = `
@@ -1272,10 +1467,13 @@ async function showSavedGroups(firstTime = false) {
             </div>
         `;
     } else {
-        widget.innerHTML = `<div style="font-size:14px; font-weight:900; color:var(--dark); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span>📚 مجموعاتك المحفوظة (${groups.length})</span>
-            <button class="sgc-btn" id="addNewFromList" style="flex:0; min-width:auto; background:var(--primary); color:#fff; padding:6px 12px;">➕ مجموعة جديدة</button>
-        </div>`;
+        widget.innerHTML = `
+            <div class="groups-header">
+                <span>📚 مجموعاتك المحفوظة (${groups.length})</span>
+                <button class="sgc-btn add-new" id="addNewFromList">➕ مجموعة جديدة</button>
+            </div>
+            ${calendarHtml}
+        `;
         
         groups.forEach(g => {
             const isRec = g.apptType === 'recurring';
@@ -1326,26 +1524,12 @@ async function showSavedGroups(firstTime = false) {
         };
     }
     
-    if (firstTime && groups.length === 0) {
+    if (firstTime) {
         const newGroupContainer = document.createElement('div');
         newGroupContainer.className = 'options-container';
         const btnNew = document.createElement('button');
         btnNew.className = 'option-btn';
-        btnNew.innerHTML = '➕ إضافة أول مجموعة';
-        btnNew.onclick = () => {
-            newGroupContainer.remove();
-            resetState();
-            stepGroupName();
-        };
-        newGroupContainer.appendChild(btnNew);
-        chatArea.appendChild(newGroupContainer);
-        scrollBottom();
-    } else if (firstTime) {
-        const newGroupContainer = document.createElement('div');
-        newGroupContainer.className = 'options-container';
-        const btnNew = document.createElement('button');
-        btnNew.className = 'option-btn';
-        btnNew.innerHTML = '➕ إضافة مجموعة جديدة';
+        btnNew.innerHTML = groups.length === 0 ? '➕ إضافة أول مجموعة' : '➕ إضافة مجموعة جديدة';
         btnNew.onclick = () => {
             newGroupContainer.remove();
             resetState();
@@ -1367,8 +1551,9 @@ async function handleGroupAction(action, id) {
             await deleteGroup(id);
             showToast('✅ تم الحذف بنجاح', true);
             chatArea.querySelector('#groupsListWidget')?.remove();
-            await showSavedGroups(false);
             addBotMessage(`🗑️ تم حذف مجموعة <b>"${group.groupName}"</b>`);
+            await addBotMessage('دي مجموعاتك والجدول الأسبوعي المحدث 👇');
+            await showSavedGroups(false, true);
         } catch(e) {
             console.error(e);
             showToast('❌ فشل الحذف');
@@ -1380,7 +1565,8 @@ async function handleGroupAction(action, id) {
             await updateGroup(id, { isActive: newVis });
             showToast(newVis ? '👁️ تم الإظهار' : '🙈 تم الإخفاء', true);
             chatArea.querySelector('#groupsListWidget')?.remove();
-            await showSavedGroups(false);
+            addBotMessage('تم التحديث 👇');
+            await showSavedGroups(false, true);
         } catch(e) {
             console.error(e);
             showToast('❌ فشل التعديل');
@@ -1474,11 +1660,11 @@ function checkSubject() {
 async function init() {
     if (!checkSubject()) return;
     
-    await addBotMessage('أهلاً بيك يا مستر 👋<br>دي مجموعاتك المحفوظة، تقدر تعدل أي واحدة أو تضيف جديدة.');
+    await addBotMessage('أهلاً بيك يا مستر 👋<br>دي مجموعاتك والجدول الأسبوعي، تقدر تعدل أي واحدة أو تضيف جديدة.');
     
     const phone = localStorage.getItem('current_teacher_phone');
     if (phone) {
-        await showSavedGroups(true);
+        await showSavedGroups(true, true);
     } else {
         resetState();
         await stepGroupName();
