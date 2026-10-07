@@ -424,7 +424,6 @@
 </head>
 <body>
 
-<!-- 🔄 بادج المزامنة -->
 <div class="sync-badge" id="syncBadge">
     <span class="sync-dot"></span>
     <span>تمت المزامنة من جهاز آخر</span>
@@ -683,7 +682,7 @@
   }
 
   // ==========================================
-  // 📍 قراءة العنوان الفعلي من location-text
+  // 📍 قراءة العنوان الفعلي
   // ==========================================
   function getCurrentAddressFromUI() {
       try {
@@ -757,7 +756,7 @@
   };
 
   // ==========================================
-  // 🗺️ تهيئة خريطة Leaflet
+  // 🗺️ خريطة Leaflet
   // ==========================================
   let map, marker;
 
@@ -861,8 +860,6 @@
                       }
                       textDisplay.style.color = '#1b736a';
 
-                      console.log('📍 العنوان اللي اتحدد:', street || '(بدون اسم شارع)');
-
                       setTimeout(() => {
                         const popupText = street ? `📍 ${street}` : '✅ موقعك الحالي الدقيق';
                         marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:13px;'>${popupText}</div>`).openPopup();
@@ -888,7 +885,7 @@
   };
 
   // ==========================================
-  // 📅 إعداد التقويم
+  // 📅 التقويم
   // ==========================================
   const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -1915,7 +1912,7 @@
   };
 
   // ==========================================================
-  // ☁️ رفع تلقائي للبيانات على السحابة
+  // ☁️ رفع تلقائي للبيانات
   // ==========================================================
   async function pushDataToCloud() {
       try {
@@ -1973,19 +1970,18 @@
   }
 
   // ==========================================================
-  // ✅✅✅ المزامنة الفورية 100% ✅✅✅
+  // ✅ المزامنة الفورية
   // ==========================================================
   function setupRealtimeSync() {
       const teacherPhone = localStorage.getItem('current_teacher_phone');
       
       if (!teacherPhone) {
-          console.log('⚠️ لا يوجد رقم معلم — تخطي المزامنة الفورية');
+          console.log('⚠️ لا يوجد رقم معلم');
           return;
       }
 
       console.log('🔄 تشغيل المزامنة الفورية...');
 
-      // 1) مزامنة المجموعات فورياً
       subscribeGroups((allGroups) => {
           const myGroups = allGroups.filter(g => g.phone === teacherPhone);
           console.log(`🔄 مزامنة فورية: ${myGroups.length} مجموعة`);
@@ -2024,7 +2020,6 @@
           updateGroupsCount(myGroups);
       });
 
-      // 2) مزامنة بيانات المعلم فورياً
       subscribeTeacherData(teacherPhone, (cloudData) => {
           console.log('🔄 استقبلت تحديث من جهاز آخر');
           
@@ -2127,36 +2122,14 @@
 </script>
 
 <!-- ==========================================================
-     ✅✅✅ زر الرجوع العادي بتاع المتصفح يروح لـ mester3 ✅✅✅
+     ✅✅✅ زر الرجوع العادي يروح mester3.html ✅✅✅
      ========================================================== -->
 <script>
 (function() {
     'use strict';
 
-    function saveBeforeBack() {
-        try {
-            const phone = localStorage.getItem('current_teacher_phone');
-            const profile = localStorage.getItem('current_teacher_profile');
-            
-            if (phone) localStorage.setItem('teacher_saved_phone', phone);
-            if (profile) localStorage.setItem('teacher_saved_profile', profile);
-
-            const backup = {
-                teacherSelections: localStorage.getItem('teacherSelections'),
-                mester1_selections: localStorage.getItem('mester1_selections'),
-                mester1_is_locked: localStorage.getItem('mester1_is_locked'),
-                teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
-                teacher_groups_count: localStorage.getItem('teacher_groups_count'),
-                last_selected_gender: localStorage.getItem('last_selected_gender'),
-                last_selected_location: localStorage.getItem('last_selected_location')
-            };
-            localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
-        } catch(e) {}
-    }
-
-    // ✅ لما المستخدم يضغط زر الرجوع → تروح لـ mester3
+    // ✅ زر الرجوع العادي → يروح mester3.html
     window.addEventListener('popstate', function(e) {
-        saveBeforeBack();
         console.log('🔙 رجوع من mester2 → mester3');
         window.location.replace('mester3.html');
     });
@@ -2164,7 +2137,6 @@
     // ✅ لو الصفحة رجعت من cache → تروح mester3
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            saveBeforeBack();
             console.log('🔙 الصفحة رجعت من cache → mester3');
             window.location.replace('mester3.html');
         }
