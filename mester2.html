@@ -21,6 +21,9 @@
     --bubble-bot: #ffffff;
     --text: #2c3e50;
     --gray: #64748b;
+    --panel-bg: #f7fafc;
+    --success: #10b981;
+    --warning: #f59e0b;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -34,7 +37,9 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2325968b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* ============================= */
 /* Header */
+/* ============================= */
 .chat-header {
     background: linear-gradient(135deg, var(--dark), var(--primary));
     color: #fff;
@@ -44,6 +49,7 @@ body {
     gap: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     z-index: 100;
+    flex-shrink: 0;
 }
 .chat-header .avatar {
     width: 44px; height: 44px;
@@ -67,7 +73,6 @@ body {
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* زر مجموعاتي في الهيدر */
 .header-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
@@ -104,12 +109,12 @@ body {
     text-align: center;
 }
 
-/* Progress bar */
 .progress-bar {
     height: 4px;
     background: rgba(255,255,255,0.2);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 .progress-bar .fill {
     height: 100%;
@@ -118,12 +123,428 @@ body {
     box-shadow: 0 0 10px #fbbf24;
 }
 
-/* Chat area */
+/* ============================= */
+/* Main Layout - Split Screen */
+/* ============================= */
+.main-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Right panel - options/table */
+.options-panel {
+    width: 340px;
+    background: var(--panel-bg);
+    border-left: 3px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: -3px 0 15px rgba(0,0,0,0.05);
+    z-index: 5;
+}
+
+.options-panel-header {
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: #fff;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.options-panel-header .title {
+    font-size: 14px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.options-panel-header .reset-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+.options-panel-header .reset-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.options-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+.options-panel-body::-webkit-scrollbar { width: 5px; }
+.options-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+/* Build step cards in options panel */
+.build-step {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: cardIn 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+@keyframes cardIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.build-step.pending {
+    opacity: 0.55;
+    background: #f8fafc;
+    border-style: dashed;
+}
+.build-step.active {
+    border-color: var(--warning);
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    box-shadow: 0 4px 12px rgba(245,158,11,0.15);
+}
+.build-step.active::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--warning);
+    animation: activeBar 1.5s infinite;
+}
+@keyframes activeBar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+.build-step.done {
+    border-color: var(--success);
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+}
+.build-step.done::before {
+    content: '✓';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; height: 20px;
+    background: var(--success);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 2px 5px rgba(16,185,129,0.3);
+}
+
+.build-step .bs-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 900;
+}
+.build-step .bs-header .icon { font-size: 14px; }
+.build-step .bs-value {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--text);
+    padding: 6px 0;
+    word-break: break-word;
+    line-height: 1.4;
+}
+.build-step.pending .bs-value { color: #94a3b8; font-style: italic; }
+.build-step.active .bs-value { color: #92400e; }
+.build-step.done .bs-value { color: #065f46; }
+
+.build-step .bs-hint {
+    font-size: 11px;
+    color: var(--warning);
+    margin-top: 4px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Options chips in panel */
+.panel-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    animation: cardIn 0.3s ease;
+}
+.panel-option-btn {
+    background: #fff;
+    border: 2px solid var(--primary);
+    color: var(--dark);
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.panel-option-btn:hover, .panel-option-btn:active {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(37,150,139,0.3);
+}
+
+.panel-input-wrap {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    animation: cardIn 0.3s ease;
+}
+.panel-input-wrap input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s;
+}
+.panel-input-wrap input:focus {
+    box-shadow: 0 0 0 3px rgba(37,150,139,0.15);
+}
+.panel-input-wrap button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 0 14px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.panel-input-wrap button:active { transform: scale(0.95); }
+
+/* Time grid in panel */
+.panel-time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 4px;
+    margin-top: 8px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+.panel-time-grid::-webkit-scrollbar { width: 4px; }
+.panel-time-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+.panel-time-chip {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 3px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.panel-time-chip:hover {
+    background: var(--light);
+    border-color: var(--primary);
+}
+.panel-time-chip.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Calendar in panel */
+.panel-cal {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px;
+    margin-top: 8px;
+}
+.panel-cal .pcal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+.panel-cal .pcal-title {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--dark);
+}
+.panel-cal .pcal-nav {
+    background: var(--light);
+    border: 1px solid var(--border);
+    color: var(--dark);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.panel-cal .pcal-nav:active { transform: scale(0.9); }
+.panel-cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 3px;
+}
+.panel-cal-weekdays div {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--primary);
+    padding: 3px 0;
+}
+.panel-cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+.panel-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1.5px solid transparent;
+}
+.panel-cal-day:hover { background: var(--light); }
+.panel-cal-day.today { background: var(--dark); color: #fff; }
+.panel-cal-day.selected { background: var(--primary); color: #fff; border-color: #fbbf24; }
+.panel-cal-day.past { opacity: 0.35; cursor: not-allowed; }
+.panel-cal-day.empty { background: transparent; cursor: default; }
+
+/* Map in panel */
+#panel-map {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    margin-top: 8px;
+}
+.panel-gps-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.panel-gps-btn:active { transform: scale(0.97); }
+.panel-gps-btn:disabled { opacity: 0.7; }
+
+.panel-addr-display {
+    margin-top: 6px;
+    padding: 8px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #065f46;
+    text-align: center;
+    font-weight: 800;
+    border: 1.5px dashed var(--success);
+    display: none;
+    word-break: break-word;
+}
+.panel-addr-display.show { display: block; }
+
+.panel-extra-input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+/* Summary section */
+.panel-summary {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 2px solid var(--success);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    animation: cardIn 0.4s ease;
+}
+.panel-summary h4 {
+    color: #065f46;
+    font-size: 13px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px dashed #a7f3d0;
+}
+.panel-summary .prow {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 12px;
+    gap: 6px;
+}
+.panel-summary .prow .k { color: #065f46; font-weight: 800; }
+.panel-summary .prow .v { color: #064e3b; font-weight: 900; text-align: left; }
+
+/* Chat area (left side) */
 .chat-area {
     flex: 1;
     overflow-y: auto;
     padding: 16px 12px 20px;
     scroll-behavior: smooth;
+    min-width: 0;
 }
 .chat-area::-webkit-scrollbar { width: 6px; }
 .chat-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
@@ -169,7 +590,7 @@ body {
 }
 .msg.teacher .time { text-align: right; }
 
-/* Options buttons */
+/* Options in chat */
 .options-container {
     display: flex;
     flex-wrap: wrap;
@@ -209,6 +630,7 @@ body {
     align-items: flex-end;
     border-top: 1px solid #d0d0d0;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    flex-shrink: 0;
 }
 .input-area .input-wrap {
     flex: 1;
@@ -247,143 +669,6 @@ body {
 .send-btn:active { transform: scale(0.9); }
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Special widgets */
-.widget-container {
-    background: #fff;
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: msgIn 0.3s ease;
-    border: 2px solid var(--light);
-}
-
-#mini-map { width: 100%; height: 220px; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); }
-
-.gps-btn {
-    width: 100%;
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: inherit;
-    box-shadow: 0 4px 10px rgba(37,150,139,0.3);
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-.gps-btn:active { transform: scale(0.97); }
-.gps-btn:disabled { opacity: 0.7; }
-
-/* Time grid */
-.time-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    max-height: 260px;
-    overflow-y: auto;
-    padding: 4px;
-}
-.time-chip {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 4px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 900;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-}
-.time-chip:hover { background: var(--light); border-color: var(--primary); }
-.time-chip.selected { background: var(--primary); color: #fff; border-color: var(--dark); }
-
-/* Calendar */
-.mini-cal { background: #fff; border-radius: 12px; padding: 10px; }
-.mini-cal .cal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #f1f5f9;
-}
-.mini-cal .cal-title { font-size: 15px; font-weight: 900; color: var(--dark); }
-.mini-cal .cal-nav {
-    background: var(--light);
-    border: 1px solid var(--border);
-    color: var(--dark);
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 900;
-    transition: all 0.2s;
-}
-.mini-cal .cal-nav:active { transform: scale(0.9); }
-.cal-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-    margin-bottom: 4px;
-}
-.cal-weekdays div {
-    text-align: center;
-    font-size: 11px;
-    font-weight: 900;
-    color: var(--primary);
-    padding: 4px 0;
-}
-.cal-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-}
-.cal-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8fafc;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 900;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-    border: 1.5px solid transparent;
-    position: relative;
-}
-.cal-day:hover { background: var(--light); }
-.cal-day.today { background: var(--dark); color: #fff; }
-.cal-day.selected { background: var(--primary); color: #fff; border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251,191,36,0.3); }
-.cal-day.past { opacity: 0.35; cursor: not-allowed; }
-.cal-day.empty { background: transparent; cursor: default; }
-
-/* Summary card in chat */
-.summary-bubble {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid #10b981;
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(16,185,129,0.15);
-    animation: msgIn 0.3s ease;
-}
-.summary-bubble h4 { color: #065f46; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.summary-bubble .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #a7f3d0; font-size: 13.5px; }
-.summary-bubble .row:last-child { border-bottom: none; }
-.summary-bubble .row .k { color: #065f46; font-weight: 800; }
-.summary-bubble .row .v { color: #064e3b; font-weight: 900; }
-
 /* Typing indicator */
 .typing {
     display: inline-flex;
@@ -410,7 +695,30 @@ body {
     30% { transform: translateY(-6px); opacity: 1; }
 }
 
-/* Success */
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #dc2626;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 22px;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 6px 20px rgba(220,38,38,0.4);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 9998;
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+
+/* Success overlay */
 .success-overlay {
     position: fixed;
     inset: 0;
@@ -447,273 +755,22 @@ body {
     box-shadow: 0 4px 12px rgba(37,150,139,0.3);
 }
 
-/* Error toast */
-.toast {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #dc2626;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 22px;
-    font-size: 14px;
-    font-weight: 800;
-    box-shadow: 0 6px 20px rgba(220,38,38,0.4);
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 9998;
-    pointer-events: none;
-    max-width: 90%;
-    text-align: center;
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .main-layout {
+        flex-direction: column;
+    }
+    .options-panel {
+        width: 100%;
+        height: 45%;
+        border-left: none;
+        border-bottom: 3px solid var(--border);
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+    .chat-area {
+        height: 55%;
+    }
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.success { background: #10b981; box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
-
-/* Saved Groups List */
-.groups-list-widget {
-    background: #fff;
-    border-radius: 16px;
-    padding: 12px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: msgIn 0.3s ease;
-    border: 2px solid var(--light);
-    max-width: 95%;
-}
-
-.groups-header {
-    font-size: 14px;
-    font-weight: 900;
-    color: var(--dark);
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.groups-header .add-new {
-    flex: 0;
-    min-width: auto;
-    background: var(--primary);
-    color: #fff;
-    padding: 6px 12px;
-}
-
-/* 🗓️ الجدول الأسبوعي */
-.week-calendar {
-    background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 10px;
-    margin-bottom: 14px;
-    box-shadow: inset 0 2px 6px rgba(37,150,139,0.05);
-}
-.week-calendar .wc-title {
-    font-size: 14px;
-    font-weight: 900;
-    color: var(--dark);
-    margin-bottom: 10px;
-    text-align: center;
-    padding-bottom: 8px;
-    border-bottom: 2px dashed var(--border);
-}
-
-.wc-day {
-    background: #fff;
-    border-radius: 10px;
-    padding: 8px 10px;
-    margin-bottom: 6px;
-    border: 1.5px solid #e2e8f0;
-    transition: all 0.2s;
-}
-.wc-day:last-child { margin-bottom: 0; }
-.wc-day.wc-empty { opacity: 0.6; background: #f8fafc; }
-
-.wc-day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed #e2e8f0;
-}
-.wc-day-name {
-    font-size: 13px;
-    font-weight: 900;
-    color: var(--dark);
-}
-.wc-day-count {
-    background: var(--primary);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 900;
-    padding: 2px 8px;
-    border-radius: 10px;
-    min-width: 24px;
-    text-align: center;
-}
-.wc-day.wc-empty .wc-day-count { background: #94a3b8; }
-
-.wc-day-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-.wc-empty-text {
-    font-size: 11px;
-    color: var(--gray);
-    text-align: center;
-    padding: 4px;
-    font-weight: 700;
-}
-
-.wc-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 800;
-}
-.wc-item-rec {
-    background: #ede9fe;
-    border-right: 3px solid #8b5cf6;
-    color: #5b21b6;
-}
-.wc-item-norm {
-    background: #dbeafe;
-    border-right: 3px solid #3b82f6;
-    color: #1e40af;
-}
-.wc-item-hidden {
-    background: #fee2e2;
-    border-right-color: #dc2626;
-    color: #991b1b;
-    opacity: 0.8;
-}
-
-.wc-time {
-    background: rgba(255,255,255,0.7);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 900;
-    white-space: nowrap;
-}
-.wc-group {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.wc-icon {
-    font-size: 12px;
-}
-
-/* Saved group cards */
-.saved-group-card {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-    transition: all 0.2s;
-    position: relative;
-}
-.saved-group-card:last-child { margin-bottom: 0; }
-.saved-group-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(37,150,139,0.15); }
-.saved-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
-.saved-group-card.recurring-group { border-right: 4px solid #8b5cf6; }
-.saved-group-card.normal-group { border-right: 4px solid #3b82f6; }
-
-.sgc-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    gap: 8px;
-}
-.sgc-name {
-    font-size: 15px;
-    font-weight: 900;
-    color: var(--text);
-    flex: 1;
-}
-.sgc-badge {
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-weight: 900;
-    white-space: nowrap;
-}
-.sgc-badge.recurring { background: #8b5cf6; color: #fff; }
-.sgc-badge.normal { background: #3b82f6; color: #fff; }
-.sgc-badge.hidden { background: #dc2626; color: #fff; }
-.sgc-badge.visible { background: #16a34a; color: #fff; }
-
-.sgc-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 10px;
-    font-size: 12px;
-    color: var(--gray);
-}
-.sgc-info .item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: #fff;
-    padding: 5px 8px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-}
-.sgc-info .item.full { grid-column: span 2; }
-.sgc-info .item .v { color: var(--text); font-weight: 900; }
-
-.sgc-actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-.sgc-btn {
-    flex: 1;
-    min-width: 70px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: none;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-}
-.sgc-btn:active { transform: scale(0.95); }
-.sgc-btn.edit { background: #dbeafe; color: #1e40af; }
-.sgc-btn.edit:hover { background: #bfdbfe; }
-.sgc-btn.toggle { background: #fef3c7; color: #92400e; }
-.sgc-btn.toggle:hover { background: #fde68a; }
-.sgc-btn.delete { background: #fee2e2; color: #b91c1c; }
-.sgc-btn.delete:hover { background: #fecaca; }
-
-.empty-groups {
-    text-align: center;
-    padding: 20px 10px;
-    color: var(--gray);
-    font-size: 14px;
-    background: #f8fafc;
-    border-radius: 10px;
-    border: 2px dashed #cbd5e1;
-}
-.empty-groups .icon { font-size: 40px; display: block; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -732,15 +789,34 @@ body {
 </div>
 <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%"></div></div>
 
-<!-- Chat Area -->
-<div class="chat-area" id="chatArea"></div>
-
-<!-- Input Area -->
-<div class="input-area" id="inputArea">
-    <div class="input-wrap">
-        <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off">
-    </div>
-    <button class="send-btn" id="sendBtn">➤</button>
+<!-- Main Layout -->
+<div class="main-layout">
+    
+    <!-- Right panel - Options/Table -->
+    <aside class="options-panel">
+        <div class="options-panel-header">
+            <div class="title">
+                <span>📋</span>
+                <span>بناء المجموعة</span>
+            </div>
+            <button class="reset-btn" onclick="resetState();startFresh()">🔄 جديد</button>
+        </div>
+        <div class="options-panel-body" id="optionsPanelBody">
+            <!-- Steps will be added here dynamically -->
+        </div>
+    </aside>
+    
+    <!-- Left - Chat -->
+    <main style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
+        <div class="chat-area" id="chatArea"></div>
+        <div class="input-area" id="inputArea">
+            <div class="input-wrap">
+                <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off">
+            </div>
+            <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+    </main>
+    
 </div>
 
 <!-- Success overlay -->
@@ -770,6 +846,7 @@ import {
 const state = {
     step: 0,
     isEditing: false,
+    currentQuestion: null,
     data: {
         groupName: '',
         teacherName: '',
@@ -794,6 +871,7 @@ const state = {
 };
 
 let cachedGroups = [];
+let panelMap, panelMarker;
 
 /* ============ عناصر DOM ============ */
 const chatArea = document.getElementById('chatArea');
@@ -801,6 +879,7 @@ const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const progressFill = document.getElementById('progressFill');
 const toastEl = document.getElementById('toast');
+const optionsPanelBody = document.getElementById('optionsPanelBody');
 
 /* ============ أدوات مساعدة ============ */
 function scrollBottom() {
@@ -827,7 +906,7 @@ function addBotMessage(text, showTyping = true) {
                 typing.remove();
                 _addMessage('bot', text);
                 resolve();
-            }, 600);
+            }, 500);
         } else {
             _addMessage('bot', text);
             resolve();
@@ -866,47 +945,11 @@ function formatTime(val) {
     return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
 }
 
-/* ============ إدارة الإدخال ============ */
-function setInputMode(mode, placeholder = '') {
-    if (mode === 'hidden') {
-        document.getElementById('inputArea').style.display = 'none';
-    } else if (mode === 'text') {
-        document.getElementById('inputArea').style.display = 'flex';
-        chatInput.placeholder = placeholder;
-        chatInput.value = '';
-        chatInput.type = 'text';
-        chatInput.focus();
-    } else if (mode === 'number') {
-        document.getElementById('inputArea').style.display = 'flex';
-        chatInput.placeholder = placeholder;
-        chatInput.value = '';
-        chatInput.type = 'number';
-        chatInput.focus();
-    }
-}
-
-/* ============ أزرار الخيارات ============ */
-function showOptions(options, onSelect) {
-    const container = document.createElement('div');
-    container.className = 'options-container';
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
-        btn.onclick = () => {
-            container.remove();
-            onSelect(opt);
-        };
-        container.appendChild(btn);
-    });
-    chatArea.appendChild(container);
-    scrollBottom();
-}
-
 /* ============ إعادة تعيين الحالة ============ */
 function resetState() {
     state.step = 0;
     state.isEditing = false;
+    state.currentQuestion = null;
     state.data = {
         groupName: '', teacherName: '', centerName: '',
         studentsCount: 20, gender: 'مختلط', location: 'السنتر',
@@ -915,140 +958,298 @@ function resetState() {
         lat: null, lng: null, subject: '',
         editingId: null
     };
-    chatArea.querySelectorAll('.widget-container, .groups-list-widget, .summary-bubble').forEach(el => el.remove());
-}
-
-/* ============ خطوات المحادثة ============ */
-async function stepGroupName() {
-    setProgress(10);
-    if (!state.isEditing) {
-        await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة على السريع.<br><br><b>اسم المجموعة إيه؟</b>');
-    } else {
-        await addBotMessage('ماشي، <b>الاسم الجديد للمجموعة إيه؟</b>');
+    if (panelMap) {
+        try { panelMap.remove(); } catch(e) {}
+        panelMap = null;
+        panelMarker = null;
     }
-    setInputMode('text', 'اكتب اسم المجموعة...');
-    state.step = 1;
 }
 
-async function stepTeacherName() {
-    setProgress(20);
-    const name = state.data.groupName;
-    addTeacherMessage(name);
-    await addBotMessage(`تمام كده! اسم المجموعة <b>"${name}"</b> ✅<br><br><b>اسمك إيه يا مستر؟</b>`);
-    setInputMode('text', 'اكتب اسمك...');
-    state.step = 2;
-}
+/* ============ Panel - رسم خطوات البناء ============ */
+const BUILD_STEPS = [
+    { key: 'groupName', icon: '📝', label: 'اسم المجموعة' },
+    { key: 'teacherName', icon: '👤', label: 'اسم المستر' },
+    { key: 'location', icon: '📍', label: 'مكان الدرس' },
+    { key: 'centerName', icon: '🏫', label: 'اسم السنتر', conditional: true },
+    { key: 'studentsCount', icon: '👥', label: 'عدد الطلبة' },
+    { key: 'gender', icon: '👫', label: 'الفئة المسموحة' },
+    { key: 'map', icon: '🗺️', label: 'الموقع على الخريطة' },
+    { key: 'time', icon: '⏰', label: 'موعد الحصة' },
+    { key: 'date', icon: '📅', label: 'يوم الحصة' },
+    { key: 'repeat', icon: '🔁', label: 'التكرار الأسبوعي' }
+];
 
-async function stepLocation() {
-    setProgress(30);
-    const name = state.data.teacherName;
-    addTeacherMessage(name);
-    await addBotMessage(`أهلاً <b>${name}</b> 👨‍🏫<br><br>الدرس هيبقى فين؟`);
-    setInputMode('hidden');
-    showOptions([
-        { label: 'السنتر', icon: '🏫', value: 'السنتر' },
-        { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
-        { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
-    ], async (opt) => {
-        state.data.location = opt.value;
-        addTeacherMessage(`${opt.icon} ${opt.label}`);
-        
-        if (opt.value === 'السنتر') {
-            await stepCenterName();
-        } else {
-            await stepStudentsCount();
-        }
-    });
-}
-
-async function stepCenterName() {
-    setProgress(35);
-    await addBotMessage('ماشي، <b>اسم السنتر إيه؟</b>');
-    setInputMode('text', 'اسم السنتر...');
-    state.step = 3.5;
-}
-
-async function stepStudentsCount() {
-    setProgress(40);
-    await addBotMessage('<b>كام طالب عايز في المجموعة؟</b>');
-    setInputMode('number', 'مثال: 20');
-    showOptions([
-        { label: '10 طلاب', value: 10 },
-        { label: '15 طالب', value: 15 },
-        { label: '20 طالب', value: 20 },
-        { label: '30 طالب', value: 30 }
-    ], async (opt) => {
-        state.data.studentsCount = opt.value;
-        addTeacherMessage(`${opt.value} طالب`);
-        await stepGender();
-    });
-    state.step = 4;
-}
-
-async function stepGender() {
-    setProgress(50);
-    await addBotMessage('<b>مين اللي يقدر يحجز؟</b>');
-    setInputMode('hidden');
-    showOptions([
-        { label: 'مختلط', icon: '👫', value: 'مختلط' },
-        { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
-        { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
-    ], async (opt) => {
-        state.data.gender = opt.value;
-        addTeacherMessage(`${opt.icon} ${opt.label}`);
-        await stepMapLocation();
-    });
-}
-
-async function stepMapLocation() {
-    setProgress(60);
-    await addBotMessage('تعالى نحدد <b>مكان الدرس على الخريطة</b> 📍<br>دوس على الخريطة أو زرار GPS ونزلك موقعك.');
-    setInputMode('hidden');
+function renderPanel() {
+    optionsPanelBody.innerHTML = '';
     
-    const widget = document.createElement('div');
-    widget.className = 'widget-container';
-    widget.innerHTML = `
-        <div id="mini-map"></div>
-        <button class="gps-btn" id="gpsBtn">📍 نزل موقعي الحالي</button>
-        <div id="addrDisplay" style="margin-top:10px; padding:10px; background:#f0fdf4; border-radius:8px; font-size:13px; color:#065f46; text-align:center; font-weight:800; border:1.5px dashed #10b981; display:none;"></div>
-        <input type="text" id="addrExtra" placeholder="🏠 علامة مميزة (اختياري): أمام مسجد النور - الدور التاني" style="width:100%; margin-top:10px; padding:12px; border:2px solid #e2e8f0; border-radius:10px; font-family:inherit; font-weight:800; font-size:13px;">
-        <button class="gps-btn" id="confirmLocBtn" style="background:linear-gradient(135deg,#10b981,#047857); display:none;">✅ تمام، كمّل</button>
+    const d = state.data;
+    
+    BUILD_STEPS.forEach(step => {
+        // شرط السنتر
+        if (step.conditional && d.location !== 'السنتر') return;
+        
+        let value = '';
+        let status = 'pending'; // pending | active | done
+        
+        if (step.key === 'groupName') {
+            value = d.groupName || 'لسه متحددش';
+            status = d.groupName ? 'done' : (state.step === 1 ? 'active' : 'pending');
+        } else if (step.key === 'teacherName') {
+            value = d.teacherName || 'لسه متحددش';
+            status = d.teacherName ? 'done' : (state.step === 2 ? 'active' : 'pending');
+        } else if (step.key === 'location') {
+            value = d.location;
+            status = (state.step === 3 || state.step === 3.5 || state.step === 4) ? 'active' : (d.teacherName ? 'done' : 'pending');
+        } else if (step.key === 'centerName') {
+            value = d.centerName || 'لسه متحددش';
+            status = d.centerName ? 'done' : (state.step === 3.5 ? 'active' : 'pending');
+        } else if (step.key === 'studentsCount') {
+            value = d.studentsCount ? `${d.studentsCount} طالب` : 'لسه متحددش';
+            status = d.studentsCount ? 'done' : (state.step === 4 ? 'active' : 'pending');
+        } else if (step.key === 'gender') {
+            value = d.gender || 'لسه متحددش';
+            status = (state.step === 5 || state.step === 6) ? 'active' : (d.studentsCount ? 'done' : 'pending');
+        } else if (step.key === 'map') {
+            value = d.street || (d.lat && d.lng ? `${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}` : 'لسه متحددش');
+            status = d.gpsCoords ? 'done' : (state.step === 6 ? 'active' : 'pending');
+        } else if (step.key === 'time') {
+            value = d.startTime && d.endTime ? `${formatTime(d.startTime)} - ${formatTime(d.endTime)}` : 'لسه متحددش';
+            status = (d.startTime && d.endTime) ? 'done' : (state.step === 7 || state.step === 8 ? 'active' : 'pending');
+        } else if (step.key === 'date') {
+            value = d.date ? `${d.dayName} ${d.date}` : 'لسه متحددش';
+            status = d.date ? 'done' : (state.step === 9 ? 'active' : 'pending');
+        } else if (step.key === 'repeat') {
+            value = d.repeatWeekly !== null && d.date ? (d.repeatWeekly ? '🔁 أسبوعي' : '📅 مرة واحدة') : 'لسه متحددش';
+            status = d.date && state.step === 10 ? 'active' : (d.date ? 'done' : 'pending');
+        }
+        
+        const card = document.createElement('div');
+        card.className = `build-step ${status}`;
+        card.innerHTML = `
+            <div class="bs-header">
+                <span class="icon">${step.icon}</span>
+                <span>${step.label}</span>
+            </div>
+            <div class="bs-value">${value}</div>
+        `;
+        optionsPanelBody.appendChild(card);
+    });
+    
+    // لو خلصنا - عرض الملخص
+    if (state.step === 11 || (state.isEditing && state.step >= 11)) {
+        const summary = document.createElement('div');
+        summary.className = 'panel-summary';
+        summary.innerHTML = `
+            <h4>✅ ملخص المجموعة</h4>
+            <div class="prow"><span class="k">المجموعة:</span><span class="v">${d.groupName}</span></div>
+            <div class="prow"><span class="k">المستر:</span><span class="v">${d.teacherName}</span></div>
+            ${d.centerName ? `<div class="prow"><span class="k">السنتر:</span><span class="v">${d.centerName}</span></div>` : ''}
+            <div class="prow"><span class="k">المكان:</span><span class="v">${d.location}</span></div>
+            <div class="prow"><span class="k">العدد:</span><span class="v">${d.studentsCount} طالب</span></div>
+            <div class="prow"><span class="k">الفئة:</span><span class="v">${d.gender}</span></div>
+            <div class="prow"><span class="k">الموعد:</span><span class="v">${formatTime(d.startTime)} - ${formatTime(d.endTime)}</span></div>
+            <div class="prow"><span class="k">اليوم:</span><span class="v">${d.dayName}</span></div>
+            <div class="prow"><span class="k">التكرار:</span><span class="v">${d.repeatWeekly ? '🔁 أسبوعي' : '📅 مرة واحدة'}</span></div>
+        `;
+        optionsPanelBody.appendChild(summary);
+    }
+}
+
+/* ============ Panel - إضافة خيارات للخطوة النشطة ============ */
+function addPanelOptions(options, onSelect) {
+    // شيل أي خيارات قديمة
+    optionsPanelBody.querySelectorAll('.panel-options, .panel-input-wrap, .panel-time-grid, .panel-cal, #panel-map, .panel-gps-btn, .panel-addr-display, .panel-extra-input').forEach(el => el.remove());
+    
+    const container = document.createElement('div');
+    container.className = 'panel-options';
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'panel-option-btn';
+        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
+        btn.onclick = () => {
+            container.remove();
+            onSelect(opt);
+        };
+        container.appendChild(btn);
+    });
+    optionsPanelBody.appendChild(container);
+}
+
+function addPanelInput(placeholder, type, onSubmit, defaultValue = '') {
+    optionsPanelBody.querySelectorAll('.panel-options, .panel-input-wrap, .panel-time-grid, .panel-cal, #panel-map, .panel-gps-btn, .panel-addr-display, .panel-extra-input').forEach(el => el.remove());
+    
+    const wrap = document.createElement('div');
+    wrap.className = 'panel-input-wrap';
+    wrap.innerHTML = `
+        <input type="${type}" placeholder="${placeholder}" value="${defaultValue}">
+        <button>✓</button>
     `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    const input = wrap.querySelector('input');
+    const btn = wrap.querySelector('button');
+    
+    const submit = () => {
+        const val = input.value.trim();
+        if (!val) return;
+        wrap.remove();
+        onSubmit(val);
+    };
+    
+    btn.onclick = submit;
+    input.onkeydown = e => { if (e.key === 'Enter') submit(); };
+    
+    optionsPanelBody.appendChild(wrap);
+    setTimeout(() => input.focus(), 100);
+}
+
+function addPanelTimeGrid(times, onSelect, filterAfter = null) {
+    optionsPanelBody.querySelectorAll('.panel-options, .panel-input-wrap, .panel-time-grid, .panel-cal, #panel-map, .panel-gps-btn, .panel-addr-display, .panel-extra-input').forEach(el => el.remove());
+    
+    const grid = document.createElement('div');
+    grid.className = 'panel-time-grid';
+    times.forEach(t => {
+        const chip = document.createElement('div');
+        chip.className = 'panel-time-chip';
+        if (filterAfter && t.value <= filterAfter) chip.classList.add('disabled');
+        chip.textContent = t.label;
+        chip.onclick = () => {
+            grid.remove();
+            onSelect(t);
+        };
+        grid.appendChild(chip);
+    });
+    optionsPanelBody.appendChild(grid);
+}
+
+function addPanelCalendar(onSelect) {
+    optionsPanelBody.querySelectorAll('.panel-options, .panel-input-wrap, .panel-time-grid, .panel-cal, #panel-map, .panel-gps-btn, .panel-addr-display, .panel-extra-input').forEach(el => el.remove());
+    
+    const today = new Date();
+    let calDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    
+    const cal = document.createElement('div');
+    cal.className = 'panel-cal';
+    cal.innerHTML = `
+        <div class="pcal-header">
+            <button class="pcal-nav" id="pprevM">❮</button>
+            <span class="pcal-title" id="pcalTitle"></span>
+            <button class="pcal-nav" id="pnextM">❯</button>
+        </div>
+        <div class="panel-cal-weekdays">
+            <div>س</div><div>ح</div><div>ن</div><div>ث</div><div>ر</div><div>خ</div><div>ج</div>
+        </div>
+        <div class="panel-cal-days" id="pcalDays"></div>
+    `;
+    optionsPanelBody.appendChild(cal);
+    
+    function renderCal() {
+        const y = calDate.getFullYear();
+        const m = calDate.getMonth();
+        document.getElementById('pcalTitle').textContent = `${monthNames[m]} ${y}`;
+        
+        const firstDay = new Date(y, m, 1).getDay();
+        const displayFirst = (firstDay + 1) % 7;
+        const daysInMonth = new Date(y, m+1, 0).getDate();
+        const todayReset = new Date(); todayReset.setHours(0,0,0,0);
+        
+        let html = '';
+        for (let i = 0; i < displayFirst; i++) html += '<div class="panel-cal-day empty"></div>';
+        
+        for (let d = 1; d <= daysInMonth; d++) {
+            const thisDate = new Date(y, m, d);
+            thisDate.setHours(0,0,0,0);
+            const isPast = thisDate < todayReset;
+            const isToday = thisDate.getTime() === todayReset.getTime();
+            
+            let cls = 'panel-cal-day';
+            if (isPast) cls += ' past';
+            if (isToday) cls += ' today';
+            
+            html += `<div class="${cls}" data-y="${y}" data-m="${m}" data-d="${d}">${d}</div>`;
+        }
+        document.getElementById('pcalDays').innerHTML = html;
+        
+        document.querySelectorAll('.panel-cal-day:not(.empty):not(.past)').forEach(el => {
+            el.onclick = () => {
+                const y = +el.dataset.y;
+                const m = +el.dataset.m;
+                const d = +el.dataset.d;
+                const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const dayOfWeek = new Date(y, m, d).getDay();
+                const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+                
+                cal.remove();
+                onSelect({
+                    date: dateStr,
+                    dayOfWeek: dayOfWeek,
+                    dayName: dayNames[dayOfWeek],
+                    dayNum: d,
+                    monthName: monthNames[m],
+                    year: y
+                });
+            };
+        });
+    }
+    
+    document.getElementById('pprevM').onclick = () => {
+        calDate.setMonth(calDate.getMonth() - 1);
+        renderCal();
+    };
+    document.getElementById('pnextM').onclick = () => {
+        calDate.setMonth(calDate.getMonth() + 1);
+        renderCal();
+    };
+    
+    renderCal();
+}
+
+function addPanelMap(onConfirm) {
+    optionsPanelBody.querySelectorAll('.panel-options, .panel-input-wrap, .panel-time-grid, .panel-cal, #panel-map, .panel-gps-btn, .panel-addr-display, .panel-extra-input').forEach(el => el.remove());
+    
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `
+        <div id="panel-map"></div>
+        <button class="panel-gps-btn" id="panelGpsBtn">📍 نزل موقعي الحالي</button>
+        <div class="panel-addr-display" id="panelAddrDisplay"></div>
+        <input type="text" class="panel-extra-input" id="panelAddrExtra" placeholder="🏠 علامة مميزة (اختياري)">
+        <button class="panel-gps-btn" id="panelConfirmBtn" style="background:linear-gradient(135deg,#10b981,#047857); display:none;">✅ تمام، كمّل</button>
+    `;
+    optionsPanelBody.appendChild(wrap);
     
     setTimeout(() => {
         const defaultLat = state.data.lat || 26.8206;
         const defaultLng = state.data.lng || 30.8025;
         const zoom = state.data.lat ? 15 : 6;
         
-        window.map = L.map('mini-map').setView([defaultLat, defaultLng], zoom);
+        panelMap = L.map('panel-map').setView([defaultLat, defaultLng], zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OSM'
-        }).addTo(window.map);
+        }).addTo(panelMap);
         
-        window.marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(window.map);
+        panelMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(panelMap);
+        
+        panelMap.on('click', e => {
+            panelMarker.setLatLng(e.latlng);
+            updatePanelLocation(e.latlng.lat, e.latlng.lng);
+        });
+        
+        panelMarker.on('dragend', () => {
+            const pos = panelMarker.getLatLng();
+            updatePanelLocation(pos.lat, pos.lng);
+        });
         
         if (state.data.street) {
-            const display = document.getElementById('addrDisplay');
-            display.style.display = 'block';
-            display.textContent = `📍 ${state.data.street}`;
-            document.getElementById('confirmLocBtn').style.display = 'flex';
-            document.getElementById('addrExtra').value = state.data.detailedAddress || '';
+            const disp = document.getElementById('panelAddrDisplay');
+            disp.classList.add('show');
+            disp.textContent = `📍 ${state.data.street}`;
+            document.getElementById('panelConfirmBtn').style.display = 'flex';
+            if (state.data.detailedAddress) {
+                document.getElementById('panelAddrExtra').value = state.data.detailedAddress;
+            }
         }
         
-        window.map.on('click', e => {
-            window.marker.setLatLng(e.latlng);
-            updateMiniLocation(e.latlng.lat, e.latlng.lng);
-        });
-        
-        window.marker.on('dragend', () => {
-            const pos = window.marker.getLatLng();
-            updateMiniLocation(pos.lat, pos.lng);
-        });
-        
-        document.getElementById('gpsBtn').onclick = async () => {
-            const btn = document.getElementById('gpsBtn');
+        document.getElementById('panelGpsBtn').onclick = async () => {
+            const btn = document.getElementById('panelGpsBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ ثانية بنزل موقعك...';
             
@@ -1057,9 +1258,9 @@ async function stepMapLocation() {
                     pos => {
                         const lat = pos.coords.latitude;
                         const lng = pos.coords.longitude;
-                        window.marker.setLatLng([lat, lng]);
-                        window.map.flyTo([lat, lng], 17, { animate: true });
-                        updateMiniLocation(lat, lng);
+                        panelMarker.setLatLng([lat, lng]);
+                        panelMap.flyTo([lat, lng], 17, { animate: true });
+                        updatePanelLocation(lat, lng);
                         btn.innerHTML = '✅ نزلنا موقعك';
                         btn.style.background = 'linear-gradient(135deg,#10b981,#047857)';
                         btn.disabled = false;
@@ -1071,34 +1272,27 @@ async function stepMapLocation() {
                     },
                     { enableHighAccuracy: true, timeout: 15000 }
                 );
-            } else {
-                btn.innerHTML = '❌ مش مدعوم';
             }
         };
         
-        const confirmBtn = document.getElementById('confirmLocBtn');
-        confirmBtn.onclick = async () => {
-            const extra = document.getElementById('addrExtra').value.trim();
+        document.getElementById('panelConfirmBtn').onclick = () => {
+            const extra = document.getElementById('panelAddrExtra').value.trim();
             state.data.detailedAddress = extra;
-            const summary = extra ? `${state.data.street} - ${extra}` : state.data.street;
-            addTeacherMessage(`📍 ${summary}`);
-            widget.style.opacity = '0.6';
-            widget.style.pointerEvents = 'none';
-            await stepTime();
+            onConfirm();
         };
     }, 100);
 }
 
-async function updateMiniLocation(lat, lng) {
+async function updatePanelLocation(lat, lng) {
     state.data.gpsCoords = `${lat.toFixed(6)},${lng.toFixed(6)}`;
     state.data.lat = lat;
     state.data.lng = lng;
     
-    const display = document.getElementById('addrDisplay');
-    const confirmBtn = document.getElementById('confirmLocBtn');
+    const display = document.getElementById('panelAddrDisplay');
+    const confirmBtn = document.getElementById('panelConfirmBtn');
     if (!display) return;
     
-    display.style.display = 'block';
+    display.classList.add('show');
     display.textContent = '⏳ ثانية بشوف اسم الشارع...';
     
     try {
@@ -1120,22 +1314,134 @@ async function updateMiniLocation(lat, lng) {
     }
     
     confirmBtn.style.display = 'flex';
-    confirmBtn.onclick = async () => {
-        const extra = document.getElementById('addrExtra').value.trim();
-        state.data.detailedAddress = extra;
-        const summary = extra ? `${state.data.street} - ${extra}` : state.data.street;
-        addTeacherMessage(`📍 ${summary}`);
-        const widget = display.closest('.widget-container');
-        widget.style.opacity = '0.6';
-        widget.style.pointerEvents = 'none';
-        await stepTime();
-    };
+    renderPanel();
+}
+
+/* ============ الخطوات ============ */
+async function stepGroupName() {
+    setProgress(10);
+    state.step = 1;
+    renderPanel();
+    await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة على السريع.<br><br><b>اسم المجموعة إيه؟</b>');
+    setTimeout(() => {
+        addPanelInput('اكتب اسم المجموعة...', 'text', async (val) => {
+            state.data.groupName = val;
+            addTeacherMessage(val);
+            await stepTeacherName();
+        }, state.data.groupName);
+    }, 300);
+}
+
+async function stepTeacherName() {
+    setProgress(20);
+    state.step = 2;
+    renderPanel();
+    await addBotMessage(`تمام! اسم المجموعة <b>"${state.data.groupName}"</b> ✅<br><br><b>اسمك إيه يا مستر؟</b>`);
+    setTimeout(() => {
+        addPanelInput('اكتب اسمك...', 'text', async (val) => {
+            state.data.teacherName = val;
+            addTeacherMessage(val);
+            await stepLocation();
+        }, state.data.teacherName);
+    }, 300);
+}
+
+async function stepLocation() {
+    setProgress(30);
+    state.step = 3;
+    renderPanel();
+    await addBotMessage(`أهلاً <b>${state.data.teacherName}</b> 👨‍🏫<br><br>الدرس هيبقى فين؟`);
+    setTimeout(() => {
+        addPanelOptions([
+            { label: 'السنتر', icon: '🏫', value: 'السنتر' },
+            { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
+            { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
+        ], async (opt) => {
+            state.data.location = opt.value;
+            state.data.centerName = '';
+            addTeacherMessage(`${opt.icon} ${opt.label}`);
+            renderPanel();
+            if (opt.value === 'السنتر') {
+                await stepCenterName();
+            } else {
+                await stepStudentsCount();
+            }
+        });
+    }, 300);
+}
+
+async function stepCenterName() {
+    setProgress(35);
+    state.step = 3.5;
+    renderPanel();
+    await addBotMessage('ماشي، <b>اسم السنتر إيه؟</b>');
+    setTimeout(() => {
+        addPanelInput('اسم السنتر...', 'text', async (val) => {
+            state.data.centerName = val;
+            addTeacherMessage(val);
+            await stepStudentsCount();
+        }, state.data.centerName);
+    }, 300);
+}
+
+async function stepStudentsCount() {
+    setProgress(40);
+    state.step = 4;
+    renderPanel();
+    await addBotMessage('<b>كام طالب عايز في المجموعة؟</b>');
+    setTimeout(() => {
+        addPanelOptions([
+            { label: '10 طلاب', value: 10 },
+            { label: '15 طالب', value: 15 },
+            { label: '20 طالب', value: 20 },
+            { label: '30 طالب', value: 30 }
+        ], async (opt) => {
+            state.data.studentsCount = opt.value;
+            addTeacherMessage(`${opt.value} طالب`);
+            await stepGender();
+        });
+    }, 300);
+}
+
+async function stepGender() {
+    setProgress(50);
+    state.step = 5;
+    renderPanel();
+    await addBotMessage('<b>مين اللي يقدر يحجز؟</b>');
+    setTimeout(() => {
+        addPanelOptions([
+            { label: 'مختلط', icon: '👫', value: 'مختلط' },
+            { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
+            { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
+        ], async (opt) => {
+            state.data.gender = opt.value;
+            addTeacherMessage(`${opt.icon} ${opt.label}`);
+            await stepMapLocation();
+        });
+    }, 300);
+}
+
+async function stepMapLocation() {
+    setProgress(60);
+    state.step = 6;
+    renderPanel();
+    await addBotMessage('تعالى نحدد <b>مكان الدرس على الخريطة</b> 📍<br>دوس على الخريطة أو زرار GPS في الجدول اللي على اليمين.');
+    setTimeout(() => {
+        addPanelMap(async () => {
+            const summary = state.data.detailedAddress 
+                ? `${state.data.street} - ${state.data.detailedAddress}` 
+                : state.data.street;
+            addTeacherMessage(`📍 ${summary}`);
+            await stepTime();
+        });
+    }, 300);
 }
 
 async function stepTime() {
     setProgress(70);
+    state.step = 7;
+    renderPanel();
     await addBotMessage('⏰ <b>الحصة بتبدأ من الساعة كام؟</b>');
-    setInputMode('hidden');
     
     const times = [];
     for (let h = 6; h <= 23; h++) {
@@ -1149,26 +1455,19 @@ async function stepTime() {
         }
     }
     
-    const widget = document.createElement('div');
-    widget.className = 'widget-container';
-    widget.innerHTML = `<div class="time-grid">${times.map(t => `<div class="time-chip" data-val="${t.value}">${t.label}</div>`).join('')}</div>`;
-    chatArea.appendChild(widget);
-    scrollBottom();
-    
-    widget.querySelectorAll('.time-chip').forEach(chip => {
-        chip.onclick = async () => {
-            const val = chip.dataset.val;
-            const label = chip.textContent;
-            state.data.startTime = val;
-            addTeacherMessage(`من الساعة ${label}`);
-            widget.remove();
+    setTimeout(() => {
+        addPanelTimeGrid(times, async (t) => {
+            state.data.startTime = t.value;
+            addTeacherMessage(`من الساعة ${t.label}`);
             await stepEndTime();
-        };
-    });
+        });
+    }, 300);
 }
 
 async function stepEndTime() {
     setProgress(80);
+    state.step = 8;
+    renderPanel();
     await addBotMessage('و<b>بتخلص الساعة كام؟</b>');
     
     const times = [];
@@ -1183,151 +1482,53 @@ async function stepEndTime() {
         }
     }
     
-    const widget = document.createElement('div');
-    widget.className = 'widget-container';
-    widget.innerHTML = `<div class="time-grid">${times.map(t => {
-        const isAfter = t.value > state.data.startTime;
-        return `<div class="time-chip" data-val="${t.value}" style="${!isAfter ? 'opacity:0.3; pointer-events:none;' : ''}">${t.label}</div>`;
-    }).join('')}</div>`;
-    chatArea.appendChild(widget);
-    scrollBottom();
-    
-    widget.querySelectorAll('.time-chip').forEach(chip => {
-        chip.onclick = async () => {
-            const val = chip.dataset.val;
-            const label = chip.textContent;
-            state.data.endTime = val;
-            addTeacherMessage(`لحد الساعة ${label}`);
-            widget.remove();
+    setTimeout(() => {
+        addPanelTimeGrid(times, async (t) => {
+            state.data.endTime = t.value;
+            addTeacherMessage(`لحد الساعة ${t.label}`);
             await stepDate();
-        };
-    });
+        }, state.data.startTime);
+    }, 300);
 }
 
 async function stepDate() {
     setProgress(90);
+    state.step = 9;
+    renderPanel();
     await addBotMessage('📅 <b>آخر حاجة: اختار يوم الحصة</b>');
-    
-    const today = new Date();
-    let calDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    
-    const widget = document.createElement('div');
-    widget.className = 'widget-container';
-    widget.innerHTML = `
-        <div class="mini-cal">
-            <div class="cal-header">
-                <button class="cal-nav" id="prevM">❮</button>
-                <span class="cal-title" id="calTitle"></span>
-                <button class="cal-nav" id="nextM">❯</button>
-            </div>
-            <div class="cal-weekdays">
-                <div>س</div><div>ح</div><div>ن</div><div>ث</div><div>ر</div><div>خ</div><div>ج</div>
-            </div>
-            <div class="cal-days" id="calDays"></div>
-        </div>
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
-    
-    const monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-    
-    function renderCal() {
-        const y = calDate.getFullYear();
-        const m = calDate.getMonth();
-        document.getElementById('calTitle').textContent = `${monthNames[m]} ${y}`;
-        
-        const firstDay = new Date(y, m, 1).getDay();
-        const displayFirst = (firstDay + 1) % 7;
-        const daysInMonth = new Date(y, m+1, 0).getDate();
-        const todayReset = new Date(); todayReset.setHours(0,0,0,0);
-        
-        let html = '';
-        for (let i = 0; i < displayFirst; i++) html += '<div class="cal-day empty"></div>';
-        
-        for (let d = 1; d <= daysInMonth; d++) {
-            const thisDate = new Date(y, m, d);
-            thisDate.setHours(0,0,0,0);
-            const isPast = thisDate < todayReset;
-            const isToday = thisDate.getTime() === todayReset.getTime();
-            const key = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const isSelected = state.data.date === key;
-            
-            let cls = 'cal-day';
-            if (isPast) cls += ' past';
-            if (isToday) cls += ' today';
-            if (isSelected) cls += ' selected';
-            
-            html += `<div class="${cls}" data-date="${key}" data-y="${y}" data-m="${m}" data-d="${d}">${d}</div>`;
-        }
-        document.getElementById('calDays').innerHTML = html;
-        
-        document.querySelectorAll('.cal-day:not(.empty):not(.past)').forEach(el => {
-            el.onclick = async () => {
-                const y = +el.dataset.y;
-                const m = +el.dataset.m;
-                const d = +el.dataset.d;
-                const dateStr = el.dataset.date;
-                const dayOfWeek = new Date(y, m, d).getDay();
-                const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-                
-                state.data.date = dateStr;
-                state.data.dayOfWeek = dayOfWeek;
-                state.data.dayName = dayNames[dayOfWeek];
-                
-                addTeacherMessage(`📅 ${dayNames[dayOfWeek]} ${d} ${monthNames[m]} ${y}`);
-                widget.remove();
-                await stepRepeat();
-            };
+    setTimeout(() => {
+        addPanelCalendar(async (info) => {
+            state.data.date = info.date;
+            state.data.dayOfWeek = info.dayOfWeek;
+            state.data.dayName = info.dayName;
+            addTeacherMessage(`📅 ${info.dayName} ${info.dayNum} ${info.monthName} ${info.year}`);
+            await stepRepeat();
         });
-    }
-    
-    document.getElementById('prevM').onclick = () => {
-        calDate.setMonth(calDate.getMonth() - 1);
-        renderCal();
-    };
-    document.getElementById('nextM').onclick = () => {
-        calDate.setMonth(calDate.getMonth() + 1);
-        renderCal();
-    };
-    
-    renderCal();
+    }, 300);
 }
 
 async function stepRepeat() {
     setProgress(95);
+    state.step = 10;
+    renderPanel();
     await addBotMessage('<b>عايز تكرار أسبوعي؟</b> يعني كل أسبوع نفس اليوم.');
-    setInputMode('hidden');
-    showOptions([
-        { label: 'أيوه، كل أسبوع', icon: '🔁', value: true },
-        { label: 'لا، مرة واحدة بس', icon: '📅', value: false }
-    ], async (opt) => {
-        state.data.repeatWeekly = opt.value;
-        addTeacherMessage(opt.label);
-        await finishSetup();
-    });
+    setTimeout(() => {
+        addPanelOptions([
+            { label: 'أيوه، كل أسبوع', icon: '🔁', value: true },
+            { label: 'لا، مرة واحدة بس', icon: '📅', value: false }
+        ], async (opt) => {
+            state.data.repeatWeekly = opt.value;
+            addTeacherMessage(opt.label);
+            await finishSetup();
+        });
+    }, 300);
 }
 
 async function finishSetup() {
     setProgress(100);
+    state.step = 11;
+    renderPanel();
     await addBotMessage('ثانية بحفظ المجموعة... ⏳');
-    
-    const summaryWidget = document.createElement('div');
-    summaryWidget.className = 'summary-bubble';
-    summaryWidget.innerHTML = `
-        <h4>📋 ملخص المجموعة</h4>
-        <div class="row"><span class="k">اسم المجموعة</span><span class="v">${state.data.groupName}</span></div>
-        <div class="row"><span class="k">المستر</span><span class="v">${state.data.teacherName}</span></div>
-        ${state.data.centerName ? `<div class="row"><span class="k">السنتر</span><span class="v">${state.data.centerName}</span></div>` : ''}
-        <div class="row"><span class="k">المكان</span><span class="v">${state.data.location}</span></div>
-        <div class="row"><span class="k">السعة</span><span class="v">${state.data.studentsCount} طالب</span></div>
-        <div class="row"><span class="k">الفئة</span><span class="v">${state.data.gender}</span></div>
-        <div class="row"><span class="k">الموعد</span><span class="v">${state.data.dayName} • ${formatTime(state.data.startTime)} - ${formatTime(state.data.endTime)}</span></div>
-        <div class="row"><span class="k">العنوان</span><span class="v">${state.data.street || 'على الخريطة'}</span></div>
-        ${state.data.detailedAddress ? `<div class="row"><span class="k">علامة مميزة</span><span class="v">${state.data.detailedAddress}</span></div>` : ''}
-        <div class="row"><span class="k">التكرار</span><span class="v">${state.data.repeatWeekly ? '🔁 أسبوعي' : '📅 مرة واحدة'}</span></div>
-    `;
-    chatArea.appendChild(summaryWidget);
-    scrollBottom();
     
     try {
         const subjectData = localStorage.getItem('teacherSelections') || '';
@@ -1390,19 +1591,20 @@ async function finishSetup() {
             addBotMessage(`🎉 خلصنا! مجموعة <b>"${state.data.groupName}"</b> اتحفظت.`);
         }
         
-        await addBotMessage('اتفضل، دي مجموعاتك والجدول بتاعك 👇');
-        await showSavedGroups(false, true);
         await updateHeaderBadge();
         
-        setInputMode('hidden');
         showOptions([
             { label: 'زود مجموعة كمان', icon: '➕', value: 'new' },
+            { label: 'شوف مجموعاتي', icon: '📚', value: 'list' },
             { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
         ], async (opt) => {
             if (opt.value === 'new') {
                 addTeacherMessage('➕ مجموعة كمان');
                 resetState();
-                await stepGroupName();
+                startFresh();
+            } else if (opt.value === 'list') {
+                addTeacherMessage('📚 مجموعاتي');
+                await showSavedGroupsInChat();
             } else {
                 addTeacherMessage('➡️ الصفحة الجاية');
                 window.location.href = 'mester3.html';
@@ -1412,11 +1614,77 @@ async function finishSetup() {
     } catch(err) {
         console.error(err);
         showToast('في مشكلة، جرب تاني');
-        setInputMode('text', 'اكتب أي حاجة عشان نكمل...');
     }
 }
 
-/* ============ إدارة المجموعات المحفوظة ============ */
+/* ============ أزرار الخيارات في الشات ============ */
+function showOptions(options, onSelect) {
+    const container = document.createElement('div');
+    container.className = 'options-container';
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
+        btn.onclick = () => {
+            container.remove();
+            onSelect(opt);
+        };
+        container.appendChild(btn);
+    });
+    chatArea.appendChild(container);
+    scrollBottom();
+}
+
+/* ============ مجموعاتي من الهيدر ============ */
+window.showMyGroupsFromHeader = async function() {
+    chatArea.querySelectorAll('.groups-widget').forEach(el => el.remove());
+    await addBotMessage('📚 اتفضل مجموعاتك 👇');
+    await showSavedGroupsInChat();
+};
+
+async function showSavedGroupsInChat() {
+    const groups = await loadSavedGroups();
+    
+    const widget = document.createElement('div');
+    widget.className = 'groups-widget';
+    widget.style.cssText = 'background:#fff;border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);border:2px solid var(--light);max-width:95%;';
+    
+    if (groups.length === 0) {
+        widget.innerHTML = `<div style="text-align:center;padding:20px;color:var(--gray);">📭 لسه مفيش مجموعات</div>`;
+    } else {
+        widget.innerHTML = `<div style="font-size:14px;font-weight:900;color:var(--dark);margin-bottom:10px;">📚 مجموعاتك (${groups.length})</div>`;
+        
+        groups.forEach(g => {
+            const isRec = g.apptType === 'recurring';
+            const isVisible = g.isActive !== false;
+            const card = document.createElement('div');
+            card.style.cssText = `background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:8px;border-right:4px solid ${isRec ? '#8b5cf6' : '#3b82f6'};`;
+            card.innerHTML = `
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <b style="font-size:14px;">${g.groupName}</b>
+                    <span style="font-size:11px;">${isVisible ? '👁️' : '🙈'} ${isRec ? '🔁' : '📅'}</span>
+                </div>
+                <div style="font-size:12px;color:var(--gray);margin-bottom:8px;">
+                    👤 ${g.teacherName} • 👥 ${g.maxCapacity || 20} • 🕐 ${formatTime(g.startTime)}
+                </div>
+                <div style="display:flex;gap:5px;">
+                    <button data-action="edit" data-id="${g.id}" style="flex:1;padding:6px;border-radius:6px;border:none;background:#dbeafe;color:#1e40af;font-family:inherit;font-weight:900;font-size:11px;cursor:pointer;">✏️ عدّل</button>
+                    <button data-action="toggle" data-id="${g.id}" style="flex:1;padding:6px;border-radius:6px;border:none;background:#fef3c7;color:#92400e;font-family:inherit;font-weight:900;font-size:11px;cursor:pointer;">${isVisible ? '🙈 اخفي' : '👁️ اظهر'}</button>
+                    <button data-action="delete" data-id="${g.id}" style="flex:1;padding:6px;border-radius:6px;border:none;background:#fee2e2;color:#b91c1c;font-family:inherit;font-weight:900;font-size:11px;cursor:pointer;">🗑️ امسح</button>
+                </div>
+            `;
+            widget.appendChild(card);
+        });
+        
+        widget.querySelectorAll('[data-action]').forEach(btn => {
+            btn.onclick = () => handleGroupAction(btn.dataset.action, btn.dataset.id);
+        });
+    }
+    
+    chatArea.appendChild(widget);
+    scrollBottom();
+}
+
 async function loadSavedGroups() {
     try {
         const phone = localStorage.getItem('current_teacher_phone');
@@ -1425,157 +1693,7 @@ async function loadSavedGroups() {
         cachedGroups = all.filter(g => g.phone === phone);
         return cachedGroups;
     } catch(e) {
-        console.error('فشل جلب المجموعات:', e);
         return [];
-    }
-}
-
-async function showSavedGroups(firstTime = false, showCalendar = true) {
-    const groups = await loadSavedGroups();
-    
-    const widget = document.createElement('div');
-    widget.className = 'groups-list-widget';
-    widget.id = 'groupsListWidget';
-    
-    // 🗓️ الجدول الأسبوعي
-    let calendarHtml = '';
-    if (showCalendar && groups.length > 0) {
-        const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
-        
-        const grouped = {};
-        weekOrder.forEach(d => grouped[d] = []);
-        
-        groups.forEach(g => {
-            const day = g.daysNames?.[0] || 'غير محدد';
-            if (grouped[day]) {
-                grouped[day].push(g);
-            } else {
-                if (!grouped[day]) grouped[day] = [];
-                grouped[day].push(g);
-            }
-        });
-        
-        Object.keys(grouped).forEach(day => {
-            grouped[day].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-        });
-        
-        calendarHtml = `
-            <div class="week-calendar">
-                <div class="wc-title">🗓️ جدولك الأسبوعي</div>
-                ${weekOrder.map(day => {
-                    const dayGroups = grouped[day] || [];
-                    return `
-                        <div class="wc-day ${dayGroups.length === 0 ? 'wc-empty' : ''}">
-                            <div class="wc-day-header">
-                                <span class="wc-day-name">${day}</span>
-                                <span class="wc-day-count">${dayGroups.length}</span>
-                            </div>
-                            <div class="wc-day-body">
-                                ${dayGroups.length === 0 
-                                    ? '<span class="wc-empty-text">فاضي</span>'
-                                    : dayGroups.map(g => {
-                                        const isRec = g.apptType === 'recurring';
-                                        const isVisible = g.isActive !== false;
-                                        const typeClass = isRec ? 'wc-item-rec' : 'wc-item-norm';
-                                        const hiddenClass = !isVisible ? 'wc-item-hidden' : '';
-                                        return `
-                                            <div class="wc-item ${typeClass} ${hiddenClass}">
-                                                <span class="wc-time">${formatTime(g.startTime)}</span>
-                                                <span class="wc-group">${g.groupName || '-'}</span>
-                                                ${isRec ? '<span class="wc-icon">🔁</span>' : ''}
-                                                ${!isVisible ? '<span class="wc-icon">🙈</span>' : ''}
-                                            </div>
-                                        `;
-                                    }).join('')
-                                }
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-    
-    if (groups.length === 0) {
-        widget.innerHTML = `
-            <div class="empty-groups">
-                <span class="icon">📭</span>
-                <div>لسه مفيش مجموعات محفوظة</div>
-                <div style="font-size:12px; margin-top:6px;">تعالى نعمل أول مجموعة! 👇</div>
-            </div>
-        `;
-    } else {
-        widget.innerHTML = `
-            <div class="groups-header">
-                <span>📚 مجموعاتك (${groups.length})</span>
-                <button class="sgc-btn add-new" id="addNewFromList">➕ مجموعة جديدة</button>
-            </div>
-            ${calendarHtml}
-        `;
-        
-        groups.forEach(g => {
-            const isRec = g.apptType === 'recurring';
-            const isVisible = g.isActive !== false;
-            const dayName = g.daysNames?.[0] || '';
-            
-            const card = document.createElement('div');
-            card.className = `saved-group-card ${isRec ? 'recurring-group' : 'normal-group'} ${!isVisible ? 'hidden-group' : ''}`;
-            card.innerHTML = `
-                <div class="sgc-header">
-                    <div class="sgc-name">${g.groupName || 'بدون اسم'}</div>
-                    <div style="display:flex; gap:4px; flex-direction:column; align-items:flex-end;">
-                        <span class="sgc-badge ${isRec ? 'recurring' : 'normal'}">${isRec ? '🔁 أسبوعي' : '📅 محدد'}</span>
-                        <span class="sgc-badge ${isVisible ? 'visible' : 'hidden'}">${isVisible ? '👁️ ظاهرة' : '🙈 مخفية'}</span>
-                    </div>
-                </div>
-                <div class="sgc-info">
-                    <div class="item"><span>👤</span><span class="v">${g.teacherName || '-'}</span></div>
-                    <div class="item"><span>👥</span><span class="v">${g.maxCapacity || 20}</span></div>
-                    <div class="item"><span>🕐</span><span class="v">${formatTime(g.startTime)}</span></div>
-                    <div class="item"><span>🕓</span><span class="v">${formatTime(g.endTime)}</span></div>
-                    <div class="item full"><span>📅</span><span class="v">${dayName} ${isRec ? '(كل أسبوع)' : (g.date || '')}</span></div>
-                    ${g.address ? `<div class="item full"><span>📍</span><span class="v">${g.address}</span></div>` : ''}
-                </div>
-                <div class="sgc-actions">
-                    <button class="sgc-btn edit" data-id="${g.id}" data-action="edit">✏️ عدّل</button>
-                    <button class="sgc-btn toggle" data-id="${g.id}" data-action="toggle">${isVisible ? '🙈 اخفي' : '👁️ اظهر'}</button>
-                    <button class="sgc-btn delete" data-id="${g.id}" data-action="delete">🗑️ امسح</button>
-                </div>
-            `;
-            widget.appendChild(card);
-        });
-    }
-    
-    chatArea.appendChild(widget);
-    scrollBottom();
-    
-    widget.querySelectorAll('[data-action]').forEach(btn => {
-        btn.onclick = () => handleGroupAction(btn.dataset.action, btn.dataset.id);
-    });
-    
-    const addNewBtn = widget.querySelector('#addNewFromList');
-    if (addNewBtn) {
-        addNewBtn.onclick = () => {
-            widget.remove();
-            resetState();
-            stepGroupName();
-        };
-    }
-    
-    if (firstTime) {
-        const newGroupContainer = document.createElement('div');
-        newGroupContainer.className = 'options-container';
-        const btnNew = document.createElement('button');
-        btnNew.className = 'option-btn';
-        btnNew.innerHTML = groups.length === 0 ? '➕ اعمل أول مجموعة' : '➕ زود مجموعة كمان';
-        btnNew.onclick = () => {
-            newGroupContainer.remove();
-            resetState();
-            stepGroupName();
-        };
-        newGroupContainer.appendChild(btnNew);
-        chatArea.appendChild(newGroupContainer);
-        scrollBottom();
     }
 }
 
@@ -1584,35 +1702,23 @@ async function handleGroupAction(action, id) {
     if (!group) return;
     
     if (action === 'delete') {
-        if (!confirm(`متأكد إنك عايز تمسح مجموعة "${group.groupName}"؟`)) return;
+        if (!confirm(`متأكد إنك عايز تمسح "${group.groupName}"؟`)) return;
         try {
             await deleteGroup(id);
-            showToast('✅ اتمسحت خلاص', true);
-            chatArea.querySelector('#groupsListWidget')?.remove();
-            addBotMessage(`🗑️ اتمسحت مجموعة <b>"${group.groupName}"</b>`);
-            await addBotMessage('دي مجموعاتك بعد المسح 👇');
-            await showSavedGroups(false, true);
+            showToast('✅ اتمسحت', true);
+            chatArea.querySelectorAll('.groups-widget').forEach(el => el.remove());
+            await showSavedGroupsInChat();
             await updateHeaderBadge();
-        } catch(e) {
-            console.error(e);
-            showToast('❌ المسح مش نافع');
-        }
-    } 
-    else if (action === 'toggle') {
+        } catch(e) { showToast('❌ مش نافع'); }
+    } else if (action === 'toggle') {
         try {
             const newVis = !group.isActive;
             await updateGroup(id, { isActive: newVis });
             showToast(newVis ? '👁️ بقت ظاهرة' : '🙈 بقت مخفية', true);
-            chatArea.querySelector('#groupsListWidget')?.remove();
-            addBotMessage('اتحدث خلاص 👇');
-            await showSavedGroups(false, true);
-            await updateHeaderBadge();
-        } catch(e) {
-            console.error(e);
-            showToast('❌ التعديل مش نافع');
-        }
-    } 
-    else if (action === 'edit') {
+            chatArea.querySelectorAll('.groups-widget').forEach(el => el.remove());
+            await showSavedGroupsInChat();
+        } catch(e) { showToast('❌ مش نافع'); }
+    } else if (action === 'edit') {
         startEditFlow(group);
     }
 }
@@ -1621,7 +1727,6 @@ async function startEditFlow(group) {
     resetState();
     state.isEditing = true;
     state.data.editingId = group.id;
-    
     state.data.groupName = group.groupName || '';
     state.data.teacherName = group.teacherName || '';
     state.data.centerName = group.centerName || '';
@@ -1631,7 +1736,6 @@ async function startEditFlow(group) {
     state.data.endTime = group.endTime || '';
     state.data.date = group.date || '';
     state.data.dayName = group.daysNames?.[0] || '';
-    state.data.dayOfWeek = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].indexOf(state.data.dayName);
     state.data.repeatWeekly = group.apptType === 'recurring';
     state.data.street = group.address || '';
     state.data.detailedAddress = group.detailedAddress || '';
@@ -1643,37 +1747,8 @@ async function startEditFlow(group) {
     else if (group.gender === 'girls') state.data.gender = 'بنات فقط';
     else state.data.gender = 'مختلط';
     
-    await addBotMessage(`✏️ <b>هنعدل مجموعة "${group.groupName}"</b><br>هسألك على كل حاجة من تاني عشان نحدثها.`);
+    await addBotMessage(`✏️ <b>هنعدل "${group.groupName}"</b><br>هسألك من تاني.`);
     await stepGroupName();
-}
-
-/* ============ زر مجموعاتي من الهيدر ============ */
-window.showMyGroupsFromHeader = async function() {
-    chatArea.querySelectorAll('#groupsListWidget').forEach(el => el.remove());
-    await addBotMessage('📚 اتفضل مجموعاتك والجدول 👇');
-    await showSavedGroups(false, true);
-};
-
-async function updateHeaderBadge() {
-    try {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) return;
-        const all = await getAllGroups();
-        const myGroups = all.filter(g => g.phone === phone);
-        const btn = document.getElementById('myGroupsBtn');
-        if (!btn) return;
-        
-        btn.querySelector('.badge-count')?.remove();
-        
-        if (myGroups.length > 0) {
-            const badge = document.createElement('span');
-            badge.className = 'badge-count';
-            badge.textContent = myGroups.length;
-            btn.appendChild(badge);
-        }
-    } catch(e) {
-        console.warn('فشل تحديث العداد:', e);
-    }
 }
 
 /* ============ التعامل مع الإدخال ============ */
@@ -1683,28 +1758,35 @@ chatInput.onkeydown = e => { if (e.key === 'Enter') handleSend(); };
 async function handleSend() {
     const val = chatInput.value.trim();
     if (!val) return;
-    
-    if (state.step === 1) {
-        state.data.groupName = val;
-        chatInput.value = '';
-        await stepTeacherName();
-    } else if (state.step === 2) {
-        state.data.teacherName = val;
-        chatInput.value = '';
-        await stepLocation();
-    } else if (state.step === 3.5) {
-        state.data.centerName = val;
-        chatInput.value = '';
-        await stepStudentsCount();
-    } else if (state.step === 4) {
-        const num = parseInt(val);
-        if (num > 0) {
-            state.data.studentsCount = num;
-            chatInput.value = '';
-            addTeacherMessage(`${num} طالب`);
-            await stepGender();
+    // المدخلات الرئيسية بقت من Panel
+    addTeacherMessage(val);
+    chatInput.value = '';
+}
+
+/* ============ ابدأ من جديد ============ */
+async function startFresh() {
+    chatArea.innerHTML = '';
+    setProgress(0);
+    await stepGroupName();
+}
+
+/* ============ الهيدر - عداد ============ */
+async function updateHeaderBadge() {
+    try {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) return;
+        const all = await getAllGroups();
+        const myGroups = all.filter(g => g.phone === phone);
+        const btn = document.getElementById('myGroupsBtn');
+        if (!btn) return;
+        btn.querySelector('.badge-count')?.remove();
+        if (myGroups.length > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'badge-count';
+            badge.textContent = myGroups.length;
+            btn.appendChild(badge);
         }
-    }
+    } catch(e) {}
 }
 
 /* ============ الانتقال للصفحة التالية ============ */
@@ -1716,10 +1798,8 @@ window.goToNext = function() {
 function checkSubject() {
     const saved = localStorage.getItem('teacherSelections');
     if (!saved || saved === '{}') {
-        addBotMessage('⚠️ <b>مش لاقي مواد مختارة!</b><br>لازم ترجع للصفحة اللي فاتت تختار موادك.', false);
-        setTimeout(() => {
-            window.location.href = 'mester1.html';
-        }, 2500);
+        addBotMessage('⚠️ <b>مش لاقي مواد مختارة!</b><br>ارجع للصفحة اللي فاتت اختار موادك.', false);
+        setTimeout(() => { window.location.href = 'mester1.html'; }, 2500);
         return false;
     }
     return true;
@@ -1729,16 +1809,10 @@ function checkSubject() {
 async function init() {
     if (!checkSubject()) return;
     
-    await addBotMessage('إزيك يا مستر 👋<br>دي مجموعاتك والجدول بتاعك، تقدر تعدل أي واحدة أو تزود جديدة.');
+    await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة. اتبع الأسئلة وهتشوف بياناتك بتتسجل على اليمين 📋');
     
-    const phone = localStorage.getItem('current_teacher_phone');
-    if (phone) {
-        await showSavedGroups(true, true);
-        await updateHeaderBadge();
-    } else {
-        resetState();
-        await stepGroupName();
-    }
+    await stepGroupName();
+    await updateHeaderBadge();
 }
 
 init();
