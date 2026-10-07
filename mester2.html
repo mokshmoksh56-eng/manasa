@@ -45,7 +45,6 @@
     .step.active { color: #a8f0e5; opacity: 1; font-size: 15px; }
     .step-divider { color: rgba(255,255,255,0.6); }
 
-    /* ✅ زر الرجوع */
     .back-btn-header {
         position: absolute;
         top: 12px;
@@ -1080,7 +1079,7 @@
           localStorage.setItem('last_selected_gender', appt.genderAllowed);
           localStorage.setItem('last_selected_location', appt.location);
 
-          console.log('✅ تم تحديث ملخص التذكرة');
+          console.log('✅ تم تحديث ملخص التذكرة:', savedAppts.length, 'حصة');
       } catch(e) {
           console.warn('⚠️ فشل حفظ ملخص التذكرة:', e);
       }
