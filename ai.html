@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>🎓 المساعد التعليمي الذكي</title>
+<title>🎓 المساعد التعليمي الذكي - المنهج الكامل</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -107,6 +107,22 @@ body {
 .mode-btn.teacher-mode { background: var(--teacher-color); border-color: #fcd34d; }
 .mode-btn { font-size: 12px; padding: 6px 10px; }
 
+.deep-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: #fcd34d;
+    box-shadow: 0 3px 10px rgba(245,158,11,0.4);
+}
+.deep-btn.active {
+    background: linear-gradient(135deg, #10b981, #047857);
+    border-color: #6ee7b7;
+    box-shadow: 0 3px 10px rgba(16,185,129,0.5);
+    animation: deepPulse 2s ease-in-out infinite;
+}
+@keyframes deepPulse {
+    0%, 100% { box-shadow: 0 3px 10px rgba(16,185,129,0.5); }
+    50% { box-shadow: 0 5px 20px rgba(16,185,129,0.9); }
+}
+
 /* ============ Main Layout ============ */
 .main-layout {
     flex: 1;
@@ -126,7 +142,7 @@ body {
     gap: 6px;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(124,58,237,0.1);
-    max-height: 130px;
+    max-height: 200px;
     overflow-y: auto;
 }
 .category-bar::-webkit-scrollbar { width: 4px; }
@@ -148,6 +164,30 @@ body {
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 10px;
+}
+.cat-header .toggle-cats {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 900;
+    padding: 2px 6px;
+}
+
+.cat-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.cat-row-label {
+    width: 100%;
+    font-size: 10.5px;
+    color: var(--gray);
+    font-weight: 900;
+    margin-bottom: 2px;
 }
 
 .cat-chip {
@@ -176,6 +216,18 @@ body {
     background: var(--primary);
     color: #fff;
     border-color: var(--dark);
+}
+.cat-chip.grade-chip {
+    font-size: 11px;
+    padding: 5px 10px;
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+.cat-chip.grade-chip.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    border-color: #b45309;
 }
 
 /* ============ Chat Area ============ */
@@ -266,6 +318,53 @@ body {
     border: none;
     border-top: 1px dashed var(--border);
     margin: 10px 0;
+}
+.msg.ai h3, .msg.ai h4 {
+    color: var(--dark);
+    margin: 10px 0 6px;
+    font-size: 15px;
+}
+.msg.ai .step-box {
+    background: #f8fafc;
+    border-right: 4px solid var(--primary);
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 13.5px;
+}
+.msg.ai .answer-box {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 2px solid #10b981;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin: 8px 0;
+    font-weight: 900;
+}
+
+/* Deep thinking indicator */
+.thinking-box {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 8px auto 12px;
+    max-width: 90%;
+    font-size: 12.5px;
+    color: #92400e;
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    animation: msgIn 0.3s ease;
+}
+.thinking-box.show { display: flex; }
+.thinking-box .brain {
+    font-size: 18px;
+    animation: brainSpin 2s linear infinite;
+}
+@keyframes brainSpin {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
 }
 
 /* ============ Suggested questions ============ */
@@ -422,8 +521,11 @@ body {
     .header-actions { gap: 4px; }
     .mode-btn, .action-btn { padding: 6px 8px; font-size: 11px; }
     .cat-chip { font-size: 11px; padding: 5px 10px; }
+    .cat-chip.grade-chip { font-size: 10px; padding: 4px 8px; }
     .msg { font-size: 14px; }
     .welcome-card .levels { grid-template-columns: 1fr; }
+    .tutor-header .info h2 { font-size: 14px; }
+    .tutor-header .info p { font-size: 10.5px; }
 }
 </style>
 </head>
@@ -436,6 +538,10 @@ body {
         <p><span class="dot"></span> <span id="statusText">جاهز يجاوب على أي سؤال</span></p>
     </div>
     <div class="header-actions">
+        <button class="action-btn deep-btn" id="deepBtn" onclick="toggleDeep()" title="التفكير العميق">
+            <span id="deepIcon">🧠</span>
+            <span id="deepText">عادي</span>
+        </button>
         <button class="mode-btn student-mode" id="modeBtn" onclick="toggleMode()">
             <span id="modeIcon">🎒</span>
             <span id="modeText">طالب</span>
@@ -446,13 +552,7 @@ body {
 <div class="main-layout">
     
     <!-- Category Bar -->
-    <div class="category-bar" id="categoryBar">
-        <div class="cat-header">
-            <span>📚 اختر المرحلة والمادة</span>
-            <span class="level-badge" id="currentLevel">عام</span>
-        </div>
-        <!-- Categories will be generated -->
-    </div>
+    <div class="category-bar" id="categoryBar"></div>
     
     <!-- Chat Area -->
     <div class="chat-area" id="chatArea"></div>
@@ -473,8 +573,6 @@ body {
 <script>try { eruda.init({ tool: ['console'], autoScale: true }); } catch(e) {}</script>
 
 <script type="module">
-import { saveTeacherData } from './firebase-config.js';
-
 /* ============================================================ */
 /* ============ 🔑 Groq Configuration ============ */
 /* ============================================================ */
@@ -485,17 +583,19 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const GROQ_MODELS = [
-    'openai/gpt-oss-20b',
     'openai/gpt-oss-120b',
-    'allam-2-7b',
-    'qwen/qwen3.8-27b'
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.8-27b',
+    'allam-2-7b'
 ];
 
 /* ============ حالة التطبيق ============ */
 const appState = {
-    mode: 'student', // student | teacher
-    level: 'general', // primary | preparatory | secondary | university | general
-    subject: '', // math | arabic | english | science | physics | chemistry | biology | history | philosophy | programming | general
+    mode: 'student',
+    level: 'primary',
+    grade: '',
+    subject: '',
+    deepThinking: false,
     chatHistory: []
 };
 
@@ -505,65 +605,226 @@ const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const toastEl = document.getElementById('toast');
 const categoryBar = document.getElementById('categoryBar');
-const inputArea = document.getElementById('inputArea');
 
-/* ============ المراحل والمواد ============ */
-const LEVELS = {
-    primary: { 
-        name: 'ابتدائي', icon: '🎒', 
-        subjects: [
-            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
-            { id: 'math', name: 'رياضيات', icon: '🔢' },
-            { id: 'english', name: 'إنجليزي', icon: '🌍' },
-            { id: 'science', name: 'علوم', icon: '🔬' },
-            { id: 'social', name: 'دراسات', icon: '🗺️' },
-            { id: 'religion', name: 'تربية دينية', icon: '📿' }
-        ]
+/* ============================================================ */
+/* ============ 📚 المنهج المصري الكامل ============ */
+/* ============================================================ */
+
+const CURRICULUM = {
+    primary: {
+        name: 'ابتدائي', icon: '🎒',
+        grades: ['الصف الأول', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع', 'الصف الخامس', 'الصف السادس'],
+        subjects: {
+            'الصف الأول': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' }
+            ],
+            'الصف الثاني': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' }
+            ],
+            'الصف الثالث': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' }
+            ],
+            'الصف الرابع': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر وتكنولوجيا', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ],
+            'الصف الخامس': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر وتكنولوجيا', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ],
+            'الصف السادس': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر وتكنولوجيا', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ]
+        }
     },
-    preparatory: { 
+    preparatory: {
         name: 'إعدادي', icon: '📗',
-        subjects: [
-            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
-            { id: 'math', name: 'رياضيات', icon: '🔢' },
-            { id: 'english', name: 'إنجليزي', icon: '🌍' },
-            { id: 'science', name: 'علوم', icon: '🔬' },
-            { id: 'social', name: 'دراسات', icon: '🗺️' },
-            { id: 'computer', name: 'كمبيوتر', icon: '💻' }
-        ]
+        grades: ['الصف الأول الإعدادي', 'الصف الثاني الإعدادي', 'الصف الثالث الإعدادي'],
+        subjects: {
+            'الصف الأول الإعدادي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ],
+            'الصف الثاني الإعدادي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ],
+            'الصف الثالث الإعدادي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' },
+                { id: 'social', name: 'دراسات اجتماعية', icon: '🗺️' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر', icon: '💻' },
+                { id: 'art', name: 'تربية فنية', icon: '🎨' }
+            ]
+        }
     },
-    secondary: { 
+    secondary: {
         name: 'ثانوي', icon: '📘',
-        subjects: [
-            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
-            { id: 'math', name: 'رياضيات', icon: '🔢' },
-            { id: 'english', name: 'إنجليزي', icon: '🌍' },
-            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
-            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
-            { id: 'biology', name: 'أحياء', icon: '🧬' },
-            { id: 'geology', name: 'جيولوجيا', icon: '🪨' },
-            { id: 'history', name: 'تاريخ', icon: '📜' },
-            { id: 'philosophy', name: 'فلسفة', icon: '🤔' },
-            { id: 'psychology', name: 'علم نفس', icon: '🧠' }
-        ]
+        grades: ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'],
+        subjects: {
+            'الأول الثانوي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'french', name: 'فرنساوي', icon: '🇫🇷' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+                { id: 'biology', name: 'أحياء', icon: '🧬' },
+                { id: 'history', name: 'تاريخ', icon: '📜' },
+                { id: 'geography', name: 'جغرافيا', icon: '🌍' },
+                { id: 'philosophy', name: 'فلسفة ومنطق', icon: '🤔' },
+                { id: 'psychology', name: 'علم نفس واجتماع', icon: '🧠' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر', icon: '💻' }
+            ],
+            'الثاني الثانوي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات (جبر وهندسة فراغية)', icon: '🔢' },
+                { id: 'math2', name: 'رياضيات (تفاضل وتكامل)', icon: '📐' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'french', name: 'فرنساوي', icon: '🇫🇷' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+                { id: 'biology', name: 'أحياء', icon: '🧬' },
+                { id: 'history', name: 'تاريخ', icon: '📜' },
+                { id: 'geography', name: 'جغرافيا', icon: '🌍' },
+                { id: 'philosophy', name: 'فلسفة ومنطق', icon: '🤔' },
+                { id: 'psychology', name: 'علم نفس واجتماع', icon: '🧠' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' },
+                { id: 'computer', name: 'كمبيوتر', icon: '💻' }
+            ],
+            'الثالث الثانوي': [
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'french', name: 'فرنساوي', icon: '🇫🇷' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+                { id: 'biology', name: 'أحياء', icon: '🧬' },
+                { id: 'math_advanced', name: 'رياضيات (تفاضل وتكامل)', icon: '📐' },
+                { id: 'math_statics', name: 'رياضيات (إحصاء)', icon: '📊' },
+                { id: 'history', name: 'تاريخ', icon: '📜' },
+                { id: 'geography', name: 'جغرافيا', icon: '🌍' },
+                { id: 'philosophy', name: 'فلسفة ومنطق', icon: '🤔' },
+                { id: 'psychology', name: 'علم نفس واجتماع', icon: '🧠' },
+                { id: 'geology', name: 'جيولوجيا', icon: '🪨' },
+                { id: 'religion', name: 'تربية دينية', icon: '📿' }
+            ]
+        }
     },
-    university: { 
+    azhar: {
+        name: 'أزهري', icon: '🕌',
+        grades: ['الأول الثانوي الأزهري', 'الثاني الثانوي الأزهري', 'الثالث الثانوي الأزهري'],
+        subjects: {
+            'الأول الثانوي الأزهري': [
+                { id: 'quran', name: 'قرآن وتفسير', icon: '📖' },
+                { id: 'hadith', name: 'حديث', icon: '📜' },
+                { id: 'fiqh', name: 'فقه', icon: '⚖️' },
+                { id: 'aqeedah', name: 'عقيدة', icon: '🕌' },
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'science', name: 'علوم', icon: '🔬' }
+            ],
+            'الثاني الثانوي الأزهري': [
+                { id: 'quran', name: 'قرآن وتفسير', icon: '📖' },
+                { id: 'hadith', name: 'حديث', icon: '📜' },
+                { id: 'fiqh', name: 'فقه', icon: '⚖️' },
+                { id: 'aqeedah', name: 'عقيدة', icon: '🕌' },
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' }
+            ],
+            'الثالث الثانوي الأزهري': [
+                { id: 'quran', name: 'قرآن وتفسير', icon: '📖' },
+                { id: 'hadith', name: 'حديث', icon: '📜' },
+                { id: 'fiqh', name: 'فقه', icon: '⚖️' },
+                { id: 'aqeedah', name: 'عقيدة', icon: '🕌' },
+                { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'english', name: 'إنجليزي', icon: '🌍' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+                { id: 'biology', name: 'أحياء', icon: '🧬' }
+            ]
+        }
+    },
+    university: {
         name: 'جامعة', icon: '🎓',
-        subjects: [
-            { id: 'math', name: 'رياضيات', icon: '🔢' },
-            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
-            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
-            { id: 'biology', name: 'أحياء', icon: '🧬' },
-            { id: 'programming', name: 'برمجة', icon: '💻' },
-            { id: 'engineering', name: 'هندسة', icon: '⚙️' },
-            { id: 'medicine', name: 'طب', icon: '🏥' },
-            { id: 'business', name: 'تجارة', icon: '💼' },
-            { id: 'law', name: 'حقوق', icon: '⚖️' },
-            { id: 'education', name: 'تربية', icon: '📚' }
-        ]
+        grades: ['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة', 'دراسات عليا'],
+        subjects: {
+            'default': [
+                { id: 'math', name: 'رياضيات', icon: '🔢' },
+                { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+                { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+                { id: 'biology', name: 'أحياء', icon: '🧬' },
+                { id: 'programming', name: 'برمجة', icon: '💻' },
+                { id: 'engineering', name: 'هندسة', icon: '⚙️' },
+                { id: 'medicine', name: 'طب', icon: '🏥' },
+                { id: 'business', name: 'تجارة وإدارة', icon: '💼' },
+                { id: 'law', name: 'حقوق', icon: '⚖️' },
+                { id: 'education', name: 'تربية', icon: '📚' },
+                { id: 'pharmacy', name: 'صيدلة', icon: '💊' },
+                { id: 'dentistry', name: 'طب أسنان', icon: '🦷' },
+                { id: 'nursing', name: 'تمريض', icon: '🏥' },
+                { id: 'computer_science', name: 'علوم حاسب', icon: '🖥️' },
+                { id: 'ai', name: 'ذكاء اصطناعي', icon: '🤖' }
+            ]
+        }
     },
     general: {
         name: 'عام', icon: '📚',
-        subjects: []
+        grades: ['عام'],
+        subjects: {
+            'عام': [
+                { id: 'general', name: 'أي سؤال', icon: '💬' }
+            ]
+        }
     }
 };
 
@@ -586,26 +847,38 @@ function showToast(text, isSuccess = false) {
     setTimeout(() => toastEl.classList.remove('show'), 2500);
 }
 
-function _addMessage(who, text) {
-    const msg = document.createElement('div');
-    msg.className = `msg ${who}`;
-    // نحول النص لـ HTML آمن مع تحويل الأسطر
-    const formatted = text
+/* ============ تنسيق النص ============ */
+function formatMarkdown(text) {
+    return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        // نرجع الـ markdown
+        // Bold
         .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        // Code
         .replace(/`(.+?)`/g, '<code>$1</code>')
-        .replace(/^### (.+)$/gm, '<b>$1</b>')
-        .replace(/^## (.+)$/gm, '<b>$1</b>')
-        .replace(/^# (.+)$/gm, '<b>$1</b>')
+        // Headers
+        .replace(/^### (.+)$/gm, '<h4>📌 $1</h4>')
+        .replace(/^## (.+)$/gm, '<h3>🔷 $1</h3>')
+        .replace(/^# (.+)$/gm, '<h3>🌟 $1</h3>')
+        // Lists
         .replace(/^- (.+)$/gm, '• $1')
         .replace(/^\* (.+)$/gm, '• $1')
         .replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`)
+        // Steps
+        .replace(/^(الخطوة \d+:|step \d+:)/gim, '<b>$1</b>')
+        // Answer
+        .replace(/^(الإجابة|الجواب|النتيجة|Answer):/gim, '<b style="color:#059669;">$1:</b>')
+        // HR
         .replace(/---/g, '<hr>')
+        // Newlines
         .replace(/\n/g, '<br>');
-    
+}
+
+function _addMessage(who, text) {
+    const msg = document.createElement('div');
+    msg.className = `msg ${who}`;
+    const formatted = formatMarkdown(text);
     msg.innerHTML = formatted + `<div class="time">${currentTime()}</div>`;
     chatArea.appendChild(msg);
     scrollBottom();
@@ -623,65 +896,152 @@ function showTyping() {
     return typing;
 }
 
+function showThinking() {
+    const box = document.createElement('div');
+    box.className = 'thinking-box show';
+    box.id = 'thinkingBox';
+    box.innerHTML = `
+        <span class="brain">🧠</span>
+        <span id="thinkingText">بفكر بعمق في السؤال...</span>
+    `;
+    chatArea.appendChild(box);
+    scrollBottom();
+    
+    const steps = [
+        '🔍 بفهم السؤال...',
+        '📚 بجمع المعلومات...',
+        '🧮 بحلل الخطوات...',
+        '💡 بوصل للإجابة...',
+        '✍️ بكتب الشرح...'
+    ];
+    let idx = 0;
+    const timer = setInterval(() => {
+        idx = (idx + 1) % steps.length;
+        const el = document.getElementById('thinkingText');
+        if (el) el.textContent = steps[idx];
+    }, 900);
+    
+    return {
+        remove: () => {
+            clearInterval(timer);
+            const b = document.getElementById('thinkingBox');
+            if (b) b.remove();
+        }
+    };
+}
+
 /* ============ Category Bar ============ */
 function renderCategoryBar() {
     categoryBar.innerHTML = '';
     
+    // Header
     const header = document.createElement('div');
     header.className = 'cat-header';
+    const levelName = CURRICULUM[appState.level]?.name || 'عام';
+    const gradeName = appState.grade || '';
+    const subjectName = appState.subject && CURRICULUM[appState.level]?.subjects[appState.grade]
+        ? CURRICULUM[appState.level].subjects[appState.grade].find(s => s.id === appState.subject)?.name || ''
+        : '';
+    
+    let currentPath = levelName;
+    if (gradeName) currentPath += ` • ${gradeName}`;
+    if (subjectName) currentPath += ` • ${subjectName}`;
+    
     header.innerHTML = `
-        <span>📚 اختر المرحلة والمادة</span>
-        <span class="level-badge" id="currentLevel">${LEVELS[appState.level]?.name || 'عام'}</span>
+        <span>📚 اختر المستوى والصف والمادة</span>
+        <span class="level-badge">${currentPath}</span>
     `;
     categoryBar.appendChild(header);
     
-    // أزرار المراحل
-    const levelChips = document.createElement('div');
-    levelChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-bottom:6px;';
-    Object.keys(LEVELS).forEach(key => {
-        const level = LEVELS[key];
+    // 1. Levels
+    const levelsRow = document.createElement('div');
+    levelsRow.className = 'cat-row';
+    Object.keys(CURRICULUM).forEach(key => {
+        const level = CURRICULUM[key];
         const chip = document.createElement('button');
         chip.className = 'cat-chip' + (appState.level === key ? ' active' : '');
         chip.innerHTML = `${level.icon} ${level.name}`;
         chip.onclick = () => {
             appState.level = key;
+            appState.grade = '';
             appState.subject = '';
             renderCategoryBar();
             updateStatusText();
         };
-        levelChips.appendChild(chip);
+        levelsRow.appendChild(chip);
     });
-    categoryBar.appendChild(levelChips);
+    categoryBar.appendChild(levelsRow);
     
-    // أزرار المواد (لو المرحلة مش general)
-    if (appState.level !== 'general' && LEVELS[appState.level]) {
-        const subjectChips = document.createElement('div');
-        subjectChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;';
-        LEVELS[appState.level].subjects.forEach(subj => {
+    // 2. Grades
+    if (CURRICULUM[appState.level]?.grades?.length > 1) {
+        const gradesRow = document.createElement('div');
+        gradesRow.className = 'cat-row';
+        
+        const label = document.createElement('div');
+        label.className = 'cat-row-label';
+        label.textContent = '🎯 الصف:';
+        gradesRow.appendChild(label);
+        
+        CURRICULUM[appState.level].grades.forEach(grade => {
             const chip = document.createElement('button');
-            chip.className = 'cat-chip' + (appState.subject === subj.id ? ' active' : '');
-            chip.innerHTML = `${subj.icon} ${subj.name}`;
+            chip.className = 'cat-chip grade-chip' + (appState.grade === grade ? ' active' : '');
+            chip.textContent = grade;
             chip.onclick = () => {
-                appState.subject = appState.subject === subj.id ? '' : subj.id;
+                appState.grade = appState.grade === grade ? '' : grade;
+                appState.subject = '';
                 renderCategoryBar();
                 updateStatusText();
             };
-            subjectChips.appendChild(chip);
+            gradesRow.appendChild(chip);
         });
-        categoryBar.appendChild(subjectChips);
+        categoryBar.appendChild(gradesRow);
+    }
+    
+    // 3. Subjects
+    if (appState.grade && CURRICULUM[appState.level]?.subjects) {
+        let subjects = CURRICULUM[appState.level].subjects[appState.grade];
+        if (!subjects && CURRICULUM[appState.level].subjects['default']) {
+            subjects = CURRICULUM[appState.level].subjects['default'];
+        }
+        
+        if (subjects && subjects.length > 0) {
+            const subjectsRow = document.createElement('div');
+            subjectsRow.className = 'cat-row';
+            
+            const label = document.createElement('div');
+            label.className = 'cat-row-label';
+            label.textContent = '📖 المادة:';
+            subjectsRow.appendChild(label);
+            
+            subjects.forEach(subj => {
+                const chip = document.createElement('button');
+                chip.className = 'cat-chip' + (appState.subject === subj.id ? ' active' : '');
+                chip.innerHTML = `${subj.icon} ${subj.name}`;
+                chip.onclick = () => {
+                    appState.subject = appState.subject === subj.id ? '' : subj.id;
+                    renderCategoryBar();
+                    updateStatusText();
+                };
+                subjectsRow.appendChild(chip);
+            });
+            categoryBar.appendChild(subjectsRow);
+        }
     }
 }
 
 function updateStatusText() {
-    const level = LEVELS[appState.level]?.name || 'عام';
-    const subject = appState.subject 
-        ? (LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name || '')
+    const level = CURRICULUM[appState.level]?.name || 'عام';
+    const grade = appState.grade || '';
+    const subject = appState.subject && CURRICULUM[appState.level]?.subjects[appState.grade]
+        ? CURRICULUM[appState.level].subjects[appState.grade].find(s => s.id === appState.subject)?.name || ''
         : '';
     
     const mode = appState.mode === 'student' ? '🎒 طالب' : '👨‍🏫 مستر';
+    const deep = appState.deepThinking ? ' • 🧠 عميق' : '';
     
-    let txt = mode;
-    if (level !== 'عام') txt += ` • ${level}`;
+    let txt = mode + deep;
+    if (grade) txt += ` • ${grade}`;
+    else if (level !== 'عام') txt += ` • ${level}`;
     if (subject) txt += ` • ${subject}`;
     
     document.getElementById('statusText').textContent = txt;
@@ -715,56 +1075,115 @@ window.toggleMode = function() {
     );
 };
 
+/* ============ Deep Thinking Toggle ============ */
+window.toggleDeep = function() {
+    appState.deepThinking = !appState.deepThinking;
+    
+    const btn = document.getElementById('deepBtn');
+    const icon = document.getElementById('deepIcon');
+    const text = document.getElementById('deepText');
+    
+    if (appState.deepThinking) {
+        btn.classList.add('active');
+        icon.textContent = '🧠';
+        text.textContent = 'عميق';
+        showToast('✅ تم تفعيل التفكير العميق — إجابات مفصلة', true);
+    } else {
+        btn.classList.remove('active');
+        icon.textContent = '🧠';
+        text.textContent = 'عادي';
+        showToast('تم إيقاف التفكير العميق');
+    }
+    
+    updateStatusText();
+};
+
 /* ============ بناء System Prompt ============ */
 function buildSystemPrompt() {
-    const level = LEVELS[appState.level]?.name || 'عام';
-    const subject = appState.subject 
-        ? LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name 
+    const level = CURRICULUM[appState.level]?.name || 'عام';
+    const grade = appState.grade || '';
+    const subjectName = appState.subject && CURRICULUM[appState.level]?.subjects[appState.grade]
+        ? CURRICULUM[appState.level].subjects[appState.grade].find(s => s.id === appState.subject)?.name || ''
         : '';
     
     const mode = appState.mode;
+    const deep = appState.deepThinking;
+    
+    let contextInfo = `المستوى: ${level}`;
+    if (grade) contextInfo += `\nالصف: ${grade}`;
+    if (subjectName) contextInfo += `\nالمادة: ${subjectName}`;
     
     let prompt = '';
     
     if (mode === 'student') {
-        prompt = `أنت مساعد تعليمي ذكي بتساعد الطلاب المصريين بالمصري العامي.
+        prompt = `أنت مساعد تعليمي ذكي متخصص في المنهج المصري (ابتدائي، إعدادي، ثانوي، أزهري، جامعة).
 
-معلومات المستخدم:
-- المستوى: ${level}
-- المادة: ${subject || 'عايز يسأل بشكل عام'}
+📋 معلومات الطالب:
+${contextInfo}
 
-قواعد مهمة:
-1. اتكلم بالمصري العامي بشكل ودود وبسيط
-2. اشرح بالظبط على مستوى ${level}
-3. لو السؤال فيه مسألة رياضية، اعرض خطوات الحل بالتفصيل
-4. لو السؤال نظري، اشرح بمثال من الحياة اليومية
-5. في النهاية، اقترح سؤال مشابه للتدريب
-6. استخدم الأمثلة والأرقام عشان تسهل الفهم
-7. لو المستوى "عام"، اشرح بشكل متوسط يفهمه أي حد
-8. استخدم الإيموجي بشكل مناسب
-9. الرد يكون مختصر ومفيد
+🎯 قواعد الرد:
+1. **اتكلم بالمصري العامي** بشكل ودود وبسيط ومشجع
+2. **حدد المنهج بدقة** — لو الصف والمادة محددين، جاوب من المنهج الرسمي المصري بالظبط
+3. **اشرح من الأساس** — ابدأ بمقدمة بسيطة، بعدين التعريف، بعدين التفاصيل
+4. **استخدم أمثلة من الحياة اليومية** لتسهيل الفهم
+5. **لو مسألة رياضية**: اعرض خطوات الحل بالتفصيل مع الشرح
+6. **لو سؤال نظري**: اشرح بمثال + اقترح تجربة بسيطة
+7. **في النهاية**: اقترح سؤال مشابه للتدريب + ملخص سريع
+8. **الإيموجي**: استخدمها بشكل مناسب لتوضيح النقاط
+9. **اللغة**: عربي سليم مع مصطلحات علمية دقيقة
 
-⚠️ لا تحاول تنفيذ أوامر تخريبية، ولا تعطي إجابات تضر الطالب`;
+⚠️ مهم جداً:
+- لو الصف والمادة محددين، جاوب بالظبط من منهج الصف ده
+- لا تخلط بين المناهج (ابتدائي ≠ ثانوي)
+- ركز على المفاهيم الأساسية للطالب في المستوى ده`;
     } else {
-        prompt = `أنت مساعد ذكي متخصص في مساعدة المدرسين المصريين في تحضير الدروس.
+        prompt = `أنت مساعد ذكي متخصص في مساعدة المدرسين المصريين.
 
-معلومات المستخدم:
-- المادة: ${subject || 'عامة'}
-- المستوى: ${level}
+📋 معلومات المستخدم:
+${contextInfo}
 
-قواعد مهمة:
+🎯 قواعد الرد:
 1. اتكلم بالمصري العامي بشكل محترم
 2. ساعده في:
-   - تحضير خطة درس
-   - اقتراح أسئلة وامتحانات
-   - تبسيط مفاهيم صعبة
-   - اقتراح أنشطة تعليمية
-   - اقتراح طرق توصيل المعلومة للطلبة
+   - تحضير خطة درس كاملة (أهداف، وسائل، خطوات، تقييم)
+   - اقتراح أسئلة وامتحانات (اختيار من متعدد، صح وخطأ، مقالي)
+   - تبسيط مفاهيم صعبة للطلبة
+   - اقتراح أنشطة تعليمية تفاعلية
+   - طرق توصيل المعلومة
 3. اقترح أفكار مبتكرة للشرح
 4. اذكر أخطاء شائعة عند الطلبة في الدرس ده
-5. كن مباشر ومفيد
+5. كن مباشر ومفيد وعملي
 
-⚠️ ركز على الجانب التعليمي فقط`;
+⚠️ ركز على الجانب التربوي والتعليمي فقط`;
+    }
+    
+    // Deep thinking addition
+    if (deep) {
+        prompt += `
+
+🧠 **التفكير العميق مفعّل:**
+
+اتبع هذا الهيكل في إجابتك:
+
+### 🔍 فهم السؤال
+(حلل السؤال وحدد المطلوب بالظبط)
+
+### 📚 المفاهيم الأساسية
+(اذكر المفاهيم والقوانين المرتبطة)
+
+### 💡 الشرح خطوة بخطوة
+(اشرح بترتيب منطقي — كل خطوة تبني على اللي قبلها)
+
+### 📝 أمثلة توضيحية
+(مثال محلول + مثال للتطبيق)
+
+### ✅ الملخص النهائي
+(نقاط سريعة + الإجابة النهائية)
+
+### 🎯 سؤال للتدريب
+(سؤال مشابه مع الحل)
+
+⚠️ كن مفصّل جداً — الإجابة ممكن تكون طويلة، وده مطلوب.`;
     }
     
     return prompt;
@@ -782,14 +1201,13 @@ async function askGroq(userMessage) {
         { role: 'system', content: systemPrompt }
     ];
     
-    // آخر 6 رسائل
-    appState.chatHistory.slice(-6).forEach(h => messages.push(h));
+    // آخر 8 رسائل للسياق
+    appState.chatHistory.slice(-8).forEach(h => messages.push(h));
     messages.push({ role: 'user', content: userMessage });
     
     // نجرب الموديلات بالترتيب
     let response = null;
     let lastError = null;
-    let successModel = null;
     
     const savedModel = localStorage.getItem('groq_working_model');
     let modelsToTry = [...GROQ_MODELS];
@@ -810,14 +1228,13 @@ async function askGroq(userMessage) {
                 body: JSON.stringify({
                     model: model,
                     messages: messages,
-                    temperature: 0.7,
-                    max_tokens: 1500,
+                    temperature: appState.deepThinking ? 0.5 : 0.7,
+                    max_tokens: appState.deepThinking ? 3000 : 1800,
                     top_p: 0.9
                 })
             });
             
             if (response.ok) {
-                successModel = model;
                 localStorage.setItem('groq_working_model', model);
                 console.log(`✅ نجح: ${model}`);
                 break;
@@ -860,42 +1277,28 @@ async function askGroq(userMessage) {
         appState.chatHistory = appState.chatHistory.slice(-20);
     }
     
-    // نحفظ في Firebase
-    saveToFirebase(userMessage, reply);
+    // نحفظ في localStorage
+    saveHistory(userMessage, reply);
     
     return reply;
 }
 
-/* ============ حفظ في Firebase ============ */
-async function saveToFirebase(question, answer) {
+/* ============ حفظ في localStorage ============ */
+function saveHistory(question, answer) {
     try {
-        const phone = localStorage.getItem('current_teacher_phone') || 'guest_' + Date.now();
-        const key = 'tutor_history_' + Date.now();
-        
-        const data = {
-            [key]: JSON.stringify({
-                question: question,
-                answer: answer.slice(0, 2000),
-                mode: appState.mode,
-                level: appState.level,
-                subject: appState.subject,
-                timestamp: new Date().toISOString()
-            })
-        };
-        
-        // نحفظ في localStorage كمان (احتياطي)
         let history = JSON.parse(localStorage.getItem('tutor_history') || '[]');
         history.push({
             question: question,
             answer: answer.slice(0, 2000),
             mode: appState.mode,
             level: appState.level,
+            grade: appState.grade,
             subject: appState.subject,
+            deep: appState.deepThinking,
             timestamp: new Date().toISOString()
         });
         if (history.length > 100) history = history.slice(-100);
         localStorage.setItem('tutor_history', JSON.stringify(history));
-        
     } catch(e) {
         console.warn('⚠️ فشل حفظ السؤال:', e);
     }
@@ -915,9 +1318,21 @@ async function handleSend() {
     
     addUserMessage(val);
     
-    const typing = showTyping();
+    // لو التفكير العميق مفعّل، نظهر مؤشر التفكير
+    let thinking = null;
+    let typing = null;
+    
+    if (appState.deepThinking) {
+        thinking = showThinking();
+    } else {
+        typing = showTyping();
+    }
+    
     const reply = await askGroq(val);
-    typing.remove();
+    
+    if (thinking) thinking.remove();
+    if (typing) typing.remove();
+    
     addAIMessage(reply);
     
     chatInput.disabled = false;
@@ -927,71 +1342,50 @@ async function handleSend() {
 
 /* ============ Welcome + Suggestions ============ */
 function showWelcome() {
-    // Welcome card
     const welcome = document.createElement('div');
     welcome.className = 'welcome-card';
     welcome.innerHTML = `
         <h3>🎓 أهلاً! أنا المساعد التعليمي الذكي</h3>
         <p style="font-size:13px;color:#6d28d9;line-height:1.6;">
-            جاهز أساعدك في أي حاجة في المنهج المصري والعربي.<br>
-            اختار المرحلة والمادة فوق، أو اسألني مباشرة.
+            جاهز أساعدك في <b>كل المناهج المصرية</b>:<br>
+            ابتدائي • إعدادي • ثانوي • أزهري • جامعة<br><br>
+            <b>مميزات جديدة:</b><br>
+            🧠 <b>التفكير العميق</b> — إجابات مفصلة خطوة بخطوة<br>
+            📚 <b>تحديد الصف والمادة</b> — إجابات دقيقة من المنهج الرسمي
         </p>
         <div class="levels">
-            <div class="level-item">🎒 ابتدائي</div>
-            <div class="level-item">📗 إعدادي</div>
-            <div class="level-item">📘 ثانوي</div>
-            <div class="level-item">🎓 جامعة</div>
+            <div class="level-item">🎒 ابتدائي (6 صفوف)</div>
+            <div class="level-item">📗 إعدادي (3 صفوف)</div>
+            <div class="level-item">📘 ثانوي (3 صفوف)</div>
+            <div class="level-item">🕌 أزهري (3 صفوف)</div>
         </div>
     `;
     chatArea.appendChild(welcome);
     scrollBottom();
     
-    // اقتراحات
-    showSuggestions('general');
+    showSuggestions();
 }
 
-function showSuggestions(type) {
-    const suggestions = {
-        general: [
-            'اشرحلي الضرب والقسمة بطريقة سهلة',
-            'إيه الفرق بين الحيض والنفاس؟',
-            'احكيلي عن الحضارة الفرعونية',
-            'اشرحلي قوانين نيوتن للحركة',
-            'إيه هي الدالة اللوغاريتمية؟',
-            'علمني إنجليزي بطريقة سهلة',
-            'احكيلي عن دورة الماء في الطبيعة',
-            'إيه هي الخوارزميات في البرمجة؟'
-        ],
-        student: [
-            '❤️ عايز أفهم الرياضيات',
-            '📖 اشرحلي درس من العربي',
-            '🔬 عايز أفهم علوم',
-            '🌍 عايز أتعلم إنجليزي',
-            '💻 عايز أتعلم برمجة',
-            '🎯 عايز حل مسألة رياضية',
-            '🤔 عندي سؤال صعب',
-            '📝 ساعدني أراجع للامتحان'
-        ],
-        teacher: [
-            '📝 جهزلي خطة درس',
-            '❓ اقترح أسئلة للامتحان',
-            '🎨 اقترح أنشطة تعليمية',
-            '💡 افكار لشرح درس صعب',
-            '📊 اعمل لي جدول مراجعة',
-            '🎯 اذكر أخطاء شائعة عند الطلبة',
-            '📚 اقترح مراجع إضافية',
-            '🏆 طرق تحفيز الطلبة'
-        ]
-    };
-    
-    const list = suggestions[type] || suggestions.general;
+function showSuggestions() {
+    const suggestions = [
+        'اشرحلي درس في الرياضيات خطوة بخطوة',
+        'إيه الفرق بين الخلية النباتية والحيوانية؟',
+        'احكيلي عن قوانين نيوتن للحركة',
+        'اشرحلي قواعد اللغة العربية',
+        'إيه هي الدالة اللوغاريتمية؟',
+        'احكيلي عن الحضارة الفرعونية',
+        'علمني برمجة من الصفر',
+        'إيه هي أعراض مرض السكر؟',
+        'اشرحلي الدورة الدموية',
+        'إيه هي قواعد الإنجليزي الأساسية؟',
+        'احكيلي عن معركة حطين',
+        'إيه الفرق بين التضخم والانكماش؟'
+    ];
     
     const container = document.createElement('div');
     container.className = 'suggestions';
-    container.id = 'suggestionsBox';
     
-    // ناخد 6 عشوائي
-    const shuffled = [...list].sort(() => Math.random() - 0.5).slice(0, 6);
+    const shuffled = [...suggestions].sort(() => Math.random() - 0.5).slice(0, 6);
     
     shuffled.forEach(text => {
         const chip = document.createElement('button');
@@ -1014,7 +1408,31 @@ function init() {
     renderCategoryBar();
     updateStatusText();
     showWelcome();
+    
+    // استرجاع الوضع المحفوظ
+    const saved = localStorage.getItem('ai_settings');
+    if (saved) {
+        try {
+            const s = JSON.parse(saved);
+            if (s.deepThinking !== undefined) {
+                appState.deepThinking = s.deepThinking;
+                if (s.deepThinking) {
+                    document.getElementById('deepBtn').classList.add('active');
+                    document.getElementById('deepText').textContent = 'عميق';
+                }
+            }
+        } catch(e) {}
+    }
 }
+
+// حفظ الإعدادات عند التغيير
+window.addEventListener('beforeunload', () => {
+    try {
+        localStorage.setItem('ai_settings', JSON.stringify({
+            deepThinking: appState.deepThinking
+        }));
+    } catch(e) {}
+});
 
 init();
 
