@@ -323,6 +323,21 @@
     .saved-session-banner .ss-icon {
         font-size: 18px;
     }
+
+    .multi-device-badge {
+        display: none;
+        margin: 0 25px 15px;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+        border: 2px solid #10B981;
+        border-radius: 10px;
+        font-size: 11.5px;
+        font-weight: 900;
+        color: #065F46;
+        align-items: center;
+        gap: 6px;
+    }
+    .multi-device-badge.show { display: flex; }
 </style>
 </head>
 <body>
@@ -341,6 +356,11 @@
     <div class="saved-session-banner" id="savedSessionBanner">
         <span class="ss-icon">💾</span>
         <span>رقمك محفوظ — اضغط <b>تسجيل الدخول</b> للمتابعة</span>
+    </div>
+
+    <div class="multi-device-badge" id="multiDeviceBadge">
+        <span>📱</span>
+        <span>يمكنك الدخول من أي عدد من الأجهزة في نفس الوقت</span>
     </div>
 
     <div class="login-body">
@@ -532,61 +552,6 @@
     }
 
     // ==========================================================
-    // ✅ فحص حالة الحظر/الاشتراك
-    // ==========================================================
-    async function checkTeacherBlockStatus(phone) {
-        const result = { isBlocked: false, reason: null, teacherDoc: null };
-
-        try {
-            const teacherDoc = await getTeacher(phone);
-            result.teacherDoc = teacherDoc;
-
-            if (!teacherDoc) return result;
-
-            if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
-                const until = typeof teacherDoc.unlockUntil === 'number'
-                    ? teacherDoc.unlockUntil
-                    : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
-
-                if (until && until <= Date.now()) {
-                    try {
-                        await updateDoc(doc(db, 'teachers', phone), {
-                            isLocked: true,
-                            lockType: 'auto_expired',
-                            autoLockedAt: Date.now()
-                        });
-                    } catch(e) {}
-                    result.isBlocked = true;
-                    result.reason = 'auto_expired';
-                    localStorage.setItem('teacher_is_blocked', 'true');
-                    return result;
-                } else {
-                    localStorage.removeItem('teacher_is_blocked');
-                    return result;
-                }
-            }
-
-            if (teacherDoc.isLocked === true) {
-                result.isBlocked = true;
-                result.reason = 'manual_lock';
-                localStorage.setItem('teacher_is_blocked', 'true');
-                return result;
-            }
-
-            localStorage.removeItem('teacher_is_blocked');
-            return result;
-
-        } catch (e) {
-            console.warn('فشل فحص حالة الحظر:', e);
-            if (localStorage.getItem('teacher_is_blocked') === 'true') {
-                result.isBlocked = true;
-                result.reason = 'from_localStorage';
-            }
-            return result;
-        }
-    }
-
-    // ==========================================================
     // ✅ التحقق من الجلسة عند فتح الصفحة
     // ==========================================================
     window.addEventListener('DOMContentLoaded', async () => {
@@ -607,6 +572,12 @@
             if (banner) {
                 banner.classList.add('show');
             }
+        }
+
+        // ✅ نظهر بادج الأجهزة المتعددة
+        const multiBadge = document.getElementById('multiDeviceBadge');
+        if (multiBadge) {
+            multiBadge.classList.add('show');
         }
     });
 
@@ -683,7 +654,7 @@
     };
 
     // ==========================================================
-    // ✅ تسجيل الدخول
+    // ✅ تسجيل الدخول (مع Multi-Device Support)
     // ==========================================================
     window.handleLogin = async function(e) {
         e.preventDefault();
@@ -761,24 +732,13 @@
                 return;
             }
 
-            // ✅ فحص الجهاز
+            // ==========================================================
+            // ✅✅✅ فحص الجهاز — تم تعطيله — أي عدد أجهزة يقدر يدخل ✅✅✅
+            // ==========================================================
             try {
                 const deviceCheck = await checkTeacherDevice(phone);
 
-                if (!deviceCheck.ok && deviceCheck.reason === 'different_device') {
-                    const confirmSwitch = confirm(
-                        '⚠️ تنبيه:\n\n' +
-                        'هذا الحساب مسجل دخول من جهاز آخر.\n' +
-                        'إذا أكملت، سيتم تسجيل خروج الجهاز الآخر تلقائياً.\n\n' +
-                        'هل تريد المتابعة؟'
-                    );
-
-                    if (!confirmSwitch) {
-                        window.showError('تم إلغاء تسجيل الدخول.');
-                        return;
-                    }
-                }
-
+                // فحص الحظر فقط
                 if (deviceCheck.locked === true) {
                     localStorage.setItem('teacher_is_blocked', 'true');
                     localStorage.setItem('current_teacher_profile', JSON.stringify(user));
@@ -789,7 +749,9 @@
                     return;
                 }
 
+                // نسجل الجهاز الحالي (بدون طرد الأجهزة التانية)
                 await updateTeacherDevice(phone);
+                console.log('✅ Multi-Device: تم تسجيل الجهاز — أي عدد أجهزة مدعوم');
             } catch (deviceErr) {
                 console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
             }
@@ -883,6 +845,7 @@
                 pin: pin,
                 role: 'teacher',
                 activeDeviceId: deviceId,
+                activeDevices: [deviceId],
                 lastLoginAt: new Date().toISOString()
             };
 
