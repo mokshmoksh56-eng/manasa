@@ -1041,7 +1041,7 @@
   }
 
   // ==========================================
-  // 📊 تحديث عدد الحصص في localStorage
+  // 📊 تحديث عدد الحصص
   // ==========================================
   function updateGroupsCount(myGroups) {
       try {
@@ -1054,7 +1054,7 @@
   }
 
   // ==========================================
-  // 📋 حفظ ملخص الحصة في localStorage للتذكرة
+  // 📋 حفظ التفاصيل الكاملة للحصة في localStorage
   // ==========================================
   function saveApptToSummary(appt) {
       try {
@@ -1066,12 +1066,30 @@
           } catch(e) { savedAppts = []; }
 
           savedAppts.push({
+              // الفئة
               gender: appt.gender,
               genderAllowed: appt.genderAllowed,
+              // المكان
               type: appt.type,
               location: appt.location,
+              // المادة والصف
               subject: appt.subject,
               grade: appt.grade,
+              // الوقت واليوم
+              startTime: appt.startTime || '',
+              endTime: appt.endTime || '',
+              start: appt.start || appt.startTime || '',
+              end: appt.end || appt.endTime || '',
+              dayName: appt.dayName || '',
+              daysNames: appt.daysNames || [],
+              date: appt.date || '',
+              apptType: appt.apptType || appt.type2 || 'normal',
+              // السعة
+              capacity: appt.capacity || 20,
+              // بيانات إضافية
+              groupName: appt.groupName || '',
+              teacherName: appt.teacherName || '',
+              centerName: appt.centerName || '',
               addedAt: Date.now()
           });
 
@@ -1079,14 +1097,14 @@
           localStorage.setItem('last_selected_gender', appt.genderAllowed);
           localStorage.setItem('last_selected_location', appt.location);
 
-          console.log('✅ تم تحديث ملخص التذكرة:', savedAppts.length, 'حصة');
+          console.log('✅ تم حفظ تفاصيل الحصة في الملخص:', savedAppts.length, 'حصة');
       } catch(e) {
           console.warn('⚠️ فشل حفظ ملخص التذكرة:', e);
       }
   }
 
   // ==========================================
-  // 📋 حذف حصة من ملخص التذكرة
+  // 📋 حذف حصة من الملخص
   // ==========================================
   function removeApptFromSummary() {
       try {
@@ -1205,11 +1223,13 @@
       const teacherProfile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
       const teacherTitle = teacherProfile.title || 'مستر';
 
+      const subjectClean = subjectData.replace(/الصف:.*?\|/g, '').replace(/المواد:\s*/g, '').trim();
+
       const classPayload = {
           teacherName: teacherName,
           centerName: centerName,
           teacherTitle: teacherTitle,
-          subject: subjectData.replace(/الصف:.*?\|/g, '').replace(/المواد:\s*/g, '').trim(),
+          subject: subjectClean,
           grade: grade,
           groupName: groupName,
           maxCapacity: parseInt(studentsCount),
@@ -1236,14 +1256,24 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          // ✅ حفظ ملخص الحصة في localStorage للتذكرة
+          // ✅ حفظ التفاصيل الكاملة للحصة
           saveApptToSummary({
               gender: genderMapped,
               genderAllowed: genderAllowed,
               type: typeMapped,
               location: location,
-              subject: classPayload.subject,
-              grade: classPayload.grade
+              subject: subjectClean,
+              grade: grade,
+              startTime: appt.start,
+              endTime: appt.end,
+              dayName: dayNames[dayOfWeek],
+              daysNames: [dayNames[dayOfWeek]],
+              date: dateTarget,
+              apptType: appt.type,
+              capacity: parseInt(studentsCount),
+              groupName: groupName,
+              teacherName: teacherName,
+              centerName: centerName
           });
 
           await window.loadLocalPublishedSlots();
@@ -1294,7 +1324,6 @@
           try {
               await deleteGroup(idToDelete);
               
-              // ✅ احذف حصة من ملخص التذكرة
               removeApptFromSummary();
 
               await window.loadLocalPublishedSlots();
@@ -1713,7 +1742,6 @@
         type: isRecurring ? 'recurring' : 'normal'
     };
 
-    // ✅ تعطيل الزر
     const btn = document.getElementById('addApptBtn');
     const originalText = btn.innerHTML;
     btn.disabled = true;
@@ -1729,11 +1757,9 @@
         document.getElementById('detailed-address').value = '';
         hideAddError(); 
 
-        // ✅ إشعار نجاح
         btn.innerHTML = '✅ تم الحفظ — جاري الرجوع...';
         btn.style.background = 'linear-gradient(135deg, #10B981, #047857)';
 
-        // ✅ بعد 1.8 ثانية → ارجع لـ mester3
         setTimeout(() => {
             window.location.href = 'mester3.html';
         }, 1800);
