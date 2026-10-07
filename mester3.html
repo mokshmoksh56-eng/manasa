@@ -713,7 +713,7 @@
             <div class="logout-icon-wrap">🚪</div>
             <h3>تسجيل الخروج؟</h3>
             <p>هل أنت متأكد من رغبتك في تسجيل الخروج؟<br>
-                <small style="color:#94A3B8; font-size:11.5px;">سيتم مسح بيانات الجلسة</small>
+                <small style="color:#16A34A; font-size:11.5px; font-weight:900;">✅ بياناتك محفوظة — تقدر ترجع من غير ما تسجل دخول</small>
             </p>
             <div class="logout-modal-actions">
                 <button class="logout-btn-cancel" onclick="closeLogoutModal()">إلغاء</button>
@@ -808,6 +808,35 @@
     <script>
     (function() {
         'use strict';
+
+        // ==========================================================
+        // 💾 حفظ دائم لكل البيانات
+        // ==========================================================
+        function savePersistentData() {
+            try {
+                const phone = localStorage.getItem('current_teacher_phone');
+                const profile = localStorage.getItem('current_teacher_profile');
+                
+                if (phone) localStorage.setItem('teacher_saved_phone', phone);
+                if (profile) localStorage.setItem('teacher_saved_profile', profile);
+
+                // نسخة احتياطية لكل البيانات
+                const backup = {
+                    teacherSelections: localStorage.getItem('teacherSelections'),
+                    mester1_selections: localStorage.getItem('mester1_selections'),
+                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
+                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
+                    last_selected_gender: localStorage.getItem('last_selected_gender'),
+                    last_selected_location: localStorage.getItem('last_selected_location')
+                };
+                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
+                
+                console.log('💾 تم حفظ البيانات بشكل دائم');
+            } catch(e) {
+                console.warn('⚠️ فشل الحفظ الدائم:', e);
+            }
+        }
 
         // ==========================================================
         // 🕐 تحويل الوقت لنظام 12 ساعة مع ص/م
@@ -1353,7 +1382,7 @@
         }
 
         // ==========================================================
-        // 🚪 تسجيل الخروج
+        // 🚪 تسجيل الخروج (يحفظ البيانات)
         // ==========================================================
         window.openLogoutModal = function() {
             document.getElementById('logoutModalOverlay')?.classList.add('active');
@@ -1363,18 +1392,14 @@
         };
         window.confirmLogout = function() {
             try {
+                // ✅ نحفظ كل البيانات دائم قبل الخروج
+                savePersistentData();
+
+                // نمسح بيانات الجلسة فقط (مش البيانات)
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('teacher_is_blocked');
-                localStorage.removeItem('mester1_selections');
-                localStorage.removeItem('teacherSelections');
-                localStorage.removeItem('mester1_is_locked');
-                localStorage.removeItem('teacher_groups_count');
-                localStorage.removeItem('selected_contact_type');
-                localStorage.removeItem('teacher_appointments_summary');
-                localStorage.removeItem('teacher_lessons_archive');
-                localStorage.removeItem('last_selected_gender');
-                localStorage.removeItem('last_selected_location');
+
                 closeLogoutModal();
                 setTimeout(() => { window.location.replace('teacher-login.html'); }, 250);
             } catch(e) {
@@ -1399,6 +1424,10 @@
         window.addEventListener('DOMContentLoaded', () => {
             showTeacherName();
             updateAll();
+            
+            // ✅ نحفظ البيانات أول ما الصفحة تفتح
+            savePersistentData();
+            
             console.log('✅ mester3 جاهز');
         });
 
@@ -1438,7 +1467,7 @@
     })();
     </script>
 
-    <!-- 🔒 منع الرجوع للصفحات السابقة (mester1 / mester2) -->
+    <!-- 🔒 منع الرجوع للصفحات السابقة (mester1 / mester2) + حفظ البيانات -->
     <script>
     (function() {
         'use strict';
@@ -1448,21 +1477,62 @@
             history.pushState({ page: 'mester3' }, '', location.href);
         } catch(e) {}
 
+        // دالة حفظ البيانات
+        function saveDataBeforeExit() {
+            try {
+                const phone = localStorage.getItem('current_teacher_phone');
+                const profile = localStorage.getItem('current_teacher_profile');
+                
+                if (phone) localStorage.setItem('teacher_saved_phone', phone);
+                if (profile) localStorage.setItem('teacher_saved_profile', profile);
+
+                const backup = {
+                    teacherSelections: localStorage.getItem('teacherSelections'),
+                    mester1_selections: localStorage.getItem('mester1_selections'),
+                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
+                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
+                    last_selected_gender: localStorage.getItem('last_selected_gender'),
+                    last_selected_location: localStorage.getItem('last_selected_location')
+                };
+                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
+                console.log('💾 تم حفظ البيانات قبل الرجوع');
+            } catch(err) {}
+        }
+
         // منع الرجوع
         window.addEventListener('popstate', function(e) {
-            // نحاول نضيف الحالة تاني
             try {
                 history.pushState({ page: 'mester3' }, '', location.href);
             } catch(err) {}
             
-            console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول');
+            console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول (البيانات محفوظة)');
+            
+            // ✅ نحفظ البيانات قبل التحويل
+            saveDataBeforeExit();
+            
+            // ✅ نمسح بيانات الجلسة فقط
+            try {
+                localStorage.removeItem('current_teacher_phone');
+                localStorage.removeItem('current_teacher_profile');
+                localStorage.removeItem('teacher_is_blocked');
+            } catch(err) {}
+            
             window.location.replace('teacher-login.html');
         });
 
-        // لو الصفحة رجعت من الـ bfcache (Back-Forward Cache)
+        // لو الصفحة رجعت من الـ bfcache
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 console.log('🔒 الصفحة رجعت من cache — توجيه لتسجيل الدخول');
+                saveDataBeforeExit();
+                
+                try {
+                    localStorage.removeItem('current_teacher_phone');
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('teacher_is_blocked');
+                } catch(err) {}
+                
                 window.location.replace('teacher-login.html');
             }
         });
