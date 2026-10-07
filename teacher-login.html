@@ -338,7 +338,6 @@
         <button class="tab" id="tabRegister" onclick="window.switchTab('register')">✍️️ حساب جديد</button>
     </div>
 
-    <!-- ✅ بانر الرقم المحفوظ -->
     <div class="saved-session-banner" id="savedSessionBanner">
         <span class="ss-icon">💾</span>
         <span>رقمك محفوظ — اضغط <b>تسجيل الدخول</b> للمتابعة</span>
@@ -492,7 +491,9 @@
         checkTeacherDevice,
         updateTeacherDevice,
         generateDeviceId,
-        db, doc, updateDoc
+        db, doc, updateDoc,
+        syncTeacherDataToLocal,
+        syncLocalDataToCloud
     } from './firebase-config.js';
 
     // ==========================================================
@@ -509,14 +510,13 @@
     }
 
     // ==========================================================
-    // ✅ استرجاع البيانات المحفوظة (بدون تحويل تلقائي)
+    // ✅ استرجاع البيانات المحفوظة
     // ==========================================================
     function restoreSavedData() {
         try {
             const savedPhone = localStorage.getItem('teacher_saved_phone');
             const savedProfile = localStorage.getItem('teacher_saved_profile');
             
-            // ✅ لو الرقم والبروفايل اتمسحوا من الجلسة، نرجعهم للـ backup
             if (savedPhone && !localStorage.getItem('current_teacher_phone')) {
                 localStorage.setItem('current_teacher_phone', savedPhone);
             }
@@ -589,34 +589,25 @@
     // ==========================================================
     // ✅ التحقق من الجلسة عند فتح الصفحة
     // ==========================================================
-    // ✅ استرجاع البيانات + ملء الحقل فقط — بدون تحويل تلقائي
     window.addEventListener('DOMContentLoaded', async () => {
-        // ✅ استرجاع البيانات المحفوظة
         restoreSavedData();
         
-        // ✅ نجيب الرقم المحفوظ (من الجلسة أو من الحفظ الدائم)
         const savedPhone = localStorage.getItem('teacher_saved_phone') || 
                            localStorage.getItem('current_teacher_phone');
         
         if (savedPhone) {
-            // ✅ نملأ حقل الرقم
             const phoneInput = document.getElementById('loginPhone');
             if (phoneInput) {
                 phoneInput.value = savedPhone;
                 console.log('✅ تم استرجاع الرقم:', savedPhone);
-                // نحدّث صورة الهيدر حسب اللقب
                 window.checkLoginPhone(savedPhone);
             }
             
-            // ✅ نظهر بانر "رقمك محفوظ — اضغط تسجيل الدخول"
             const banner = document.getElementById('savedSessionBanner');
             if (banner) {
                 banner.classList.add('show');
             }
         }
-        
-        // ⚠️ مهم: مفيش تحويل تلقائي هنا
-        // المستخدم هو اللي لازم يضغط "تسجيل الدخول"
     });
 
     // ✅ تحديث صورة الهيدر
@@ -803,6 +794,28 @@
                 console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
             }
 
+            // ==========================================================
+            // ✅✅✅ مزامنة البيانات من السحابة للجهاز الحالي ✅✅✅
+            // ==========================================================
+            btnText.innerHTML = '☁️ جاري مزامنة بياناتك...';
+            
+            try {
+                const hasLocalData = localStorage.getItem('mester1_selections') || 
+                                     localStorage.getItem('teacherSelections') ||
+                                     localStorage.getItem('teacher_appointments_summary');
+                
+                const synced = await syncTeacherDataToLocal(phone);
+                
+                if (!synced && hasLocalData) {
+                    console.log('📤 لا توجد بيانات سحابية — رفع البيانات المحلية');
+                    await syncLocalDataToCloud(phone);
+                } else if (synced) {
+                    console.log('📥 تم جلب البيانات من السحابة بنجاح');
+                }
+            } catch(syncErr) {
+                console.warn('⚠️ فشل المزامنة (تم تجاهله):', syncErr);
+            }
+
             // ✅ حفظ بيانات الجلسة + حفظ دائم
             localStorage.setItem('current_teacher_profile', JSON.stringify(user));
             localStorage.setItem('current_teacher_phone', user.phone);
@@ -875,7 +888,6 @@
 
             await saveTeacher(teacherData);
 
-            // ✅ حفظ بيانات الجلسة + حفظ دائم
             localStorage.setItem('current_teacher_profile', JSON.stringify(teacherData));
             localStorage.setItem('current_teacher_phone', phone);
             localStorage.removeItem('teacher_is_blocked');
@@ -912,12 +924,10 @@
             return;
         }
         
-        // ✅ نحفظ الرقم والبروفايل دائم
         const profile = localStorage.getItem('current_teacher_profile');
         if (savedPhone) localStorage.setItem('teacher_saved_phone', savedPhone);
         if (profile) localStorage.setItem('teacher_saved_profile', profile);
         
-        // ✅ نحفظ النسخة الاحتياطية
         const backup = {
             teacherSelections: localStorage.getItem('teacherSelections'),
             mester1_selections: localStorage.getItem('mester1_selections'),
@@ -929,7 +939,6 @@
         };
         localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
         
-        // ✅ نمسح بيانات الجلسة فقط (اللي بتخلي التحويل التلقائي)
         localStorage.removeItem('current_teacher_profile');
         localStorage.removeItem('current_teacher_phone');
         localStorage.removeItem('teacher_is_blocked');
@@ -973,7 +982,6 @@
                 localStorage.removeItem('teacher_is_blocked');
             }
             
-            // ✅ نمسح كل البيانات الدائمة
             localStorage.removeItem('teacher_saved_phone');
             localStorage.removeItem('teacher_saved_profile');
             localStorage.removeItem('teacher_data_backup');
