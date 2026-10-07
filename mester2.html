@@ -1,0 +1,3705 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>منصة احجزلي - إعداد المجموعة والمواعيد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<style>
+    :root {
+        --primary-teal: #25968b;
+        --dark-teal: #1b736a;
+        --light-teal: #e0f2f0;
+        --border-teal: #b2dfdb;
+        --bg-color: #f7f9fa;
+        --text-dark: #2c3e50;
+        --text-gray: #64748b;
+        --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
+    
+    body { 
+        background: var(--bg-color); 
+        padding-bottom: 50px; 
+        color: var(--text-dark); 
+    }
+
+    .header-3d { 
+        width: 100%; 
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 100%), url('teacher2.png') center/cover no-repeat; 
+        padding: 30px 20px 45px; 
+        text-align: center; 
+        position: relative; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
+    }
+    .header-3d h1 { font-size: 26px; font-weight: 900; color: var(--white); margin-bottom: 8px; letter-spacing: 0.5px; text-shadow: 0 2px 5px rgba(0,0,0,0.7); }
+    .stepper { display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.35); border-radius: 50px; padding: 8px 18px; margin: 12px auto 0; width: fit-content; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.15); }
+    .step { font-size: 13px; font-weight: bold; color: var(--white); opacity: 0.8; }
+    .step.active { color: #a8f0e5; opacity: 1; font-size: 15px; }
+    .step-divider { color: rgba(255,255,255,0.6); }
+
+    .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
+
+    .step-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px; background: var(--primary-teal); color: var(--white);
+        border-radius: 6px; font-size: 14px; font-weight: 900; margin-left: 8px;
+    }
+    .step-num-lg {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; background: var(--primary-teal); color: var(--white);
+        border-radius: 8px; font-size: 16px; font-weight: 900; margin-left: 10px;
+    }
+
+    .booking-card { 
+        background: var(--white); 
+        border-radius: 16px; 
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(37, 150, 139, 0.05); 
+        padding: 24px; 
+        width: 100%; 
+        border-top: 4px solid var(--primary-teal); 
+        margin-bottom: 25px;
+        transform: translateZ(0);
+    }
+
+    .form-section-title { font-size: 16px; font-weight: 900; color: var(--dark-teal); margin: 20px 0 12px; display: flex; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 8px; }
+    .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .form-group { margin-bottom: 15px; width: 100%; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    
+    .form-group label { display: flex; align-items: center; font-size: 14px; color: var(--text-dark); font-weight: 900; margin-bottom: 8px; }
+    
+    .form-control { 
+        width: 100%; 
+        padding: 13px 15px; 
+        border: 1px solid #cbd5e1; 
+        border-top: 2px solid #94a3b8; 
+        border-radius: 10px; 
+        font-size: 14.5px; 
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        background-color: #f1f5f9; 
+        font-family: inherit; 
+        font-weight: 800; 
+        color: var(--text-dark);
+        box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
+    }
+    
+    .form-control:focus { 
+        border-color: var(--primary-teal); 
+        border-top: 1px solid var(--primary-teal);
+        outline: none; 
+        background-color: var(--white); 
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
+    }
+    
+    .fixed-subject-box { 
+        background: var(--light-teal); 
+        color: var(--dark-teal); 
+        padding: 12px 15px; 
+        border-radius: 8px; 
+        font-weight: 900; 
+        font-size: 15px; 
+        text-align: center; 
+        border: 1px solid var(--border-teal);
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
+    }
+
+    #center-name-group {
+        animation: slideDownFade 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes slideDownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+            max-height: 0;
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 200px;
+        }
+    }
+
+    #center-name-group .form-control {
+        background: linear-gradient(160deg, #e0f2f0 0%, #f1f5f9 100%);
+        border-color: var(--border-teal);
+        border-top-color: var(--primary-teal);
+        font-weight: 900;
+        color: var(--dark-teal);
+    }
+    #center-name-group .form-control:focus {
+        background: #fff;
+        border-color: var(--primary-teal);
+        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.2), 0 0 0 4px rgba(37, 150, 139, 0.12);
+    }
+    #center-name-group label {
+        color: var(--dark-teal);
+        font-weight: 900;
+    }
+    #center-name-group .step-num {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .cards-grid input[type="radio"] { display: none; }
+    .cards-grid label { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 900; color: var(--text-dark); font-size: 13px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
+    .cards-grid label i { font-size: 20px; margin-bottom: 6px; font-style: normal; }
+    .cards-grid input[type="radio"]:checked + label { 
+        background: var(--light-teal); 
+        border-color: var(--primary-teal); 
+        color: var(--dark-teal); 
+        transform: translateY(-4px); 
+        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 3px 6px rgba(37, 150, 139, 0.1); 
+    }
+    .cards-grid input[type="radio"]:checked + label::after { content: "✔"; position: absolute; top: -6px; left: -6px; width: 18px; height: 18px; background: var(--primary-teal); color: var(--white); border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    
+    @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+    #map-container { 
+        width: 100%; height: 280px; border-radius: 10px; overflow: hidden; 
+        border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; 
+        box-shadow: inset 0 5px 15px rgba(0,0,0,0.08);
+    }
+    #map { width: 100%; height: 100%; }
+
+    .leaflet-control-my-location button {
+        background: var(--white); border: 2px solid #e2e8f0; width: 36px; height: 36px; cursor: pointer; 
+        font-size: 18px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+    }
+    .leaflet-control-my-location button:hover { background: #f1f5f9; }
+
+    .form-group select { 
+        width: 100%; 
+        padding: 13px 15px; 
+        border: 1px solid #cbd5e1; 
+        border-top: 2px solid #94a3b8; 
+        border-radius: 10px; 
+        font-size: 14.5px; 
+        font-family: inherit; 
+        outline: none; 
+        background: #f1f5f9 url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2325968b' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 15px center; 
+        background-size: 14px; 
+        padding-left: 36px; 
+        cursor: pointer; 
+        appearance: none; 
+        font-weight: 800; 
+        color: var(--text-dark); 
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
+    }
+    
+    .form-group select:focus { 
+        border-color: var(--primary-teal); 
+        border-top: 1px solid var(--primary-teal);
+        background-color: var(--white); 
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
+    }
+
+    .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .repeat-option { background: var(--light-teal); border: 1px solid var(--border-teal); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 15px 0; box-shadow: 0 3px 6px rgba(37, 150, 139, 0.05);}
+    .repeat-option input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-teal); }
+    .repeat-option label { font-size: 14px; color: var(--dark-teal); font-weight: 900; cursor: pointer; margin: 0; display: inline-block; }
+    .duration-info { background: #f8fafc; border-right: 4px solid var(--primary-teal); color: var(--dark-teal); padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
+    .duration-info.show { display: block; }
+
+    .btn-gps { 
+        background: var(--primary-teal); color: var(--white); border: none; padding: 12px 18px; border-radius: 8px; 
+        font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; 
+        justify-content: center; font-family: inherit; width: 100%; transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2);
+    }
+    .btn-gps:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
+    .btn-gps:active { transform: translateY(0); box-shadow: 0 2px 5px rgba(37, 150, 139, 0.2); }
+    .btn-gps:disabled { opacity: 0.8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .detailed-address-box {
+        background: linear-gradient(160deg, #FFFBEB 0%, #FEF3C7 100%);
+        border: 2px dashed #FCD34D;
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: 12px;
+        position: relative;
+        box-shadow: inset 0 2px 6px rgba(217, 119, 6, 0.05);
+    }
+    .detailed-address-box::before {
+        content: '✨';
+        position: absolute;
+        top: -10px;
+        right: 15px;
+        background: #fff;
+        padding: 0 6px;
+        font-size: 16px;
+        border-radius: 50%;
+    }
+    .detailed-address-box .label-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #92400E;
+        flex-wrap: wrap;
+    }
+    .detailed-address-box .label-row .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 900;
+        box-shadow: 0 2px 4px -1px rgba(217, 119, 6, 0.4);
+    }
+    .detailed-address-box .hint-text {
+        font-size: 11.5px;
+        color: #92400E;
+        margin-top: 6px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0.85;
+    }
+    .detailed-address-box .form-control {
+        background: #fff !important;
+        border-color: #FCD34D !important;
+        border-top-color: #F59E0B !important;
+    }
+    .detailed-address-box .form-control:focus {
+        border-color: #D97706 !important;
+        box-shadow: 0 8px 15px rgba(217, 119, 6, 0.15), 0 0 0 4px rgba(245, 158, 11, 0.15) !important;
+    }
+
+    .calendar-container-block { 
+        background: var(--white); 
+        border: 2px solid #e2e8f0; 
+        border-radius: 12px; 
+        padding: 16px; 
+        margin: 20px 0; 
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 3px 6px rgba(0, 0, 0, 0.03);
+    }
+    .selected-day-banner { background: var(--light-teal); border: 1px solid var(--border-teal); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; box-shadow: 0 3px 8px rgba(37, 150, 139, 0.08); }
+    .selected-day-banner .title { color: var(--dark-teal); font-size: 15px; font-weight: 900; display: flex; align-items: center; }
+    .selected-day-banner .day-badge { color: var(--white); background: var(--primary-teal); padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 900; box-shadow: 0 2px 5px rgba(37, 150, 139, 0.3); }
+    .calendar-header { position: relative; overflow: hidden; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; min-height: 38px; display: flex; justify-content: center; align-items: center; }
+    .title-track { display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; }
+    .month-name { color: var(--text-dark); font-size: 20px; font-weight: 900; }
+    .month-number { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--primary-teal); color: var(--white); font-size: 15px; font-weight: 900; box-shadow: 0 3px 6px rgba(37, 150, 139, 0.25); }
+    .year-text { color: var(--text-gray); font-size: 17px; font-weight: 800; }
+    .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: #ef4444; color: var(--white); padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 900; box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3); }
+    .month-appt-badge.zero { background: #94a3b8; box-shadow: none; }
+    
+    .week-wrapper { position: relative; overflow: hidden; border-radius: 8px; border: 2px solid #e2e8f0; background: var(--white); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .week-track { transition: transform 0.3s ease; }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--primary-teal); }
+    .weekdays div { text-align: center; font-weight: 900; color: var(--white); padding: 9px 3px; font-size: 13px; border-left: 1px solid rgba(255, 255, 255, 0.2); }
+    .weekdays div:last-child { border-left: none; }
+    .weekdays div.friday { color: #a8f0e5; }
+    
+    .days-wrapper { position: relative; overflow: hidden; background: #e2e8f0; padding-top: 1px; touch-action: pan-y; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .days div.cell { background: var(--white); min-height: 110px; padding: 8px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text-dark); font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
+    .days div.cell:hover { background: #f8fafc !important; }
+    .days div.cell:nth-child(7n), .days div.cell:nth-child(7n-1) { background: #fafbfc; }
+    .days div.cell.out-of-month { background: #f1f5f9 !important; color: #cbd5e1; }
+    
+    .days div.cell.past-cell { 
+        background: #f8fafc !important; 
+        cursor: not-allowed; 
+        opacity: 0.6; 
+    }
+    .days div.cell.past-cell .date-number { 
+        text-decoration: line-through; 
+        color: #94a3b8; 
+    }
+    .days div.cell.past-cell:hover { background: #f8fafc !important; }
+
+    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 15px; }
+    .cell.today-cell .date-number { background: var(--dark-teal); color: var(--white); box-shadow: 0 2px 4px rgba(27, 115, 106, 0.3); }
+    .cell.selected-cell { box-shadow: inset 0 0 0 3px var(--primary-teal); background: var(--light-teal) !important;}
+    .badge { position: absolute; bottom: 8px; left: 8px; background: var(--primary-teal); color: var(--white); font-size: 11px; font-weight: 900; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(37, 150, 139, 0.4); }
+    .swipe-hint { text-align: center; font-size: 13px; font-weight: 800; color: var(--text-gray); margin-top: 10px; }
+
+    .slide-out-left { animation: slideOutLeft 0.3s forwards; }
+    .slide-out-right { animation: slideOutRight 0.3s forwards; }
+    .slide-in-right { animation: slideInRight 0.3s forwards; }
+    .slide-in-left { animation: slideInLeft 0.3s forwards; }
+    @keyframes slideOutLeft { to { transform: translateX(-100%); opacity: 0; } }
+    @keyframes slideOutRight { to { transform: translateX(100%); opacity: 0; } }
+    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .btn-add { width: 100%; background: var(--primary-teal); color: var(--white); border: none; border-radius: 10px; padding: 15px; font-size: 17px; font-weight: 900; cursor: pointer; transition: all 0.2s; margin-top: 10px; box-shadow: 0 6px 15px rgba(37, 150, 139, 0.25); }
+    .btn-add:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 150, 139, 0.35); }
+    .btn-add:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
+    .btn-cancel { width: 100%; background: #94a3b8; color: var(--white); border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 8px rgba(148, 163, 184, 0.2); }
+    .error-msg { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 12px; font-weight: 900; display: none; box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1); }
+    .error-msg.show { display: block; }
+
+    .summary-section { 
+        background: var(--white); 
+        border-radius: 16px; 
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(37, 150, 139, 0.05); 
+        padding: 24px; 
+        border-top: 4px solid var(--primary-teal); 
+        width: 100%; 
+    }
+    .summary-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; flex-wrap: wrap; gap: 10px; }
+    .summary-section-title { color: var(--dark-teal); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .summary-total-badge { background: var(--light-teal); color: var(--dark-teal); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 1px solid var(--border-teal); box-shadow: 0 2px 6px rgba(37, 150, 139, 0.1); }
+    .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
+
+    .summary-card { 
+        background: var(--white); 
+        border-radius: 14px; 
+        padding: 0; 
+        display: flex; 
+        flex-direction: column; 
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04); 
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; 
+        position: relative;
+        border: 2px solid #e2e8f0;
+    }
+
+    .summary-card:hover { 
+        transform: translateY(-6px); 
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15); 
+    }
+
+    .summary-card.recurring-card {
+        border-color: #8b5cf6;
+        background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%);
+    }
+    .summary-card.recurring-card .sc-top-strip {
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    }
+
+    .summary-card.normal-card {
+        border-color: #3b82f6;
+        background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%);
+    }
+    .summary-card.normal-card .sc-top-strip {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    }
+
+    .summary-card.visible-card {
+        border-color: #16a34a;
+        background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%);
+    }
+    .summary-card.visible-card .sc-top-strip {
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+    }
+
+    .summary-card.hidden-card {
+        border-color: #dc2626;
+        background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%);
+        opacity: 0.95;
+    }
+    .summary-card.hidden-card .sc-top-strip {
+        background: linear-gradient(90deg, #dc2626, #f87171);
+    }
+    .summary-card.hidden-card .sc-group-name {
+        color: #991b1b;
+    }
+
+    .sc-top-strip {
+        height: 8px;
+        width: 100%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .sc-status-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 12px 14px 0;
+    }
+
+    .badge-status { 
+        font-size: 11px; 
+        font-weight: 900; 
+        padding: 5px 10px; 
+        border-radius: 20px; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 4px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        letter-spacing: 0.2px;
+    }
+    .badge-status.online { 
+        background: #16a34a; 
+        color: #fff; 
+        border: 1px solid #15803d;
+        animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+        0%, 100% { box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
+        50% { box-shadow: 0 2px 15px rgba(22, 163, 74, 0.8); }
+    }
+
+    .badge-status.recurring { 
+        background: #8b5cf6; 
+        color: #fff; 
+        border: 1px solid #7c3aed; 
+    }
+    .badge-status.one-time { 
+        background: #3b82f6; 
+        color: #fff; 
+        border: 1px solid #2563eb; 
+    }
+
+    .status-message {
+        margin: 0 14px 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .status-message::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+    }
+    .status-message.visible-msg {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        color: #14532d;
+        border: 2px solid #16a34a;
+    }
+    .status-message.visible-msg::before {
+        background: #16a34a;
+    }
+    .status-message.hidden-msg {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #7f1d1d;
+        border: 2px solid #dc2626;
+        animation: pulse-red 2s infinite;
+    }
+    .status-message.hidden-msg::before {
+        background: #dc2626;
+    }
+    @keyframes pulse-red {
+        0%, 100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
+        50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6); }
+    }
+    .status-message .status-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    .status-message .status-text {
+        flex: 1;
+        line-height: 1.4;
+    }
+    .status-message .status-text strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 2px;
+    }
+    .status-message .status-text small {
+        font-size: 12px;
+        font-weight: 700;
+        opacity: 0.85;
+    }
+
+    .sc-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        gap: 10px; 
+        padding: 8px 14px 12px;
+    }
+    .sc-group-name { 
+        font-size: 18px; 
+        font-weight: 900; 
+        color: var(--text-dark); 
+        line-height: 1.3; 
+    }
+    .sc-teacher { 
+        font-size: 13px; 
+        color: var(--text-gray); 
+        font-weight: 800; 
+        margin-top: 3px; 
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: center;
+    }
+    .sc-teacher .center-tag {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        color: #1b736a;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        border: 1px solid #b2dfdb;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .sc-subject-block {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin: 0 14px 10px;
+        text-align: center;
+        font-weight: 900;
+        color: #92400e;
+        font-size: 14px;
+        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.2);
+    }
+    .sc-subject-block .subject-icon {
+        font-size: 16px;
+        margin-left: 4px;
+    }
+
+    .sc-time-banner { 
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-radius: 10px; 
+        padding: 12px 14px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        font-size: 14px; 
+        font-weight: 900; 
+        margin: 0 14px 12px;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(30, 41, 59, 0.3);
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .sc-time-banner .time-text { 
+        color: #fff; 
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .sc-time-banner .duration-pill { 
+        background: #fbbf24; 
+        color: #78350f; 
+        padding: 3px 10px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: 900;
+        box-shadow: 0 2px 5px rgba(251, 191, 36, 0.4);
+    }
+
+    .sc-details-grid { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 8px; 
+        background: #f8fafc; 
+        border-radius: 10px; 
+        padding: 12px; 
+        font-size: 13px; 
+        margin: 0 14px 12px;
+        border: 1px solid #e2e8f0;
+    }
+    .sc-detail-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        color: var(--text-gray); 
+        font-weight: 800; 
+        padding: 6px 8px;
+        background: #fff;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+    .sc-detail-item.full { 
+        grid-column: span 2; 
+    }
+    .sc-detail-item .val { 
+        font-weight: 900; 
+        color: var(--text-dark); 
+    }
+    .sc-detail-item.address-item {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border-color: #6ee7b7;
+        color: #065f46;
+    }
+    .sc-detail-item.address-item .val {
+        color: #065f46;
+    }
+    .sc-detail-item.detailed-address-item {
+        background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        border-color: #fcd34d;
+        color: #92400e;
+    }
+    .sc-detail-item.detailed-address-item .val {
+        color: #92400e;
+    }
+    .sc-detail-item.center-item {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        border-color: #25968b;
+        color: #1b736a;
+    }
+    .sc-detail-item.center-item .val {
+        color: #1b736a;
+    }
+
+    .sc-footer-actions { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        gap: 8px; 
+        padding: 12px 14px; 
+        background: #f8fafc;
+        border-top: 2px solid #e2e8f0;
+        flex-wrap: wrap; 
+    }
+    .sc-actions-sub { 
+        display: flex; 
+        gap: 6px; 
+    }
+    .btn-action { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 5px; 
+        font-size: 12px; 
+        font-weight: 900; 
+        padding: 8px 12px; 
+        border-radius: 8px; 
+        border: none; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        font-family: inherit; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+    }
+    .btn-edit { 
+        background: #f1f5f9; 
+        color: #334155; 
+        border: 1px solid #cbd5e1; 
+    }
+    .btn-edit:hover { 
+        background: #e2e8f0; 
+        transform: translateY(-2px); 
+    }
+    .btn-delete { 
+        background: #fee2e2; 
+        color: #b91c1c; 
+        border: 1px solid #fecaca;
+    }
+    .btn-delete:hover { 
+        background: #fecaca;
+        transform: translateY(-2px); 
+    }
+
+    .btn-visibility {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 900;
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: inherit;
+        color: #fff;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .btn-visibility.hide-state {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+    .btn-visibility.hide-state:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
+    }
+    .btn-visibility.show-state {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+        animation: pulse-show 2s infinite;
+    }
+    .btn-visibility.show-state:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6);
+    }
+    @keyframes pulse-show {
+        0%, 100% { box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
+        50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.8); }
+    }
+
+    .btn-view-details {
+        background: linear-gradient(135deg, #25968b, #1b736a);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 3px 8px rgba(37, 150, 139, 0.3);
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+    .btn-view-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.5);
+    }
+
+    .empty-cards-state { text-align: center; padding: 40px 20px; color: var(--text-gray); font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
+
+    .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
+    .publish-modal-overlay.active { display: flex; }
+    .publish-modal-box { 
+        background: var(--white); 
+        border-radius: 16px; 
+        width: 100%; 
+        max-width: 500px; 
+        max-height: 90vh; 
+        display: flex; 
+        flex-direction: column; 
+        overflow: hidden; 
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2), 0 10px 20px rgba(37, 150, 139, 0.1); 
+        transform: translateY(0) scale(1);
+        animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes modalPopIn { 0% { transform: translateY(20px) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+    .publish-modal-header { background: var(--primary-teal); color: var(--white); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .publish-modal-header h2 { font-size: 18px; font-weight: 900; margin: 0; }
+    .publish-modal-header .close-btn { background: none; border: none; color: var(--white); font-size: 24px; cursor: pointer; transition: transform 0.2s; }
+    .publish-modal-header .close-btn:hover { transform: scale(1.2); }
+    .publish-modal-content { padding: 20px; overflow-y: auto; font-size: 15px; color: var(--text-dark); font-weight: 800; line-height: 1.6; }
+    .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px dashed #e2e8f0; display: flex; flex-direction: column; }
+    .publish-data-item:last-child { border-bottom: none; }
+    .publish-data-label { color: var(--text-gray); font-weight: 900; font-size: 13px; margin-bottom: 4px; }
+    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex-wrap: wrap; }
+    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; box-shadow: inset 0 2px 4px rgba(37, 150, 139, 0.04); }
+    .publish-data-value.address-detail { background: #FFFBEB; border-color: #FCD34D; color: #92400E; display: block; box-shadow: inset 0 2px 4px rgba(217, 119, 6, 0.04); }
+    .publish-data-value.center-value { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); color: #1b736a; border-color: #b2dfdb; }
+    .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; display: flex; gap: 10px; }
+    .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: all 0.2s; box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
+    .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
+
+    .security-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #25968b 0%, #1b736a 100%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        gap: 20px;
+        transition: opacity 0.3s ease;
+    }
+    .security-overlay.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .security-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .security-overlay h2 {
+        font-size: 20px;
+        font-weight: 900;
+    }
+    .security-overlay p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .blocked-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #991b1b 100%);
+        z-index: 100000;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        text-align: center;
+        color: #fff;
+        animation: blockedFadeIn 0.4s ease;
+        overflow-y: auto;
+    }
+    .blocked-overlay.show { display: flex; }
+
+    @keyframes blockedFadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .blocked-overlay .blocked-icon {
+        font-size: 80px;
+        margin-bottom: 16px;
+        animation: blockedPulse 1.5s infinite;
+        filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
+    }
+    @keyframes blockedPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .blocked-overlay h1 {
+        font-size: 24px;
+        font-weight: 900;
+        margin-bottom: 12px;
+        text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        letter-spacing: 0.5px;
+    }
+
+    .blocked-overlay p {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.7;
+        max-width: 520px;
+        margin-bottom: 10px;
+        opacity: 0.95;
+    }
+
+    .blocked-overlay .support-box {
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 22px;
+        margin-top: 22px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        max-width: 760px;
+        width: 100%;
+    }
+
+    .blocked-overlay .support-box .support-label {
+        font-size: 15px;
+        font-weight: 900;
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        opacity: 0.98;
+    }
+
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 8px;
+    }
+
+    .plan-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px 12px 16px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 3px solid transparent;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-8px) scale(1.04);
+        box-shadow: 0 16px 35px rgba(0,0,0,0.4);
+    }
+
+    .plan-card.plan-3m {
+        border-color: #3B82F6;
+        background: linear-gradient(180deg, #EFF6FF 0%, #fff 40%);
+    }
+    .plan-card.plan-3m .plan-name { color: #1D4ED8; }
+    .plan-card.plan-3m .plan-btn {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    }
+
+    .plan-card.plan-6m {
+        border-color: #8B5CF6;
+        background: linear-gradient(180deg, #F5F3FF 0%, #fff 40%);
+    }
+    .plan-card.plan-6m .plan-name { color: #6D28D9; }
+    .plan-card.plan-6m .plan-btn {
+        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    }
+
+    .plan-card.plan-1y {
+        border-color: #F59E0B;
+        background: linear-gradient(180deg, #FFFBEB 0%, #fff 40%);
+        transform: scale(1.05);
+    }
+    .plan-card.plan-1y:hover {
+        transform: translateY(-8px) scale(1.1);
+    }
+    .plan-card.plan-1y .plan-name { color: #B45309; }
+    .plan-card.plan-1y .plan-btn {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+
+    .plan-badge {
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 0 14px 0 14px;
+        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.5);
+        animation: badgePulse 1.5s infinite;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+    }
+
+    .plan-icon {
+        font-size: 38px;
+        margin-bottom: 4px;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+    }
+
+    .plan-name {
+        font-size: 16px;
+        font-weight: 900;
+        margin-bottom: 2px;
+        letter-spacing: 0.3px;
+    }
+
+    .plan-price {
+        font-size: 14px;
+        font-weight: 900;
+        color: #047857;
+        margin-bottom: 6px;
+        padding: 6px 8px;
+        background: #DCFCE7;
+        border-radius: 8px;
+        border: 1.5px solid #86EFAC;
+        direction: ltr;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .plan-duration {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748B;
+        margin-bottom: 10px;
+        min-height: 15px;
+    }
+
+    .plan-btn {
+        display: block;
+        width: 100%;
+        color: #fff;
+        text-decoration: none;
+        padding: 11px 8px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 900;
+        border: none;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+        margin-top: auto;
+    }
+    .plan-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        filter: brightness(1.1);
+    }
+    .plan-btn:active {
+        transform: translateY(0) scale(0.97);
+    }
+    .plan-btn:disabled {
+        background: #94A3B8 !important;
+        cursor: not-allowed;
+        transform: none;
+        opacity: 0.7;
+    }
+
+    .blocked-overlay .blocked-note {
+        margin-top: 22px;
+        font-size: 12.5px;
+        font-weight: 700;
+        opacity: 0.85;
+        line-height: 1.7;
+        max-width: 480px;
+    }
+
+    .blocked-overlay .blocked-badge {
+        display: inline-block;
+        background: rgba(0,0,0,0.25);
+        border: 1px solid rgba(255,255,255,0.25);
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 900;
+        margin-bottom: 16px;
+        letter-spacing: 1px;
+    }
+
+    @media (max-width: 640px) {
+        .plans-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .plan-card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            text-align: right;
+        }
+        .plan-card.plan-1y {
+            transform: scale(1);
+        }
+        .plan-card.plan-1y:hover {
+            transform: translateY(-4px);
+        }
+        .plan-icon {
+            font-size: 32px;
+            margin-bottom: 0;
+        }
+        .plan-card > div:not(.plan-icon) {
+            flex: 1;
+        }
+        .plan-name { font-size: 15px; }
+        .plan-price { font-size: 13px; margin-bottom: 0; padding: 4px 6px; }
+        .plan-duration { display: none; }
+        .plan-btn {
+            padding: 10px 14px;
+            white-space: nowrap;
+            margin-top: 0;
+            width: auto;
+        }
+        .blocked-overlay h1 { font-size: 20px; }
+        .blocked-overlay .blocked-icon { font-size: 60px; }
+        .blocked-overlay .support-box { padding: 16px; }
+    }
+
+    .contact-sent-msg {
+        display: none;
+        margin-top: 14px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(34, 197, 94, 0.25);
+        border: 2px solid rgba(34, 197, 94, 0.6);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 900;
+        animation: contactMsgPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        line-height: 1.5;
+    }
+    .contact-sent-msg.show { display: block; }
+    .contact-sent-msg.error {
+        background: rgba(220, 38, 38, 0.3);
+        border-color: rgba(220, 38, 38, 0.7);
+    }
+    @keyframes contactMsgPop {
+        from { transform: scale(0.85); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ✅ حالة التحميل للباقات */
+    .plan-price.loading {
+        background: #F1F5F9;
+        border-color: #CBD5E1;
+        color: #94A3B8;
+    }
+    .plan-price.loading::after {
+        content: '';
+        width: 14px;
+        height: 14px;
+        border: 2px solid #CBD5E1;
+        border-top-color: #64748B;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+    }
+
+    /* ========================================================== */
+    /* 🆘 زر التواصل مع الإدارة (استفسار/مشكلة/اشتراك) */
+    /* ========================================================== */
+    .email-contact-box {
+        margin-top: 16px;
+        padding: 14px;
+        background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+        border: 2px dashed #FCA5A5;
+        border-radius: 14px;
+        text-align: center;
+    }
+
+    .email-contact-box .ec-title {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #7F1D1D;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .email-contact-box .ec-hint {
+        font-size: 11.5px;
+        color: #991B1B;
+        margin-top: 8px;
+        font-weight: 700;
+        opacity: 0.85;
+        line-height: 1.5;
+    }
+
+    /* 🔽 قائمة أنواع التواصل */
+    .contact-type-selector {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .contact-type-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        background: #fff;
+        border: 2px solid #FECACA;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Cairo', sans-serif;
+        text-align: right;
+        width: 100%;
+        position: relative;
+    }
+
+    .contact-type-btn:hover {
+        border-color: #F87171;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+    }
+
+    .contact-type-btn.selected {
+        background: linear-gradient(135deg, #FEE2E2, #FECACA);
+        border-color: #DC2626;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    .contact-type-btn .ct-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .contact-type-btn .ct-info {
+        flex: 1;
+        min-width: 0;
+        text-align: right;
+    }
+
+    .contact-type-btn .ct-info strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 900;
+        color: #7F1D1D;
+        margin-bottom: 2px;
+    }
+
+    .contact-type-btn .ct-info small {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #991B1B;
+        opacity: 0.85;
+    }
+
+    .contact-type-btn .ct-check {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #FECACA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 12px;
+        color: transparent;
+        transition: all 0.2s;
+        background: #fff;
+    }
+
+    .contact-type-btn.selected .ct-check {
+        background: #DC2626;
+        border-color: #DC2626;
+        color: #fff;
+    }
+
+    /* 🔽 حقل تفاصيل المشكلة */
+    .contact-details-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #FECACA;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 12.5px;
+        outline: none;
+        background: #fff;
+        color: #0F172A;
+        resize: vertical;
+        min-height: 60px;
+        max-height: 140px;
+        margin-bottom: 12px;
+        transition: all 0.2s;
+        display: none;
+    }
+
+    .contact-details-input.show { display: block; }
+
+    .contact-details-input:focus {
+        border-color: #DC2626;
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    }
+
+    .contact-details-input::placeholder {
+        color: #94A3B8;
+        font-weight: 700;
+    }
+
+    /* 🔽 زر الإرسال */
+    .btn-email-contact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #EA4335, #C5221F);
+        color: #fff;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 12px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 900;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 6px 18px rgba(234, 67, 53, 0.45);
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        letter-spacing: 0.3px;
+        width: 100%;
+    }
+
+    .btn-email-contact:hover:not(:disabled) {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 25px rgba(234, 67, 53, 0.65);
+        filter: brightness(1.08);
+    }
+
+    .btn-email-contact:active:not(:disabled) {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn-email-contact:disabled {
+        background: #94A3B8;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .btn-email-contact .email-icon {
+        font-size: 18px;
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    }
+
+    .btn-email-contact .email-label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.2;
+    }
+
+    .btn-email-contact .email-label small {
+        font-size: 10.5px;
+        font-weight: 700;
+        opacity: 0.9;
+    }
+
+    @media (min-width: 500px) {
+        .contact-type-selector {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .contact-type-btn {
+            flex-direction: column;
+            text-align: center;
+            gap: 6px;
+            padding: 14px 8px;
+        }
+        .contact-type-btn .ct-info { text-align: center; }
+        .contact-type-btn .ct-info strong { font-size: 12px; }
+        .contact-type-btn .ct-info small { display: none; }
+        .contact-type-btn .ct-icon { font-size: 26px; }
+        .contact-type-btn .ct-check {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+        }
+    }
+
+    .subscription-banner {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto 15px;
+        padding: 14px 18px;
+        border-radius: 14px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        animation: slideDownFade 0.4s ease;
+        position: relative;
+        z-index: 20;
+    }
+    .subscription-banner.show { display: flex; }
+    .subscription-banner.warning {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        border: 2px solid #FBBF24;
+    }
+    .subscription-banner.danger {
+        background: linear-gradient(135deg, #DC2626, #991B1B);
+        color: #fff;
+        border: 2px solid #F87171;
+        animation: slideDownFade 0.4s ease, pulse-danger-banner 2s infinite;
+    }
+    @keyframes pulse-danger-banner {
+        0%, 100% { box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
+        50% { box-shadow: 0 6px 30px rgba(220,38,38,0.7); }
+    }
+    .subscription-banner .sb-icon {
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+    .subscription-banner .sb-text {
+        flex: 1;
+        line-height: 1.4;
+    }
+    .subscription-banner .sb-text strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 2px;
+        font-weight: 900;
+    }
+    .subscription-banner .sb-text small {
+        font-size: 12.5px;
+        opacity: 0.95;
+        font-weight: 700;
+    }
+    .subscription-banner .sb-btn {
+        background: #fff;
+        color: #D97706;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 900;
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: inherit;
+    }
+    .subscription-banner.danger .sb-btn { color: #991B1B; }
+    .subscription-banner .sb-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .subscription-banner .sb-btn:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+        .form-grid-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+        .booking-card { padding: 16px; }
+        .days div.cell { min-height: 85px; font-size: 13px; padding: 5px; }
+        .appts-cards-grid { grid-template-columns: 1fr; }
+        .sc-details-grid { grid-template-columns: 1fr; }
+        .sc-detail-item.full { grid-column: span 1; }
+        .sc-footer-actions { flex-direction: column; }
+        .sc-actions-sub { width: 100%; }
+        .btn-visibility { width: 100%; }
+        .status-message { font-size: 13px; padding: 10px 12px; }
+        .status-message .status-icon { font-size: 20px; }
+        .subscription-banner { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
+        .subscription-banner .sb-btn { width: 100%; justify-content: center; }
+    }
+</style>
+</head>
+<body>
+
+<!-- 🚫 شاشة الحظر -->
+<div class="blocked-overlay" id="blockedOverlay">
+    <div class="blocked-icon">🚫</div>
+    <div class="blocked-badge">⛔ حساب محظور</div>
+    <h1>تم حظر حسابك من قبل الإدارة</h1>
+    <p>
+        عذراً، لا يمكنك الوصول إلى لوحة التحكم أو إضافة مواعيد جديدة حالياً.
+        <br>
+        حسابك موقوف مؤقتاً من قبل إدارة منصة <b>احجزلي</b>.
+    </p>
+
+    <div class="support-box">
+        <div class="support-label">💎 اختر باقة الاشتراك المناسبة للمتابعة</div>
+        
+        <div class="plans-grid">
+            <!-- باقة 3 شهور — كل القيم ديناميكية من السحابة -->
+            <div class="plan-card plan-3m">
+                <div class="plan-icon" id="planIcon3m">📅</div>
+                <div>
+                    <div class="plan-name" id="planName3m">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText3m"></div>
+                    <div class="plan-duration" id="planDuration3m">⏱ ...</div>
+                </div>
+                <button class="plan-btn" id="planBtn3m" onclick="window.requestPlan('3months')" disabled>جاري التحميل...</button>
+            </div>
+
+            <!-- باقة 6 شهور -->
+            <div class="plan-card plan-6m">
+                <div class="plan-icon" id="planIcon6m">📅</div>
+                <div>
+                    <div class="plan-name" id="planName6m">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText6m"></div>
+                    <div class="plan-duration" id="planDuration6m">⏱ ...</div>
+                </div>
+                <button class="plan-btn" id="planBtn6m" onclick="window.requestPlan('6months')" disabled>جاري التحميل...</button>
+            </div>
+
+            <!-- باقة سنة -->
+            <div class="plan-card plan-1y">
+                <div class="plan-badge" id="planBadge1y">⭐ الأفضل</div>
+                <div class="plan-icon" id="planIcon1y">👑</div>
+                <div>
+                    <div class="plan-name" id="planName1y">جاري التحميل...</div>
+                    <div class="plan-price loading" id="priceText1y"></div>
+                    <div class="plan-duration" id="planDuration1y">⏱ ...</div>
+                </div>
+                <button class="plan-btn" id="planBtn1y" onclick="window.requestPlan('1year')" disabled>جاري التحميل...</button>
+            </div>
+        </div>
+
+        <div class="contact-sent-msg" id="contactSentMsg"></div>
+
+        <!-- 🆘 صندوق التواصل مع الإدارة -->
+        <div class="email-contact-box">
+            <div class="ec-title">
+                <span>🆘</span>
+                <span>تواصل مع الإدارة</span>
+            </div>
+
+            <!-- اختيار نوع التواصل -->
+            <div class="contact-type-selector" id="contactTypeSelector">
+                <button type="button" class="contact-type-btn" data-type="inquiry" onclick="window.selectContactType('inquiry', event)">
+                    <span class="ct-icon">💬</span>
+                    <div class="ct-info">
+                        <strong>استفسار</strong>
+                        <small>سؤال عن المنصة أو المميزات</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+
+                <button type="button" class="contact-type-btn" data-type="problem" onclick="window.selectContactType('problem', event)">
+                    <span class="ct-icon">⚠️</span>
+                    <div class="ct-info">
+                        <strong>مشكلة تقنية</strong>
+                        <small>خطأ أو عطل في المنصة</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+
+                <button type="button" class="contact-type-btn" data-type="subscription" onclick="window.selectContactType('subscription', event)">
+                    <span class="ct-icon">💎</span>
+                    <div class="ct-info">
+                        <strong>اشتراك</strong>
+                        <small>طلب باقة أو تجديد</small>
+                    </div>
+                    <span class="ct-check">✓</span>
+                </button>
+            </div>
+
+            <!-- حقل تفاصيل المشكلة/الاستفسار -->
+            <textarea 
+                id="contactDetailsInput" 
+                class="contact-details-input" 
+                placeholder="اكتب تفاصيل المشكلة أو الاستفسار هنا..."
+                maxlength="500"
+            ></textarea>
+
+            <!-- زر الإرسال -->
+            <button id="emailContactBtn" class="btn-email-contact" onclick="window.sendEmailContact(event)" disabled>
+                <span class="email-icon">✉️</span>
+                <span class="email-label">
+                    <span id="emailBtnText">اختر نوع التواصل أولاً</span>
+                    <small id="emailBtnHint">سيتم فتح Gmail برسالة جاهزة</small>
+                </span>
+            </button>
+
+            <div class="ec-hint">
+                💡 الرسالة هتتفتح ببياناتك تلقائياً — كل اللي عليك تضغط "إرسال" في Gmail
+            </div>
+        </div>
+    </div>
+
+    <div class="blocked-note">
+        💡 بعد إتمام الاشتراك، سيتم إعادة تفعيل حسابك تلقائياً.<br>
+        للاستفسار تواصل مع الدعم الفني.
+    </div>
+</div>
+
+<!-- ✅ شاشة حماية أولية -->
+<div class="security-overlay" id="securityOverlay">
+    <div class="security-spinner"></div>
+    <h2>جاري التحقق من الجهاز...</h2>
+    <p>منصة احجزلي تحمي حسابك</p>
+</div>
+
+<!-- ✅ سكريبت حماية الجهاز + الحظر + طلب الباقات -->
+<script type="module">
+    import { 
+        checkTeacherDevice, 
+        getTeacher, 
+        db, doc, updateDoc, setDoc, serverTimestamp,
+        getPricingSettings,
+        subscribePricing
+    } from './firebase-config.js';
+
+    // ==========================================================
+    // 💾 تخزين أسعار الباقات الحالية في الذاكرة (للوصول السريع)
+    // ==========================================================
+    window.currentPricing = null;
+
+    // ==========================================================
+    // 🔑 دالة موحّدة لفحص حالة الحظر والاشتراك (تعتمد على teachers)
+    // ==========================================================
+    window.checkTeacherActiveStatus = async function(phone) {
+        try {
+            const teacher = await getTeacher(phone);
+            if (!teacher) {
+                return { active: false, reason: 'not_found' };
+            }
+
+            // 🚫 محظور صريحاً
+            if (teacher.isLocked === true) {
+                return { active: false, reason: 'locked' };
+            }
+
+            // ♾️ فتح دائم
+            if (teacher.lockType === 'permanent_open') {
+                return { active: true, reason: 'permanent_open' };
+            }
+
+            // ⏰ تفعيل مؤقت
+            if (teacher.unlockUntil) {
+                const until = typeof teacher.unlockUntil === 'number'
+                    ? teacher.unlockUntil
+                    : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
+
+                if (until && until > Date.now()) {
+                    return { active: true, reason: 'time_limited', until };
+                } else if (until && until <= Date.now()) {
+                    return { active: false, reason: 'expired', until };
+                }
+            }
+
+            // 🆓 مفيش تفعيل — نعتبرها غير نشطة
+            return { active: false, reason: 'no_activation' };
+        } catch (e) {
+            console.error('خطأ في فحص حالة الحظر:', e);
+            return { active: false, reason: 'error' };
+        }
+    };
+
+    // ==========================================================
+    // 💰 تحديث واجهة أسعار الباقات — كل القيم ديناميكية
+    // ==========================================================
+    function updatePricingUI(pricing) {
+        if (!pricing) {
+            console.log('⚠️ لا توجد أسعار محفوظة — في انتظار البيانات...');
+            return;
+        }
+
+        window.currentPricing = pricing;
+
+        const defaultLabels = {
+            '3months': '3 شهور',
+            '6months': '6 شهور',
+            '1year': 'سنة كاملة'
+        };
+        const defaultIcons = {
+            '3months': '📅',
+            '6months': '📅',
+            '1year': '👑'
+        };
+
+        const mapSuffix = { '3months': '3m', '6months': '6m', '1year': '1y' };
+
+        for (const planId of ['3months', '6months', '1year']) {
+            const data = pricing[planId] || {};
+            const suffix = mapSuffix[planId];
+
+            const nameEl = document.getElementById(`planName${suffix}`);
+            if (nameEl) nameEl.textContent = data.label || defaultLabels[planId];
+
+            const iconEl = document.getElementById(`planIcon${suffix}`);
+            if (iconEl) iconEl.textContent = data.icon || defaultIcons[planId];
+
+            const priceEl = document.getElementById(`priceText${suffix}`);
+            if (priceEl) {
+                priceEl.classList.remove('loading');
+                if (data.priceText) {
+                    priceEl.textContent = data.priceText;
+                } else if (data.price !== undefined && data.price !== null) {
+                    priceEl.textContent = `${data.price} جنيه`;
+                } else {
+                    priceEl.textContent = 'السعر عند الطلب';
+                }
+            }
+
+            const durEl = document.getElementById(`planDuration${suffix}`);
+            if (durEl) {
+                durEl.textContent = data.days ? `⏱ ${data.days} يوم` : '';
+            }
+
+            const btnEl = document.getElementById(`planBtn${suffix}`);
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.textContent = 'اشترك الآن';
+            }
+        }
+
+        console.log('✅ تم تحديث أسعار الباقات من السحابة:', pricing);
+    }
+
+    async function loadPricing() {
+        try {
+            const pricing = await getPricingSettings();
+            updatePricingUI(pricing);
+        } catch (e) {
+            console.warn('فشل جلب الأسعار:', e);
+        }
+    }
+
+    // ==========================================================
+    // 🔄 اشتراك لحظي في تغييرات الأسعار
+    // ==========================================================
+    let _unsubPricing = null;
+    function startPricingLiveUpdates() {
+        if (_unsubPricing) return;
+        try {
+            _unsubPricing = subscribePricing((pricing) => {
+                updatePricingUI(pricing);
+            });
+            console.log('🔄 تم تفعيل التحديث اللحظي للأسعار');
+        } catch (e) {
+            console.warn('فشل بدء الاشتراك اللحظي بالأسعار:', e);
+        }
+    }
+
+    // ==========================================================
+    // 💎 دالة طلب باقة
+    // ==========================================================
+    window.requestPlan = async function(planId) {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) {
+            alert('⚠️ يجب تسجيل الدخول أولاً');
+            return;
+        }
+
+        if (!window.currentPricing) {
+            alert('⏳ يرجى الانتظار قليلاً حتى يتم تحميل بيانات الباقة...');
+            return;
+        }
+
+        const pricing = window.currentPricing;
+        const planData = pricing[planId];
+        
+        if (!planData) {
+            alert('⚠️ بيانات هذه الباقة غير متوفرة حالياً، يرجى المحاولة لاحقاً.');
+            return;
+        }
+
+        const planName = planData.label || planData.name || ({
+            '3months': 'باقة 3 شهور',
+            '6months': 'باقة 6 شهور',
+            '1year': 'باقة سنة كاملة'
+        })[planId];
+
+        const planDays = planData.days || 0;
+        const planPrice = planData.priceText || (planData.price !== undefined ? `${planData.price} جنيه` : 'غير محدد');
+
+        if (!confirm(
+            `📋 تأكيد طلب الاشتراك\n\n` +
+            `💎 الباقة: ${planName}\n` +
+            `⏱️ المدة: ${planDays} يوم\n` +
+            `💰 السعر: ${planPrice}\n\n` +
+            `سيتم إرسال طلبك للإدارة، وسيتم التواصل معك خلال 24 ساعة.\n\n` +
+            `هل تريد إرسال الطلب؟`
+        )) return;
+
+        const msgEl = document.getElementById('contactSentMsg');
+
+        try {
+            if (msgEl) {
+                msgEl.classList.remove('error');
+                msgEl.classList.add('show');
+                msgEl.textContent = '⏳ جاري إرسال طلبك...';
+            }
+
+            let teacherName = '';
+            let teacherTitle = '';
+            try {
+                const teacherDoc = await getTeacher(phone);
+                if (teacherDoc) {
+                    teacherName = teacherDoc.name || '';
+                    teacherTitle = teacherDoc.title || '';
+                }
+            } catch (e) {}
+
+            await updateDoc(doc(db, 'teachers', phone), {
+                contactRequest: {
+                    requested: true,
+                    at: Date.now(),
+                    handled: false,
+                    planId: planId
+                }
+            });
+
+            const reqId = `contact_${phone}_${Date.now()}`;
+            await setDoc(doc(db, 'contact_requests', reqId), {
+                id: reqId,
+                phone: phone,
+                teacherName: teacherName,
+                teacherTitle: teacherTitle,
+                planId: planId,
+                planName: planName,
+                priceText: planPrice,
+                requestedAt: serverTimestamp(),
+                requestedAtMs: Date.now(),
+                handled: false,
+                handledAt: null
+            });
+
+            if (msgEl) {
+                msgEl.classList.remove('error');
+                msgEl.classList.add('show');
+                msgEl.innerHTML = `✅ تم إرسال طلبك بنجاح!<br>📧 سيتم التواصل معك خلال 24 ساعة على رقم: ${phone}`;
+            }
+
+        } catch (e) {
+            console.error('فشل إرسال الطلب:', e);
+            if (msgEl) {
+                msgEl.classList.add('show', 'error');
+                msgEl.textContent = '❌ فشل إرسال الطلب — جرب تاني';
+            }
+        }
+    };
+
+    // ==========================================================
+    // 🆘 متغيرات التواصل مع الإدارة
+    // ==========================================================
+    window.selectedContactType = null;
+
+    window.selectContactType = function(type, event) {
+        window.selectedContactType = type;
+
+        document.querySelectorAll('.contact-type-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+
+        if (event?.currentTarget) {
+            event.currentTarget.classList.add('selected');
+        } else {
+            const btn = document.querySelector(`.contact-type-btn[data-type="${type}"]`);
+            if (btn) btn.classList.add('selected');
+        }
+
+        const detailsInput = document.getElementById('contactDetailsInput');
+        const btnText = document.getElementById('emailBtnText');
+
+        if (type === 'inquiry' || type === 'problem') {
+            if (detailsInput) {
+                detailsInput.classList.add('show');
+                if (type === 'problem') {
+                    detailsInput.placeholder = 'اكتب تفاصيل المشكلة هنا... (مثال: لما أضغط على زر كذا، الصفحة بتقف)';
+                } else {
+                    detailsInput.placeholder = 'اكتب استفسارك هنا...';
+                }
+            }
+            if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة للإدارة' : 'إرسال الاستفسار للإدارة';
+        } else if (type === 'subscription') {
+            if (detailsInput) {
+                detailsInput.classList.remove('show');
+                detailsInput.value = '';
+            }
+            if (btnText) btnText.textContent = 'إرسال طلب الاشتراك';
+        }
+
+        const sendBtn = document.getElementById('emailContactBtn');
+        if (sendBtn) sendBtn.disabled = false;
+    };
+
+    window.sendEmailContact = async function(e) {
+        if (e) e.preventDefault();
+
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) {
+            alert('⚠️ يجب تسجيل الدخول أولاً');
+            return;
+        }
+
+        if (!window.selectedContactType) {
+            alert('⚠️ يرجى اختيار نوع التواصل أولاً (استفسار / مشكلة / اشتراك)');
+            return;
+        }
+
+        const ADMIN_EMAIL = 'mmoksh162@gmail.com';
+        const type = window.selectedContactType;
+        const detailsText = (document.getElementById('contactDetailsInput')?.value || '').trim();
+
+        if ((type === 'inquiry' || type === 'problem') && !detailsText) {
+            alert('⚠️ يرجى كتابة التفاصيل في المربع النصي');
+            document.getElementById('contactDetailsInput')?.focus();
+            return;
+        }
+
+        let teacherName = '';
+        let teacherTitle = '';
+        try {
+            const t = await getTeacher(phone);
+            if (t) {
+                teacherName = t.name || '';
+                teacherTitle = t.title || '';
+            }
+        } catch (err) {}
+
+        const pricing = window.currentPricing || {};
+        const p3m = pricing['3months']  || {};
+        const p6m = pricing['6months']  || {};
+        const p1y = pricing['1year']    || {};
+
+        const typeInfo = {
+            'inquiry':      { label: '💬 استفسار',        emoji: '💬' },
+            'problem':      { label: '⚠️ مشكلة تقنية',    emoji: '⚠️' },
+            'subscription': { label: '💎 طلب اشتراك',     emoji: '💎' }
+        };
+        const tInfo = typeInfo[type] || typeInfo['inquiry'];
+
+        const subject = `${tInfo.emoji} ${tInfo.label} من ${teacherTitle} ${teacherName}`;
+
+        let bodyLines = [
+            `السلام عليكم،`,
+            ``,
+            `📌 نوع التواصل: ${tInfo.label}`,
+            ``,
+            `━━━━━━━━━━━━━━━━━━`,
+            `📋 بياناتي:`,
+            `━━━━━━━━━━━━━━━━━━`,
+            `👤 الاسم: ${teacherTitle} ${teacherName}`,
+            `📱 رقم الهاتف: ${phone}`,
+        ];
+
+        if (type === 'inquiry' || type === 'problem') {
+            bodyLines.push(
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                type === 'problem' ? `⚠️ تفاصيل المشكلة:` : `💬 تفاصيل الاستفسار:`,
+                `━━━━━━━━━━━━━━━━━━`,
+                detailsText,
+            );
+        }
+
+        if (type === 'subscription') {
+            bodyLines.push(
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                `💎 الباقات المتاحة:`,
+                `━━━━━━━━━━━━━━━━━━`,
+                `📅 باقة 3 شهور   → ${p3m.priceText || 'غير محدد'}  (${p3m.days || 90} يوم)`,
+                `📅 باقة 6 شهور   → ${p6m.priceText || 'غير محدد'}  (${p6m.days || 180} يوم)`,
+                `👑 باقة سنة كاملة → ${p1y.priceText || 'غير محدد'}  (${p1y.days || 365} يوم)`,
+                ``,
+                `━━━━━━━━━━━━━━━━━━`,
+                `💬 الباقة المطلوبة: [اكتب اسم الباقة هنا]`,
+                `━━━━━━━━━━━━━━━━━━`,
+            );
+        }
+
+        bodyLines.push(
+            ``,
+            `برجاء التواصل معي في أقرب وقت.`,
+            ``,
+            `شكراً لكم 🌹`
+        );
+
+        const body = bodyLines.join('\n');
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ADMIN_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.open(gmailUrl, '_blank');
+    };
+
+    function showBlockedScreen() {
+        const overlay = document.getElementById('securityOverlay');
+        const blockedOverlay = document.getElementById('blockedOverlay');
+
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+        if (blockedOverlay) {
+            blockedOverlay.classList.add('show');
+        }
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        console.log('🚫 تم عرض شاشة الحظر');
+    }
+
+    function hideAllOverlays() {
+        const overlay = document.getElementById('securityOverlay');
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+    }
+
+    // ==========================================================
+    // ✅ الفحص الرئيسي للجهاز والحظر (باستخدام الدالة الموحّدة)
+    // ==========================================================
+    (async () => {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) {
+            window.location.href = 'teacher-login.html';
+            return;
+        }
+
+        try {
+            // ✅ فحص الحالة (باستخدام الدالة الموحّدة)
+            const status = await window.checkTeacherActiveStatus(phone);
+
+            if (!status.active) {
+                console.log('🚫 غير نشط — السبب:', status.reason);
+
+                // ✅ لو التفاعل انتهى — نقفل الحساب تلقائياً
+                if (status.reason === 'expired') {
+                    try {
+                        await updateDoc(doc(db, 'teachers', phone), {
+                            isLocked: true,
+                            lockType: 'auto_expired',
+                            autoLockedAt: Date.now()
+                        });
+                    } catch(_) {}
+                }
+
+                localStorage.setItem('teacher_is_blocked', 'true');
+                await loadPricing();
+                showBlockedScreen();
+                startPricingLiveUpdates();
+                return;
+            }
+
+            // ✅ نشط — نمسح علامة الحظر
+            localStorage.removeItem('teacher_is_blocked');
+
+            // ✅ فحص الجهاز
+            let check = null;
+            try {
+                check = await checkTeacherDevice(phone);
+            } catch (e) {
+                console.warn('فشل فحص الجهاز:', e);
+            }
+
+            if (check && check.locked === true) {
+                localStorage.setItem('teacher_is_blocked', 'true');
+                await loadPricing();
+                showBlockedScreen();
+                startPricingLiveUpdates();
+                return;
+            }
+
+            if (!check || !check.ok) {
+                if (localStorage.getItem('teacher_is_blocked') !== 'true') {
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('current_teacher_phone');
+                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                    window.location.href = 'teacher-login.html';
+                    return;
+                }
+                return;
+            }
+
+            // ✅ كله تمام
+            hideAllOverlays();
+            startPricingLiveUpdates();
+
+        } catch (e) {
+            console.error('خطأ في التحقق:', e);
+            hideAllOverlays();
+            startPricingLiveUpdates();
+        }
+    })();
+
+    // ✅ تحميل الأسعار فوراً عند فتح الصفحة
+    loadPricing();
+
+    // ✅ إتاحة الدوال للسكريبتات الأخرى
+    window.loadPricing = loadPricing;
+    window.startPricingLiveUpdates = startPricingLiveUpdates;
+
+    // ✅ تنظيف الاشتراك عند إغلاق الصفحة
+    window.addEventListener('beforeunload', () => {
+        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
+    });
+    window.addEventListener('pagehide', () => {
+        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
+    });
+</script>
+
+<header class="header-3d">
+    <h1 id="page-header-title">إعداد تفاصيل المجموعة والمواعيد</h1>
+    <div class="stepper">
+        <div class="step">1. التخصص</div>
+        <div class="step-divider">❯</div>
+        <div class="step active">2. المواعيد والمجموعات</div>
+    </div>
+</header>
+
+<!-- ✅ بانر الاشتراك -->
+<div class="subscription-banner" id="subscriptionBanner">
+    <span class="sb-icon" id="subBannerIcon">⏳</span>
+    <div class="sb-text">
+        <strong id="subBannerTitle">جاري فحص الاشتراك...</strong>
+        <small id="subBannerMsg">يرجى الانتظار قليلاً</small>
+    </div>
+    <a href="subscription.html" class="sb-btn" id="subBannerBtn">
+        💎 ترقية الباقة
+    </a>
+</div>
+
+<div class="main-container">
+    <div class="booking-card">
+        
+        <div class="form-group" style="margin-bottom: 25px;">
+          <label style="color: var(--text-gray); font-size: 13px; justify-content: center;">المادة والصف المحددان مسبقاً</label>
+          <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
+        </div>
+
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label><span class="step-num">1</span> اسم المجموعة</label>
+            <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة هنا">
+          </div>
+          
+          <div class="form-group" id="center-name-group" style="display: none;">
+            <label><span class="step-num" id="center-step-num">2</span> اسم السنتر</label>
+            <input type="text" id="center-name" class="form-control" placeholder="مثال: سنتر النخبة التعليمي">
+          </div>
+          
+          <div class="form-group" id="teacher-name-group">
+            <label><span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر</label>
+            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو اسم المركز">
+          </div>
+        </div>
+
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب (السعة)</label>
+            <input type="number" id="students-count" class="form-control" placeholder="مثال: 20" min="1" value="20">
+          </div>
+          <div class="form-group">
+            <label><span class="step-num" id="gender-num">4</span> الفئات المسموح بها</label>
+            <div class="cards-grid">
+              <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
+              <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد فقط</label></div>
+              <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات فقط</label></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-row">
+          <div class="form-group full-width">
+            <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
+            <div class="cards-grid">
+              <div><input type="radio" name="location" id="loc-center" value="السنتر" checked onchange="toggleCenterNameField()"><label for="loc-center"><i>🏫</i> السنتر</label></div>
+              <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر" onchange="toggleCenterNameField()"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
+              <div><input type="radio" name="location" id="loc-student" value="منزل الطالب" onchange="toggleCenterNameField()"><label for="loc-student"><i>🚗</i> منزل الطالب</label></div>
+            </div>
+          </div>
+          
+          <div class="form-group full-width">
+            <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي واسم الشارع</label>
+            <div id="map-container">
+              <div id="map"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px;">
+                <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد وتأكيد موقعي بدقة الآن</button>
+                <input type="hidden" id="gps-coords" value="">
+            </div>
+            <div id="location-text" style="color: var(--text-gray); font-size: 14px; font-weight: 900; margin-top: 8px; text-align: center;">يرجى تحديد الموقع من خلال الخريطة أو الزر للتأكيد</div>
+
+            <div class="detailed-address-box">
+                <div class="label-row">
+                    <span>🏠</span>
+                    <span>العنوان التفصيلي / علامة مميزة</span>
+                    <span class="badge">✨ اختياري لكن مهم</span>
+                </div>
+                <input 
+                    type="text" 
+                    id="detailed-address" 
+                    class="form-control" 
+                    placeholder="مثال: أمام مسجد النور - الدور الثاني - شقة 5"
+                    maxlength="150"
+                >
+                <div class="hint-text">
+                    <span>💡</span>
+                    <span>اكتب تفاصيل تساعد الطالب في الوصول (علامة مميزة، الدور، الشقة، لون العمارة...)</span>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-title" style="margin-top: 15px;">
+            <span class="step-num-lg" id="time-num">7</span> توقيت الحصة
+        </div>
+        <div class="time-row-cal">
+          <div class="form-group">
+            <label>من الساعة</label>
+            <select id="startTime" onchange="updateDuration()"></select>
+          </div>
+          <div class="form-group">
+            <label>إلى الساعة</label>
+            <select id="endTime" onchange="updateDuration()"></select>
+          </div>
+        </div>
+
+        <div class="duration-info" id="durationInfo"></div>
+
+        <div class="repeat-option">
+          <input type="checkbox" id="repeatWeekly">
+          <label for="repeatWeekly">تكرار أسبوعي كل <span id="repeatDayName">...</span></label>
+        </div>
+
+        <div class="calendar-container-block">
+            <div class="selected-day-banner">
+              <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم من التقويم</span>
+              <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
+            </div>
+
+            <div class="calendar-header">
+              <div class="title-track" id="titleTrack">
+                <span class="month-number" id="monthNumber">1</span>
+                <span class="month-name" id="monthName">يناير</span>
+                <span class="year-text" id="yearText">2026</span>
+                <span class="month-appt-badge" id="monthApptBadge">
+                  <span id="monthApptCount">0</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="week-wrapper">
+              <div class="week-track" id="weekTrack">
+                <div class="weekdays">
+                  <div>السبت</div>
+                  <div>الأحد</div>
+                  <div>الاثنين</div>
+                  <div>الثلاثاء</div>
+                  <div>الأربعاء</div>
+                  <div>الخميس</div>
+                  <div class="friday">الجمعة</div>
+                </div>
+                <div class="days-wrapper" id="daysWrapper">
+                  <div class="days" id="days"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="swipe-hint">👈 اسحب يميناً أو يساراً لتغيير الشهر 👉</div>
+        </div>
+
+        <button class="btn-add" onclick="addAppointment()">حفظ الموعد ونشره مباشرة</button>
+        <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
+    </div>
+
+    <div class="summary-section" id="allSummarySection">
+        <div class="summary-section-header">
+            <div class="summary-section-title">
+                جدول المواعيد وملخص المجموعات
+            </div>
+            <span class="summary-total-badge" id="summaryTotalBadge">المواعيد المسجلة: 0</span>
+        </div>
+
+        <div class="appts-cards-grid" id="summaryCardsGrid"></div>
+    </div>
+</div>
+
+<!-- ✏️ النافذة المنبثقة لتعديل أي كارت -->
+<div class="publish-modal-overlay" id="editModalOverlay" onclick="closeEditModal(event)">
+  <div class="publish-modal-box" style="max-width: 440px;">
+    <div class="publish-modal-header">
+      <h2>تعديل الموعد</h2>
+      <button class="close-btn" onclick="cancelEdit()">✖</button>
+    </div>
+    <div class="publish-modal-content">
+      <div class="error-msg" id="editErrorMsg"></div>
+      <div class="time-row-cal">
+        <div class="form-group">
+          <label>من الساعة</label>
+          <select id="editStart"></select>
+        </div>
+        <div class="form-group">
+          <label>إلى الساعة</label>
+          <select id="editEnd"></select>
+        </div>
+      </div>
+      <div class="repeat-option" style="margin-top: 5px; margin-bottom: 15px;">
+        <input type="checkbox" id="editRepeatWeekly">
+        <label for="editRepeatWeekly">تكرار أسبوعي</label>
+      </div>
+      <button class="btn-add" style="margin-top: 0;" onclick="saveEdit()">حفظ التعديل</button>
+      <button class="btn-cancel" onclick="cancelEdit()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- 🎉 النافذة المنبثقة الشاملة -->
+<div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
+  <div class="publish-modal-box">
+    <div class="publish-modal-header">
+      <h2>تفاصيل نشر المجموعة وحالة الظهور</h2>
+      <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
+    </div>
+    <div class="publish-modal-content" id="publishModalContent"></div>
+    <div class="publish-modal-footer">
+      <button class="btn-confirm" onclick="closePublishModal(event, true)">إغلاق ومتابعة</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  // ==========================================
+  // 🔥 استدعاء دوال Firebase
+  // ==========================================
+  import { 
+    publishGroup, 
+    getAllGroups, 
+    deleteGroup, 
+    updateGroup, 
+    isTeacherLocked,
+    isSubscriptionActive,
+    getTeacherSubscription,
+    SUBSCRIPTION_PLANS
+  } from './firebase-config.js';
+
+  // ==========================================
+  // 🔄 فحص دوري لحالة الحظر (كل 20 ثانية)
+  // ==========================================
+  let _lockCheckInterval = null;
+
+  function startLockCheck() {
+      const teacherPhone = localStorage.getItem('current_teacher_phone');
+      if (!teacherPhone) return;
+
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+
+      _lockCheckInterval = setInterval(async () => {
+          try {
+              // ✅ استخدام الدالة الموحّدة
+              let locked = false;
+
+              if (typeof window.checkTeacherActiveStatus === 'function') {
+                  const status = await window.checkTeacherActiveStatus(teacherPhone);
+                  locked = !status.active;
+              } else {
+                  locked = await isTeacherLocked(teacherPhone);
+              }
+
+              if (locked) {
+                  localStorage.setItem('teacher_is_blocked', 'true');
+                  const blockedOverlay = document.getElementById('blockedOverlay');
+                  if (blockedOverlay && !blockedOverlay.classList.contains('show')) {
+                      blockedOverlay.classList.add('show');
+                      document.body.style.overflow = 'hidden';
+                      document.documentElement.style.overflow = 'hidden';
+
+                      if (_lockCheckInterval) {
+                          clearInterval(_lockCheckInterval);
+                          _lockCheckInterval = null;
+                      }
+                  }
+              } else {
+                  const blockedOverlay = document.getElementById('blockedOverlay');
+                  if (blockedOverlay && blockedOverlay.classList.contains('show')) {
+                      blockedOverlay.classList.remove('show');
+                      document.body.style.overflow = '';
+                      document.documentElement.style.overflow = '';
+                  }
+                  localStorage.removeItem('teacher_is_blocked');
+              }
+          } catch (e) {
+              console.warn('فشل فحص الحظر الدوري:', e);
+          }
+      }, 20000);
+  }
+
+  const _initPhone = localStorage.getItem('current_teacher_phone');
+  if (_initPhone) {
+      const _initialBlock = document.getElementById('blockedOverlay');
+      if (_initialBlock && !_initialBlock.classList.contains('show')) {
+          startLockCheck();
+      }
+  }
+
+  window.addEventListener('beforeunload', () => {
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+  });
+
+  window.addEventListener('pagehide', () => {
+      if (_lockCheckInterval) {
+          clearInterval(_lockCheckInterval);
+          _lockCheckInterval = null;
+      }
+  });
+
+  // ==========================================
+  // 💎 فحص الاشتراك وعرض البانر
+  // ==========================================
+  window.currentSubscriptionState = {
+      active: false,
+      plan: null,
+      sub: null,
+      daysLeft: null
+  };
+
+  async function checkAndShowSubscription() {
+      const phone = localStorage.getItem('current_teacher_phone');
+      if (!phone) return;
+
+      const banner = document.getElementById('subscriptionBanner');
+      const icon = document.getElementById('subBannerIcon');
+      const title = document.getElementById('subBannerTitle');
+      const msg = document.getElementById('subBannerMsg');
+      const btn = document.getElementById('subBannerBtn');
+
+      try {
+          const sub = await getTeacherSubscription(phone);
+          const active = await isSubscriptionActive(phone);
+
+          let daysLeft = null;
+          if (sub?.endDate && sub.status === 'active') {
+              daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+          }
+
+          window.currentSubscriptionState = {
+              active,
+              plan: sub ? SUBSCRIPTION_PLANS[sub.planId] : null,
+              sub,
+              daysLeft
+          };
+
+          if (!active) {
+              banner.className = 'subscription-banner';
+              return;
+          }
+
+          if (sub?.planId === 'trial' || (daysLeft !== null && daysLeft <= 7 && daysLeft > 0)) {
+              banner.className = 'subscription-banner show warning';
+              icon.textContent = sub?.planId === 'trial' ? '🎁' : '⏰';
+              title.textContent = sub?.planId === 'trial' 
+                  ? `باقة تجريبية — باقي ${daysLeft} يوم` 
+                  : `اشتراكك ينتهي قريباً — باقي ${daysLeft} يوم`;
+              msg.textContent = 'قم بالترقية الآن للاستمرار بدون توقف';
+              btn.innerHTML = '💎 ترقية الباقة';
+              btn.href = 'subscription.html';
+          } 
+          else if (sub?.planId === 'free') {
+              banner.className = 'subscription-banner show warning';
+              icon.textContent = '🆓';
+              title.textContent = 'أنت على الباقة المجانية';
+              msg.textContent = 'محدودة بمجموعة واحدة وحتى 15 طالب';
+              btn.innerHTML = '💎 ترقية';
+              btn.href = 'subscription.html';
+          }
+          else {
+              banner.className = 'subscription-banner';
+          }
+      } catch (e) {
+          console.error('خطأ فحص الاشتراك:', e);
+          banner.className = 'subscription-banner';
+      }
+  }
+
+  // ==========================================
+  // 🗺 جلب اسم الشارع
+  // ==========================================
+  async function getStreetName(lat, lng) {
+      try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=ar`);
+          const data = await response.json();
+          if (data && data.address) {
+              const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || data.address.street || '';
+              const neighbourhood = data.address.neighbourhood || data.address.suburb || data.address.city_district || '';
+              const city = data.address.city || data.address.town || data.address.village || data.address.state || '';
+              
+              const addressParts = [road, neighbourhood, city].filter(Boolean);
+              return addressParts.length > 0 ? addressParts.join('، ') : (data.display_name.split(',').slice(0, 3).join('، '));
+          }
+      } catch (err) {
+          console.error("فشل جلب اسم الشارع:", err);
+      }
+      return '';
+  }
+
+  // ==========================================
+  // 🏫 إظهار/إخفاء حقل اسم السنتر
+  // ==========================================
+  window.toggleCenterNameField = function() {
+      const locationValue = document.querySelector('input[name="location"]:checked').value;
+      const centerGroup = document.getElementById('center-name-group');
+      const centerInput = document.getElementById('center-name');
+      const teacherLabel = document.getElementById('teacher-name-group').querySelector('label');
+      const teacherInput = document.getElementById('teacher-name');
+      
+      if (locationValue === 'السنتر') {
+          centerGroup.style.display = 'block';
+          centerInput.required = true;
+          
+          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">3</span> اسم المستر';
+          teacherInput.placeholder = 'أدخل اسمك هنا';
+          
+          document.getElementById('students-count-num').textContent = '4';
+          document.getElementById('gender-num').textContent = '5';
+          document.getElementById('location-num').textContent = '6';
+          document.getElementById('map-num').textContent = '7';
+          document.getElementById('time-num').textContent = '8';
+          document.getElementById('cal-num').textContent = '9';
+      } else {
+          centerGroup.style.display = 'none';
+          centerInput.required = false;
+          centerInput.value = '';
+          
+          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر';
+          teacherInput.placeholder = 'أدخل اسمك أو اسم المركز';
+          
+          document.getElementById('students-count-num').textContent = '3';
+          document.getElementById('gender-num').textContent = '4';
+          document.getElementById('location-num').textContent = '5';
+          document.getElementById('map-num').textContent = '6';
+          document.getElementById('time-num').textContent = '7';
+          document.getElementById('cal-num').textContent = '8';
+      }
+  };
+
+  // ==========================================
+  // 🗺️ تهيئة خريطة Leaflet
+  // ==========================================
+  let map, marker;
+
+  function initMap() {
+      map = L.map('map').setView([26.8206, 30.8025], 5.5);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      const gpsControl = L.control({position: 'topleft'});
+      gpsControl.onAdd = function (map) {
+          const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+          div.innerHTML = `<button type="button" style="background:#fff; border:none; width:34px; height:34px; cursor:pointer; font-size:18px; border-radius:4px;" title="مكاني الفعلي" onclick="getLocation(event)">🎯</button>`;
+          return div;
+      };
+      gpsControl.addTo(map);
+
+      marker = L.marker([26.8206, 30.8025], { draggable: true }).addTo(map);
+
+      map.on('click', function(e) {
+          const lat = e.latlng.lat;
+          const lng = e.latlng.lng;
+          marker.setLatLng([lat, lng]);
+          updateLocationInput(lat, lng, true);
+      });
+
+      marker.on('dragend', function(e) {
+          const pos = marker.getLatLng();
+          updateLocationInput(pos.lat, pos.lng, true);
+      });
+  }
+
+  async function updateLocationInput(lat, lng, showPopup = false) {
+      document.getElementById('gps-coords').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+      const txt = document.getElementById('location-text');
+      txt.textContent = `⏳ جاري تحديد اسم الشارع والموقع...`;
+      txt.style.color = '#d97706';
+      
+      const street = await getStreetName(lat, lng);
+      txt.dataset.street = street || '';
+      
+      if (street) {
+          txt.textContent = `📍 ${street}`;
+      } else {
+          txt.textContent = `تم تأكيد الموقع: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      }
+      txt.style.color = '#1b736a';
+      
+      if(showPopup) {
+          const popupText = street ? `📍 ${street}` : '✅ تم تأكيد هذا الموقع';
+          marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:13px;'>${popupText}</div>`).openPopup();
+      }
+  }
+
+  window.getLocation = function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('custom-gps-btn');
+      const textDisplay = document.getElementById('location-text');
+      const hiddenInput = document.getElementById('gps-coords');
+      
+      let counter = 3; 
+      btn.disabled = true;
+      btn.style.background = '#94a3b8'; 
+      btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
+      
+      const countdownInterval = setInterval(() => {
+          counter--;
+          if (counter > 0) {
+              btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
+          } else {
+              btn.innerHTML = `⏳ جلب إشارة الأقمار...`;
+          }
+      }, 1000);
+
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+              position => {
+                  setTimeout(async () => {
+                      clearInterval(countdownInterval);
+                      const lat = position.coords.latitude;
+                      const lng = position.coords.longitude;
+                      
+                      hiddenInput.value = `${lat},${lng}`;
+                      btn.innerHTML = '✅ تم التحديد وتأكيد الموقع'; 
+                      btn.style.background = '#25968b';
+                      btn.disabled = false;
+                      
+                      textDisplay.textContent = '⏳ جاري التعرف على اسم الشارع...';
+                      textDisplay.style.color = '#d97706';
+
+                      marker.setLatLng([lat, lng]);
+                      map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
+                      
+                      const street = await getStreetName(lat, lng);
+                      textDisplay.dataset.street = street || '';
+                      
+                      if (street) {
+                          textDisplay.textContent = `📍 ${street}`;
+                      } else {
+                          textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                      }
+                      textDisplay.style.color = '#1b736a';
+
+                      setTimeout(() => {
+                        const popupText = street ? `📍 ${street}` : '✅ موقعك الحالي الدقيق';
+                        marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:13px;'>${popupText}</div>`).openPopup();
+                      }, 1600);
+
+                  }, Math.max(0, (counter + 1) * 1000));
+              },
+              error => {
+                  clearInterval(countdownInterval);
+                  btn.innerHTML = '❌ فشل التحديد'; 
+                  btn.style.background = '#dc2626';
+                  btn.disabled = false;
+                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS (الموقع) في هاتفك';
+                  textDisplay.style.color = '#dc2626';
+              },
+              { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+          );
+      } else {
+          clearInterval(countdownInterval);
+          btn.innerHTML = '❌ الخدمة غير مدعومة';
+          btn.disabled = false;
+      }
+  };
+
+  // ==========================================
+  // 📅 إعداد التقويم
+  // ==========================================
+  const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+  function getDisplayIndex(jsDay) { return (jsDay + 1) % 7; }
+
+  let currentDate = new Date();
+  let selectedDateKey = null;
+  let editingAppt = null;
+  let isAnimating = false;
+
+  window.onlineAppointments = {};
+  window.onlineRecurring = {};
+
+  const TIME_SLOTS = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+      const period = h < 12 ? 'ص' : 'م';
+      const mm = String(m).padStart(2, '0');
+      const value = `${String(h).padStart(2, '0')}:${mm}`;
+      const label = `${hour12}:${mm} ${period}`;
+      TIME_SLOTS.push({ value, label });
+    }
+  }
+
+  function buildTimeOptions(selectEl) {
+    selectEl.innerHTML = '<option value="">-- اختر --</option>';
+    TIME_SLOTS.forEach(slot => { selectEl.innerHTML += `<option value="${slot.value}">${slot.label}</option>`; });
+  }
+
+  function populateTimeSelects() {
+    buildTimeOptions(document.getElementById('startTime'));
+    buildTimeOptions(document.getElementById('endTime'));
+    buildTimeOptions(document.getElementById('editStart'));
+    buildTimeOptions(document.getElementById('editEnd'));
+  }
+
+  function formatTime(value) {
+    if(!value) return '';
+    const [h, m] = value.split(':').map(Number);
+    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    const period = h < 12 ? 'ص' : 'م';
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+  }
+
+  function calculateDuration(start, end) {
+    if (!start || !end) return '';
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const diff = (eh * 60 + em) - (sh * 60 + sm);
+    if (diff <= 0) return '';
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    let txt = '';
+    if (hours > 0) txt += `${hours} س `;
+    if (mins > 0) txt += `${mins} د`;
+    return txt.trim();
+  }
+
+  window.updateDuration = function() {
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    const info = document.getElementById('durationInfo');
+    if (!start || !end) { info.classList.remove('show'); return; }
+
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const diff = (eh * 60 + em) - (sh * 60 + sm);
+
+    if (diff <= 0) { info.classList.remove('show'); return; }
+
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    let txt = 'المدة: ';
+    if (hours > 0) txt += `${hours} ساعة `;
+    if (mins > 0) txt += `${mins} دقيقة`;
+    info.textContent = txt;
+    info.classList.add('show');
+  };
+
+  function dateKey(year, month, day) {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  function getDayAppointments(year, month, day) {
+    const key = dateKey(year, month, day);
+    const dayOfWeek = new Date(year, month, day).getDay();
+
+    const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ 
+        ...a, 
+        type: 'normal', 
+        isOnline: true,
+        date: key,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek],
+        start: a.startTime,
+        end: a.endTime
+    }));
+    const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ 
+        ...a, 
+        type: 'recurring', 
+        isOnline: true,
+        date: key,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek],
+        start: a.startTime,
+        end: a.endTime
+    }));
+
+    return [...normalOnline, ...recurringOnline].sort((a, b) => 
+        (a.startTime || a.start).localeCompare(b.startTime || b.start)
+    );
+  }
+
+  function getMonthAppointmentsCount(year, month) {
+    let total = 0;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      total += getDayAppointments(year, month, day).length;
+    }
+    return total;
+  }
+
+  function updateTitle() {
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    document.getElementById('monthNumber').textContent = month + 1;
+    document.getElementById('monthName').textContent = monthNames[month];
+    document.getElementById('yearText').textContent = year;
+    const count = getMonthAppointmentsCount(year, month);
+    document.getElementById('monthApptCount').textContent = count;
+    const badge = document.getElementById('monthApptBadge');
+    if (count === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
+  }
+
+  function renderCalendar() {
+    updateTitle();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDayJs = new Date(year, month, 1).getDay();
+    const firstDayIndex = getDisplayIndex(firstDayJs);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const daysContainer = document.getElementById('days');
+    daysContainer.innerHTML = '';
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+
+    for (let i = 0; i < totalCells; i++) {
+      const dayEl = document.createElement('div');
+      dayEl.classList.add('cell');
+      let cellDate, cellYear = year, cellMonth = month;
+
+      if (i < firstDayIndex) {
+        cellDate = daysInPrevMonth - firstDayIndex + i + 1;
+        cellMonth = month - 1;
+        if (cellMonth < 0) { cellMonth = 11; cellYear--; }
+        dayEl.classList.add('out-of-month');
+      } else if (i >= firstDayIndex && i < firstDayIndex + daysInMonth) {
+        cellDate = i - firstDayIndex + 1;
+      } else {
+        cellDate = i - firstDayIndex - daysInMonth + 1;
+        cellMonth = month + 1;
+        if (cellMonth > 11) { cellMonth = 0; cellYear++; }
+        dayEl.classList.add('out-of-month');
+      }
+
+      const dateNumber = document.createElement('span');
+      dateNumber.classList.add('date-number');
+      dateNumber.textContent = cellDate;
+      dayEl.appendChild(dateNumber);
+
+      const thisDate = new Date(cellYear, cellMonth, cellDate);
+      thisDate.setHours(0, 0, 0, 0);
+
+      if (thisDate.getTime() === today.getTime()) dayEl.classList.add('today-cell');
+
+      const key = dateKey(cellYear, cellMonth, cellDate);
+      const dayAppts = getDayAppointments(cellYear, cellMonth, cellDate);
+      const totalCount = dayAppts.length;
+
+      if (totalCount > 0) {
+        const badge = document.createElement('span');
+        badge.classList.add('badge');
+        badge.textContent = totalCount;
+        dayEl.appendChild(badge);
+      }
+
+      if (thisDate.getTime() < today.getTime()) {
+          dayEl.classList.add('past-cell');
+          dayEl.title = "هذا اليوم فائت ولا يمكن الحجز فيه";
+      } else {
+          if (selectedDateKey === key) dayEl.classList.add('selected-cell');
+          dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
+      }
+
+      daysContainer.appendChild(dayEl);
+    }
+  }
+
+  window.changeMonthDir = function(direction) {
+      if (isAnimating) return;
+      isAnimating = true;
+      const titleTrack = document.getElementById('titleTrack');
+      const weekTrack = document.getElementById('weekTrack');
+      const daysWrap = document.getElementById('days');
+      
+      const outClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+      const inClass  = direction > 0 ? 'slide-in-right' : 'slide-in-left';
+
+      titleTrack.classList.add(outClass); 
+      weekTrack.classList.add(outClass);
+      daysWrap.classList.add(outClass);
+
+      setTimeout(() => {
+          currentDate.setDate(1);
+          currentDate.setMonth(currentDate.getMonth() + direction);
+          renderCalendar();
+          
+          titleTrack.classList.remove(outClass); 
+          weekTrack.classList.remove(outClass);
+          daysWrap.classList.remove(outClass);
+          
+          titleTrack.classList.add(inClass); 
+          weekTrack.classList.add(inClass);
+          daysWrap.classList.add(inClass);
+          
+          setTimeout(() => {
+              titleTrack.classList.remove(inClass); 
+              weekTrack.classList.remove(inClass);
+              daysWrap.classList.remove(inClass);
+              isAnimating = false;
+          }, 300);
+      }, 300);
+  };
+
+  function setupSwipeCal() {
+      const wrapper = document.getElementById('daysWrapper');
+      if(!wrapper) return;
+      let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+      let isSwiping = false, isHorizontalSwipe = false;
+      const minSwipeDistance = 40, maxVerticalTolerance = 60;
+
+      wrapper.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX; 
+          touchStartY = e.changedTouches[0].screenY;
+          isSwiping = true; isHorizontalSwipe = false;
+      }, { passive: true });
+
+      wrapper.addEventListener('touchmove', (e) => {
+          if (!isSwiping) return;
+          const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
+          const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
+          if (!isHorizontalSwipe && diffX > 10 && diffX > diffY) isHorizontalSwipe = true;
+      }, { passive: true });
+
+      wrapper.addEventListener('touchend', (e) => {
+          if (!isSwiping) return;
+          isSwiping = false;
+          touchEndX = e.changedTouches[0].screenX; 
+          touchEndY = e.changedTouches[0].screenY;
+          const diffX = touchEndX - touchStartX, diffY = touchEndY - touchStartY;
+          if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > maxVerticalTolerance) return;
+          
+          if (Math.abs(diffX) > minSwipeDistance) {
+              if (diffX > 0) window.changeMonthDir(-1);
+              else window.changeMonthDir(1);
+          }
+      }, { passive: true });
+  }
+
+  function selectDay(year, month, day) {
+    selectedDateKey = dateKey(year, month, day);
+    const dayOfWeek = new Date(year, month, day).getDay();
+    const dayString = `${dayNames[dayOfWeek]} ${day} ${monthNames[month]} ${year}`;
+    
+    document.getElementById('selectedDayLabel').textContent = dayString;
+    document.getElementById('repeatDayName').textContent = dayNames[dayOfWeek];
+
+    renderCalendar();
+  }
+
+  window.loadLocalPublishedSlots = async function() {
+      try {
+          const teacherPhone = localStorage.getItem('current_teacher_phone');
+          if (!teacherPhone) {
+              console.warn("لا يوجد رقم هاتف مسجل");
+              return;
+          }
+          
+          const groups = await getAllGroups(); 
+          const myGroups = groups.filter(g => g.phone === teacherPhone);
+
+          window.onlineAppointments = {};
+          window.onlineRecurring = {};
+
+          myGroups.forEach((data) => {
+              const appt = {
+                  start: data.startTime,
+                  end: data.endTime,
+                  type: data.apptType,
+                  dayOfWeek: data.daysNames ? dayNames.indexOf(data.daysNames[0]) : 0,
+                  dayName: data.daysNames ? data.daysNames[0] : '',
+                  date: data.date,
+                  slotId: data.id
+              };
+
+              const uiItem = { 
+                  ...data, 
+                  appointment: appt, 
+                  isVisible: data.isActive,
+                  isOnline: true 
+              };
+
+              if (appt.type === 'recurring') {
+                  const day = appt.dayOfWeek;
+                  if (!window.onlineRecurring[day]) window.onlineRecurring[day] = [];
+                  window.onlineRecurring[day].push(uiItem);
+              } else if (appt.date) {
+                  if (!window.onlineAppointments[appt.date]) window.onlineAppointments[appt.date] = [];
+                  window.onlineAppointments[appt.date].push(uiItem);
+              }
+          });
+
+          renderCalendar();
+          renderAllCardsSummary();
+      } catch (error) {
+          console.error("فشل جلب المواعيد من Firebase:", error);
+      }
+  };
+
+  window.publishSingleApptOnline = async function(appt) {
+      const groupName = appt.groupName || document.getElementById('group-name').value.trim();
+      const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
+      const centerName = appt.centerName || document.getElementById('center-name')?.value.trim() || '';
+      const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
+
+      if (!groupName || !teacherName || !studentsCount) {
+          alert('⚠️️ يرجى التأكد من استكمال اسم المجموعة واسم المستر والعدد المطلوب قبل النشر.');
+          return;
+      }
+      
+      const locationChecked = appt.location || document.querySelector('input[name="location"]:checked').value;
+      if (locationChecked === 'السنتر' && !centerName) {
+          alert('⚠️️ يرجى تعبئة اسم السنتر قبل النشر.');
+          return;
+      }
+
+      const subjectData = document.getElementById('fixed-subject').dataset.value || 'غير محدد';
+      const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
+      const location = locationChecked;
+      const gpsLocation = document.getElementById('gps-coords').value;
+      const street = appt.street || document.getElementById('location-text').dataset.street || '';
+      const detailedAddress = appt.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '';
+      const fullAddress = [street, detailedAddress].filter(Boolean).join(' - ');
+
+      const dateTarget = appt.date || selectedDateKey;
+      const [y, m, d] = dateTarget.split('-').map(Number);
+      const dayOfWeek = new Date(y, m - 1, d).getDay();
+
+      let typeMapped = 'center';
+      if (location === 'بيت المستر') typeMapped = 'teacher_home';
+      else if (location === 'منزل الطالب') typeMapped = 'student_home';
+
+      let genderMapped = 'all';
+      if (genderAllowed === 'أولاد فقط') genderMapped = 'boys';
+      else if (genderAllowed === 'بنات فقط') genderMapped = 'girls';
+
+      let lat = null, lng = null;
+      if (gpsLocation && gpsLocation.includes(',')) {
+          const parts = gpsLocation.split(',');
+          lat = parseFloat(parts[0]);
+          lng = parseFloat(parts[1]);
+      }
+
+      let grade = '';
+      if (subjectData.includes('الصف:')) {
+          const m = subjectData.match(/الصف:\s*([^|]+)/);
+          if (m) grade = m[1].trim();
+      }
+
+      const teacherProfile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
+      const teacherTitle = teacherProfile.title || 'مستر';
+
+      const classPayload = {
+          teacherName: teacherName,
+          centerName: centerName,
+          teacherTitle: teacherTitle,
+          subject: subjectData.replace(/الصف:.*?\|/g, '').replace(/المواد:\s*/g, '').trim(),
+          grade: grade,
+          groupName: groupName,
+          maxCapacity: parseInt(studentsCount),
+          bookedBoys: 0,
+          bookedGirls: 0,
+          gender: genderMapped,
+          type: typeMapped,
+          location: location,
+          address: street || (gpsLocation ? 'تم التحديد عبر الخريطة' : ''),
+          fullAddress: fullAddress || street || 'غير محدد',
+          detailedAddress: detailedAddress,
+          lat: lat,
+          lng: lng,
+          startTime: appt.start,
+          endTime: appt.end,
+          daysNames: [dayNames[dayOfWeek]],
+          apptType: appt.type,
+          date: dateTarget,
+          phone: localStorage.getItem('current_teacher_phone') || '01000000000',
+          isActive: true
+      };
+
+      try {
+          const newId = await publishGroup(classPayload);
+          classPayload.id = newId;
+
+          await window.loadLocalPublishedSlots();
+          showPublishModalDetails(classPayload);
+      } catch (error) {
+          console.error("خطأ أثناء الرفع:", error);
+          alert("حدث خطأ أثناء نشر الموعد، تأكد من اتصالك بالإنترنت.");
+      }
+  };
+
+  window.toggleVisibilityOnline = async function(slotId) {
+      try {
+          const groups = await getAllGroups();
+          const targetGroup = groups.find(g => g.id === slotId);
+          if (targetGroup) {
+              const newVis = !targetGroup.isActive;
+              await updateGroup(slotId, { isActive: newVis });
+              await window.loadLocalPublishedSlots();
+
+              targetGroup.isActive = newVis; 
+              if (document.getElementById('publishModalOverlay').classList.contains('active')) {
+                  showPublishModalDetails(targetGroup);
+              }
+          }
+      } catch (error) {
+          console.error("خطأ التحديث:", error);
+      }
+  };
+
+  window.updateAppointmentOnline = async function(slotId, newStart, newEnd, isRecurring) {
+      try {
+          await updateGroup(slotId, {
+              startTime: newStart,
+              endTime: newEnd,
+              apptType: isRecurring ? 'recurring' : 'normal'
+          });
+          await window.loadLocalPublishedSlots();
+      } catch (error) {
+          console.error("خطأ التحديث:", error);
+      }
+  };
+
+  window.deleteAppointmentOnline = async function(appt) {
+      if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
+
+      const idToDelete = appt.slotId || appt.id;
+      if (idToDelete && !String(idToDelete).startsWith('local_')) {
+          try {
+              await deleteGroup(idToDelete);
+              await window.loadLocalPublishedSlots();
+          } catch (error) {
+              console.error("خطأ الحذف:", error);
+          }
+      } else {
+          console.warn("لا يمكن حذف هذا العنصر: لا يوجد معرف سحابي صالح");
+      }
+  };
+
+  function showPublishModalDetails(data) {
+      const appt = data.appointment || data;
+      const dayNameStr = appt.dayName || (appt.daysNames ? appt.daysNames[0] : dayNames[appt.dayOfWeek]) || '';
+      const isVisible = (data.isActive !== undefined) ? data.isActive : (data.isVisible !== undefined ? data.isVisible : true);
+      
+      let apptDetailsHtml = appt.apptType === 'recurring' || appt.type === 'recurring'
+          ? `<strong>تكرار أسبوعي كل يوم ${dayNameStr}:</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`
+          : `<strong>يوم ${appt.date} (${dayNameStr}):</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`;
+
+      let locationDisplay = data.address || data.street || data.gpsLocation || 'غير محدد على الخريطة';
+      const detailedAddress = data.detailedAddress || '';
+      const fullAddress = data.fullAddress || '';
+
+      const statusMessageHtml = isVisible 
+          ? `<div class="status-message visible-msg">
+                <span class="status-icon">👁️</span>
+                <div class="status-text">
+                    <strong>أنت الآن ظاهر للطلبة</strong>
+                    <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها حالياً</small>
+                </div>
+             </div>`
+          : `<div class="status-message hidden-msg">
+                <span class="status-icon">🙈</span>
+                <div class="status-text">
+                    <strong>أنت الآن مخفي عن الطلبة</strong>
+                    <small>هذه المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                </div>
+             </div>`;
+
+      document.getElementById('publishModalContent').innerHTML = `
+          ${statusMessageHtml}
+          <div class="publish-data-item">
+              <span class="publish-data-label">حالة الظهور للطلبة:</span>
+              <div class="publish-data-value">
+                  <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'}" onclick="window.toggleVisibilityOnline('${data.id || data.slotId}')">
+                      ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
+                  </button>
+              </div>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم المستر:</span>
+              <span class="publish-data-value">👤 ${data.teacherName || 'غير محدد'}</span>
+          </div>
+          ${data.centerName ? `
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم السنتر:</span>
+              <span class="publish-data-value center-value">🏫 ${data.centerName}</span>
+          </div>
+          ` : ''}
+          <div class="publish-data-item">
+              <span class="publish-data-label">المادة والصف:</span>
+              <span class="publish-data-value">${data.subjectData || (data.grade + ' | ' + data.subject) || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم المجموعة:</span>
+              <span class="publish-data-value">${data.groupName || 'غير محدد'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">العدد المطلوب (السعة):</span>
+              <span class="publish-data-value">${data.studentsCount || data.maxCapacity || 20} طالب</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">مكان الدرس:</span>
+              <span class="publish-data-value">${data.location || 'السنتر'}</span>
+          </div>
+          <div class="publish-data-item">
+              <span class="publish-data-label">اسم الشارع والموقع:</span>
+              <span class="publish-data-value">📍 ${locationDisplay}</span>
+          </div>
+          ${detailedAddress ? `
+          <div class="publish-data-item">
+              <span class="publish-data-label">🏠 العنوان التفصيلي / علامة مميزة:</span>
+              <div class="publish-data-value address-detail">✨ ${detailedAddress}</div>
+          </div>
+          ` : ''}
+          ${fullAddress && detailedAddress ? `
+          <div class="publish-data-item">
+              <span class="publish-data-label">📍 العنوان الكامل (ما سيراه الطالب):</span>
+              <div class="publish-data-value address-detail">${fullAddress}</div>
+          </div>
+          ` : ''}
+          <div class="publish-data-item">
+              <span class="publish-data-label">أيام ومواعيد الحصة:</span>
+              <div class="publish-data-value appts">${apptDetailsHtml}</div>
+          </div>
+      `;
+      document.getElementById('publishModalOverlay').classList.add('active');
+  }
+
+  function renderAllCardsSummary() {
+    const grid = document.getElementById('summaryCardsGrid');
+    const badge = document.getElementById('summaryTotalBadge');
+    grid.innerHTML = '';
+
+    let allItems = [];
+
+    for (const dKey in window.onlineAppointments) {
+        window.onlineAppointments[dKey].forEach(item => {
+            item.isOnline = true;
+            allItems.push(item);
+        });
+    }
+    for (const dWk in window.onlineRecurring) {
+        window.onlineRecurring[dWk].forEach(item => {
+            item.isOnline = true;
+            allItems.push(item);
+        });
+    }
+
+    badge.textContent = `المواعيد المسجلة: ${allItems.length}`;
+
+    if (allItems.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-cards-state">
+                لا توجد مجموعات أو مواعيد مضافة حتى الآن.<br>أكمل خطوات الإدخال بالترتيب واضغط <b>حفظ الموعد ونشره مباشرة</b>.
+            </div>
+        `;
+        return;
+    }
+
+    allItems.forEach(item => {
+        const card = document.createElement('div');
+        const isRec = item.appointment ? item.appointment.type === 'recurring' : item.type === 'recurring';
+        const isVisible = item.isActive !== undefined ? item.isActive : item.isVisible;
+        
+        card.classList.add('summary-card');
+        card.classList.add(isRec ? 'recurring-card' : 'normal-card');
+        card.classList.add(isVisible ? 'visible-card' : 'hidden-card');
+
+        const startTimeStr = item.startTime || item.start;
+        const endTimeStr = item.endTime || item.end;
+        const dur = calculateDuration(startTimeStr, endTimeStr);
+        const durBadge = dur ? `<span class="duration-pill">⏱ ${dur}</span>` : '';
+        
+        let locIcon = '🏫';
+        if (item.location === 'بيت المستر' || item.type === 'teacher_home') locIcon = '🏠';
+        if (item.location === 'منزل الطالب' || item.type === 'student_home') locIcon = '🚗';
+
+        let genderIcon = '👫';
+        if (item.genderAllowed === 'أولاد فقط' || item.gender === 'boys') genderIcon = '👨‍🎓';
+        if (item.genderAllowed === 'بنات فقط' || item.gender === 'girls') genderIcon = '👩‍🎓';
+
+        const typeBadge = isRec 
+            ? '<span class="badge-status recurring">🔁 أسبوعي</span>' 
+            : '<span class="badge-status one-time">📅 محدد</span>';
+
+        const streetStr = item.street || item.address || '';
+        const detailedStr = item.detailedAddress || '';
+        const subjectText = item.subjectData || (item.grade + ' | ' + item.subject) || 'المادة';
+        const dayNameStr = item.appointment ? item.appointment.dayName : (item.daysNames ? item.daysNames[0] : '');
+        const dateStr = item.appointment ? item.appointment.date : item.date;
+        const capacity = item.studentsCount || item.maxCapacity || 20;
+
+        let addressHtml = '';
+        if (streetStr) {
+            addressHtml += `<div class="sc-detail-item full address-item"><span>📍</span><span class="val">${streetStr}</span></div>`;
+        }
+        if (detailedStr) {
+            addressHtml += `<div class="sc-detail-item full detailed-address-item"><span>🏠</span><span class="val">${detailedStr}</span></div>`;
+        }
+        if (!addressHtml) {
+            addressHtml = `<div class="sc-detail-item full"><span>📍</span><span class="val">لم يتم تحديد العنوان</span></div>`;
+        }
+
+        const centerHtml = item.centerName 
+            ? `<div class="sc-detail-item full center-item"><span>🏫</span><span class="val">${item.centerName}</span></div>` 
+            : '';
+
+        const statusMessageHtml = isVisible 
+            ? `<div class="status-message visible-msg">
+                    <span class="status-icon">👁️</span>
+                    <div class="status-text">
+                        <strong>أنت الآن ظاهر للطلبة</strong>
+                        <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها</small>
+                    </div>
+               </div>`
+            : `<div class="status-message hidden-msg">
+                    <span class="status-icon">🙈</span>
+                    <div class="status-text">
+                        <strong>أنت الآن مخفي عن الطلبة</strong>
+                        <small>المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                    </div>
+               </div>`;
+
+        card.innerHTML = `
+            <div class="sc-top-strip"></div>
+            
+            <div class="sc-status-row">
+                <span class="badge-status online">✅ منشور</span>
+                ${typeBadge}
+            </div>
+
+            <div class="sc-header">
+                <div style="flex:1;">
+                    <div class="sc-group-name">${item.groupName}</div>
+                    <div class="sc-teacher">
+                        👤 ${item.teacherName}
+                    </div>
+                </div>
+            </div>
+
+            ${statusMessageHtml}
+
+            <div class="sc-subject-block">
+                <span class="subject-icon">📚</span> ${subjectText}
+            </div>
+
+            <div class="sc-time-banner">
+                <span class="time-text">🕐 من ${formatTime(startTimeStr)} إلى ${formatTime(endTimeStr)}</span>
+                ${durBadge}
+            </div>
+
+            <div class="sc-details-grid">
+                ${centerHtml}
+                ${addressHtml}
+                
+                <div class="sc-detail-item">
+                    <span>📅</span>
+                    <span class="val">${isRec ? `كل ${dayNameStr}` : `${dayNameStr}`}</span>
+                </div>
+                ${!isRec && dateStr ? `<div class="sc-detail-item"><span>🗓</span><span class="val">${dateStr}</span></div>` : ''}
+                
+                <div class="sc-detail-item">
+                    <span>${locIcon}</span>
+                    <span class="val">${item.location || (item.type === 'center' ? 'السنتر' : 'المنزل')}</span>
+                </div>
+                
+                <div class="sc-detail-item">
+                    <span>${genderIcon}</span>
+                    <span class="val">${item.genderAllowed || 'مختلط'}</span>
+                </div>
+                
+                <div class="sc-detail-item">
+                    <span>👥</span>
+                    <span class="val">السعة: ${capacity} طالب</span>
+                </div>
+            </div>
+
+            <div class="sc-footer-actions">
+                <div class="sc-actions-sub">
+                    <button class="btn-action btn-edit btn-card-edit">✏️ تعديل</button>
+                    <button class="btn-action btn-delete btn-card-del">🗑 إلغاء</button>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'} btn-card-toggle" title="${isVisible ? 'إخفاء المجموعة عن الطلبة' : 'إظهار المجموعة للطلبة'}">
+                        ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
+                    </button>
+                    <button class="btn-view-details btn-card-view">👁 تفاصيل</button>
+                </div>
+            </div>
+        `;
+
+        card.querySelector('.btn-card-del').onclick = () => window.deleteAppointmentOnline(item);
+        card.querySelector('.btn-card-edit').onclick = () => window.startEdit(item);
+        card.querySelector('.btn-card-view').onclick = () => showPublishModalDetails(item);
+        card.querySelector('.btn-card-toggle').onclick = () => window.toggleVisibilityOnline(item.id || item.slotId);
+
+        grid.appendChild(card);
+    });
+  }
+
+  window.startEdit = function(appt) {
+    editingAppt = { ...appt };
+    document.getElementById('editStart').value = appt.startTime || appt.start; 
+    document.getElementById('editEnd').value = appt.endTime || appt.end;
+    const isRec = appt.appointment ? appt.appointment.type === 'recurring' : appt.type === 'recurring';
+    document.getElementById('editRepeatWeekly').checked = isRec;
+    document.getElementById('editErrorMsg').classList.remove('show');
+    document.getElementById('editModalOverlay').classList.add('active');
+  };
+
+  window.cancelEdit = function() {
+    editingAppt = null; 
+    document.getElementById('editModalOverlay').classList.remove('active');
+  };
+
+  window.closeEditModal = function(e) {
+    if (e.target.id === 'editModalOverlay') window.cancelEdit();
+  };
+
+  window.saveEdit = async function() {
+    if (!editingAppt) return;
+    const newStart = document.getElementById('editStart').value;
+    const newEnd = document.getElementById('editEnd').value;
+    const isRecurring = document.getElementById('editRepeatWeekly').checked;
+    const errEl = document.getElementById('editErrorMsg');
+
+    if (!newStart || !newEnd) { 
+        errEl.textContent = 'يجب اختيار وقت البداية والنهاية'; 
+        errEl.classList.add('show'); 
+        return; 
+    }
+    if (newStart >= newEnd) { 
+        errEl.textContent = 'وقت النهاية يجب أن يكون بعد وقت البداية'; 
+        errEl.classList.add('show'); 
+        return; 
+    }
+
+    const targetId = editingAppt.id || editingAppt.slotId;
+    if (targetId && !String(targetId).startsWith('local_')) {
+        await window.updateAppointmentOnline(targetId, newStart, newEnd, isRecurring);
+    } else {
+        console.warn("لا يمكن تعديل هذا العنصر: لا يوجد معرف سحابي صالح");
+    }
+
+    window.cancelEdit();
+  };
+
+  // ==========================================
+  // ✅ addAppointment — مع فحص الاشتراك (حماية مزدوجة)
+  // ==========================================
+  window.addAppointment = async function() {
+    const phone = localStorage.getItem('current_teacher_phone');
+    if (phone) {
+        try {
+            // ✅ 1) فحص أولاً باستخدام الدالة الموحّدة (teachers.unlockUntil)
+            let isActive = false;
+
+            if (typeof window.checkTeacherActiveStatus === 'function') {
+                const status = await window.checkTeacherActiveStatus(phone);
+                isActive = status.active;
+                console.log('🔍 فحص الحالة (موحّد):', status.reason);
+
+                if (!isActive) {
+                    // ✅ ملاذ أخير: نستخدم isSubscriptionActive الأصلي
+                    try {
+                        const subActive = await isSubscriptionActive(phone);
+                        if (subActive) {
+                            isActive = true;
+                            console.log('✅ نشط حسب isSubscriptionActive (fallback)');
+                        }
+                    } catch(e) {
+                        console.warn('فشل isSubscriptionActive:', e);
+                    }
+                }
+            } else {
+                // fallback لو الدالة الموحّدة مش موجودة
+                isActive = await isSubscriptionActive(phone);
+            }
+
+            if (!isActive) {
+                // ✅ عرض شاشة الحظر
+                console.log('🚫 لا يوجد اشتراك نشط — عرض شاشة الحظر');
+
+                if (!window.currentPricing && typeof window.loadPricing === 'function') {
+                    try { await window.loadPricing(); } catch(e) {}
+                }
+
+                if (typeof window.startPricingLiveUpdates === 'function') {
+                    window.startPricingLiveUpdates();
+                }
+
+                const blockedOverlay = document.getElementById('blockedOverlay');
+                if (blockedOverlay) {
+                    blockedOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.overflow = 'hidden';
+                    blockedOverlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                return;
+            }
+
+            // ✅ المعلم نشط — نكمل عادي
+            console.log('✅ المعلم نشط — متابعة حفظ الموعد');
+
+        } catch (e) {
+            console.error('خطأ فحص الاشتراك:', e);
+            // في حالة الخطأ، نكمل عادي (مش نعرض شاشة حمراء)
+        }
+    }
+
+    const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
+    const savedSelections = localStorage.getItem('teacherSelections');
+    
+    if (currentSubject.includes("لم تختر") || !savedSelections || savedSelections === '{}') {
+        showAddError("لم تختر اى مادة، ارجع للخلف لتسجيل التخصص");
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        return; 
+    }
+
+    const groupName = document.getElementById('group-name').value.trim();
+    const teacherName = document.getElementById('teacher-name').value.trim();
+    const centerName = document.getElementById('center-name')?.value.trim() || '';
+    const locationChecked = document.querySelector('input[name="location"]:checked').value;
+    const studentsCount = document.getElementById('students-count').value;
+    
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    const isRecurring = document.getElementById('repeatWeekly').checked;
+
+    if (!groupName) {
+        showAddError('يرجى تعبئة "اسم المجموعة" في الخطوة رقم 1');
+        document.getElementById('group-name').focus();
+        return;
+    }
+    
+    if (locationChecked === 'السنتر' && !centerName) {
+        showAddError('يرجى تعبئة "اسم السنتر" في الخطوة رقم 2');
+        document.getElementById('center-name').focus();
+        return;
+    }
+    
+    if (!teacherName) {
+        const errorMsg = locationChecked === 'السنتر' 
+            ? 'يرجى تعبئة "اسم المستر" في الخطوة رقم 3'
+            : 'يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2';
+        showAddError(errorMsg);
+        document.getElementById('teacher-name').focus();
+        return;
+    }
+    
+    if (!studentsCount || studentsCount < 1) {
+        const num = locationChecked === 'السنتر' ? 4 : 3;
+        showAddError(`يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم ${num}`);
+        document.getElementById('students-count').focus();
+        return;
+    }
+
+    const gpsLocation = document.getElementById('gps-coords').value;
+    if (!gpsLocation) {
+        const num = locationChecked === 'السنتر' ? 7 : 6;
+        showAddError(`يرجى تحديد وتأكيد الموقع من الخريطة في الخطوة رقم ${num} أولاً`);
+        document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    if (!start || !end) { 
+        const num = locationChecked === 'السنتر' ? 8 : 7;
+        showAddError(`يجب اختيار وقت البداية والنهاية في الخطوة رقم ${num}`); 
+        return; 
+    }
+    if (start >= end) { 
+        const num = locationChecked === 'السنتر' ? 8 : 7;
+        showAddError(`وقت النهاية يجب أن يكون بعد وقت البداية في الخطوة رقم ${num}`); 
+        return; 
+    }
+
+    if (!selectedDateKey) {
+        const num = locationChecked === 'السنتر' ? 9 : 8;
+        showAddError(`يرجى تحديد يوم من التقويم في الخطوة رقم ${num}`);
+        return;
+    }
+
+    const [y, m, d] = selectedDateKey.split('-').map(Number);
+    const dayOfWeek = new Date(y, m - 1, d).getDay();
+    const existing = getDayAppointments(y, m - 1, d);
+    const conflict = existing.find(appt => start < (appt.endTime || appt.end) && end > (appt.startTime || appt.start));
+
+    if (conflict) { 
+        showAddError(`يوجد تعارض مع موعد مسجل من ${formatTime(conflict.startTime || conflict.start)} إلى ${formatTime(conflict.endTime || conflict.end)}`); 
+        return; 
+    }
+
+    const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
+    const location = locationChecked;
+    const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
+    const street = document.getElementById('location-text').dataset.street || '';
+    const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
+
+    const newApptObj = { 
+        start, 
+        end, 
+        groupName, 
+        teacherName, 
+        centerName,
+        studentsCount, 
+        genderAllowed, 
+        location, 
+        subjectData,
+        street,
+        detailedAddress,
+        date: selectedDateKey,
+        dayOfWeek: dayOfWeek,
+        dayName: dayNames[dayOfWeek],
+        type: isRecurring ? 'recurring' : 'normal'
+    };
+
+    await window.publishSingleApptOnline(newApptObj);
+    
+    document.getElementById('startTime').value = ''; 
+    document.getElementById('endTime').value = '';
+    document.getElementById('durationInfo').classList.remove('show'); 
+    document.getElementById('repeatWeekly').checked = false;
+    document.getElementById('detailed-address').value = '';
+    hideAddError(); 
+
+    setTimeout(() => {
+        document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+  };
+
+  function showAddError(msg) { 
+      const el = document.getElementById('addErrorMsg'); 
+      el.innerHTML = `⚠ ${msg}`; 
+      el.classList.add('show'); 
+  }
+  window.hideAddError = function() { 
+      document.getElementById('addErrorMsg').classList.remove('show'); 
+  }
+
+  window.closePublishModal = function(e, force = false) {
+      if (force || e.target.id === 'publishModalOverlay') {
+          document.getElementById('publishModalOverlay').classList.remove('active');
+      }
+  };
+
+  function initApp() {
+      initMap();
+      setupSwipeCal();
+      
+      const subjectDisplay = document.getElementById('fixed-subject');
+      const savedDataString = localStorage.getItem('teacherSelections');
+      let selectedSubjectsText = "لم تختر أي مادة.";
+      if (savedDataString) {
+          try {
+              const savedData = JSON.parse(savedDataString);
+              let summaryParts = [];
+              for (const stageId in savedData) {
+                  const { grade, subjects } = savedData[stageId];
+                  if (subjects && subjects.length > 0) {
+                      summaryParts.push(`${grade ? 'الصف: ' + grade + ' | ' : ''}المواد: ${subjects.join(' - ')}`);
+                  }
+              }
+              if (summaryParts.length > 0) selectedSubjectsText = summaryParts.join('\n');
+          } catch(e) { console.error(e); }
+      }
+      if(subjectDisplay) {
+          subjectDisplay.textContent = selectedSubjectsText;
+          subjectDisplay.dataset.value = selectedSubjectsText;
+      }
+
+      populateTimeSelects();
+      renderCalendar();
+      const initDate = new Date();
+      selectDay(initDate.getFullYear(), initDate.getMonth(), initDate.getDate());
+      
+      toggleCenterNameField();
+      
+      window.loadLocalPublishedSlots();
+
+      checkAndShowSubscription();
+  }
+
+  initApp();
+</script>
+
+</body>
+</html>
