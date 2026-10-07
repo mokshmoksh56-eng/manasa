@@ -43,7 +43,7 @@
             width: 100%;
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 100%), 
                         url('teacher2.png') center/cover no-repeat;
-            padding: 24px 15px 38px;
+            padding: 24px 15px 28px;
             text-align: center;
             position: relative;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
@@ -64,37 +64,6 @@
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
-
-        .stepper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 0, 0, 0.35);
-            border-radius: 50px;
-            padding: 6px 14px;
-            margin: 10px auto 0;
-            width: fit-content;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .step {
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--white);
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .step.clickable { cursor: pointer; }
-        .step.clickable:hover { color: #00E5FF; opacity: 1; transform: scale(1.05); }
-        .step.active { color: #00E5FF; opacity: 1; font-size: 13px; }
-        .step-divider { color: rgba(255, 255, 255, 0.6); font-size: 11px; }
 
         .cloud-badge {
             position: absolute;
@@ -294,10 +263,11 @@
             gap: 8px;
         }
 
+        /* ✏️ زر التعديل — فوق */
         .locked-btn-edit {
             background: linear-gradient(135deg, #F59E0B, #D97706);
             color: #fff;
-            border: none;
+            border: 2px solid #FBBF24;
             padding: 12px 18px;
             border-radius: 12px;
             font-family: 'Cairo', sans-serif;
@@ -310,33 +280,45 @@
             gap: 8px;
             box-shadow: 0 6px 14px -4px rgba(245, 158, 11, 0.6);
             transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
+        .locked-btn-edit::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            transition: left 0.6s ease;
+        }
+        .locked-btn-edit:hover::after { left: 100%; }
         .locked-btn-edit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 22px -4px rgba(245, 158, 11, 0.75);
+            box-shadow: 0 10px 22px -4px rgba(245, 158, 11, 0.8);
         }
         .locked-btn-edit:active { transform: scale(0.97); }
 
+        /* 💾 زر الحفظ — تحت (الأساسي) */
         .locked-btn-continue {
             background: linear-gradient(135deg, #10B981, #047857);
             color: #fff;
             border: none;
-            padding: 12px 18px;
+            padding: 14px 18px;
             border-radius: 12px;
             font-family: 'Cairo', sans-serif;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 14.5px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.7);
             transition: all 0.25s ease;
         }
         .locked-btn-continue:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 22px -4px rgba(16, 185, 129, 0.75);
+            box-shadow: 0 10px 22px -4px rgba(16, 185, 129, 0.85);
         }
         .locked-btn-continue:active { transform: scale(0.97); }
 
@@ -863,12 +845,6 @@
 
         <h1>منصة احجزلي</h1>
         <p>بوابة المعلم - إدارة المجموعات والدروس</p>
-
-        <div class="stepper">
-            <div class="step active" id="step1">1. التخصص</div>
-            <div class="step-divider">❯</div>
-            <a class="step clickable" onclick="window.saveSelection()" title="اضغط للانتقال لصفحة المواعيد والمجموعات">2. المواعيد والمجموعات</a>
-        </div>
     </header>
 
     <div class="container">
@@ -886,13 +862,16 @@
             <div class="locked-card-body" id="lockedCardBody"></div>
 
             <div class="locked-card-actions">
-                <button class="locked-btn-continue" onclick="window.saveSelection()">
-                    <span>▶️</span>
-                    <span>متابعة للمواعيد والمجموعات</span>
-                </button>
+                <!-- ✏️ زر التعديل — فوق -->
                 <button class="locked-btn-edit" onclick="window.unlockForEdit()">
                     <span>✏️</span>
                     <span>تعديل التخصص</span>
+                </button>
+
+                <!-- 💾 زر الحفظ — تحت (الأساسي) -->
+                <button class="locked-btn-continue" onclick="window.saveSelection()">
+                    <span>💾</span>
+                    <span>حفظ والانتقال إلى المرحلة التالية</span>
                 </button>
             </div>
 
@@ -929,7 +908,7 @@
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <button class="save-btn" id="mainSaveBtn" onclick="window.saveSelection()">الانتقال للخطوة التالية ❯</button>
+        <button class="save-btn" id="mainSaveBtn" onclick="window.saveSelection()">حفظ والانتقال إلى المرحلة التالية ❯</button>
 
     </div>
 
@@ -1453,7 +1432,7 @@
             }
 
             if (total === 0) {
-                alert('⚠️ من فضلك اختر مادة واحدة على الأقل قبل الانتقال لصفحة المواعيد.');
+                alert('⚠️ من فضلك اختر مادة واحدة على الأقل قبل الانتقال للمرحلة التالية.');
                 return;
             }
 
