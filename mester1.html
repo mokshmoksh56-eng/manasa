@@ -65,6 +65,35 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
+        .back-btn-header {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+            font-family: inherit;
+            z-index: 10;
+        }
+        .back-btn-header:hover { 
+            background: rgba(255,255,255,0.3); 
+            transform: translateY(-2px); 
+        }
+        .back-btn-header:active { 
+            transform: scale(0.96); 
+        }
+
         .cloud-badge {
             position: absolute;
             top: 12px;
@@ -464,6 +493,11 @@
     </div>
 
     <header class="header-3d">
+        <a href="mester3.html" class="back-btn-header">
+            <span>🏠</span>
+            <span>الرئيسية</span>
+        </a>
+
         <div class="cloud-badge" id="cloudBadge">
             <span class="dot"></span>
             <span id="cloudText">جاري الاتصال...</span>
@@ -1198,6 +1232,54 @@
 
         document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
         document.addEventListener('click', () => getCtx(), { once: true, passive: true });
+    })();
+    </script>
+
+    <!-- ==========================================================
+         ✅✅✅ زر الرجوع العادي بتاع المتصفح يروح لـ mester3 ✅✅✅
+         ========================================================== -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ✅ نحفظ البيانات قبل الرجوع
+        function saveBeforeBack() {
+            try {
+                const phone = localStorage.getItem('current_teacher_phone');
+                const profile = localStorage.getItem('current_teacher_profile');
+                
+                if (phone) localStorage.setItem('teacher_saved_phone', phone);
+                if (profile) localStorage.setItem('teacher_saved_profile', profile);
+
+                const backup = {
+                    teacherSelections: localStorage.getItem('teacherSelections'),
+                    mester1_selections: localStorage.getItem('mester1_selections'),
+                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
+                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
+                    last_selected_gender: localStorage.getItem('last_selected_gender'),
+                    last_selected_location: localStorage.getItem('last_selected_location')
+                };
+                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
+            } catch(e) {}
+        }
+
+        // ✅ لما المستخدم يضغط زر الرجوع → تروح لـ mester3
+        window.addEventListener('popstate', function(e) {
+            saveBeforeBack();
+            console.log('🔙 رجوع من mester1 → mester3');
+            window.location.replace('mester3.html');
+        });
+
+        // ✅ لو الصفحة رجعت من cache → تروح mester3
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                saveBeforeBack();
+                console.log('🔙 الصفحة رجعت من cache → mester3');
+                window.location.replace('mester3.html');
+            }
+        });
+
     })();
     </script>
 
