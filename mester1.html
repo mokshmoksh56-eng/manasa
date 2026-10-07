@@ -921,7 +921,6 @@
             }
         }
 
-        // ✅ رفع عند أي تغيير في localStorage
         const originalSetItem = localStorage.setItem.bind(localStorage);
         localStorage.setItem = function(key, value) {
             originalSetItem(key, value);
@@ -961,7 +960,6 @@
                 }
             }
 
-            // ✅ الحفظ في localStorage
             localStorage.setItem('teacherSelections', JSON.stringify(finalData));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(finalData));
             localStorage.setItem('mester1_is_locked', 'true');
@@ -969,24 +967,20 @@
 
             console.log('✅ تم حفظ التخصص:', finalData);
 
-            // ✅ رفع فوري للسحابة
             await pushDataToCloud();
 
-            // ✅ إشعار نجاح الحفظ
             const badge = document.getElementById('curriculumBadge');
             if (badge) {
                 badge.innerHTML = '<span>✅</span><span>تم حفظ اختياراتك بنجاح — جاري الرجوع...</span>';
                 badge.classList.add('show');
             }
 
-            // ✅ تعطيل الزر مؤقتاً
             const btn = document.getElementById('mainSaveBtn');
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<span>✅</span><span>تم الحفظ — جاري الرجوع لـ mester3...</span>';
             }
 
-            // ✅ بعد ثانيتين → ارجع لـ mester3
             setTimeout(() => {
                 window.location.href = 'mester3.html';
             }, 1800);
@@ -1242,17 +1236,22 @@
     (function() {
         'use strict';
 
+        // ✅ مهم: نضيف history entry عشان زر الرجوع يشتغل صح
+        try {
+            history.pushState({ page: 'mester1' }, '', location.href);
+        } catch(e) {}
+
         // ✅ زر الرجوع العادي → يروح mester3.html
         window.addEventListener('popstate', function(e) {
             console.log('🔙 رجوع من mester1 → mester3');
-            window.location.replace('mester3.html');
+            window.location.href = 'mester3.html';
         });
 
         // ✅ لو الصفحة رجعت من cache → تروح mester3
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                console.log('🔙 الصفحة رجعت من cache → mester3');
-                window.location.replace('mester3.html');
+                console.log('🔙 cache → mester3');
+                window.location.href = 'mester3.html';
             }
         });
 
