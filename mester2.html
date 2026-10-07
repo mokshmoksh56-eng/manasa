@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>احجزلي - اعمل مجموعتك</title>
+<title>احجزلي - مساعد ذكي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
     --panel-bg: #f7fafc;
     --success: #10b981;
     --warning: #f59e0b;
+    --ai-glow: #8b5cf6;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -56,6 +57,27 @@ body {
     font-size: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     flex-shrink: 0;
+    position: relative;
+}
+.chat-header .avatar.ai-mode::after {
+    content: '⚡';
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    background: var(--ai-glow);
+    color: #fff;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 2px solid #fff;
+    animation: aiPulse 2s infinite;
+}
+@keyframes aiPulse {
+    0%,100% { box-shadow: 0 0 5px var(--ai-glow); }
+    50% { box-shadow: 0 0 15px var(--ai-glow); }
 }
 .chat-header .info { flex: 1; min-width: 0; }
 .chat-header .info h2 { font-size: 16px; font-weight: 900; }
@@ -68,26 +90,48 @@ body {
     animation: pulse 1.5s infinite;
     flex-shrink: 0;
 }
+.chat-header .info.ai-active .dot {
+    background: var(--ai-glow);
+    box-shadow: 0 0 8px var(--ai-glow);
+}
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-.toggle-sidebar-btn {
+.header-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.toggle-sidebar-btn, .ai-toggle-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
     color: #fff;
     padding: 8px 12px;
     border-radius: 20px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 900;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.25s;
     backdrop-filter: blur(6px);
     flex-shrink: 0;
 }
-.toggle-sidebar-btn:hover, .toggle-sidebar-btn:active { background: rgba(255,255,255,0.35); }
+.toggle-sidebar-btn:hover, .ai-toggle-btn:hover { background: rgba(255,255,255,0.35); }
+
+.ai-toggle-btn.active {
+    background: var(--ai-glow);
+    border-color: #a78bfa;
+    box-shadow: 0 0 15px rgba(139,92,246,0.5);
+    animation: aiBtnPulse 2s infinite;
+}
+@keyframes aiBtnPulse {
+    0%,100% { box-shadow: 0 0 15px rgba(139,92,246,0.5); }
+    50% { box-shadow: 0 0 25px rgba(139,92,246,0.8); }
+}
+
 .toggle-sidebar-btn .badge-count {
     background: #fbbf24;
     color: #78350f;
@@ -170,16 +214,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
 }
-.sidebar-header .close-btn:hover { background: rgba(255,255,255,0.35); }
-
-.sidebar-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-    min-width: 320px;
-}
+.sidebar-body { flex: 1; overflow-y: auto; padding: 12px; min-width: 320px; }
 .sidebar-body::-webkit-scrollbar { width: 6px; }
 .sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
@@ -200,9 +236,7 @@ body {
     gap: 8px;
     margin-bottom: 12px;
     box-shadow: 0 4px 10px rgba(37,150,139,0.25);
-    transition: all 0.2s;
 }
-.add-new-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37,150,139,0.35); }
 
 .sb-group-card {
     background: #fff;
@@ -215,18 +249,10 @@ body {
     position: relative;
     overflow: hidden;
 }
-.sb-group-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(37,150,139,0.15);
-    transform: translateX(-3px);
-}
+.sb-group-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(37,150,139,0.15); transform: translateX(-3px); }
 .sb-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
-.sb-group-card.recurring-group::before {
-    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #8b5cf6;
-}
-.sb-group-card.normal-group::before {
-    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #3b82f6;
-}
+.sb-group-card.recurring-group::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #8b5cf6; }
+.sb-group-card.normal-group::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #3b82f6; }
 .sb-group-card.hidden-group::before { background: #dc2626; }
 
 .sb-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
@@ -256,16 +282,13 @@ body {
     align-items: center;
     justify-content: center;
     gap: 3px;
-    transition: all 0.2s;
 }
-.sb-action-btn:active { transform: scale(0.95); }
 .sb-action-btn.edit { background: #dbeafe; color: #1e40af; }
 .sb-action-btn.toggle { background: #fef3c7; color: #92400e; }
 .sb-action-btn.delete { background: #fee2e2; color: #b91c1c; }
 
 .sb-empty { text-align: center; padding: 40px 20px; color: var(--gray); }
 .sb-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
-.sb-empty p { font-size: 13px; font-weight: 800; }
 
 /* Center Panel */
 .options-panel {
@@ -287,7 +310,6 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    flex-shrink: 0;
 }
 .options-panel-header .title { font-size: 14px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
 .options-panel-header .reset-btn {
@@ -300,7 +322,6 @@ body {
     font-weight: 900;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s;
 }
 
 .options-panel-body { flex: 1; overflow-y: auto; padding: 12px; }
@@ -313,37 +334,27 @@ body {
     border-radius: 12px;
     padding: 10px 12px;
     margin-bottom: 10px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: cardIn 0.4s ease;
+    transition: all 0.3s;
     position: relative;
     overflow: hidden;
 }
-@keyframes cardIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 .build-step.pending { opacity: 0.55; background: #f8fafc; border-style: dashed; }
-.build-step.active {
-    border-color: var(--warning);
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    box-shadow: 0 4px 12px rgba(245,158,11,0.15);
-}
-.build-step.active::before {
-    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px;
-    background: var(--warning); animation: activeBar 1.5s infinite;
-}
+.build-step.active { border-color: var(--warning); background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+.build-step.active::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: var(--warning); animation: activeBar 1.5s infinite; }
 @keyframes activeBar { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 .build-step.done { border-color: var(--success); background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
 .build-step.done::before {
-    content: '✓'; position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
-    width: 20px; height: 20px; background: var(--success); color: #fff;
+    content: '✓';
+    position: absolute;
+    left: 8px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px;
+    background: var(--success); color: #fff;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 900; box-shadow: 0 2px 5px rgba(16,185,129,0.3);
+    font-size: 12px; font-weight: 900;
 }
 
 .build-step .bs-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 12px; color: var(--gray); font-weight: 900; }
-.build-step .bs-header .icon { font-size: 14px; }
-.build-step .bs-value {
-    font-size: 14px; font-weight: 900; color: var(--text);
-    padding: 6px 0; word-break: break-word; line-height: 1.4;
-}
+.build-step .bs-value { font-size: 14px; font-weight: 900; color: var(--text); padding: 6px 0; word-break: break-word; line-height: 1.4; }
 .build-step.pending .bs-value { color: #94a3b8; font-style: italic; }
 .build-step.active .bs-value { color: #92400e; }
 .build-step.done .bs-value { color: #065f46; }
@@ -354,13 +365,8 @@ body {
     border-radius: 12px;
     padding: 12px;
     margin-top: 12px;
-    animation: cardIn 0.4s ease;
 }
-.panel-summary h4 {
-    color: #065f46; font-size: 13px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px;
-    padding-bottom: 6px; border-bottom: 1.5px dashed #a7f3d0;
-}
+.panel-summary h4 { color: #065f46; font-size: 13px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1.5px dashed #a7f3d0; }
 .panel-summary .prow { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; gap: 6px; }
 .panel-summary .prow .k { color: #065f46; font-weight: 800; }
 .panel-summary .prow .v { color: #064e3b; font-weight: 900; text-align: left; }
@@ -395,14 +401,35 @@ body {
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.msg.bot { background: var(--bubble-bot); color: var(--text); border-bottom-right-radius: 4px; margin-left: auto; margin-right: 0; }
-.msg.teacher { background: var(--bubble-teacher); color: var(--text); border-bottom-left-radius: 4px; margin-right: auto; margin-left: 0; }
+.msg.bot { background: var(--bubble-bot); color: var(--text); border-bottom-right-radius: 4px; margin-left: auto; }
+.msg.teacher { background: var(--bubble-teacher); color: var(--text); border-bottom-left-radius: 4px; margin-right: auto; }
+.msg.ai-msg {
+    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    border: 2px solid var(--ai-glow);
+    box-shadow: 0 4px 12px rgba(139,92,246,0.15);
+}
+.msg.ai-msg::before {
+    content: '⚡ AI';
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--ai-glow);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
 .msg.bot .time, .msg.teacher .time {
-    font-size: 10px; color: var(--gray); text-align: left; margin-top: 4px; font-weight: 700;
+    font-size: 10px;
+    color: var(--gray);
+    text-align: left;
+    margin-top: 4px;
+    font-weight: 700;
 }
 .msg.teacher .time { text-align: right; }
 
-.options-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; animation: msgIn 0.3s ease; }
+.options-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .option-btn {
     background: #fff;
     border: 2px solid var(--primary);
@@ -414,56 +441,45 @@ body {
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
-    box-shadow: 0 2px 6px rgba(37,150,139,0.15);
     display: flex;
     align-items: center;
     gap: 6px;
 }
-.option-btn:hover, .option-btn:active {
-    background: var(--primary);
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37,150,139,0.35);
-}
+.option-btn:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
 
-/* Time grid */
 .chat-time-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
     max-height: 240px; overflow-y: auto; padding: 8px;
     background: #fff; border-radius: 12px; margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06); animation: msgIn 0.3s ease;
 }
 .chat-time-chip {
     background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px;
     padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 900;
-    color: var(--text); cursor: pointer; transition: all 0.15s;
+    color: var(--text); cursor: pointer;
 }
-.chat-time-chip:hover { background: var(--light); border-color: var(--primary); transform: translateY(-2px); }
+.chat-time-chip:hover { background: var(--light); border-color: var(--primary); }
 .chat-time-chip.disabled { opacity: 0.3; pointer-events: none; }
 
-/* Calendar */
-.chat-cal { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); animation: msgIn 0.3s ease; }
+.chat-cal { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
 .chat-cal .ccal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid #f1f5f9; }
 .chat-cal .ccal-title { font-size: 14px; font-weight: 900; color: var(--dark); }
-.chat-cal .ccal-nav { background: var(--light); border: 1px solid var(--border); color: var(--dark); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.chat-cal .ccal-nav { background: var(--light); border: 1px solid var(--border); color: var(--dark); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 .chat-cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
 .chat-cal-weekdays div { text-align: center; font-size: 11px; font-weight: 900; color: var(--primary); padding: 4px 0; }
 .chat-cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.chat-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; font-size: 12px; font-weight: 900; color: var(--text); cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; }
+.chat-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; font-size: 12px; font-weight: 900; color: var(--text); cursor: pointer; border: 1.5px solid transparent; }
 .chat-cal-day:hover { background: var(--light); }
 .chat-cal-day.today { background: var(--dark); color: #fff; }
 .chat-cal-day.selected { background: var(--primary); color: #fff; border-color: #fbbf24; }
 .chat-cal-day.past { opacity: 0.35; cursor: not-allowed; }
 .chat-cal-day.empty { background: transparent; cursor: default; }
 
-/* Map */
-.chat-map-widget { background: #fff; border-radius: 14px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); animation: msgIn 0.3s ease; }
+.chat-map-widget { background: #fff; border-radius: 14px; padding: 12px; margin-bottom: 12px; }
 #mini-map { width: 100%; height: 220px; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); }
-.chat-gps-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--dark)); color: #fff; border: none; padding: 11px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; margin-top: 8px; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
-.chat-gps-btn:active { transform: scale(0.97); }
-.chat-addr-display { margin-top: 8px; padding: 10px; background: #f0fdf4; border-radius: 8px; font-size: 12px; color: #065f46; text-align: center; font-weight: 800; border: 1.5px dashed var(--success); display: none; word-break: break-word; }
+.chat-gps-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--dark)); color: #fff; border: none; padding: 11px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; margin-top: 8px; font-family: inherit; }
+.chat-addr-display { margin-top: 8px; padding: 10px; background: #f0fdf4; border-radius: 8px; font-size: 12px; color: #065f46; text-align: center; border: 1.5px dashed var(--success); display: none; }
 .chat-addr-display.show { display: block; }
-.chat-extra-input { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-weight: 800; font-size: 12px; }
+.chat-extra-input { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
 
 /* Quick actions */
 .quick-actions {
@@ -489,85 +505,16 @@ body {
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
-    transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 5px;
-    box-shadow: 0 2px 5px rgba(37,150,139,0.1);
 }
-.quick-btn:hover, .quick-btn:active {
-    background: var(--primary);
+.quick-btn:hover { background: var(--primary); color: #fff; }
+.quick-btn.ai-mode {
+    background: linear-gradient(135deg, var(--ai-glow), #7c3aed);
     color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(37,150,139,0.3);
+    border-color: #6d28d9;
 }
-
-/* Schedule widget */
-.schedule-widget {
-    background: #fff;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 2px solid var(--light);
-    max-width: 95%;
-    animation: msgIn 0.3s ease;
-}
-.schedule-widget h4 {
-    color: var(--dark);
-    font-size: 14px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding-bottom: 8px;
-    border-bottom: 2px dashed var(--border);
-}
-.schedule-item {
-    background: #f8fafc;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    border-right: 4px solid #3b82f6;
-    transition: all 0.2s;
-}
-.schedule-item.rec { border-right-color: #8b5cf6; }
-.schedule-item.today { border-right-color: #f59e0b; background: #fffbeb; }
-.schedule-item.next { border-right-color: #10b981; background: #f0fdf4; }
-.schedule-item:last-child { margin-bottom: 0; }
-.schedule-item .si-name { font-size: 13.5px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
-.schedule-item .si-info { font-size: 12px; color: var(--gray); display: flex; flex-wrap: wrap; gap: 8px; margin-top: 3px; }
-.schedule-item .si-info span { display: flex; align-items: center; gap: 3px; }
-.schedule-item .si-address {
-    background: #fef3c7;
-    color: #92400e;
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: 11.5px;
-    margin-top: 6px;
-    border-right: 3px solid #f59e0b;
-    display: flex;
-    align-items: flex-start;
-    gap: 5px;
-    line-height: 1.5;
-}
-.schedule-empty { text-align: center; padding: 20px 10px; color: var(--gray); font-size: 13px; font-weight: 800; }
-.schedule-empty .icon { font-size: 36px; display: block; margin-bottom: 8px; }
-.map-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--primary);
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 900;
-    text-decoration: none;
-    margin-top: 5px;
-    transition: all 0.2s;
-}
-.map-link:hover { background: var(--dark); transform: translateY(-1px); }
 
 /* Input area */
 .input-area {
@@ -577,10 +524,11 @@ body {
     gap: 8px;
     align-items: flex-end;
     border-top: 1px solid #d0d0d0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     flex-shrink: 0;
-    position: relative;
-    z-index: 10;
+}
+.input-area.ai-active {
+    background: linear-gradient(135deg, #ede9fe, #f5f3ff);
+    border-top: 2px solid var(--ai-glow);
 }
 .input-area .input-wrap {
     flex: 1;
@@ -590,6 +538,10 @@ body {
     display: flex;
     align-items: center;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+.input-area.ai-active .input-wrap {
+    border: 2px solid var(--ai-glow);
+    box-shadow: 0 0 15px rgba(139,92,246,0.2);
 }
 .input-area input {
     flex: 1;
@@ -613,20 +565,25 @@ body {
     font-size: 20px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    box-shadow: 0 4px 10px rgba(37,150,139,0.3);
     flex-shrink: 0;
 }
-.send-btn:active { transform: scale(0.9); }
+.send-btn.ai-active {
+    background: var(--ai-glow);
+    box-shadow: 0 4px 10px rgba(139,92,246,0.3);
+}
 .send-btn:disabled { opacity: 0.5; }
 
 .typing {
     display: inline-flex; gap: 4px; padding: 12px 16px;
     background: #fff; border-radius: 16px; border-bottom-right-radius: 4px;
-    margin-left: auto; margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: fit-content;
+    margin-left: auto; margin-bottom: 12px; width: fit-content;
+}
+.typing.ai-typing {
+    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    border: 2px solid var(--ai-glow);
 }
 .typing span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: typing 1.4s infinite; }
+.typing.ai-typing span { background: var(--ai-glow); }
 .typing span:nth-child(2) { animation-delay: 0.2s; }
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
@@ -637,47 +594,42 @@ body {
     background: #dc2626; color: #fff;
     padding: 12px 20px; border-radius: 22px;
     font-size: 14px; font-weight: 800;
-    box-shadow: 0 6px 20px rgba(220,38,38,0.4);
     opacity: 0; transition: all 0.3s;
     z-index: 9998; pointer-events: none;
-    max-width: 90%; text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; }
-
-@media (max-width: 1024px) {
-    .groups-sidebar.open { width: 280px; }
-    .options-panel { width: 280px; }
-}
 
 @media (max-width: 768px) {
     .main-layout { flex-direction: column; }
     .groups-sidebar { position: fixed; right: 0; top: 0; bottom: 0; width: 0; z-index: 1000; }
     .groups-sidebar.open { width: 85%; max-width: 320px; }
-    .options-panel {
-        width: 100%;
-        height: 40%;
-        border-left: none;
-        border-bottom: 3px solid var(--border);
-    }
+    .options-panel { width: 100%; height: 40%; border-left: none; border-bottom: 3px solid var(--border); }
     .chat-area { height: 60%; }
     .chat-time-grid { grid-template-columns: repeat(3, 1fr); }
+    .header-actions { gap: 4px; }
+    .toggle-sidebar-btn, .ai-toggle-btn { padding: 6px 10px; font-size: 11px; }
 }
 </style>
 </head>
 <body>
 
 <div class="chat-header">
-    <div class="avatar">🤖</div>
-    <div class="info">
-        <h2>مساعد احجزلي</h2>
-        <p><span class="dot"></span> معاك على طول</p>
+    <div class="avatar" id="botAvatar">🤖</div>
+    <div class="info" id="botInfo">
+        <h2 id="botName">مساعد احجزلي</h2>
+        <p><span class="dot"></span> <span id="botStatus">معاك على طول</span></p>
     </div>
-    <button class="toggle-sidebar-btn" onclick="toggleGroupsSidebar()">
-        <span>📚</span>
-        <span>مجموعاتي</span>
-        <span class="badge-count" id="sidebarBadge" style="display:none;">0</span>
-    </button>
+    <div class="header-actions">
+        <button class="ai-toggle-btn" id="aiToggleBtn" onclick="toggleAIMode()">
+            <span>⚡</span>
+            <span>AI</span>
+        </button>
+        <button class="toggle-sidebar-btn" onclick="toggleGroupsSidebar()">
+            <span>📚</span>
+            <span class="badge-count" id="sidebarBadge" style="display:none;">0</span>
+        </button>
+    </div>
 </div>
 <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%"></div></div>
 
@@ -715,19 +667,18 @@ body {
     <main style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
         <div class="chat-area" id="chatArea"></div>
         
-        <!-- ✅ Quick Actions Bar -->
         <div class="quick-actions" id="quickActions" style="display:none;">
+            <button class="quick-btn ai-mode" onclick="aiQuickAsk('الحصة القادمة إمتى؟')">
+                <span>⚡</span><span>اسأل AI</span>
+            </button>
             <button class="quick-btn" onclick="showNextClass()">
                 <span>⏭️</span><span>الحصة القادمة</span>
             </button>
             <button class="quick-btn" onclick="showTodayClasses()">
                 <span>📆</span><span>النهاردة</span>
             </button>
-            <button class="quick-btn" onclick="showWeekSchedule()">
-                <span>🗓️</span><span>الأسبوع</span>
-            </button>
             <button class="quick-btn" onclick="showAllAddresses()">
-                <span>📍</span><span>عناوين مجموعاتي</span>
+                <span>📍</span><span>عناويني</span>
             </button>
             <button class="quick-btn" onclick="showQuestionMenu()">
                 <span>❓</span><span>أسئلة</span>
@@ -756,6 +707,12 @@ import {
     subscribeGroups
 } from './firebase-config.js';
 
+/* ============ Groq AI Config ============ */
+const GROQ_API_KEY = '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';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+let aiModeActive = false;
+
 /* ============ الحالة ============ */
 const state = {
     step: 0,
@@ -772,6 +729,7 @@ const state = {
 
 let cachedGroups = [];
 let map, marker;
+let chatHistory = []; // سجل المحادثة مع AI
 
 /* ============ DOM ============ */
 const chatArea = document.getElementById('chatArea');
@@ -819,10 +777,12 @@ function addBotMessage(text, showTyping = true) {
     });
 }
 
-function _addMessage(who, text) {
+function _addMessage(who, text, isAI = false) {
     const msg = document.createElement('div');
-    msg.className = `msg ${who}`;
-    msg.innerHTML = text + `<div class="time">${currentTime()} ${who === 'bot' ? '✓✓' : ''}</div>`;
+    msg.className = `msg ${who}${isAI ? ' ai-msg' : ''}`;
+    // نسمح بأسطر جديدة
+    const formatted = text.replace(/\n/g, '<br>');
+    msg.innerHTML = formatted + `<div class="time">${currentTime()} ${who === 'bot' ? '✓✓' : ''}</div>`;
     chatArea.appendChild(msg);
     scrollBottom();
 }
@@ -857,9 +817,6 @@ function setInputMode(mode, placeholder = '') {
     }
     
     inputAreaEl.style.display = 'flex';
-    inputAreaEl.style.visibility = 'visible';
-    inputAreaEl.style.opacity = '1';
-    
     chatInputEl.disabled = false;
     chatInputEl.readOnly = false;
     chatInputEl.value = '';
@@ -878,11 +835,8 @@ function setInputMode(mode, placeholder = '') {
     setTimeout(() => {
         try { chatInputEl.focus(); } catch(e) {}
     }, 200);
-    
     setTimeout(() => {
-        try {
-            if (document.activeElement !== chatInputEl) chatInputEl.focus();
-        } catch(e) {}
+        try { if (document.activeElement !== chatInputEl) chatInputEl.focus(); } catch(e) {}
     }, 500);
 }
 
@@ -900,15 +854,213 @@ function resetState() {
     if (map) { try { map.remove(); } catch(e) {} map = null; marker = null; }
 }
 
-function showQuickActions() {
-    quickActions.style.display = 'flex';
+function showQuickActions() { quickActions.style.display = 'flex'; }
+function hideQuickActions() { quickActions.style.display = 'none'; }
+
+/* ============================================================ */
+/* ============ 🤖 AI Mode ============ */
+/* ============================================================ */
+
+window.toggleAIMode = function() {
+    aiModeActive = !aiModeActive;
+    
+    const aiBtn = document.getElementById('aiToggleBtn');
+    const avatar = document.getElementById('botAvatar');
+    const botName = document.getElementById('botName');
+    const botStatus = document.getElementById('botStatus');
+    const botInfo = document.getElementById('botInfo');
+    const inputAreaEl = document.getElementById('inputArea');
+    const sendBtnEl = document.getElementById('sendBtn');
+    
+    if (aiModeActive) {
+        aiBtn.classList.add('active');
+        avatar.classList.add('ai-mode');
+        avatar.textContent = '⚡';
+        botName.textContent = 'المساعد الذكي';
+        botStatus.textContent = 'متصل بـ Groq AI';
+        botInfo.classList.add('ai-active');
+        inputAreaEl.classList.add('ai-active');
+        sendBtnEl.classList.add('ai-active');
+        chatInput.placeholder = 'اسألني أي حاجة... 🤖';
+        
+        showToast('⚡ تم تفعيل الوضع الذكي', true);
+        
+        // رسالة ترحيب من AI
+        addBotMessage(
+            '⚡ <b>أهلاً! الوضع الذكي شغال</b><br><br>' +
+            'أنا دلوقتي متصل بـ AI (Groq) وعارف كل مجموعاتك.<br><br>' +
+            'اسألني أي حاجة زي:<br>' +
+            '• "الحصة القادمة إمتى؟"<br>' +
+            '• "عندي كام طالب النهاردة؟"<br>' +
+            '• "ايه أفضل ترتيب لجدولي؟"<br>' +
+            '• "اقترحلي يوم مناسب لمجموعة جديدة"',
+            true
+        );
+    } else {
+        aiBtn.classList.remove('active');
+        avatar.classList.remove('ai-mode');
+        avatar.textContent = '🤖';
+        botName.textContent = 'مساعد احجزلي';
+        botStatus.textContent = 'معاك على طول';
+        botInfo.classList.remove('ai-active');
+        inputAreaEl.classList.remove('ai-active');
+        sendBtnEl.classList.remove('ai-active');
+        chatInput.placeholder = 'اكتب هنا...';
+        
+        showToast('تم إيقاف الوضع الذكي');
+        addBotMessage('تم إيقاف الوضع الذكي. رجعنا للوضع العادي 🤖', false);
+    }
+    
+    // نظهر حقل الإدخال
+    if (inputAreaEl.style.display === 'none') {
+        setInputMode('text', chatInput.placeholder);
+    }
+    
+    chatInput.focus();
+};
+
+/* اجهز معلومات المجموعات عشان نبعتهم للـ AI */
+async function buildGroupsContext() {
+    const groups = await loadSavedGroups();
+    if (groups.length === 0) {
+        return 'المستر لسه مفيش عنده مجموعات محفوظة.';
+    }
+    
+    const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const todayName = dayNames[new Date().getDay()];
+    
+    let ctx = `إجمالي المجموعات: ${groups.length}\n`;
+    ctx += `النهاردة: ${todayName}\n\n`;
+    ctx += `تفاصيل المجموعات:\n`;
+    
+    groups.forEach((g, i) => {
+        const isRec = g.apptType === 'recurring';
+        const isVisible = g.isActive !== false;
+        const day = g.daysNames?.[0] || '؟';
+        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
+        
+        ctx += `${i+1}. "${g.groupName}"\n`;
+        ctx += `   - المستر: ${g.teacherName || '؟'}\n`;
+        ctx += `   - المادة: ${g.subject || '؟'}\n`;
+        ctx += `   - اليوم: ${day}\n`;
+        ctx += `   - الوقت: ${formatTime(g.startTime)} - ${formatTime(g.endTime)}\n`;
+        ctx += `   - المكان: ${g.location || '؟'}\n`;
+        ctx += `   - العنوان: ${addr}\n`;
+        ctx += `   - السعة: ${g.maxCapacity || 20} طالب\n`;
+        ctx += `   - النوع: ${isRec ? 'أسبوعي' : 'مرة واحدة'}\n`;
+        ctx += `   - الحالة: ${isVisible ? 'ظاهرة' : 'مخفية'}\n`;
+        if (g.lat && g.lng) ctx += `   - إحداثيات: ${g.lat},${g.lng}\n`;
+        ctx += `\n`;
+    });
+    
+    return ctx;
 }
 
-function hideQuickActions() {
-    quickActions.style.display = 'none';
+/* أبعت رسالة للـ Groq AI */
+async function askGroq(userMessage) {
+    // نعرض رسالة التفكير
+    const typing = document.createElement('div');
+    typing.className = 'typing ai-typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chatArea.appendChild(typing);
+    scrollBottom();
+    
+    try {
+        const groupsContext = await buildGroupsContext();
+        
+        const systemPrompt = `أنت مساعد ذكي بتتكلم بالمصري وبتساعد مستر (مدرس) في تنظيم مجموعاته التعليمية.
+
+معلومات مجموعات المستر دلوقتي:
+${groupsContext}
+
+معلومات الوقت الحالي: ${new Date().toLocaleString('ar-EG')}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل ودود ومحترم
+2. لما المستر يسأل عن الحصة القادمة، اختار الحصة الأقرب للوقت الحالي
+3. لما يسأل عن مكان، قول العنوان بالتفصيل
+4. كن مختصر ومفيد في نفس الوقت
+5. استخدم الإيموجي بشكل مناسب
+6. لو السؤال مش له علاقة بالمجموعات، قول للمستر بأدب
+7. لو البيانات ناقصة، قول للمستر بأدب`;
+        
+        // نبني سجل المحادثة
+        const messages = [
+            { role: 'system', content: systemPrompt }
+        ];
+        
+        // نضيف آخر 6 رسايل من التاريخ
+        const recentHistory = chatHistory.slice(-6);
+        recentHistory.forEach(h => {
+            messages.push(h);
+        });
+        
+        // نضيف رسالة المستر الحالية
+        messages.push({ role: 'user', content: userMessage });
+        
+        const response = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: GROQ_MODEL,
+                messages: messages,
+                temperature: 0.6,
+                max_tokens: 800,
+                top_p: 0.9
+            })
+        });
+        
+        typing.remove();
+        
+        if (!response.ok) {
+            const errText = await response.text();
+            console.error('Groq error:', errText);
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const botReply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد دلوقتي.';
+        
+        // نحفظ في التاريخ
+        chatHistory.push({ role: 'user', content: userMessage });
+        chatHistory.push({ role: 'assistant', content: botReply });
+        
+        // نحتفظ بآخر 20 رسالة بس
+        if (chatHistory.length > 20) {
+            chatHistory = chatHistory.slice(-20);
+        }
+        
+        return botReply;
+        
+    } catch (error) {
+        typing.remove();
+        console.error('AI Error:', error);
+        return `⚠️ <b>في مشكلة في الاتصال بالـ AI</b><br><br>جرب:<br>• تتأكد من النت<br>• لو المشكلة استمرت، يمكن مفتاح API مش شغال<br><br>تقدر تستخدم الأزرار السريعة تحت 👇`;
+    }
 }
 
+/* أسأل AI سؤال سريع */
+window.aiQuickAsk = async function(question) {
+    if (!aiModeActive) {
+        // نشغل AI mode لو مش شغال
+        toggleAIMode();
+        await new Promise(r => setTimeout(r, 800));
+    }
+    
+    addTeacherMessage(question);
+    const reply = await askGroq(question);
+    _addMessage('bot', reply, true);
+    
+    // نظهر حقل الإدخال تاني
+    setInputMode('text', 'اسألني أي حاجة... 🤖');
+};
+
+/* ============================================================ */
 /* ============ Sidebar ============ */
+/* ============================================================ */
 window.toggleGroupsSidebar = function() {
     groupsSidebar.classList.toggle('open');
     if (groupsSidebar.classList.contains('open')) {
@@ -928,7 +1080,6 @@ async function refreshSidebarGroups() {
             <div class="sb-empty">
                 <span class="icon">📭</span>
                 <p>لسه مفيش مجموعات</p>
-                <p style="font-size:11px; margin-top:6px; opacity:0.7;">اضغط "اعمل مجموعة جديدة" عشان تبدأ</p>
             </div>
         `;
         return;
@@ -955,7 +1106,6 @@ async function refreshSidebarGroups() {
                 <div class="row"><span>👥</span><span>${g.maxCapacity || 20} طالب</span></div>
                 <div class="row"><span>🕐</span><span>${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span></div>
                 <div class="row"><span>📅</span><span>${dayName}</span></div>
-                ${g.address ? `<div class="row"><span>📍</span><span>${g.address}</span></div>` : ''}
             </div>
             <div class="sb-card-actions">
                 <button class="sb-action-btn edit" data-action="edit" data-id="${g.id}">✏️ عدّل</button>
@@ -978,6 +1128,7 @@ window.startNewFromSidebar = function() {
     toggleGroupsSidebar();
     resetState();
     chatArea.innerHTML = '';
+    chatHistory = [];
     hideQuickActions();
     startFresh();
 };
@@ -1251,7 +1402,6 @@ function showMapWidgetChat(onConfirm) {
                         map.flyTo([pos.coords.latitude, pos.coords.longitude], 17, { animate: true });
                         updateChatLocation(pos.coords.latitude, pos.coords.longitude);
                         btn.innerHTML = '✅ نزلنا موقعك';
-                        btn.style.background = 'linear-gradient(135deg,#10b981,#047857)';
                         btn.disabled = false;
                     },
                     err => {
@@ -1521,6 +1671,9 @@ async function finishSetup() {
             addBotMessage(`🎉 خلصنا! مجموعة <b>"${state.data.groupName}"</b> اتحفظت.`);
         }
         
+        // نحدّث الـ AI بالبيانات الجديدة
+        chatHistory = [];
+        
         await updateHeaderBadge();
         await refreshSidebarGroups();
         setInputMode('hidden');
@@ -1532,17 +1685,14 @@ async function finishSetup() {
             { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
         ], async (opt) => {
             if (opt.value === 'new') {
-                addTeacherMessage('➕ مجموعة كمان');
                 resetState();
                 chatArea.innerHTML = '';
                 hideQuickActions();
                 await stepGroupName();
             } else if (opt.value === 'list') {
-                addTeacherMessage('📚 مجموعاتي');
                 if (!groupsSidebar.classList.contains('open')) toggleGroupsSidebar();
                 else await refreshSidebarGroups();
             } else {
-                addTeacherMessage('➡️ الصفحة الجاية');
                 window.location.href = 'mester3.html';
             }
         });
@@ -1768,6 +1918,9 @@ async function saveEditChanges() {
         showToast('✅ اتحدثت المجموعة', true);
         await addBotMessage(`✏️ اتعدلت مجموعة <b>"${state.data.groupName}"</b> خلاص! ✅`);
         
+        // نحدّث AI
+        chatHistory = [];
+        
         await updateHeaderBadge();
         await refreshSidebarGroups();
         setInputMode('hidden');
@@ -1808,6 +1961,18 @@ async function handleSend() {
     sendBtn.disabled = true;
     setInputMode('hidden');
     
+    // 🔥 في وضع AI - نروح لـ Groq
+    if (aiModeActive) {
+        addTeacherMessage(val);
+        const reply = await askGroq(val);
+        _addMessage('bot', reply, true);
+        setInputMode('text', 'اسألني أي حاجة... 🤖');
+        chatInput.disabled = false;
+        sendBtn.disabled = false;
+        return;
+    }
+    
+    // الوضع العادي - خطوات بناء المجموعة
     if (state.step === 1) {
         state.data.groupName = val;
         addTeacherMessage(val);
@@ -1840,6 +2005,7 @@ async function handleSend() {
 async function startFresh() {
     resetState();
     chatArea.innerHTML = '';
+    chatHistory = [];
     setProgress(0);
     hideQuickActions();
     await stepGroupName();
@@ -1861,18 +2027,16 @@ function checkSubject() {
 }
 
 /* ============================================================ */
-/* ============ أزرار الأسئلة الجاهزة ============ */
+/* ============ الأزرار السريعة ============ */
 /* ============================================================ */
 
-/* ============ 1) الحصة القادمة ============ */
 window.showNextClass = async function() {
     chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('⏭️ ثانية بشوف الحصة الجاية...');
     
     const groups = await loadSavedGroups();
     if (groups.length === 0) {
-        showEmptySchedule('لسه مفيش مجموعات محفوظة');
-        return;
+        await addBotMessage('لسه مفيش مجموعات محفوظة 😕'); return;
     }
     
     const now = new Date();
@@ -1880,83 +2044,35 @@ window.showNextClass = async function() {
     const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     
-    let nextClass = null;
-    let offsetFound = 0;
+    let nextClass = null, offsetFound = 0;
     
     for (let offset = 0; offset <= 7; offset++) {
         const checkDow = (todayDow + offset) % 7;
         const checkDayName = dayNames[checkDow];
-        
-        let dayGroups = groups.filter(g => {
-            return g.daysNames?.[0] === checkDayName && g.isActive !== false;
-        });
-        
-        if (offset === 0) {
-            dayGroups = dayGroups.filter(g => (g.startTime || '') > currentTime);
-        }
-        
+        let dayGroups = groups.filter(g => g.daysNames?.[0] === checkDayName && g.isActive !== false);
+        if (offset === 0) dayGroups = dayGroups.filter(g => (g.startTime || '') > currentTime);
         dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-        
-        if (dayGroups.length > 0) {
-            nextClass = dayGroups[0];
-            offsetFound = offset;
-            break;
-        }
+        if (dayGroups.length > 0) { nextClass = dayGroups[0]; offsetFound = offset; break; }
     }
     
-    if (!nextClass) {
-        showEmptySchedule('مفيش حصص قادمة في الأسبوع ده');
-        return;
-    }
+    if (!nextClass) { await addBotMessage('مفيش حصص قادمة في الأسبوع ده 😕'); return; }
     
-    const isRec = nextClass.apptType === 'recurring';
-    const whenText = offsetFound === 0 ? 'النهاردة' 
-        : offsetFound === 1 ? 'بكرة'
-        : `بعد ${offsetFound} أيام`;
+    const whenText = offsetFound === 0 ? 'النهاردة' : offsetFound === 1 ? 'بكرة' : `بعد ${offsetFound} أيام`;
     const dayName = nextClass.daysNames?.[0] || '';
+    let mapLink = (nextClass.lat && nextClass.lng) ? `<br>🗺️ <a href="https://www.google.com/maps?q=${nextClass.lat},${nextClass.lng}" target="_blank" style="color:#25968b;font-weight:900;">افتح على الخريطة</a>` : '';
+    const addr = [nextClass.address, nextClass.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
     
-    let addressHtml = '';
-    if (nextClass.address || nextClass.detailedAddress) {
-        const fullAddr = [nextClass.address, nextClass.detailedAddress].filter(Boolean).join(' - ');
-        let mapLink = '';
-        if (nextClass.lat && nextClass.lng) {
-            mapLink = `<a href="https://www.google.com/maps?q=${nextClass.lat},${nextClass.lng}" target="_blank" class="map-link">🗺️ افتح على الخريطة</a>`;
-        }
-        addressHtml = `
-            <div class="si-address">
-                <span>📍</span>
-                <div style="flex:1;">
-                    <div><b>العنوان:</b> ${fullAddr}</div>
-                    ${mapLink}
-                </div>
-            </div>
-        `;
-    }
-    
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>⏭️ الحصة القادمة</h4>
-        <div class="schedule-item next">
-            <div class="si-name">🎯 ${nextClass.groupName}</div>
-            <div class="si-info">
-                <span>📅 ${dayName} (${whenText})</span>
-                <span>🕐 ${formatTime(nextClass.startTime)} - ${formatTime(nextClass.endTime)}</span>
-                <span>${isRec ? '🔁 أسبوعي' : '📅 مرة واحدة'}</span>
-            </div>
-            <div class="si-info">
-                <span>👤 ${nextClass.teacherName || '-'}</span>
-                <span>👥 ${nextClass.maxCapacity || 20} طالب</span>
-                <span>📚 ${nextClass.subject || '-'}</span>
-            </div>
-            ${addressHtml}
-        </div>
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    await addBotMessage(
+        `⏭️ <b>الحصة القادمة:</b><br><br>` +
+        `🎯 <b>${nextClass.groupName}</b><br>` +
+        `📅 ${dayName} (${whenText})<br>` +
+        `🕐 ${formatTime(nextClass.startTime)} - ${formatTime(nextClass.endTime)}<br>` +
+        `👤 ${nextClass.teacherName || '-'}<br>` +
+        `👥 ${nextClass.maxCapacity || 20} طالب<br><br>` +
+        `📍 <b>العنوان:</b><br>${addr}${mapLink}`
+    );
 };
 
-/* ============ 2) حصص النهاردة ============ */
 window.showTodayClasses = async function() {
     chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('📆 ثانية بشوف حصص النهاردة...');
@@ -1965,195 +2081,80 @@ window.showTodayClasses = async function() {
     const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const todayName = dayNames[new Date().getDay()];
     
-    const todayGroups = groups.filter(g => 
-        g.daysNames?.[0] === todayName && g.isActive !== false
-    ).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    const todayGroups = groups.filter(g => g.daysNames?.[0] === todayName && g.isActive !== false)
+        .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
     
-    if (todayGroups.length === 0) {
-        showEmptySchedule(`مفيش حصص النهاردة (${todayName})`);
-        return;
-    }
+    if (todayGroups.length === 0) { await addBotMessage(`مفيش حصص النهاردة (${todayName}) 😕`); return; }
     
     const now = new Date();
     const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>📆 حصص النهاردة (${todayName})</h4>
-        ${todayGroups.map(g => {
-            const isRec = g.apptType === 'recurring';
-            const isPast = (g.endTime || '') < currentTime;
-            const isNow = (g.startTime || '') <= currentTime && (g.endTime || '') >= currentTime;
-            
-            let cls = isRec ? 'rec' : '';
-            if (isNow) cls = 'next';
-            
-            const statusIcon = isNow ? '🟢 بتحصل دلوقتي' : (isPast ? '⏹️ خلصت' : '⏳ جاية');
-            
-            let addressHtml = '';
-            if (g.address || g.detailedAddress) {
-                const fullAddr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
-                let mapLink = '';
-                if (g.lat && g.lng) {
-                    mapLink = `<a href="https://www.google.com/maps?q=${g.lat},${g.lng}" target="_blank" class="map-link">🗺️ افتح على الخريطة</a>`;
-                }
-                addressHtml = `
-                    <div class="si-address">
-                        <span>📍</span>
-                        <div style="flex:1;">
-                            <div>${fullAddr}</div>
-                            ${mapLink}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            return `
-                <div class="schedule-item ${cls}" style="${isPast ? 'opacity:0.6;' : ''}">
-                    <div class="si-name">${g.groupName}</div>
-                    <div class="si-info">
-                        <span>🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span>
-                        <span>${statusIcon}</span>
-                    </div>
-                    ${addressHtml}
-                </div>
-            `;
-        }).join('')}
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    let text = `📆 <b>حصص النهاردة (${todayName}):</b><br><br>`;
+    todayGroups.forEach((g, i) => {
+        const isNow = (g.startTime || '') <= currentTime && (g.endTime || '') >= currentTime;
+        const isPast = (g.endTime || '') < currentTime;
+        const status = isNow ? '🟢 بتحصل دلوقتي' : (isPast ? '⏹️ خلصت' : '⏳ جاية');
+        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
+        text += `${i+1}. <b>${g.groupName}</b><br>`;
+        text += `   🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}<br>`;
+        text += `   ${status}<br>`;
+        text += `   📍 ${addr}<br><br>`;
+    });
+    
+    await addBotMessage(text);
 };
 
-/* ============ 3) الأسبوع كله ============ */
 window.showWeekSchedule = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('🗓️ ثانية بجهزلك الجدول الأسبوعي...');
-    
     const groups = await loadSavedGroups();
-    if (groups.length === 0) {
-        showEmptySchedule('لسه مفيش مجموعات محفوظة');
-        return;
-    }
+    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
     
     const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
     const grouped = {};
     weekOrder.forEach(d => grouped[d] = []);
-    
     groups.filter(g => g.isActive !== false).forEach(g => {
         const day = g.daysNames?.[0] || 'غير محدد';
-        if (grouped[day]) grouped[day].push(g);
-        else {
-            if (!grouped[day]) grouped[day] = [];
-            grouped[day].push(g);
-        }
+        if (!grouped[day]) grouped[day] = [];
+        grouped[day].push(g);
     });
     
-    Object.keys(grouped).forEach(day => {
-        grouped[day].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    let text = `🗓️ <b>الجدول الأسبوعي:</b><br><br>`;
+    weekOrder.forEach(day => {
+        const dayGroups = grouped[day] || [];
+        if (dayGroups.length === 0) return;
+        text += `<b>━━━ ${day} (${dayGroups.length}) ━━━</b><br>`;
+        dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')).forEach(g => {
+            text += `• ${g.groupName} — 🕐 ${formatTime(g.startTime)}<br>`;
+            const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
+            if (addr) text += `  📍 ${addr}<br>`;
+        });
+        text += `<br>`;
     });
-    
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>🗓️ الأسبوع كله (${groups.length} مجموعة)</h4>
-        ${weekOrder.map(day => {
-            const dayGroups = grouped[day] || [];
-            if (dayGroups.length === 0) return '';
-            return `
-                <div style="margin-bottom:10px;">
-                    <div style="font-size:12px;font-weight:900;color:var(--dark);padding:6px 0;border-bottom:1.5px dashed #e2e8f0;margin-bottom:6px;display:flex;justify-content:space-between;">
-                        <span>${day}</span>
-                        <span style="background:var(--primary);color:#fff;padding:1px 8px;border-radius:10px;font-size:10px;">${dayGroups.length}</span>
-                    </div>
-                    ${dayGroups.map(g => {
-                        const isRec = g.apptType === 'recurring';
-                        const hasAddr = g.address || g.detailedAddress;
-                        return `
-                            <div class="schedule-item ${isRec ? 'rec' : ''}" style="padding:8px 10px;margin-bottom:5px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <span style="font-size:12.5px;font-weight:900;color:var(--text);flex:1;">${g.groupName}</span>
-                                    <span style="font-size:11px;background:#fff;padding:2px 6px;border-radius:6px;font-weight:900;">${formatTime(g.startTime)}</span>
-                                </div>
-                                ${hasAddr ? `<div style="font-size:11px;color:#92400e;background:#fef3c7;padding:3px 6px;border-radius:5px;margin-top:4px;border-right:2px solid #f59e0b;">📍 ${[g.address, g.detailedAddress].filter(Boolean).join(' - ')}</div>` : ''}
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }).join('')}
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    await addBotMessage(text);
 };
 
-/* ============ 4) عناوين المجموعات ============ */
 window.showAllAddresses = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
-    await addBotMessage('📍 ثانية بجيبلك عناوين كل مجموعاتك...');
-    
+    await addBotMessage('📍 ثانية بجيبلك عناوين مجموعاتك...');
     const groups = await loadSavedGroups();
-    if (groups.length === 0) {
-        showEmptySchedule('لسه مفيش مجموعات محفوظة');
-        return;
-    }
+    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
     
-    const withAddress = groups.filter(g => g.address || g.detailedAddress || g.lat || g.lng);
+    const withAddr = groups.filter(g => g.address || g.detailedAddress || (g.lat && g.lng));
+    if (withAddr.length === 0) { await addBotMessage('مفيش مجموعات ليها عنوان محدد 😕'); return; }
     
-    if (withAddress.length === 0) {
-        showEmptySchedule('مفيش مجموعات ليها عنوان محدد');
-        return;
-    }
-    
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>📍 عناوين مجموعاتك (${withAddress.length})</h4>
-        ${withAddress.map((g, i) => {
-            const locationText = g.location || 'غير محدد';
-            let locationIcon = '🏫';
-            if (locationText === 'بيت المستر') locationIcon = '🏠';
-            if (locationText === 'منزل الطالب') locationIcon = '🚗';
-            
-            const fullAddr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
-            
-            let mapLink = '';
-            if (g.lat && g.lng) {
-                mapLink = `<a href="https://www.google.com/maps?q=${g.lat},${g.lng}" target="_blank" class="map-link">🗺️ افتح على خرائط جوجل</a>`;
-            }
-            
-            const dayName = g.daysNames?.[0] || '';
-            
-            return `
-                <div class="schedule-item" style="border-right-color:#f59e0b;background:#fffbeb;">
-                    <div class="si-name">
-                        <span style="background:#f59e0b;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px;margin-left:4px;">${i+1}</span>
-                        ${g.groupName}
-                    </div>
-                    <div class="si-info">
-                        <span>${locationIcon} ${locationText}</span>
-                        <span>📅 ${dayName}</span>
-                        <span>🕐 ${formatTime(g.startTime)}</span>
-                    </div>
-                    ${fullAddr ? `
-                        <div class="si-address" style="margin-top:6px;">
-                            <span>📍</span>
-                            <div style="flex:1;">
-                                <div><b>العنوان الكامل:</b></div>
-                                <div style="margin-top:3px;font-size:12.5px;">${fullAddr}</div>
-                                ${mapLink ? `<div style="margin-top:6px;">${mapLink}</div>` : ''}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('')}
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    let text = `📍 <b>عناوين مجموعاتك (${withAddr.length}):</b><br><br>`;
+    withAddr.forEach((g, i) => {
+        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
+        let mapLink = '';
+        if (g.lat && g.lng) {
+            mapLink = ` <a href="https://www.google.com/maps?q=${g.lat},${g.lng}" target="_blank" style="color:#25968b;font-weight:900;">🗺️ خريطة</a>`;
+        }
+        text += `${i+1}. <b>${g.groupName}</b><br>`;
+        text += `   📍 ${addr}${mapLink}<br>`;
+        text += `   📅 ${g.daysNames?.[0] || ''} • 🕐 ${formatTime(g.startTime)}<br><br>`;
+    });
+    await addBotMessage(text);
 };
 
-/* ============ 5) قائمة الأسئلة ============ */
 window.showQuestionMenu = async function() {
     await addBotMessage('❓ اتفضل اختار سؤالك:');
     setInputMode('hidden');
@@ -2163,7 +2164,8 @@ window.showQuestionMenu = async function() {
         { label: 'بكرة عندي إيه؟', icon: '📅', value: 'tomorrow' },
         { label: 'عناوين مجموعاتي فين؟', icon: '📍', value: 'addresses' },
         { label: 'عندي كام مجموعة؟', icon: '📊', value: 'count' },
-        { label: 'الأسبوع كله', icon: '🗓️', value: 'week' }
+        { label: 'الأسبوع كله', icon: '🗓️', value: 'week' },
+        { label: '⚡ اسأل AI سؤال حر', icon: '⚡', value: 'ai' }
     ], async (opt) => {
         if (opt.value === 'next') await showNextClass();
         else if (opt.value === 'today') await showTodayClasses();
@@ -2171,138 +2173,61 @@ window.showQuestionMenu = async function() {
         else if (opt.value === 'addresses') await showAllAddresses();
         else if (opt.value === 'count') await showGroupsCount();
         else if (opt.value === 'week') await showWeekSchedule();
+        else if (opt.value === 'ai') {
+            if (!aiModeActive) toggleAIMode();
+            setInputMode('text', 'اسأل AI أي حاجة...');
+        }
     });
 };
 
-/* ============ 6) حصص بكرة ============ */
 window.showTomorrowClasses = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
-    
+    await addBotMessage('📅 ثانية بشوف حصص بكرة...');
     const groups = await loadSavedGroups();
     const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowName = dayNames[tomorrow.getDay()];
     
-    await addBotMessage(`📅 ثانية بشوف حصص بكرة (${tomorrowName})...`);
+    const tGroups = groups.filter(g => g.daysNames?.[0] === tomorrowName && g.isActive !== false)
+        .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
     
-    const tomorrowGroups = groups.filter(g => 
-        g.daysNames?.[0] === tomorrowName && g.isActive !== false
-    ).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    if (tGroups.length === 0) { await addBotMessage(`مفيش حصص بكرة (${tomorrowName}) 😕`); return; }
     
-    if (tomorrowGroups.length === 0) {
-        showEmptySchedule(`مفيش حصص بكرة (${tomorrowName})`);
-        return;
-    }
-    
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>📅 حصص بكرة (${tomorrowName})</h4>
-        ${tomorrowGroups.map(g => {
-            const isRec = g.apptType === 'recurring';
-            let addressHtml = '';
-            if (g.address || g.detailedAddress) {
-                const fullAddr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
-                let mapLink = '';
-                if (g.lat && g.lng) {
-                    mapLink = `<a href="https://www.google.com/maps?q=${g.lat},${g.lng}" target="_blank" class="map-link">🗺️ افتح على الخريطة</a>`;
-                }
-                addressHtml = `
-                    <div class="si-address">
-                        <span>📍</span>
-                        <div style="flex:1;">
-                            <div>${fullAddr}</div>
-                            ${mapLink}
-                        </div>
-                    </div>
-                `;
-            }
-            return `
-                <div class="schedule-item ${isRec ? 'rec' : ''}">
-                    <div class="si-name">${g.groupName}</div>
-                    <div class="si-info">
-                        <span>🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span>
-                        <span>${isRec ? '🔁 أسبوعي' : '📅 مرة واحدة'}</span>
-                    </div>
-                    ${addressHtml}
-                </div>
-            `;
-        }).join('')}
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    let text = `📅 <b>حصص بكرة (${tomorrowName}):</b><br><br>`;
+    tGroups.forEach((g, i) => {
+        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
+        text += `${i+1}. <b>${g.groupName}</b><br>`;
+        text += `   🕐 ${formatTime(g.startTime)} - ${formatTime(g.endTime)}<br>`;
+        text += `   📍 ${addr}<br><br>`;
+    });
+    await addBotMessage(text);
 };
 
-/* ============ 7) عدد المجموعات ============ */
 window.showGroupsCount = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('📊 ثانية بحسبلك مجموعاتك...');
-    
     const groups = await loadSavedGroups();
     const visible = groups.filter(g => g.isActive !== false).length;
     const hidden = groups.length - visible;
     const recurring = groups.filter(g => g.apptType === 'recurring').length;
     const normal = groups.length - recurring;
-    const totalCapacity = groups.reduce((sum, g) => sum + (parseInt(g.maxCapacity) || 0), 0);
+    const totalCapacity = groups.reduce((s, g) => s + (parseInt(g.maxCapacity) || 0), 0);
     
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <h4>📊 إحصائيات مجموعاتك</h4>
-        <div class="schedule-item" style="border-right-color:#10b981;background:#f0fdf4;">
-            <div class="si-info" style="font-size:13px;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;">
-                    <span>📚 إجمالي المجموعات</span>
-                    <b style="color:#065f46;font-size:15px;">${groups.length}</b>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span>👁️ ظاهرة للطلبة</span>
-                    <b style="color:#065f46;">${visible}</b>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span>🙈 مخفية</span>
-                    <b style="color:#dc2626;">${hidden}</b>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span>🔁 تكرار أسبوعي</span>
-                    <b style="color:#7c3aed;">${recurring}</b>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span>📅 مرة واحدة</span>
-                    <b style="color:#2563eb;">${normal}</b>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px dashed #e2e8f0;">
-                    <span>👥 إجمالي السعة</span>
-                    <b style="color:#065f46;font-size:15px;">${totalCapacity} طالب</b>
-                </div>
-            </div>
-        </div>
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
+    await addBotMessage(
+        `📊 <b>إحصائيات مجموعاتك:</b><br><br>` +
+        `📚 إجمالي المجموعات: <b>${groups.length}</b><br>` +
+        `👁️ ظاهرة: <b>${visible}</b><br>` +
+        `🙈 مخفية: <b>${hidden}</b><br>` +
+        `🔁 تكرار أسبوعي: <b>${recurring}</b><br>` +
+        `📅 مرة واحدة: <b>${normal}</b><br>` +
+        `👥 إجمالي السعة: <b>${totalCapacity}</b> طالب`
+    );
 };
-
-/* ============ عرض فاضي ============ */
-function showEmptySchedule(msg) {
-    const widget = document.createElement('div');
-    widget.className = 'schedule-widget';
-    widget.innerHTML = `
-        <div class="schedule-empty">
-            <span class="icon">📭</span>
-            <p>${msg}</p>
-        </div>
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
-}
 
 /* ============ التهيئة ============ */
 async function init() {
     if (!checkSubject()) return;
     
     hideQuickActions();
-    await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة. جاوب على الأسئلة في الشات وهتشوف بياناتك بتتسجل على اليمين 📋');
+    await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة.<br><br>💡 <b>نصيحة:</b> دوس على زرار <b>⚡ AI</b> فوق عشان تكلم المساعد الذكي في أي وقت!');
     await stepGroupName();
     await updateHeaderBadge();
     await refreshSidebarGroups();
