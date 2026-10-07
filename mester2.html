@@ -603,6 +603,48 @@
   }
 
   // ==========================================
+  // 📍 قراءة العنوان الفعلي من location-text
+  // ==========================================
+  function getCurrentAddressFromUI() {
+      try {
+          const locTextEl = document.getElementById('location-text');
+          if (!locTextEl) return { street: '', fullText: '' };
+
+          // 1) نقرأ من dataset أول
+          let street = (locTextEl.dataset && locTextEl.dataset.street)
+              ? locTextEl.dataset.street.trim()
+              : '';
+
+          // 2) لو فاضي، نقرأ النص الظاهر
+          const fullText = (locTextEl.textContent || '').trim();
+
+          if (!street && fullText) {
+              // نشيل الإيموجي والبادئات
+              street = fullText
+                  .replace(/📍/g, '')
+                  .replace(/⏳/g, '')
+                  .replace(/✅/g, '')
+                  .replace(/تم تأكيد الموقع:/g, '')
+                  .replace(/موقعك الفعلي:/g, '')
+                  .replace(/جاري تحديد اسم الشارع والموقع\.\.\./g, '')
+                  .replace(/جاري التعرف على اسم الشارع\.\.\./g, '')
+                  .replace(/جاري تحديد الإحداثيات بدقة\.\.\./g, '')
+                  .replace(/جلب إشارة الأقمار\.\.\./g, '')
+                  .trim();
+          }
+
+          // 3) لو لسه فاضي، نتجاهل الرسائل الافتراضية
+          if (street.includes('يرجى تحديد الموقع')) street = '';
+          if (street.includes('تأكد من تفعيل')) street = '';
+
+          return { street, fullText };
+      } catch(e) {
+          console.warn('⚠️ خطأ في قراءة العنوان:', e);
+          return { street: '', fullText: '' };
+      }
+  }
+
+  // ==========================================
   // 🏫 إظهار/إخفاء حقل اسم السنتر
   // ==========================================
   window.toggleCenterNameField = function() {
@@ -742,6 +784,8 @@
                           textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                       }
                       textDisplay.style.color = '#1b736a';
+
+                      console.log('📍 العنوان اللي اتحدد:', street || '(بدون اسم شارع)');
 
                       setTimeout(() => {
                         const popupText = street ? `📍 ${street}` : '✅ موقعك الحالي الدقيق';
@@ -1066,16 +1110,12 @@
           } catch(e) { savedAppts = []; }
 
           savedAppts.push({
-              // الفئة
               gender: appt.gender,
               genderAllowed: appt.genderAllowed,
-              // المكان
               type: appt.type,
               location: appt.location,
-              // المادة والصف
               subject: appt.subject,
               grade: appt.grade,
-              // الوقت واليوم
               startTime: appt.startTime || '',
               endTime: appt.endTime || '',
               start: appt.start || appt.startTime || '',
@@ -1083,14 +1123,11 @@
               dayName: appt.dayName || '',
               daysNames: appt.daysNames || [],
               date: appt.date || '',
-              apptType: appt.apptType || appt.type2 || 'normal',
-              // السعة
+              apptType: appt.apptType || 'normal',
               capacity: appt.capacity || 20,
-              // بيانات إضافية
               groupName: appt.groupName || '',
               teacherName: appt.teacherName || '',
               centerName: appt.centerName || '',
-              // ✅ العنوان الكامل والتفاصيل من تحديد الموقع
               fullAddress: appt.fullAddress || '',
               detailedAddress: appt.detailedAddress || '',
               street: appt.street || '',
@@ -1104,14 +1141,12 @@
           localStorage.setItem('last_selected_location', appt.location);
 
           console.log('✅ تم حفظ تفاصيل الحصة في الملخص:', savedAppts.length, 'حصة');
+          console.log('📍 العنوان المحفوظ:', appt.fullAddress || appt.street || '(فاضي)');
       } catch(e) {
           console.warn('⚠️ فشل حفظ ملخص التذكرة:', e);
       }
   }
 
-  // ==========================================
-  // 📋 حذف حصة من الملخص
-  // ==========================================
   function removeApptFromSummary() {
       try {
           const summaryKey = 'teacher_appointments_summary';
@@ -1197,7 +1232,15 @@
       const genderAllowed = appt.genderAllowed || document.querySelector('input[name="gender"]:checked').value;
       const location = locationChecked;
       const gpsLocation = document.getElementById('gps-coords').value;
-      const street = appt.street || document.getElementById('location-text').dataset.street || '';
+
+      // ✅✅✅ السطر المهم — قراءة العنوان الفعلي من UI ✅✅✅
+      const uiAddress = getCurrentAddressFromUI();
+      let street = uiAddress.street || appt.street || '';
+
+      console.log('🔍 قراءة العنوان من UI:');
+      console.log('   النص الظاهر:', uiAddress.fullText);
+      console.log('   الشارع المستخرج:', street);
+
       const detailedAddress = appt.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '';
       const fullAddress = [street, detailedAddress].filter(Boolean).join(' - ');
 
@@ -1262,7 +1305,16 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          // ✅ حفظ التفاصيل الكاملة للحصة في الملخص (بما فيها العنوان)
+          // ✅ نحفظ التفاصيل الكاملة في الملخص
+          const finalStreet = street || '';
+          const finalFullAddress = fullAddress || street || '';
+          const finalDetailedAddress = detailedAddress || '';
+
+          console.log('💾 الحفظ في الملخص:');
+          console.log('   street:', finalStreet);
+          console.log('   detailedAddress:', finalDetailedAddress);
+          console.log('   fullAddress:', finalFullAddress);
+
           saveApptToSummary({
               gender: genderMapped,
               genderAllowed: genderAllowed,
@@ -1280,10 +1332,9 @@
               groupName: groupName,
               teacherName: teacherName,
               centerName: centerName,
-              // ✅ العنوان الكامل والتفاصيل
-              fullAddress: fullAddress || '',
-              detailedAddress: detailedAddress || '',
-              street: street || '',
+              fullAddress: finalFullAddress,
+              detailedAddress: finalDetailedAddress,
+              street: finalStreet,
               lat: lat,
               lng: lng
           });
@@ -1744,7 +1795,11 @@
     const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
     const location = locationChecked;
     const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
-    const street = document.getElementById('location-text').dataset.street || '';
+
+    // ✅ نقرأ العنوان من الـ UI مباشرة
+    const uiAddress = getCurrentAddressFromUI();
+    const street = uiAddress.street || '';
+
     const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
 
     const newApptObj = { 
