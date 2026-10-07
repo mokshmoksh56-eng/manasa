@@ -1414,9 +1414,9 @@
                 localStorage.removeItem('teacher_is_blocked');
 
                 closeLogoutModal();
-                setTimeout(() => { window.location.replace('teacher-login.html'); }, 250);
+                setTimeout(() => { window.location.href = 'teacher-login.html'; }, 250);
             } catch(e) {
-                window.location.replace('teacher-login.html');
+                window.location.href = 'teacher-login.html';
             }
         };
 
@@ -1497,7 +1497,6 @@
                     window.setCloudStatus(true, 'متصل ☁️');
                 }
 
-                // 1) مزامنة بيانات المعلم فورياً
                 firebase.subscribeTeacherData(teacherPhone, (cloudData) => {
                     console.log('🔄 استقبلت تحديث من جهاز آخر');
                     
@@ -1551,7 +1550,6 @@
                     }
                 });
 
-                // 2) مزامنة المجموعات فورياً
                 firebase.subscribeGroups((allGroups) => {
                     const myGroups = allGroups.filter(g => g.phone === teacherPhone);
                     const currentCount = parseInt(localStorage.getItem('teacher_groups_count') || '0');
@@ -1586,14 +1584,13 @@
         })();
     </script>
 
-    <!-- 🔒 منع الرجوع للصفحات السابقة + حفظ البيانات -->
+    <!-- ==========================================================
+         🔒 زر الرجوع من mester3 → teacher-login.html
+         ✅ ملاحظة مهمة: شيلنا pushState عشان التنقل يشتغل صح
+         ========================================================== -->
     <script>
     (function() {
         'use strict';
-
-        try {
-            history.pushState({ page: 'mester3' }, '', location.href);
-        } catch(e) {}
 
         function saveDataBeforeExit() {
             try {
@@ -1616,12 +1613,9 @@
             } catch(err) {}
         }
 
+        // ✅ زر الرجوع من mester3 → يروح teacher-login.html
         window.addEventListener('popstate', function(e) {
-            try {
-                history.pushState({ page: 'mester3' }, '', location.href);
-            } catch(err) {}
-            
-            console.log('🔒 رجوع من mester3 — توجيه لتسجيل الدخول');
+            console.log('🔒 رجوع من mester3 → teacher-login');
             
             saveDataBeforeExit();
             
@@ -1631,22 +1625,7 @@
                 localStorage.removeItem('teacher_is_blocked');
             } catch(err) {}
             
-            window.location.replace('teacher-login.html');
-        });
-
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                console.log('🔒 الصفحة رجعت من cache — توجيه لتسجيل الدخول');
-                saveDataBeforeExit();
-                
-                try {
-                    localStorage.removeItem('current_teacher_phone');
-                    localStorage.removeItem('current_teacher_profile');
-                    localStorage.removeItem('teacher_is_blocked');
-                } catch(err) {}
-                
-                window.location.replace('teacher-login.html');
-            }
+            window.location.href = 'teacher-login.html';
         });
 
     })();
