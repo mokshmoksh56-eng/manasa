@@ -86,9 +86,7 @@
     .cloud-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulseDot 1.5s infinite; }
     @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* ========================================================== */
     /* ✨ شريط المستخدم (اسم + تسجيل خروج تحت) */
-    /* ========================================================== */
     .user-bar {
         display: flex;
         align-items: center;
@@ -301,7 +299,7 @@
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
 
     /* ========================================================== */
-    /* 📝 جدول التذكير الصغير تحت خالص */
+    /* 📝 جدول التذكير الصغير */
     /* ========================================================== */
     .reminder-table {
         margin-top: 24px;
@@ -327,9 +325,7 @@
         align-items: center;
         gap: 6px;
     }
-    .reminder-table .rt-title .rt-icon {
-        font-size: 14px;
-    }
+    .reminder-table .rt-title .rt-icon { font-size: 14px; }
     .reminder-table table {
         width: 100%;
         border-collapse: collapse;
@@ -337,21 +333,24 @@
     }
     .reminder-table table th {
         text-align: right;
-        padding: 6px 8px;
+        padding: 7px 8px;
         background: #f1f5f9;
         color: var(--text-dark);
         font-weight: 900;
         border-radius: 6px 0 0 6px;
         font-size: 11px;
-        width: 35%;
+        width: 32%;
+        vertical-align: top;
+        white-space: nowrap;
     }
     .reminder-table table td {
-        padding: 6px 8px;
+        padding: 7px 8px;
         color: var(--text-dark);
         font-weight: 800;
         font-size: 11.5px;
-        line-height: 1.5;
+        line-height: 1.6;
         word-break: break-word;
+        vertical-align: top;
     }
     .reminder-table table tr {
         border-bottom: 1px dashed #e2e8f0;
@@ -359,6 +358,45 @@
     .reminder-table table tr:last-child {
         border-bottom: none;
     }
+
+    /* شارات داخل الجدول */
+    .reminder-table .rt-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 900;
+        margin: 1px 2px 1px 0;
+        white-space: nowrap;
+    }
+    .reminder-table .rt-chip.blue {
+        background: #DBEAFE;
+        color: #1E40AF;
+        border: 1px solid #93C5FD;
+    }
+    .reminder-table .rt-chip.purple {
+        background: #EDE9FE;
+        color: #5B21B6;
+        border: 1px solid #C4B5FD;
+    }
+    .reminder-table .rt-chip.green {
+        background: #D1FAE5;
+        color: #065F46;
+        border: 1px solid #6EE7B7;
+    }
+    .reminder-table .rt-chip.orange {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FCD34D;
+    }
+    .reminder-table .rt-chip.gray {
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #cbd5e1;
+    }
+
     .reminder-table .rt-badge {
         display: inline-flex;
         align-items: center;
@@ -446,6 +484,7 @@
         .reminder-table table { font-size: 10.5px; }
         .reminder-table table th,
         .reminder-table table td { padding: 5px 6px; font-size: 10.5px; }
+        .reminder-table .rt-chip { font-size: 9px; padding: 2px 6px; }
     }
 </style>
 </head>
@@ -485,7 +524,7 @@
         <h1>منصة احجزلي</h1>
         <p>بوابة المعلم - اختر القسم للبدء</p>
 
-        <!-- ✨ شريط المستخدم (اسم + تسجيل خروج تحت) -->
+        <!-- ✨ شريط المستخدم -->
         <div class="user-bar">
             <div class="user-badge" id="userBadge" style="display:none;">
                 <span>👤</span>
@@ -529,7 +568,7 @@
             </a>
         </div>
 
-        <!-- 📝 جدول التذكير الصغير -->
+        <!-- 📝 جدول التذكرة الصغير -->
         <div class="reminder-table" id="reminderTable">
             <div class="rt-title">
                 <span class="rt-icon">📋</span>
@@ -537,12 +576,20 @@
             </div>
             <table>
                 <tr>
-                    <th>📚 التخصص</th>
-                    <td id="rtSpecialty">لم يتم اختيار تخصص بعد</td>
+                    <th>📚 المواد</th>
+                    <td id="rtSubjects"><span class="rt-chip gray">— لا توجد مواد —</span></td>
                 </tr>
                 <tr>
                     <th>📅 عدد الحصص</th>
-                    <td id="rtSchedule">0 حصة</td>
+                    <td id="rtSchedule"><span class="rt-chip gray">📅 0 حصة</span></td>
+                </tr>
+                <tr>
+                    <th>👥 الفئات</th>
+                    <td id="rtGenders"><span class="rt-chip gray">— لم تُحدد —</span></td>
+                </tr>
+                <tr>
+                    <th>📍 الأماكن</th>
+                    <td id="rtLocations"><span class="rt-chip gray">— لم يُحدد —</span></td>
                 </tr>
                 <tr>
                     <th>✅ الحالة</th>
@@ -698,59 +745,130 @@
         }
 
         // ==========================================================
-        // 📝 تحديث جدول التذكير الصغير
+        // 📝 تحديث جدول التذكرة الصغير
         // ==========================================================
         function updateReminderTable() {
             try {
-                const rtSpecialty = document.getElementById('rtSpecialty');
+                const rtSubjects = document.getElementById('rtSubjects');
                 const rtSchedule = document.getElementById('rtSchedule');
+                const rtGenders = document.getElementById('rtGenders');
+                const rtLocations = document.getElementById('rtLocations');
                 const rtStatus = document.getElementById('rtStatus');
-                if (!rtSpecialty || !rtSchedule || !rtStatus) return;
+                if (!rtSubjects || !rtSchedule || !rtGenders || !rtLocations || !rtStatus) return;
 
-                // === التخصص ===
+                // ============ 1) المواد ============
                 const saved = localStorage.getItem('mester1_selections') 
                            || localStorage.getItem('teacherSelections');
                 
-                let specialtyText = 'لم يتم اختيار تخصص بعد';
                 let hasSpecialty = false;
+                let subjectsChips = [];
 
                 try {
                     const data = saved ? JSON.parse(saved) : null;
                     if (data && Object.keys(data).length > 0) {
-                        const stageNames = {
-                            'kg': 'رياض الأطفال',
-                            'primary': 'الابتدائية',
-                            'prep': 'الإعدادية',
-                            'secondary': 'الثانوية',
-                            'azhar': 'الأزهرية',
-                            'azhar_secondary': 'الأزهرية الثانوية'
-                        };
-
-                        let parts = [];
                         for (const stageId in data) {
                             const sel = data[stageId];
                             if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
                             if (!sel.grade || sel.grade.trim() === '') continue;
 
-                            const stageName = stageNames[stageId] || stageId;
-                            parts.push(`${stageName} - ${sel.grade} (${sel.subjects.length} مادة)`);
                             hasSpecialty = true;
-                        }
-
-                        if (parts.length > 0) {
-                            specialtyText = parts.join(' • ');
+                            sel.subjects.forEach(sub => {
+                                subjectsChips.push(`<span class="rt-chip blue">📖 ${sub}</span>`);
+                            });
                         }
                     }
                 } catch(e) {}
 
-                rtSpecialty.textContent = specialtyText;
+                if (subjectsChips.length > 0) {
+                    rtSubjects.innerHTML = subjectsChips.join('');
+                } else {
+                    rtSubjects.innerHTML = '<span class="rt-chip gray">— لا توجد مواد —</span>';
+                }
 
-                // === المواعيد ===
+                // ============ 2) عدد الحصص ============
                 const countStr = localStorage.getItem('teacher_groups_count') || '0';
                 const count = parseInt(countStr) || 0;
-                rtSchedule.textContent = `${count} حصة`;
+                rtSchedule.innerHTML = count > 0 
+                    ? `<span class="rt-chip green">📅 ${count} حصة</span>` 
+                    : `<span class="rt-chip gray">📅 0 حصة</span>`;
 
-                // === الحالة العامة ===
+                // ============ 3) الفئات والأماكن ============
+                let genders = new Set();
+                let locations = new Set();
+
+                try {
+                    const apptRaw = localStorage.getItem('teacher_appointments_summary');
+                    if (apptRaw) {
+                        const appts = JSON.parse(apptRaw);
+                        appts.forEach(a => {
+                            if (a.gender === 'boys' || a.genderAllowed === 'أولاد فقط') genders.add('boys');
+                            else if (a.gender === 'girls' || a.genderAllowed === 'بنات فقط') genders.add('girls');
+                            else if (a.gender === 'all' || a.genderAllowed === 'مختلط') genders.add('mixed');
+
+                            if (a.type === 'center' || a.location === 'السنتر') locations.add('center');
+                            else if (a.type === 'teacher_home' || a.location === 'بيت المستر') locations.add('teacher');
+                            else if (a.type === 'student_home' || a.location === 'منزل الطالب') locations.add('student');
+                        });
+                    }
+                } catch(e) {}
+
+                // fallback
+                if (genders.size === 0) {
+                    const lastGender = localStorage.getItem('last_selected_gender');
+                    if (lastGender) {
+                        if (lastGender === 'أولاد فقط') genders.add('boys');
+                        else if (lastGender === 'بنات فقط') genders.add('girls');
+                        else genders.add('mixed');
+                    }
+                }
+                if (locations.size === 0) {
+                    const lastLocation = localStorage.getItem('last_selected_location');
+                    if (lastLocation) {
+                        if (lastLocation === 'السنتر') locations.add('center');
+                        else if (lastLocation === 'بيت المستر') locations.add('teacher');
+                        else if (lastLocation === 'منزل الطالب') locations.add('student');
+                    }
+                }
+
+                // عرض الفئات
+                const genderLabels = {
+                    'boys': { icon: '👨‍🎓', label: 'أولاد' },
+                    'girls': { icon: '👩‍🎓', label: 'بنات' },
+                    'mixed': { icon: '👫', label: 'مختلط' }
+                };
+
+                if (genders.size > 0) {
+                    let chips = [];
+                    genders.forEach(g => {
+                        if (genderLabels[g]) {
+                            chips.push(`<span class="rt-chip purple">${genderLabels[g].icon} ${genderLabels[g].label}</span>`);
+                        }
+                    });
+                    rtGenders.innerHTML = chips.join('');
+                } else {
+                    rtGenders.innerHTML = '<span class="rt-chip gray">— لم تُحدد —</span>';
+                }
+
+                // عرض الأماكن
+                const locationLabels = {
+                    'center': { icon: '🏫', label: 'السنتر' },
+                    'teacher': { icon: '🏠', label: 'بيت المستر' },
+                    'student': { icon: '🚗', label: 'منزل الطالب' }
+                };
+
+                if (locations.size > 0) {
+                    let chips = [];
+                    locations.forEach(l => {
+                        if (locationLabels[l]) {
+                            chips.push(`<span class="rt-chip orange">${locationLabels[l].icon} ${locationLabels[l].label}</span>`);
+                        }
+                    });
+                    rtLocations.innerHTML = chips.join('');
+                } else {
+                    rtLocations.innerHTML = '<span class="rt-chip gray">— لم يُحدد —</span>';
+                }
+
+                // ============ 4) الحالة ============
                 let statusHtml = '';
                 if (hasSpecialty && count > 0) {
                     statusHtml = '<span class="rt-badge green">✅ مكتمل</span>';
@@ -764,7 +882,7 @@
                 rtStatus.innerHTML = statusHtml;
 
             } catch(e) {
-                console.warn('⚠️ فشل تحديث جدول التذكير:', e);
+                console.warn('⚠️ فشل تحديث جدول التذكرة:', e);
             }
         }
 
@@ -806,6 +924,9 @@
                 localStorage.removeItem('mester1_is_locked');
                 localStorage.removeItem('teacher_groups_count');
                 localStorage.removeItem('selected_contact_type');
+                localStorage.removeItem('teacher_appointments_summary');
+                localStorage.removeItem('last_selected_gender');
+                localStorage.removeItem('last_selected_location');
                 closeLogoutModal();
                 setTimeout(() => { window.location.href = 'teacher-login.html'; }, 250);
             } catch(e) {
