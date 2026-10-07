@@ -69,6 +69,37 @@
     .back-btn-header:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
     .back-btn-header:active { transform: scale(0.96); }
 
+    .cloud-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+        z-index: 100;
+    }
+    .cloud-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22C55E;
+        box-shadow: 0 0 8px #22C55E;
+        animation: pulseDot 1.5s infinite;
+    }
+    .cloud-badge.offline .dot { background: #DC2626; box-shadow: 0 0 8px #DC2626; animation: none; }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
     .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
     .step-num {
@@ -404,6 +435,12 @@
         <span>🏠</span>
         <span class="back-label">الرئيسية</span>
     </a>
+
+    <div class="cloud-badge" id="cloudBadge">
+        <span class="dot"></span>
+        <span>متصل</span>
+    </div>
+
     <h1 id="page-header-title">إعداد تفاصيل المجموعة والمواعيد</h1>
     <div class="stepper">
         <div class="step">1. التخصص</div>
@@ -620,8 +657,8 @@
     deleteGroup, 
     updateGroup,
     saveTeacherData,
-    subscribeTeacherData,    // ⭐ جديد - مزامنة فورية
-    subscribeGroups          // ⭐ جديد - مزامنة فورية للمجموعات
+    subscribeTeacherData,
+    subscribeGroups
   } from './firebase-config.js';
 
   // ==========================================
@@ -1137,7 +1174,7 @@
   }
 
   // ==========================================
-  // 📋 حفظ التفاصيل الكاملة للحصة في localStorage
+  // 📋 حفظ التفاصيل الكاملة للحصة
   // ==========================================
   function saveApptToSummary(appt) {
       try {
@@ -1273,10 +1310,6 @@
 
       const uiAddress = getCurrentAddressFromUI();
       let street = uiAddress.street || appt.street || '';
-
-      console.log('🔍 قراءة العنوان من UI:');
-      console.log('   النص الظاهر:', uiAddress.fullText);
-      console.log('   الشارع المستخرج:', street);
 
       const detailedAddress = appt.detailedAddress || document.getElementById('detailed-address')?.value.trim() || '';
       const fullAddress = [street, detailedAddress].filter(Boolean).join(' - ');
@@ -1887,10 +1920,7 @@
   async function pushDataToCloud() {
       try {
           const phone = localStorage.getItem('current_teacher_phone');
-          if (!phone) {
-              console.log('⚠️ لا يوجد رقم معلم — تخطي الرفع');
-              return;
-          }
+          if (!phone) return;
           
           await saveTeacherData(phone, {
               teacherSelections: localStorage.getItem('teacherSelections'),
@@ -1907,7 +1937,6 @@
       }
   }
 
-  // ✅ رفع عند أي تغيير في localStorage
   const originalSetItem = localStorage.setItem.bind(localStorage);
   localStorage.setItem = function(key, value) {
       originalSetItem(key, value);
@@ -1928,7 +1957,7 @@
   };
 
   // ==========================================================
-  // 🔄 بادج المزامنة (يظهر لما يستقبل تحديث من جهاز آخر)
+  // 🔄 بادج المزامنة
   // ==========================================================
   function showSyncBadge(message = 'تمت المزامنة من جهاز آخر') {
       const badge = document.getElementById('syncBadge');
@@ -1944,7 +1973,7 @@
   }
 
   // ==========================================================
-  // ✅✅✅ المزامنة الفورية 100% بين الأجهزة ✅✅✅
+  // ✅✅✅ المزامنة الفورية 100% ✅✅✅
   // ==========================================================
   function setupRealtimeSync() {
       const teacherPhone = localStorage.getItem('current_teacher_phone');
@@ -1956,9 +1985,7 @@
 
       console.log('🔄 تشغيل المزامنة الفورية...');
 
-      // ==================================================
       // 1) مزامنة المجموعات فورياً
-      // ==================================================
       subscribeGroups((allGroups) => {
           const myGroups = allGroups.filter(g => g.phone === teacherPhone);
           console.log(`🔄 مزامنة فورية: ${myGroups.length} مجموعة`);
@@ -1997,15 +2024,12 @@
           updateGroupsCount(myGroups);
       });
 
-      // ==================================================
-      // 2) مزامنة بيانات المعلم فورياً (teacher_data)
-      // ==================================================
+      // 2) مزامنة بيانات المعلم فورياً
       subscribeTeacherData(teacherPhone, (cloudData) => {
           console.log('🔄 استقبلت تحديث من جهاز آخر');
           
           let needUpdate = false;
 
-          // نحدّث localStorage بالبيانات الجديدة
           if (cloudData.teacher_appointments_summary) {
               const current = localStorage.getItem('teacher_appointments_summary');
               if (current !== cloudData.teacher_appointments_summary) {
@@ -2037,7 +2061,6 @@
               console.log('✅ تم تحديث البيانات من السحابة');
               showSyncBadge('تمت المزامنة من جهاز آخر');
               
-              // نحدّث واجهة المادة
               const subjectDisplay = document.getElementById('fixed-subject');
               const savedData = localStorage.getItem('teacherSelections');
               if (savedData && subjectDisplay) {
@@ -2096,14 +2119,58 @@
       
       window.loadLocalPublishedSlots();
 
-      // ✅ رفع أول ما الصفحة تفتح (بعد 2 ثانية)
       setTimeout(pushDataToCloud, 2000);
-
-      // ✅✅✅ تشغيل المزامنة الفورية 100%
       setTimeout(setupRealtimeSync, 1500);
   }
 
   initApp();
+</script>
+
+<!-- ==========================================================
+     ✅✅✅ زر الرجوع العادي بتاع المتصفح يروح لـ mester3 ✅✅✅
+     ========================================================== -->
+<script>
+(function() {
+    'use strict';
+
+    function saveBeforeBack() {
+        try {
+            const phone = localStorage.getItem('current_teacher_phone');
+            const profile = localStorage.getItem('current_teacher_profile');
+            
+            if (phone) localStorage.setItem('teacher_saved_phone', phone);
+            if (profile) localStorage.setItem('teacher_saved_profile', profile);
+
+            const backup = {
+                teacherSelections: localStorage.getItem('teacherSelections'),
+                mester1_selections: localStorage.getItem('mester1_selections'),
+                mester1_is_locked: localStorage.getItem('mester1_is_locked'),
+                teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+                teacher_groups_count: localStorage.getItem('teacher_groups_count'),
+                last_selected_gender: localStorage.getItem('last_selected_gender'),
+                last_selected_location: localStorage.getItem('last_selected_location')
+            };
+            localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
+        } catch(e) {}
+    }
+
+    // ✅ لما المستخدم يضغط زر الرجوع → تروح لـ mester3
+    window.addEventListener('popstate', function(e) {
+        saveBeforeBack();
+        console.log('🔙 رجوع من mester2 → mester3');
+        window.location.replace('mester3.html');
+    });
+
+    // ✅ لو الصفحة رجعت من cache → تروح mester3
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            saveBeforeBack();
+            console.log('🔙 الصفحة رجعت من cache → mester3');
+            window.location.replace('mester3.html');
+        }
+    });
+
+})();
 </script>
 
 </body>
