@@ -144,7 +144,7 @@
         background: linear-gradient(135deg, var(--light-teal), var(--border-teal));
         border: 2px solid var(--border-teal);
         box-shadow: 0 4px 12px -4px rgba(0,150,136,0.3);
-        transition: transform 0.3s ease; position: relative;
+        transition: transform 0.3s ease;
     }
     .launcher-card:hover .card-icon { transform: scale(1.08) rotate(-3deg); }
     .launcher-card.schedule-card .card-icon { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #FCD34D; box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4); }
@@ -152,33 +152,6 @@
     .card-content { flex: 1; min-width: 0; }
     .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
-
-    .groups-counter {
-        display: inline-flex; align-items: center; gap: 5px;
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff; font-size: 11.5px; font-weight: 900;
-        padding: 5px 11px; border-radius: 20px;
-        box-shadow: 0 3px 8px rgba(245,158,11,0.4);
-        margin-top: 6px;
-        animation: counterPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .groups-counter .counter-num {
-        background: rgba(255,255,255,0.25); padding: 0 6px;
-        border-radius: 10px; font-size: 12.5px; min-width: 20px; text-align: center;
-    }
-    @keyframes counterPop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-    .card-status {
-        display: inline-flex; align-items: center; gap: 4px;
-        background: #10B981; color: #fff;
-        font-size: 10.5px; font-weight: 900;
-        padding: 4px 10px; border-radius: 20px;
-        box-shadow: 0 2px 6px rgba(16,185,129,0.4);
-        white-space: nowrap; margin-top: 6px; margin-left: 6px;
-    }
-    .card-status.pending { background: var(--orange); box-shadow: 0 2px 6px rgba(245,158,11,0.4); animation: badgePulse 2s infinite; }
-    .card-status.locked { background: #94A3B8; box-shadow: 0 2px 6px rgba(148,163,184,0.4); }
-    @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 
     .card-arrow {
         width: 36px; height: 36px; border-radius: 50%;
@@ -188,21 +161,6 @@
     }
     .launcher-card:hover .card-arrow { background: var(--primary-teal); color: #fff; transform: translateX(-4px); }
     .launcher-card.schedule-card:hover .card-arrow { background: var(--orange); color: #fff; }
-
-    /* شاشة الحماية */
-    .security-overlay {
-        position: fixed; inset: 0;
-        background: linear-gradient(135deg, #009688 0%, #00695c 100%);
-        z-index: 99999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: #fff; gap: 20px;
-        transition: opacity 0.3s ease;
-    }
-    .security-overlay.hide { opacity: 0; pointer-events: none; }
-    .security-spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .security-overlay h2 { font-size: 20px; font-weight: 900; }
-    .security-overlay p { font-size: 14px; opacity: 0.9; }
 
     /* توست */
     .toast-notice {
@@ -241,9 +199,7 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 34px; margin: 0 auto 16px;
         box-shadow: 0 6px 18px -4px rgba(220,38,38,0.35);
-        animation: logoutIconPulse 1.5s ease-in-out infinite;
     }
-    @keyframes logoutIconPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
     .logout-modal-box h3 { font-size: 18px; font-weight: 900; color: #7F1D1D; margin-bottom: 8px; }
     .logout-modal-box p { font-size: 13.5px; font-weight: 700; color: #64748B; line-height: 1.6; margin-bottom: 22px; }
     .logout-modal-actions { display: flex; gap: 10px; }
@@ -253,11 +209,9 @@
         cursor: pointer; border: none; transition: all 0.2s;
     }
     .logout-btn-confirm { background: linear-gradient(135deg, #DC2626, #991B1B); color: #fff; box-shadow: 0 6px 15px -4px rgba(220,38,38,0.6); }
-    .logout-btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -4px rgba(220,38,38,0.8); }
-    .logout-btn-confirm:active { transform: scale(0.97); }
+    .logout-btn-confirm:hover { transform: translateY(-2px); }
     .logout-btn-cancel { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
     .logout-btn-cancel:hover { background: #e2e8f0; transform: translateY(-2px); }
-    .logout-btn-cancel:active { transform: scale(0.97); }
 
     .footer-note {
         text-align: center; margin-top: 24px;
@@ -271,15 +225,6 @@
         font-size: 10.5px; margin-top: 6px;
         border: 1px solid #e2e8f0;
     }
-
-    .skeleton-counter {
-        display: inline-block; width: 90px; height: 22px;
-        background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-        background-size: 200% 100%;
-        animation: skeletonLoad 1.5s infinite;
-        border-radius: 20px; margin-top: 6px;
-    }
-    @keyframes skeletonLoad { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     @media (max-width: 480px) {
         .header-3d { padding: 26px 15px 36px; }
@@ -309,14 +254,7 @@
         <div class="decorative-lines"></div>
     </div>
 
-    <!-- ✅ شاشة الحماية (تشتغل هنا فقط) -->
-    <div class="security-overlay" id="securityOverlay">
-        <div class="security-spinner"></div>
-        <h2>جاري التحقق من الجهاز...</h2>
-        <p>منصة احجزلي تحمي حسابك</p>
-    </div>
-
-    <!-- ✅ توست -->
+    <!-- توست -->
     <div class="toast-notice" id="toastNotice">
         <span>⚠️</span>
         <span id="toastText">تنبيه</span>
@@ -327,8 +265,8 @@
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
             <h3>تسجيل الخروج؟</h3>
-            <p>هل أنت متأكد من رغبتك في تسجيل الخروج من المنصة؟<br>
-                <small style="color:#94A3B8; font-size:11.5px;">سيتم مسح بيانات الجلسة الحالية</small>
+            <p>هل أنت متأكد من رغبتك في تسجيل الخروج؟<br>
+                <small style="color:#94A3B8; font-size:11.5px;">سيتم مسح بيانات الجلسة</small>
             </p>
             <div class="logout-modal-actions">
                 <button class="logout-btn-cancel" onclick="closeLogoutModal()">إلغاء</button>
@@ -366,30 +304,21 @@
 
         <div class="cards-grid">
             <!-- كارت التخصص -->
-            <a href="mester1.html" class="launcher-card" id="card-specialty">
+            <a href="mester1.html" class="launcher-card">
                 <div class="card-icon">📚</div>
                 <div class="card-content">
                     <div class="card-title"><span>التخصص</span></div>
                     <div class="card-subtitle">اختر الصف والمواد التي تدرسها</div>
-                    <span class="card-status pending" id="specialtyStatus">
-                        <span>⏳</span><span>مطلوب</span>
-                    </span>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
 
             <!-- كارت المواعيد -->
-            <a href="#" class="launcher-card schedule-card" id="card-schedule" onclick="openSchedule(event)">
+            <a href="mester2.html" class="launcher-card schedule-card">
                 <div class="card-icon">📅</div>
                 <div class="card-content">
                     <div class="card-title"><span>المواعيد والمجموعات</span></div>
                     <div class="card-subtitle">أضف المجموعات وحدد المواعيد والأماكن</div>
-                    <div id="groupsCounterWrapper">
-                        <span class="skeleton-counter"></span>
-                    </div>
-                    <span class="card-status locked" id="scheduleStatus">
-                        <span>🔒</span><span>يحتاج تخصص</span>
-                    </span>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
@@ -397,199 +326,15 @@
 
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
-            <div class="version">v3.2</div>
+            <div class="version">v3.3</div>
         </div>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- 🔒 سكريبت الحماية — يعمل هنا فقط -->
-    <!-- ========================================================== -->
-    <script type="module">
-        import { checkTeacherDevice, getTeacher, db, doc, updateDoc } from './firebase-config.js';
+    <script>
+    (function() {
+        'use strict';
 
-        (async () => {
-            const overlay = document.getElementById('securityOverlay');
-            const phone = localStorage.getItem('current_teacher_phone');
-
-            if (!phone) {
-                window.location.href = 'teacher-login.html';
-                return;
-            }
-
-            try {
-                let isLocked = false;
-                let teacherDoc = null;
-
-                try { teacherDoc = await getTeacher(phone); } catch (e) {
-                    console.warn('فشل جلب بيانات المعلم:', e);
-                }
-
-                if (teacherDoc) {
-                    if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
-                        const until = typeof teacherDoc.unlockUntil === 'number'
-                            ? teacherDoc.unlockUntil
-                            : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
-
-                        if (until && until <= Date.now()) {
-                            try {
-                                await updateDoc(doc(db, 'teachers', phone), {
-                                    isLocked: true, lockType: 'auto_expired', autoLockedAt: Date.now()
-                                });
-                            } catch(_) {}
-                            isLocked = true;
-                            localStorage.setItem('teacher_is_blocked', 'true');
-                        } else {
-                            localStorage.removeItem('teacher_is_blocked');
-                        }
-                    }
-                    else if (teacherDoc.isLocked === true) {
-                        isLocked = true;
-                        localStorage.setItem('teacher_is_blocked', 'true');
-                    }
-                    else {
-                        localStorage.removeItem('teacher_is_blocked');
-                    }
-                } else {
-                    if (localStorage.getItem('teacher_is_blocked') === 'true') isLocked = true;
-                }
-
-                if (isLocked) {
-                    window.location.href = 'mester2.html';
-                    return;
-                }
-
-                let check = null;
-                try { check = await checkTeacherDevice(phone); } catch (e) {
-                    console.warn('فشل فحص الجهاز:', e);
-                }
-
-                if (check && check.locked === true) {
-                    localStorage.setItem('teacher_is_blocked', 'true');
-                    window.location.href = 'mester2.html';
-                    return;
-                }
-
-                if (!check || !check.ok) {
-                    if (localStorage.getItem('teacher_is_blocked') !== 'true') {
-                        localStorage.removeItem('current_teacher_profile');
-                        localStorage.removeItem('current_teacher_phone');
-                        alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
-                        window.location.href = 'teacher-login.html';
-                        return;
-                    }
-                    return;
-                }
-
-                overlay.classList.add('hide');
-                setTimeout(() => overlay.remove(), 300);
-            } catch (e) {
-                console.error('خطأ في التحقق:', e);
-                overlay.classList.add('hide');
-                setTimeout(() => overlay.remove(), 300);
-            }
-        })();
-    </script>
-
-    <!-- ========================================================== -->
-    <!-- 🎨 سكريبت الواجهة (كروت + اسم + عداد مجموعات + خروج) -->
-    <!-- ========================================================== -->
-    <script type="module">
-        let getAllGroups = null;
-        try {
-            const m = await import('./firebase-config.js');
-            getAllGroups = m.getAllGroups;
-        } catch (e) { console.warn('فشل تحميل Firebase:', e); }
-
-        function checkSpecialtyStatus() {
-            try {
-                const raw = localStorage.getItem('mester1_selections');
-                const ts = localStorage.getItem('teacherSelections');
-                const parse = (s) => { try { return s ? JSON.parse(s) : null; } catch(e) { return null; } };
-                const data = parse(raw) || parse(ts);
-                if (!data) return false;
-                for (const sid in data) if (data[sid]?.subjects?.length > 0) return true;
-                return false;
-            } catch(e) { return false; }
-        }
-
-        function updateStatuses() {
-            const saved = checkSpecialtyStatus();
-            const s1 = document.getElementById('specialtyStatus');
-            const s2 = document.getElementById('scheduleStatus');
-
-            if (saved) {
-                s1.className = 'card-status';
-                s1.innerHTML = '<span>✅</span><span>تم الحفظ</span>';
-                s2.className = 'card-status';
-                s2.innerHTML = '<span>✅</span><span>متاح</span>';
-            } else {
-                s1.className = 'card-status pending';
-                s1.innerHTML = '<span>⏳</span><span>مطلوب</span>';
-                s2.className = 'card-status locked';
-                s2.innerHTML = '<span>🔒</span><span>يحتاج تخصص</span>';
-            }
-        }
-
-        async function loadGroupsCount() {
-            const wrapper = document.getElementById('groupsCounterWrapper');
-            if (!wrapper) return;
-
-            try {
-                const phone = localStorage.getItem('current_teacher_phone');
-                if (!phone) { wrapper.innerHTML = ''; return; }
-
-                if (!getAllGroups) {
-                    const c = localStorage.getItem('teacher_groups_count');
-                    if (c) renderCounter(wrapper, parseInt(c) || 0);
-                    else wrapper.innerHTML = '';
-                    return;
-                }
-
-                const allGroups = await getAllGroups();
-                const myGroups = (allGroups || []).filter(g => g.phone === phone);
-                const count = myGroups.length;
-
-                localStorage.setItem('teacher_groups_count', String(count));
-                renderCounter(wrapper, count);
-            } catch (e) {
-                console.warn('فشل عدد المجموعات:', e);
-                wrapper.innerHTML = '';
-            }
-        }
-
-        function renderCounter(wrapper, count) {
-            if (count > 0) {
-                wrapper.innerHTML = `<div class="groups-counter"><span>📊</span><span>عدد المجموعات:</span><span class="counter-num">${count}</span></div>`;
-            } else {
-                wrapper.innerHTML = `<div class="groups-counter" style="background:linear-gradient(135deg,#94A3B8,#64748B); box-shadow:0 3px 8px rgba(100,116,139,0.3);"><span>📊</span><span>لا توجد مجموعات بعد</span></div>`;
-            }
-        }
-
-        window.openSchedule = function(event) {
-            event.preventDefault();
-            updateStatuses();
-            if (!checkSpecialtyStatus()) {
-                showToast('⚠️ يجب حفظ التخصص أولاً قبل المواعيد');
-                setTimeout(() => { window.location.href = 'mester1.html'; }, 1200);
-                return;
-            }
-            window.location.href = 'mester2.html';
-        };
-
-        let toastTimer = null;
-        function showToast(msg, type = 'warning') {
-            const toast = document.getElementById('toastNotice');
-            const txt = document.getElementById('toastText');
-            if (!toast || !txt) return;
-            toast.classList.remove('success');
-            if (type === 'success') toast.classList.add('success');
-            txt.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-        window.showToast = showToast;
-
+        // عرض اسم المعلم
         function showTeacherName() {
             try {
                 const profile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
@@ -606,7 +351,19 @@
             } catch(e) {}
         }
 
-        // 🚪 تسجيل الخروج
+        // توست
+        let toastTimer = null;
+        window.showToast = function(msg) {
+            const toast = document.getElementById('toastNotice');
+            const txt = document.getElementById('toastText');
+            if (!toast || !txt) return;
+            txt.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+        };
+
+        // تسجيل الخروج
         window.openLogoutModal = function() {
             document.getElementById('logoutModalOverlay')?.classList.add('active');
         };
@@ -636,16 +393,10 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
-            updateStatuses();
             showTeacherName();
-            loadGroupsCount();
+            console.log('✅ mester3 جاهز (بدون حماية)');
         });
-
-        setInterval(updateStatuses, 3000);
-        window.addEventListener('pageshow', () => {
-            updateStatuses();
-            loadGroupsCount();
-        });
+    })();
     </script>
 
 </body>
