@@ -130,18 +130,6 @@ body {
 }
 .msg.teacher .time { text-align: right; }
 
-.msg .msg-icon {
-    display: inline-flex;
-    width: 22px; height: 22px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 50%;
-    align-items: center; justify-content: center;
-    font-size: 12px;
-    margin-left: 6px;
-    vertical-align: middle;
-}
-
 /* Options buttons */
 .options-container {
     display: flex;
@@ -441,6 +429,120 @@ body {
     text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+
+/* Saved Groups List */
+.groups-list-widget {
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    animation: msgIn 0.3s ease;
+    border: 2px solid var(--light);
+    max-width: 95%;
+}
+
+.saved-group-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    position: relative;
+}
+.saved-group-card:last-child { margin-bottom: 0; }
+.saved-group-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(37,150,139,0.15); }
+.saved-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
+.saved-group-card.recurring-group { border-right: 4px solid #8b5cf6; }
+.saved-group-card.normal-group { border-right: 4px solid #3b82f6; }
+
+.sgc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+.sgc-name {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+    flex: 1;
+}
+.sgc-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+.sgc-badge.recurring { background: #8b5cf6; color: #fff; }
+.sgc-badge.normal { background: #3b82f6; color: #fff; }
+.sgc-badge.hidden { background: #dc2626; color: #fff; }
+.sgc-badge.visible { background: #16a34a; color: #fff; }
+
+.sgc-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--gray);
+}
+.sgc-info .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+.sgc-info .item.full { grid-column: span 2; }
+.sgc-info .item .v { color: var(--text); font-weight: 900; }
+
+.sgc-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.sgc-btn {
+    flex: 1;
+    min-width: 70px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+.sgc-btn:active { transform: scale(0.95); }
+.sgc-btn.edit { background: #dbeafe; color: #1e40af; }
+.sgc-btn.edit:hover { background: #bfdbfe; }
+.sgc-btn.toggle { background: #fef3c7; color: #92400e; }
+.sgc-btn.toggle:hover { background: #fde68a; }
+.sgc-btn.delete { background: #fee2e2; color: #b91c1c; }
+.sgc-btn.delete:hover { background: #fecaca; }
+
+.empty-groups {
+    text-align: center;
+    padding: 20px 10px;
+    color: var(--gray);
+    font-size: 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 2px dashed #cbd5e1;
+}
+.empty-groups .icon { font-size: 40px; display: block; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -483,6 +585,8 @@ body {
 import { 
     publishGroup, 
     getAllGroups, 
+    deleteGroup,
+    updateGroup,
     saveTeacherData,
     subscribeGroups
 } from './firebase-config.js';
@@ -490,6 +594,7 @@ import {
 /* ============ الحالة العامة ============ */
 const state = {
     step: 0,
+    isEditing: false,
     data: {
         groupName: '',
         teacherName: '',
@@ -508,11 +613,12 @@ const state = {
         detailedAddress: '',
         lat: null,
         lng: null,
-        subject: ''
+        subject: '',
+        editingId: null
     }
 };
 
-let map, marker;
+let cachedGroups = [];
 
 /* ============ عناصر DOM ============ */
 const chatArea = document.getElementById('chatArea');
@@ -566,14 +672,23 @@ function addTeacherMessage(text) {
     _addMessage('teacher', text);
 }
 
-function showToast(text) {
+function showToast(text, isSuccess = false) {
     toastEl.textContent = text;
+    toastEl.classList.toggle('success', isSuccess);
     toastEl.classList.add('show');
     setTimeout(() => toastEl.classList.remove('show'), 2500);
 }
 
 function setProgress(percent) {
     progressFill.style.width = percent + '%';
+}
+
+function formatTime(val) {
+    if (!val) return '';
+    const [h, m] = val.split(':').map(Number);
+    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    const period = h < 12 ? 'ص' : 'م';
+    return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
 }
 
 /* ============ إدارة الإدخال ============ */
@@ -613,12 +728,29 @@ function showOptions(options, onSelect) {
     scrollBottom();
 }
 
-/* ============ خطوات المحادثة ============ */
-const TOTAL_STEPS = 10;
+/* ============ إعادة تعيين الحالة ============ */
+function resetState() {
+    state.step = 0;
+    state.isEditing = false;
+    state.data = {
+        groupName: '', teacherName: '', centerName: '',
+        studentsCount: 20, gender: 'مختلط', location: 'السنتر',
+        startTime: '', endTime: '', date: '', dayOfWeek: 0, dayName: '',
+        repeatWeekly: false, gpsCoords: '', street: '', detailedAddress: '',
+        lat: null, lng: null, subject: '',
+        editingId: null
+    };
+    chatArea.querySelectorAll('.widget-container, .groups-list-widget, .summary-bubble').forEach(el => el.remove());
+}
 
+/* ============ خطوات المحادثة ============ */
 async function stepGroupName() {
     setProgress(10);
-    await addBotMessage('أهلاً بيك يا مستر 👋<br>هنساعدك تعمل مجموعتك في دقيقة.<br><br>أول حاجة: <b>اسم المجموعة إيه؟</b>');
+    if (!state.isEditing) {
+        await addBotMessage('أهلاً بيك يا مستر 👋<br>هنساعدك تعمل مجموعتك في دقيقة.<br><br>أول حاجة: <b>اسم المجموعة إيه؟</b>');
+    } else {
+        await addBotMessage('تمام، <b>اسم المجموعة الجديد إيه؟</b>');
+    }
     setInputMode('text', 'اكتب اسم المجموعة...');
     state.step = 1;
 }
@@ -698,7 +830,6 @@ async function stepMapLocation() {
     await addBotMessage('دلوقتي محتاجين نحدد <b>مكان الدرس على الخريطة</b> 📍<br>اضغط على الخريطة أو زر GPS لتحديد موقعك.');
     setInputMode('hidden');
     
-    // Create map widget
     const widget = document.createElement('div');
     widget.className = 'widget-container';
     widget.innerHTML = `
@@ -711,14 +842,24 @@ async function stepMapLocation() {
     chatArea.appendChild(widget);
     scrollBottom();
     
-    // Init map
     setTimeout(() => {
-        map = L.map('mini-map').setView([26.8206, 30.8025], 6);
+        const defaultLat = state.data.lat || 26.8206;
+        const defaultLng = state.data.lng || 30.8025;
+        const zoom = state.data.lat ? 15 : 6;
+        
+        map = L.map('mini-map').setView([defaultLat, defaultLng], zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OSM'
         }).addTo(map);
         
-        marker = L.marker([26.8206, 30.8025], { draggable: true }).addTo(map);
+        marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+        
+        if (state.data.street) {
+            const display = document.getElementById('addrDisplay');
+            display.style.display = 'block';
+            display.textContent = `📍 ${state.data.street}`;
+            document.getElementById('confirmLocBtn').style.display = 'flex';
+        }
         
         map.on('click', e => {
             marker.setLatLng(e.latlng);
@@ -757,6 +898,18 @@ async function stepMapLocation() {
             } else {
                 btn.innerHTML = '❌ غير مدعوم';
             }
+        };
+        
+        // ربط زر التأكيد لو كان ظاهر
+        const confirmBtn = document.getElementById('confirmLocBtn');
+        confirmBtn.onclick = async () => {
+            const extra = document.getElementById('addrExtra').value.trim();
+            state.data.detailedAddress = extra;
+            const summary = extra ? `${state.data.street} - ${extra}` : state.data.street;
+            addTeacherMessage(`📍 ${summary}`);
+            widget.style.opacity = '0.6';
+            widget.style.pointerEvents = 'none';
+            await stepTime();
         };
     }, 100);
 }
@@ -797,10 +950,9 @@ async function updateMiniLocation(lat, lng) {
         state.data.detailedAddress = extra;
         const summary = extra ? `${state.data.street} - ${extra}` : state.data.street;
         addTeacherMessage(`📍 ${summary}`);
-        
+        const widget = display.closest('.widget-container');
         widget.style.opacity = '0.6';
         widget.style.pointerEvents = 'none';
-        
         await stepTime();
     };
 }
@@ -909,8 +1061,8 @@ async function stepDate() {
         const m = calDate.getMonth();
         document.getElementById('calTitle').textContent = `${monthNames[m]} ${y}`;
         
-        const firstDay = new Date(y, m, 1).getDay(); // 0=Sunday
-        const displayFirst = (firstDay + 1) % 7; // Sat=0
+        const firstDay = new Date(y, m, 1).getDay();
+        const displayFirst = (firstDay + 1) % 7;
         const daysInMonth = new Date(y, m+1, 0).getDate();
         const todayReset = new Date(); todayReset.setHours(0,0,0,0);
         
@@ -949,7 +1101,6 @@ async function stepDate() {
                 
                 addTeacherMessage(`📅 ${dayNames[dayOfWeek]} ${d} ${monthNames[m]} ${y}`);
                 widget.remove();
-                
                 await stepRepeat();
             };
         });
@@ -985,7 +1136,6 @@ async function finishSetup() {
     setProgress(100);
     await addBotMessage('جاري حفظ المجموعة... ⏳');
     
-    // Build summary
     const summaryWidget = document.createElement('div');
     summaryWidget.className = 'summary-bubble';
     summaryWidget.innerHTML = `
@@ -1004,9 +1154,8 @@ async function finishSetup() {
     chatArea.appendChild(summaryWidget);
     scrollBottom();
     
-    // Publish to Firebase
     try {
-        const subjectData = document.getElementById('fixed-subject')?.dataset.value || localStorage.getItem('teacherSelections') || '';
+        const subjectData = localStorage.getItem('teacherSelections') || '';
         let subjectClean = 'غير محدد';
         let grade = '';
         try {
@@ -1037,8 +1186,6 @@ async function finishSetup() {
             grade: grade,
             groupName: state.data.groupName,
             maxCapacity: parseInt(state.data.studentsCount),
-            bookedBoys: 0,
-            bookedGirls: 0,
             gender: genderMapped,
             type: typeMapped,
             location: state.data.location,
@@ -1052,28 +1199,226 @@ async function finishSetup() {
             daysNames: [state.data.dayName],
             apptType: state.data.repeatWeekly ? 'recurring' : 'normal',
             date: state.data.date,
-            phone: localStorage.getItem('current_teacher_phone') || '01000000000',
-            isActive: true
+            phone: localStorage.getItem('current_teacher_phone') || '01000000000'
         };
         
-        await publishGroup(payload);
+        if (state.data.editingId) {
+            await updateGroup(state.data.editingId, payload);
+            showToast('✅ تم تحديث المجموعة', true);
+            addBotMessage(`✏️ تم تحديث مجموعة <b>"${state.data.groupName}"</b> بنجاح!`);
+        } else {
+            payload.isActive = true;
+            payload.bookedBoys = 0;
+            payload.bookedGirls = 0;
+            await publishGroup(payload);
+            showToast('🎉 تم حفظ المجموعة', true);
+            addBotMessage(`🎉 تم حفظ مجموعة <b>"${state.data.groupName}"</b> بنجاح!`);
+        }
         
         setInputMode('hidden');
-        document.getElementById('successOverlay').classList.add('show');
+        showOptions([
+            { label: 'إضافة مجموعة جديدة', icon: '➕', value: 'new' },
+            { label: 'عرض مجموعاتي', icon: '📋', value: 'list' },
+            { label: 'الصفحة التالية', icon: '➡️', value: 'next' }
+        ], async (opt) => {
+            if (opt.value === 'new') {
+                addTeacherMessage('➕ إضافة مجموعة جديدة');
+                resetState();
+                await stepGroupName();
+            } else if (opt.value === 'list') {
+                addTeacherMessage('📋 عرض مجموعاتي');
+                await addBotMessage('دي مجموعاتك المحفوظة 👇');
+                await showSavedGroups(false);
+            } else {
+                addTeacherMessage('➡️ الصفحة التالية');
+                window.location.href = 'mester3.html';
+            }
+        });
         
     } catch(err) {
         console.error(err);
-        showToast('حدث خطأ في الحفظ، جرب تاني');
+        showToast('حدث خطأ، جرب تاني');
         setInputMode('text', 'اكتب أي حاجة للمتابعة...');
     }
 }
 
-function formatTime(val) {
-    if (!val) return '';
-    const [h, m] = val.split(':').map(Number);
-    const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
-    const period = h < 12 ? 'ص' : 'م';
-    return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
+/* ============ إدارة المجموعات المحفوظة ============ */
+async function loadSavedGroups() {
+    try {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) return [];
+        const all = await getAllGroups();
+        cachedGroups = all.filter(g => g.phone === phone);
+        return cachedGroups;
+    } catch(e) {
+        console.error('فشل جلب المجموعات:', e);
+        return [];
+    }
+}
+
+async function showSavedGroups(firstTime = false) {
+    const groups = await loadSavedGroups();
+    
+    const widget = document.createElement('div');
+    widget.className = 'groups-list-widget';
+    widget.id = 'groupsListWidget';
+    
+    if (groups.length === 0) {
+        widget.innerHTML = `
+            <div class="empty-groups">
+                <span class="icon">📭</span>
+                <div>مفيش مجموعات محفوظة لحد الآن</div>
+                <div style="font-size:12px; margin-top:6px;">يلا نضيف أول مجموعة! 👇</div>
+            </div>
+        `;
+    } else {
+        widget.innerHTML = `<div style="font-size:14px; font-weight:900; color:var(--dark); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span>📚 مجموعاتك المحفوظة (${groups.length})</span>
+            <button class="sgc-btn" id="addNewFromList" style="flex:0; min-width:auto; background:var(--primary); color:#fff; padding:6px 12px;">➕ مجموعة جديدة</button>
+        </div>`;
+        
+        groups.forEach(g => {
+            const isRec = g.apptType === 'recurring';
+            const isVisible = g.isActive !== false;
+            const dayName = g.daysNames?.[0] || '';
+            
+            const card = document.createElement('div');
+            card.className = `saved-group-card ${isRec ? 'recurring-group' : 'normal-group'} ${!isVisible ? 'hidden-group' : ''}`;
+            card.innerHTML = `
+                <div class="sgc-header">
+                    <div class="sgc-name">${g.groupName || 'بدون اسم'}</div>
+                    <div style="display:flex; gap:4px; flex-direction:column; align-items:flex-end;">
+                        <span class="sgc-badge ${isRec ? 'recurring' : 'normal'}">${isRec ? '🔁 أسبوعي' : '📅 محدد'}</span>
+                        <span class="sgc-badge ${isVisible ? 'visible' : 'hidden'}">${isVisible ? '👁️ ظاهر' : '🙈 مخفي'}</span>
+                    </div>
+                </div>
+                <div class="sgc-info">
+                    <div class="item"><span>👤</span><span class="v">${g.teacherName || '-'}</span></div>
+                    <div class="item"><span>👥</span><span class="v">${g.maxCapacity || 20}</span></div>
+                    <div class="item"><span>🕐</span><span class="v">${formatTime(g.startTime)}</span></div>
+                    <div class="item"><span>🕓</span><span class="v">${formatTime(g.endTime)}</span></div>
+                    <div class="item full"><span>📅</span><span class="v">${dayName} ${isRec ? '(كل أسبوع)' : (g.date || '')}</span></div>
+                    ${g.address ? `<div class="item full"><span>📍</span><span class="v">${g.address}</span></div>` : ''}
+                </div>
+                <div class="sgc-actions">
+                    <button class="sgc-btn edit" data-id="${g.id}" data-action="edit">✏️ تعديل</button>
+                    <button class="sgc-btn toggle" data-id="${g.id}" data-action="toggle">${isVisible ? '🙈 إخفاء' : '👁️ إظهار'}</button>
+                    <button class="sgc-btn delete" data-id="${g.id}" data-action="delete">🗑️ حذف</button>
+                </div>
+            `;
+            widget.appendChild(card);
+        });
+    }
+    
+    chatArea.appendChild(widget);
+    scrollBottom();
+    
+    widget.querySelectorAll('[data-action]').forEach(btn => {
+        btn.onclick = () => handleGroupAction(btn.dataset.action, btn.dataset.id);
+    });
+    
+    const addNewBtn = widget.querySelector('#addNewFromList');
+    if (addNewBtn) {
+        addNewBtn.onclick = () => {
+            widget.remove();
+            resetState();
+            stepGroupName();
+        };
+    }
+    
+    if (firstTime && groups.length === 0) {
+        const newGroupContainer = document.createElement('div');
+        newGroupContainer.className = 'options-container';
+        const btnNew = document.createElement('button');
+        btnNew.className = 'option-btn';
+        btnNew.innerHTML = '➕ إضافة أول مجموعة';
+        btnNew.onclick = () => {
+            newGroupContainer.remove();
+            resetState();
+            stepGroupName();
+        };
+        newGroupContainer.appendChild(btnNew);
+        chatArea.appendChild(newGroupContainer);
+        scrollBottom();
+    } else if (firstTime) {
+        const newGroupContainer = document.createElement('div');
+        newGroupContainer.className = 'options-container';
+        const btnNew = document.createElement('button');
+        btnNew.className = 'option-btn';
+        btnNew.innerHTML = '➕ إضافة مجموعة جديدة';
+        btnNew.onclick = () => {
+            newGroupContainer.remove();
+            resetState();
+            stepGroupName();
+        };
+        newGroupContainer.appendChild(btnNew);
+        chatArea.appendChild(newGroupContainer);
+        scrollBottom();
+    }
+}
+
+async function handleGroupAction(action, id) {
+    const group = cachedGroups.find(g => g.id === id);
+    if (!group) return;
+    
+    if (action === 'delete') {
+        if (!confirm(`هل أنت متأكد من حذف مجموعة "${group.groupName}"؟`)) return;
+        try {
+            await deleteGroup(id);
+            showToast('✅ تم الحذف بنجاح', true);
+            chatArea.querySelector('#groupsListWidget')?.remove();
+            await showSavedGroups(false);
+            addBotMessage(`🗑️ تم حذف مجموعة <b>"${group.groupName}"</b>`);
+        } catch(e) {
+            console.error(e);
+            showToast('❌ فشل الحذف');
+        }
+    } 
+    else if (action === 'toggle') {
+        try {
+            const newVis = !group.isActive;
+            await updateGroup(id, { isActive: newVis });
+            showToast(newVis ? '👁️ تم الإظهار' : '🙈 تم الإخفاء', true);
+            chatArea.querySelector('#groupsListWidget')?.remove();
+            await showSavedGroups(false);
+        } catch(e) {
+            console.error(e);
+            showToast('❌ فشل التعديل');
+        }
+    } 
+    else if (action === 'edit') {
+        startEditFlow(group);
+    }
+}
+
+async function startEditFlow(group) {
+    resetState();
+    state.isEditing = true;
+    state.data.editingId = group.id;
+    
+    state.data.groupName = group.groupName || '';
+    state.data.teacherName = group.teacherName || '';
+    state.data.centerName = group.centerName || '';
+    state.data.studentsCount = group.maxCapacity || 20;
+    state.data.location = group.location || 'السنتر';
+    state.data.startTime = group.startTime || '';
+    state.data.endTime = group.endTime || '';
+    state.data.date = group.date || '';
+    state.data.dayName = group.daysNames?.[0] || '';
+    state.data.dayOfWeek = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].indexOf(state.data.dayName);
+    state.data.repeatWeekly = group.apptType === 'recurring';
+    state.data.street = group.address || '';
+    state.data.detailedAddress = group.detailedAddress || '';
+    state.data.lat = group.lat || null;
+    state.data.lng = group.lng || null;
+    state.data.gpsCoords = (group.lat && group.lng) ? `${group.lat},${group.lng}` : '';
+    
+    if (group.gender === 'boys') state.data.gender = 'أولاد فقط';
+    else if (group.gender === 'girls') state.data.gender = 'بنات فقط';
+    else state.data.gender = 'مختلط';
+    
+    await addBotMessage(`✏️ <b>تعديل مجموعة "${group.groupName}"</b><br>هنسألك على البيانات من جديد عشان تحدثها.`);
+    await stepGroupName();
 }
 
 /* ============ التعامل مع الإدخال ============ */
@@ -1085,22 +1430,18 @@ async function handleSend() {
     if (!val) return;
     
     if (state.step === 1) {
-        // Group name
         state.data.groupName = val;
         chatInput.value = '';
         await stepTeacherName();
     } else if (state.step === 2) {
-        // Teacher name
         state.data.teacherName = val;
         chatInput.value = '';
         await stepLocation();
     } else if (state.step === 3.5) {
-        // Center name
         state.data.centerName = val;
         chatInput.value = '';
         await stepStudentsCount();
     } else if (state.step === 4) {
-        // Students count (from text input)
         const num = parseInt(val);
         if (num > 0) {
             state.data.studentsCount = num;
@@ -1116,7 +1457,7 @@ window.goToNext = function() {
     window.location.href = 'mester3.html';
 };
 
-/* ============ التحقق من المواد المختارة ============ */
+/* ============ التحقق من المواد ============ */
 function checkSubject() {
     const saved = localStorage.getItem('teacherSelections');
     if (!saved || saved === '{}') {
@@ -1132,7 +1473,16 @@ function checkSubject() {
 /* ============ التهيئة ============ */
 async function init() {
     if (!checkSubject()) return;
-    await stepGroupName();
+    
+    await addBotMessage('أهلاً بيك يا مستر 👋<br>دي مجموعاتك المحفوظة، تقدر تعدل أي واحدة أو تضيف جديدة.');
+    
+    const phone = localStorage.getItem('current_teacher_phone');
+    if (phone) {
+        await showSavedGroups(true);
+    } else {
+        resetState();
+        await stepGroupName();
+    }
 }
 
 init();
