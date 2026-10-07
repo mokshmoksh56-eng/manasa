@@ -22,14 +22,7 @@
         --red: #DC2626;
     }
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 700;
-        -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
 
     body {
         background: var(--bg-color);
@@ -40,700 +33,254 @@
         position: relative;
     }
 
-    /* ========================================================== */
     /* ✨ خلفية متحركة */
-    /* ========================================================== */
     .animated-bg {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        overflow: hidden;
-        pointer-events: none;
+        position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
         background: linear-gradient(135deg, #f7f9fa 0%, #e0f2f0 25%, #f7f9fa 50%, #fef3c7 75%, #f7f9fa 100%);
         background-size: 400% 400%;
         animation: gradientMove 18s ease infinite;
     }
-
     @keyframes gradientMove {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
+    .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; will-change: transform; }
+    .shape-1 { width: 380px; height: 380px; background: radial-gradient(circle, #009688, transparent 70%); top: -100px; right: -100px; animation: floatShape1 20s ease-in-out infinite; }
+    .shape-2 { width: 320px; height: 320px; background: radial-gradient(circle, #F59E0B, transparent 70%); bottom: -80px; left: -80px; animation: floatShape2 25s ease-in-out infinite; }
+    .shape-3 { width: 260px; height: 260px; background: radial-gradient(circle, #7C3AED, transparent 70%); top: 40%; left: 50%; animation: floatShape3 22s ease-in-out infinite; }
+    .shape-4 { width: 220px; height: 220px; background: radial-gradient(circle, #10B981, transparent 70%); top: 20%; left: 10%; animation: floatShape4 28s ease-in-out infinite; }
+    @keyframes floatShape1 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-80px,100px) scale(1.15); } 66% { transform: translate(50px,50px) scale(0.9); } }
+    @keyframes floatShape2 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(100px,-80px) scale(1.2); } 66% { transform: translate(-40px,-120px) scale(0.95); } }
+    @keyframes floatShape3 { 0%,100% { transform: translate(-50%,0) scale(1); } 50% { transform: translate(-30%,-60px) scale(1.25); } }
+    @keyframes floatShape4 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,80px) scale(1.1); } }
 
-    /* 🔵 دوائر عائمة */
-    .floating-shape {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        opacity: 0.35;
-        will-change: transform;
+    .decorative-lines { position: absolute; inset: 0; overflow: hidden; }
+    .decorative-lines::before, .decorative-lines::after {
+        content: ''; position: absolute; border-radius: 50%; border: 2px dashed rgba(0,150,136,0.15);
     }
+    .decorative-lines::before { width: 500px; height: 500px; top: -200px; left: -200px; animation: rotateSlow 60s linear infinite; }
+    .decorative-lines::after { width: 700px; height: 700px; bottom: -300px; right: -300px; border-color: rgba(245,158,11,0.12); animation: rotateSlow 80s linear infinite reverse; }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
 
-    .shape-1 {
-        width: 380px; height: 380px;
-        background: radial-gradient(circle, #009688, transparent 70%);
-        top: -100px; right: -100px;
-        animation: floatShape1 20s ease-in-out infinite;
-    }
-
-    .shape-2 {
-        width: 320px; height: 320px;
-        background: radial-gradient(circle, #F59E0B, transparent 70%);
-        bottom: -80px; left: -80px;
-        animation: floatShape2 25s ease-in-out infinite;
-    }
-
-    .shape-3 {
-        width: 260px; height: 260px;
-        background: radial-gradient(circle, #7C3AED, transparent 70%);
-        top: 40%; left: 50%;
-        animation: floatShape3 22s ease-in-out infinite;
-    }
-
-    .shape-4 {
-        width: 220px; height: 220px;
-        background: radial-gradient(circle, #10B981, transparent 70%);
-        top: 20%; left: 10%;
-        animation: floatShape4 28s ease-in-out infinite;
-    }
-
-    @keyframes floatShape1 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        33% { transform: translate(-80px, 100px) scale(1.15); }
-        66% { transform: translate(50px, 50px) scale(0.9); }
-    }
-
-    @keyframes floatShape2 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        33% { transform: translate(100px, -80px) scale(1.2); }
-        66% { transform: translate(-40px, -120px) scale(0.95); }
-    }
-
-    @keyframes floatShape3 {
-        0%, 100% { transform: translate(-50%, 0) scale(1); }
-        50% { transform: translate(-30%, -60px) scale(1.25); }
-    }
-
-    @keyframes floatShape4 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(60px, 80px) scale(1.1); }
-    }
-
-    /* 🔹 خطوط زخرفية */
-    .decorative-lines {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-    }
-
-    .decorative-lines::before,
-    .decorative-lines::after {
-        content: '';
-        position: absolute;
-        border-radius: 50%;
-        border: 2px dashed rgba(0, 150, 136, 0.15);
-    }
-
-    .decorative-lines::before {
-        width: 500px; height: 500px;
-        top: -200px; left: -200px;
-        animation: rotateSlow 60s linear infinite;
-    }
-
-    .decorative-lines::after {
-        width: 700px; height: 700px;
-        bottom: -300px; right: -300px;
-        border-color: rgba(245, 158, 11, 0.12);
-        animation: rotateSlow 80s linear infinite reverse;
-    }
-
-    @keyframes rotateSlow {
-        to { transform: rotate(360deg); }
-    }
-
-    /* ============ الهيدر ============ */
+    /* الهيدر */
     .header-3d {
         width: 100%;
-        background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%),
-                    url('teacher2.png') center/cover no-repeat;
+        background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%), url('teacher2.png') center/cover no-repeat;
         padding: 30px 15px 40px;
         text-align: center;
         position: relative;
         box-shadow: 0 4px 18px rgba(0,0,0,0.18);
         z-index: 5;
     }
+    .header-3d h1 { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 6px; letter-spacing: 0.5px; text-shadow: 0 3px 8px rgba(0,0,0,0.7); }
+    .header-3d p { font-size: 13.5px; color: #e2e8f0; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
 
-    .header-3d h1 {
-        font-size: 26px;
-        font-weight: 900;
-        color: #fff;
-        margin-bottom: 6px;
-        letter-spacing: 0.5px;
-        text-shadow: 0 3px 8px rgba(0,0,0,0.7);
-    }
-
-    .header-3d p {
-        font-size: 13.5px;
-        color: #e2e8f0;
-        font-weight: 700;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.6);
-    }
-
-    /* ============ شارة الاتصال ============ */
     .cloud-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        backdrop-filter: blur(6px);
+        position: absolute; top: 12px; left: 12px;
+        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+        color: #fff; padding: 6px 12px; border-radius: 20px;
+        font-size: 11px; font-weight: 900;
+        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
     }
-    .cloud-badge .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #22C55E;
-        box-shadow: 0 0 8px #22C55E;
-        animation: pulseDot 1.5s infinite;
-    }
-    @keyframes pulseDot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
+    .cloud-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulseDot 1.5s infinite; }
+    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* ============ شارة المستخدم + تسجيل الخروج ============ */
-    .user-actions {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        z-index: 10;
-    }
-
+    .user-actions { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 10; }
     .user-badge {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        backdrop-filter: blur(6px);
-        max-width: 180px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+        color: #fff; padding: 6px 12px; border-radius: 20px;
+        font-size: 11px; font-weight: 900;
+        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
+        max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-
     .logout-btn {
-        background: rgba(220, 38, 38, 0.85);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        backdrop-filter: blur(6px);
-        cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: inherit;
+        background: rgba(220,38,38,0.85); border: 1px solid rgba(255,255,255,0.3);
+        color: #fff; padding: 6px 12px; border-radius: 20px;
+        font-size: 11px; font-weight: 900;
+        display: flex; align-items: center; gap: 5px;
+        backdrop-filter: blur(6px); cursor: pointer;
+        transition: all 0.25s ease; font-family: inherit;
         box-shadow: 0 3px 10px rgba(220,38,38,0.35);
     }
+    .logout-btn:hover { background: rgba(220,38,38,1); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(220,38,38,0.6); }
+    .logout-btn:active { transform: translateY(0) scale(0.96); }
 
-    .logout-btn:hover {
-        background: rgba(220, 38, 38, 1);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(220,38,38,0.6);
-    }
+    .main-container { width: 100%; max-width: 720px; margin: -20px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
-    .logout-btn:active {
-        transform: translateY(0) scale(0.96);
-    }
-
-    /* ============ الحاوية ============ */
-    .main-container {
-        width: 100%;
-        max-width: 720px;
-        margin: -20px auto 0;
-        padding: 0 15px;
-        position: relative;
-        z-index: 10;
-    }
-
-    /* ============ العنوان الرئيسي ============ */
     .page-title {
-        text-align: center;
-        font-size: 17px;
-        font-weight: 900;
-        color: var(--dark-teal);
-        background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(8px);
-        border: 2px solid var(--primary-teal);
-        border-radius: 14px;
-        padding: 14px 18px;
-        margin-bottom: 18px;
+        text-align: center; font-size: 17px; font-weight: 900;
+        color: var(--dark-teal); background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(8px); border: 2px solid var(--primary-teal);
+        border-radius: 14px; padding: 14px 18px; margin-bottom: 18px;
         box-shadow: 0 8px 20px -6px rgba(0,150,136,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
     }
 
-    /* ============ شبكة الكروت ============ */
-    .cards-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
+    .cards-grid { display: flex; flex-direction: column; gap: 16px; }
 
-    /* ============ الكارت ============ */
     .launcher-card {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 18px;
-        padding: 22px 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
+        background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+        border-radius: 18px; padding: 22px 20px;
+        display: flex; align-items: center; gap: 16px;
+        cursor: pointer; text-decoration: none; color: inherit;
         border: 2px solid #e2e8f0;
         box-shadow: 0 8px 25px -10px rgba(0,0,0,0.15);
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        overflow: hidden;
+        position: relative; overflow: hidden;
     }
+    .launcher-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--primary-teal); transition: width 0.3s ease; }
+    .launcher-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px -10px rgba(0,150,136,0.4); border-color: var(--primary-teal); }
+    .launcher-card:hover::before { width: 8px; }
+    .launcher-card:active { transform: translateY(-1px) scale(0.99); }
 
-    .launcher-card::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0; bottom: 0;
-        width: 6px;
-        background: var(--primary-teal);
-        transition: width 0.3s ease;
-    }
+    .launcher-card.schedule-card::before { background: linear-gradient(180deg, var(--orange), var(--dark-orange)); }
+    .launcher-card.schedule-card:hover { box-shadow: 0 15px 35px -10px rgba(245,158,11,0.4); border-color: var(--orange); }
 
-    .launcher-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 15px 35px -10px rgba(0,150,136,0.4);
-        border-color: var(--primary-teal);
-    }
-
-    .launcher-card:hover::before {
-        width: 8px;
-    }
-
-    .launcher-card:active {
-        transform: translateY(-1px) scale(0.99);
-    }
-
-    /* كارت المواعيد — برتقالي */
-    .launcher-card.schedule-card::before {
-        background: linear-gradient(180deg, var(--orange), var(--dark-orange));
-    }
-    .launcher-card.schedule-card:hover {
-        box-shadow: 0 15px 35px -10px rgba(245,158,11,0.4);
-        border-color: var(--orange);
-    }
-
-    /* ============ أيقونة الكارت ============ */
     .card-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        flex-shrink: 0;
+        width: 64px; height: 64px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px; flex-shrink: 0;
         background: linear-gradient(135deg, var(--light-teal), var(--border-teal));
         border: 2px solid var(--border-teal);
         box-shadow: 0 4px 12px -4px rgba(0,150,136,0.3);
-        transition: transform 0.3s ease;
-        position: relative;
+        transition: transform 0.3s ease; position: relative;
     }
+    .launcher-card:hover .card-icon { transform: scale(1.08) rotate(-3deg); }
+    .launcher-card.schedule-card .card-icon { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-color: #FCD34D; box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4); }
 
-    .launcher-card:hover .card-icon {
-        transform: scale(1.08) rotate(-3deg);
-    }
+    .card-content { flex: 1; min-width: 0; }
+    .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
 
-    .launcher-card.schedule-card .card-icon {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border-color: #FCD34D;
-        box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4);
-    }
-
-    /* أيقونة تتوهج */
-    .card-icon::after {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        border-radius: 16px;
-        background: inherit;
-        opacity: 0;
-        animation: iconGlow 3s ease-in-out infinite;
-        z-index: -1;
-    }
-    @keyframes iconGlow {
-        0%, 100% { opacity: 0; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(1.15); }
-    }
-
-    /* ============ محتوى الكارت ============ */
-    .card-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .card-title {
-        font-size: 17px;
-        font-weight: 900;
-        color: var(--text-dark);
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    .card-subtitle {
-        font-size: 12.5px;
-        font-weight: 700;
-        color: var(--text-gray);
-        line-height: 1.5;
-    }
-
-    /* ============ بادج عدد المجموعات ============ */
     .groups-counter {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
+        display: inline-flex; align-items: center; gap: 5px;
         background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        font-size: 11.5px;
-        font-weight: 900;
-        padding: 5px 11px;
-        border-radius: 20px;
+        color: #fff; font-size: 11.5px; font-weight: 900;
+        padding: 5px 11px; border-radius: 20px;
         box-shadow: 0 3px 8px rgba(245,158,11,0.4);
         margin-top: 6px;
         animation: counterPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
     .groups-counter .counter-num {
-        background: rgba(255,255,255,0.25);
-        padding: 0 6px;
-        border-radius: 10px;
-        font-size: 12.5px;
-        min-width: 20px;
-        text-align: center;
+        background: rgba(255,255,255,0.25); padding: 0 6px;
+        border-radius: 10px; font-size: 12.5px; min-width: 20px; text-align: center;
     }
+    @keyframes counterPop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    @keyframes counterPop {
-        from { transform: scale(0.7); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    /* ============ شارة الحالة ============ */
     .card-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: #10B981;
-        color: #fff;
-        font-size: 10.5px;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 20px;
+        display: inline-flex; align-items: center; gap: 4px;
+        background: #10B981; color: #fff;
+        font-size: 10.5px; font-weight: 900;
+        padding: 4px 10px; border-radius: 20px;
         box-shadow: 0 2px 6px rgba(16,185,129,0.4);
-        white-space: nowrap;
-        margin-top: 6px;
-        margin-left: 6px;
+        white-space: nowrap; margin-top: 6px; margin-left: 6px;
     }
+    .card-status.pending { background: var(--orange); box-shadow: 0 2px 6px rgba(245,158,11,0.4); animation: badgePulse 2s infinite; }
+    .card-status.locked { background: #94A3B8; box-shadow: 0 2px 6px rgba(148,163,184,0.4); }
+    @keyframes badgePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 
-    .card-status.pending {
-        background: var(--orange);
-        box-shadow: 0 2px 6px rgba(245,158,11,0.4);
-        animation: badgePulse 2s infinite;
-    }
-
-    .card-status.locked {
-        background: #94A3B8;
-        box-shadow: 0 2px 6px rgba(148,163,184,0.4);
-    }
-
-    @keyframes badgePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.06); }
-    }
-
-    /* ============ سهم الكارت ============ */
     .card-arrow {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #f1f5f9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-gray);
-        font-size: 18px;
-        font-weight: 900;
-        flex-shrink: 0;
-        transition: all 0.3s ease;
+        width: 36px; height: 36px; border-radius: 50%;
+        background: #f1f5f9; display: flex; align-items: center; justify-content: center;
+        color: var(--text-gray); font-size: 18px; font-weight: 900;
+        flex-shrink: 0; transition: all 0.3s ease;
     }
+    .launcher-card:hover .card-arrow { background: var(--primary-teal); color: #fff; transform: translateX(-4px); }
+    .launcher-card.schedule-card:hover .card-arrow { background: var(--orange); color: #fff; }
 
-    .launcher-card:hover .card-arrow {
-        background: var(--primary-teal);
-        color: #fff;
-        transform: translateX(-4px);
-    }
-
-    .launcher-card.schedule-card:hover .card-arrow {
-        background: var(--orange);
-        color: #fff;
-    }
-
-    /* ============ شاشة الحماية ============ */
+    /* شاشة الحماية */
     .security-overlay {
-        position: fixed;
-        inset: 0;
+        position: fixed; inset: 0;
         background: linear-gradient(135deg, #009688 0%, #00695c 100%);
         z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        gap: 20px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: #fff; gap: 20px;
         transition: opacity 0.3s ease;
     }
-    .security-overlay.hide {
-        opacity: 0;
-        pointer-events: none;
-    }
-    .security-spinner {
-        width: 60px;
-        height: 60px;
-        border: 5px solid rgba(255,255,255,0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    .security-overlay h2 {
-        font-size: 20px;
-        font-weight: 900;
-    }
-    .security-overlay p {
-        font-size: 14px;
-        opacity: 0.9;
-    }
+    .security-overlay.hide { opacity: 0; pointer-events: none; }
+    .security-spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .security-overlay h2 { font-size: 20px; font-weight: 900; }
+    .security-overlay p { font-size: 14px; opacity: 0.9; }
 
-    /* ============ توست التنبيه ============ */
+    /* توست */
     .toast-notice {
-        position: fixed;
-        top: 20px;
-        left: 50%;
+        position: fixed; top: 20px; left: 50%;
         transform: translateX(-50%) translateY(-100px);
         background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        padding: 12px 22px;
-        border-radius: 24px;
-        font-size: 13px;
-        font-weight: 900;
+        color: #fff; padding: 12px 22px; border-radius: 24px;
+        font-size: 13px; font-weight: 900;
         box-shadow: 0 8px 20px rgba(245,158,11,0.5);
         z-index: 99999;
         transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        max-width: 90%;
-        text-align: center;
+        display: flex; align-items: center; gap: 8px;
+        max-width: 90%; text-align: center;
     }
-    .toast-notice.show {
-        transform: translateX(-50%) translateY(0);
-    }
+    .toast-notice.show { transform: translateX(-50%) translateY(0); }
 
-    .toast-notice.success {
-        background: linear-gradient(135deg, #10B981, #047857);
-        box-shadow: 0 8px 20px rgba(16,185,129,0.5);
-    }
-
-    /* ============ نافذة تأكيد الخروج ============ */
+    /* نافذة تسجيل الخروج */
     .logout-modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.55);
-        z-index: 100000;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        backdrop-filter: blur(4px);
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.55); z-index: 100000;
+        justify-content: center; align-items: center;
+        padding: 20px; backdrop-filter: blur(4px);
     }
-
-    .logout-modal-overlay.active {
-        display: flex;
-    }
-
+    .logout-modal-overlay.active { display: flex; }
     .logout-modal-box {
-        background: #fff;
-        border-radius: 20px;
-        width: 100%;
-        max-width: 380px;
-        padding: 26px 22px;
-        text-align: center;
+        background: #fff; border-radius: 20px;
+        width: 100%; max-width: 380px;
+        padding: 26px 22px; text-align: center;
         box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    @keyframes modalPopIn {
-        from { transform: scale(0.85) translateY(20px); opacity: 0; }
-        to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-
+    @keyframes modalPopIn { from { transform: scale(0.85) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
     .logout-icon-wrap {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
+        width: 70px; height: 70px; border-radius: 50%;
         background: linear-gradient(135deg, #FEE2E2, #FECACA);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 34px;
-        margin: 0 auto 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 34px; margin: 0 auto 16px;
         box-shadow: 0 6px 18px -4px rgba(220,38,38,0.35);
         animation: logoutIconPulse 1.5s ease-in-out infinite;
     }
-
-    @keyframes logoutIconPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.08); }
+    @keyframes logoutIconPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .logout-modal-box h3 { font-size: 18px; font-weight: 900; color: #7F1D1D; margin-bottom: 8px; }
+    .logout-modal-box p { font-size: 13.5px; font-weight: 700; color: #64748B; line-height: 1.6; margin-bottom: 22px; }
+    .logout-modal-actions { display: flex; gap: 10px; }
+    .logout-btn-confirm, .logout-btn-cancel {
+        flex: 1; padding: 12px 16px; border-radius: 12px;
+        font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 14px;
+        cursor: pointer; border: none; transition: all 0.2s;
     }
+    .logout-btn-confirm { background: linear-gradient(135deg, #DC2626, #991B1B); color: #fff; box-shadow: 0 6px 15px -4px rgba(220,38,38,0.6); }
+    .logout-btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -4px rgba(220,38,38,0.8); }
+    .logout-btn-confirm:active { transform: scale(0.97); }
+    .logout-btn-cancel { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+    .logout-btn-cancel:hover { background: #e2e8f0; transform: translateY(-2px); }
+    .logout-btn-cancel:active { transform: scale(0.97); }
 
-    .logout-modal-box h3 {
-        font-size: 18px;
-        font-weight: 900;
-        color: #7F1D1D;
-        margin-bottom: 8px;
-    }
-
-    .logout-modal-box p {
-        font-size: 13.5px;
-        font-weight: 700;
-        color: #64748B;
-        line-height: 1.6;
-        margin-bottom: 22px;
-    }
-
-    .logout-modal-actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    .logout-btn-confirm,
-    .logout-btn-cancel {
-        flex: 1;
-        padding: 12px 16px;
-        border-radius: 12px;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 900;
-        font-size: 14px;
-        cursor: pointer;
-        border: none;
-        transition: all 0.2s;
-    }
-
-    .logout-btn-confirm {
-        background: linear-gradient(135deg, #DC2626, #991B1B);
-        color: #fff;
-        box-shadow: 0 6px 15px -4px rgba(220,38,38,0.6);
-    }
-
-    .logout-btn-confirm:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 22px -4px rgba(220,38,38,0.8);
-    }
-
-    .logout-btn-confirm:active {
-        transform: scale(0.97);
-    }
-
-    .logout-btn-cancel {
-        background: #f1f5f9;
-        color: #334155;
-        border: 1px solid #e2e8f0;
-    }
-
-    .logout-btn-cancel:hover {
-        background: #e2e8f0;
-        transform: translateY(-2px);
-    }
-
-    .logout-btn-cancel:active {
-        transform: scale(0.97);
-    }
-
-    /* ============ الفوتر ============ */
     .footer-note {
-        text-align: center;
-        margin-top: 24px;
-        font-size: 11.5px;
-        color: var(--text-gray);
-        font-weight: 700;
-        line-height: 1.6;
-        padding: 0 20px;
-        position: relative;
-        z-index: 10;
+        text-align: center; margin-top: 24px;
+        font-size: 11.5px; color: var(--text-gray); font-weight: 700;
+        line-height: 1.6; padding: 0 20px;
+        position: relative; z-index: 10;
     }
-
     .footer-note .version {
-        display: inline-block;
-        background: #f1f5f9;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 10.5px;
-        margin-top: 6px;
+        display: inline-block; background: #f1f5f9;
+        padding: 3px 10px; border-radius: 20px;
+        font-size: 10.5px; margin-top: 6px;
         border: 1px solid #e2e8f0;
     }
 
-    /* ============ سكرول للجروب كونتير ============ */
     .skeleton-counter {
-        display: inline-block;
-        width: 90px;
-        height: 22px;
+        display: inline-block; width: 90px; height: 22px;
         background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
         background-size: 200% 100%;
         animation: skeletonLoad 1.5s infinite;
-        border-radius: 20px;
-        margin-top: 6px;
+        border-radius: 20px; margin-top: 6px;
     }
+    @keyframes skeletonLoad { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    @keyframes skeletonLoad {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    /* ============ الموبايل ============ */
     @media (max-width: 480px) {
         .header-3d { padding: 26px 15px 36px; }
         .header-3d h1 { font-size: 22px; }
@@ -747,8 +294,7 @@
         .user-actions { gap: 5px; }
         .user-badge { font-size: 10px; padding: 5px 9px; max-width: 120px; }
         .logout-btn { font-size: 10px; padding: 5px 10px; }
-        .logout-btn span.logout-label { display: none; }
-        .floating-shape { filter: blur(50px); opacity: 0.28; }
+        .logout-btn .logout-label { display: none; }
     }
 </style>
 </head>
@@ -763,27 +309,25 @@
         <div class="decorative-lines"></div>
     </div>
 
-    <!-- ✅ شاشة حماية أولية -->
+    <!-- ✅ شاشة الحماية (تشتغل هنا فقط) -->
     <div class="security-overlay" id="securityOverlay">
         <div class="security-spinner"></div>
         <h2>جاري التحقق من الجهاز...</h2>
         <p>منصة احجزلي تحمي حسابك</p>
     </div>
 
-    <!-- ✅ توست التنبيه -->
+    <!-- ✅ توست -->
     <div class="toast-notice" id="toastNotice">
         <span>⚠️</span>
-        <span id="toastText">يجب حفظ التخصص أولاً</span>
+        <span id="toastText">تنبيه</span>
     </div>
 
-    <!-- 🚪 نافذة تأكيد تسجيل الخروج -->
+    <!-- 🚪 نافذة تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
             <h3>تسجيل الخروج؟</h3>
-            <p>
-                هل أنت متأكد من رغبتك في تسجيل الخروج من المنصة؟
-                <br>
+            <p>هل أنت متأكد من رغبتك في تسجيل الخروج من المنصة؟<br>
                 <small style="color:#94A3B8; font-size:11.5px;">سيتم مسح بيانات الجلسة الحالية</small>
             </p>
             <div class="logout-modal-actions">
@@ -793,13 +337,12 @@
         </div>
     </div>
 
-    <!-- ============ الهيدر ============ -->
+    <!-- الهيدر -->
     <header class="header-3d">
         <div class="cloud-badge">
             <span class="dot"></span>
             <span>متصل</span>
         </div>
-
         <div class="user-actions">
             <div class="user-badge" id="userBadge" style="display:none;">
                 <span>👤</span>
@@ -810,176 +353,195 @@
                 <span class="logout-label">خروج</span>
             </button>
         </div>
-
         <h1>منصة احجزلي</h1>
         <p>بوابة المعلم - اختر القسم للبدء</p>
     </header>
 
-    <!-- ============ الحاوية ============ -->
+    <!-- الحاوية -->
     <div class="main-container">
-
         <div class="page-title">
             <span>🏠</span>
             <span>اختر القسم الذي تريد فتحه</span>
         </div>
 
         <div class="cards-grid">
-
-            <!-- 🔽 كارت 1: التخصص -->
+            <!-- كارت التخصص -->
             <a href="mester1.html" class="launcher-card" id="card-specialty">
                 <div class="card-icon">📚</div>
                 <div class="card-content">
-                    <div class="card-title">
-                        <span>التخصص</span>
-                    </div>
-                    <div class="card-subtitle">
-                        اختر الصف والمواد التي تدرسها
-                    </div>
+                    <div class="card-title"><span>التخصص</span></div>
+                    <div class="card-subtitle">اختر الصف والمواد التي تدرسها</div>
                     <span class="card-status pending" id="specialtyStatus">
-                        <span>⏳</span>
-                        <span>مطلوب</span>
+                        <span>⏳</span><span>مطلوب</span>
                     </span>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
 
-            <!-- 🔽 كارت 2: المواعيد والمجموعات -->
+            <!-- كارت المواعيد -->
             <a href="#" class="launcher-card schedule-card" id="card-schedule" onclick="openSchedule(event)">
                 <div class="card-icon">📅</div>
                 <div class="card-content">
-                    <div class="card-title">
-                        <span>المواعيد والمجموعات</span>
-                    </div>
-                    <div class="card-subtitle">
-                        أضف المجموعات وحدد المواعيد والأماكن
-                    </div>
-
-                    <!-- 📊 بادج عدد المجموعات -->
+                    <div class="card-title"><span>المواعيد والمجموعات</span></div>
+                    <div class="card-subtitle">أضف المجموعات وحدد المواعيد والأماكن</div>
                     <div id="groupsCounterWrapper">
                         <span class="skeleton-counter"></span>
                     </div>
-
                     <span class="card-status locked" id="scheduleStatus">
-                        <span>🔒</span>
-                        <span>يحتاج تخصص</span>
+                        <span>🔒</span><span>يحتاج تخصص</span>
                     </span>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
-
         </div>
 
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
-            <div class="version">v3.1</div>
+            <div class="version">v3.2</div>
         </div>
-
     </div>
 
-    <!-- ============ السكريبت ============ -->
+    <!-- ========================================================== -->
+    <!-- 🔒 سكريبت الحماية — يعمل هنا فقط -->
+    <!-- ========================================================== -->
     <script type="module">
-    // ==========================================================
-    // ✅ استيراد دوال Firebase لجلب عدد المجموعات
-    // ==========================================================
-    let getAllGroups = null;
+        import { checkTeacherDevice, getTeacher, db, doc, updateDoc } from './firebase-config.js';
 
-    try {
-        const firebaseModule = await import('./firebase-config.js');
-        getAllGroups = firebaseModule.getAllGroups;
-        console.log('✅ تم تحميل Firebase module');
-    } catch (e) {
-        console.warn('⚠️ فشل تحميل Firebase module:', e);
-    }
+        (async () => {
+            const overlay = document.getElementById('securityOverlay');
+            const phone = localStorage.getItem('current_teacher_phone');
 
-    (function() {
-        'use strict';
+            if (!phone) {
+                window.location.href = 'teacher-login.html';
+                return;
+            }
 
-        // ==========================================================
-        // ✅ إخفاء شاشة الحماية بعد التحميل
-        // ==========================================================
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const overlay = document.getElementById('securityOverlay');
-                if (overlay) {
-                    overlay.classList.add('hide');
-                    setTimeout(() => overlay.remove(), 400);
+            try {
+                let isLocked = false;
+                let teacherDoc = null;
+
+                try { teacherDoc = await getTeacher(phone); } catch (e) {
+                    console.warn('فشل جلب بيانات المعلم:', e);
                 }
-            }, 500);
-        });
 
-        // ==========================================================
-        // ✅ فحص حالة التخصص المحفوظ
-        // ==========================================================
+                if (teacherDoc) {
+                    if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
+                        const until = typeof teacherDoc.unlockUntil === 'number'
+                            ? teacherDoc.unlockUntil
+                            : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
+
+                        if (until && until <= Date.now()) {
+                            try {
+                                await updateDoc(doc(db, 'teachers', phone), {
+                                    isLocked: true, lockType: 'auto_expired', autoLockedAt: Date.now()
+                                });
+                            } catch(_) {}
+                            isLocked = true;
+                            localStorage.setItem('teacher_is_blocked', 'true');
+                        } else {
+                            localStorage.removeItem('teacher_is_blocked');
+                        }
+                    }
+                    else if (teacherDoc.isLocked === true) {
+                        isLocked = true;
+                        localStorage.setItem('teacher_is_blocked', 'true');
+                    }
+                    else {
+                        localStorage.removeItem('teacher_is_blocked');
+                    }
+                } else {
+                    if (localStorage.getItem('teacher_is_blocked') === 'true') isLocked = true;
+                }
+
+                if (isLocked) {
+                    window.location.href = 'mester2.html';
+                    return;
+                }
+
+                let check = null;
+                try { check = await checkTeacherDevice(phone); } catch (e) {
+                    console.warn('فشل فحص الجهاز:', e);
+                }
+
+                if (check && check.locked === true) {
+                    localStorage.setItem('teacher_is_blocked', 'true');
+                    window.location.href = 'mester2.html';
+                    return;
+                }
+
+                if (!check || !check.ok) {
+                    if (localStorage.getItem('teacher_is_blocked') !== 'true') {
+                        localStorage.removeItem('current_teacher_profile');
+                        localStorage.removeItem('current_teacher_phone');
+                        alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                        window.location.href = 'teacher-login.html';
+                        return;
+                    }
+                    return;
+                }
+
+                overlay.classList.add('hide');
+                setTimeout(() => overlay.remove(), 300);
+            } catch (e) {
+                console.error('خطأ في التحقق:', e);
+                overlay.classList.add('hide');
+                setTimeout(() => overlay.remove(), 300);
+            }
+        })();
+    </script>
+
+    <!-- ========================================================== -->
+    <!-- 🎨 سكريبت الواجهة (كروت + اسم + عداد مجموعات + خروج) -->
+    <!-- ========================================================== -->
+    <script type="module">
+        let getAllGroups = null;
+        try {
+            const m = await import('./firebase-config.js');
+            getAllGroups = m.getAllGroups;
+        } catch (e) { console.warn('فشل تحميل Firebase:', e); }
+
         function checkSpecialtyStatus() {
             try {
                 const raw = localStorage.getItem('mester1_selections');
-                const teacherSel = localStorage.getItem('teacherSelections');
-
-                const parseSafe = (s) => {
-                    if (!s) return null;
-                    try { return JSON.parse(s); } catch(e) { return null; }
-                };
-
-                const data = parseSafe(raw) || parseSafe(teacherSel);
+                const ts = localStorage.getItem('teacherSelections');
+                const parse = (s) => { try { return s ? JSON.parse(s) : null; } catch(e) { return null; } };
+                const data = parse(raw) || parse(ts);
                 if (!data) return false;
-
-                for (const sid in data) {
-                    if (data[sid]?.subjects?.length > 0) return true;
-                }
+                for (const sid in data) if (data[sid]?.subjects?.length > 0) return true;
                 return false;
-            } catch(e) {
-                return false;
-            }
+            } catch(e) { return false; }
         }
 
-        // ==========================================================
-        // ✅ تحديث البادجات
-        // ==========================================================
         function updateStatuses() {
-            const specialtySaved = checkSpecialtyStatus();
+            const saved = checkSpecialtyStatus();
+            const s1 = document.getElementById('specialtyStatus');
+            const s2 = document.getElementById('scheduleStatus');
 
-            const specialtyStatus = document.getElementById('specialtyStatus');
-            const scheduleStatus = document.getElementById('scheduleStatus');
-
-            if (specialtySaved) {
-                specialtyStatus.className = 'card-status';
-                specialtyStatus.innerHTML = '<span>✅</span><span>تم الحفظ</span>';
+            if (saved) {
+                s1.className = 'card-status';
+                s1.innerHTML = '<span>✅</span><span>تم الحفظ</span>';
+                s2.className = 'card-status';
+                s2.innerHTML = '<span>✅</span><span>متاح</span>';
             } else {
-                specialtyStatus.className = 'card-status pending';
-                specialtyStatus.innerHTML = '<span>⏳</span><span>مطلوب</span>';
-            }
-
-            if (specialtySaved) {
-                scheduleStatus.className = 'card-status';
-                scheduleStatus.innerHTML = '<span>✅</span><span>متاح</span>';
-            } else {
-                scheduleStatus.className = 'card-status locked';
-                scheduleStatus.innerHTML = '<span>🔒</span><span>يحتاج تخصص</span>';
+                s1.className = 'card-status pending';
+                s1.innerHTML = '<span>⏳</span><span>مطلوب</span>';
+                s2.className = 'card-status locked';
+                s2.innerHTML = '<span>🔒</span><span>يحتاج تخصص</span>';
             }
         }
 
-        // ==========================================================
-        // ✅ جلب وعرض عدد المجموعات
-        // ==========================================================
         async function loadGroupsCount() {
             const wrapper = document.getElementById('groupsCounterWrapper');
             if (!wrapper) return;
 
             try {
                 const phone = localStorage.getItem('current_teacher_phone');
-                if (!phone) {
-                    wrapper.innerHTML = '';
-                    return;
-                }
+                if (!phone) { wrapper.innerHTML = ''; return; }
 
                 if (!getAllGroups) {
-                    // لو Firebase مش محمّل — نجرب نجيبه من localStorage
-                    const cached = localStorage.getItem('teacher_groups_count');
-                    if (cached) {
-                        renderCounter(wrapper, parseInt(cached) || 0);
-                    } else {
-                        wrapper.innerHTML = '';
-                    }
+                    const c = localStorage.getItem('teacher_groups_count');
+                    if (c) renderCounter(wrapper, parseInt(c) || 0);
+                    else wrapper.innerHTML = '';
                     return;
                 }
 
@@ -987,67 +549,40 @@
                 const myGroups = (allGroups || []).filter(g => g.phone === phone);
                 const count = myGroups.length;
 
-                // نخزنه محلياً كـ cache
                 localStorage.setItem('teacher_groups_count', String(count));
-
                 renderCounter(wrapper, count);
-
-                console.log(`✅ عدد المجموعات: ${count}`);
             } catch (e) {
-                console.warn('⚠️ فشل جلب عدد المجموعات:', e);
+                console.warn('فشل عدد المجموعات:', e);
                 wrapper.innerHTML = '';
             }
         }
 
         function renderCounter(wrapper, count) {
             if (count > 0) {
-                wrapper.innerHTML = `
-                    <div class="groups-counter">
-                        <span>📊</span>
-                        <span>عدد المجموعات:</span>
-                        <span class="counter-num">${count}</span>
-                    </div>
-                `;
+                wrapper.innerHTML = `<div class="groups-counter"><span>📊</span><span>عدد المجموعات:</span><span class="counter-num">${count}</span></div>`;
             } else {
-                wrapper.innerHTML = `
-                    <div class="groups-counter" style="background:linear-gradient(135deg,#94A3B8,#64748B); box-shadow:0 3px 8px rgba(100,116,139,0.3);">
-                        <span>📊</span>
-                        <span>لا توجد مجموعات بعد</span>
-                    </div>
-                `;
+                wrapper.innerHTML = `<div class="groups-counter" style="background:linear-gradient(135deg,#94A3B8,#64748B); box-shadow:0 3px 8px rgba(100,116,139,0.3);"><span>📊</span><span>لا توجد مجموعات بعد</span></div>`;
             }
         }
 
-        // ==========================================================
-        // ✅ فتح قسم المواعيد — لازم التخصص يكون محفوظ
-        // ==========================================================
         window.openSchedule = function(event) {
             event.preventDefault();
             updateStatuses();
-
             if (!checkSpecialtyStatus()) {
                 showToast('⚠️ يجب حفظ التخصص أولاً قبل المواعيد');
-                setTimeout(() => {
-                    window.location.href = 'mester1.html';
-                }, 1200);
+                setTimeout(() => { window.location.href = 'mester1.html'; }, 1200);
                 return;
             }
-
             window.location.href = 'mester2.html';
         };
 
-        // ==========================================================
-        // ✅ توست التنبيه
-        // ==========================================================
         let toastTimer = null;
         function showToast(msg, type = 'warning') {
             const toast = document.getElementById('toastNotice');
             const txt = document.getElementById('toastText');
             if (!toast || !txt) return;
-
             toast.classList.remove('success');
             if (type === 'success') toast.classList.add('success');
-
             txt.textContent = msg;
             toast.classList.add('show');
             clearTimeout(toastTimer);
@@ -1055,15 +590,11 @@
         }
         window.showToast = showToast;
 
-        // ==========================================================
-        // ✅ عرض اسم المعلم في الهيدر
-        // ==========================================================
         function showTeacherName() {
             try {
                 const profile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
                 const name = profile.name || profile.teacherName || '';
                 const title = profile.title || '';
-
                 if (name) {
                     const badge = document.getElementById('userBadge');
                     const nameEl = document.getElementById('userName');
@@ -1075,22 +606,15 @@
             } catch(e) {}
         }
 
-        // ==========================================================
         // 🚪 تسجيل الخروج
-        // ==========================================================
         window.openLogoutModal = function() {
-            const modal = document.getElementById('logoutModalOverlay');
-            if (modal) modal.classList.add('active');
+            document.getElementById('logoutModalOverlay')?.classList.add('active');
         };
-
         window.closeLogoutModal = function() {
-            const modal = document.getElementById('logoutModalOverlay');
-            if (modal) modal.classList.remove('active');
+            document.getElementById('logoutModalOverlay')?.classList.remove('active');
         };
-
         window.confirmLogout = function() {
             try {
-                // 🧹 مسح كل بيانات الجلسة
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('teacher_is_blocked');
@@ -1098,53 +622,30 @@
                 localStorage.removeItem('teacherSelections');
                 localStorage.removeItem('mester1_is_locked');
                 localStorage.removeItem('teacher_groups_count');
-                // أي مفاتيح إضافية
                 localStorage.removeItem('selected_contact_type');
-
-                console.log('✅ تم تسجيل الخروج');
-
-                // اقفل النافذة
                 closeLogoutModal();
-
-                // حوّل لصفحة الدخول
-                setTimeout(() => {
-                    window.location.href = 'teacher-login.html';
-                }, 250);
-
+                setTimeout(() => { window.location.href = 'teacher-login.html'; }, 250);
             } catch(e) {
-                console.error('خطأ في تسجيل الخروج:', e);
                 window.location.href = 'teacher-login.html';
             }
         };
 
-        // إغلاق نافذة الخروج لو ضغط برّه
         document.addEventListener('click', (e) => {
             const modal = document.getElementById('logoutModalOverlay');
-            if (modal && e.target === modal) {
-                closeLogoutModal();
-            }
+            if (modal && e.target === modal) closeLogoutModal();
         });
 
-        // ==========================================================
-        // ✅ التهيئة
-        // ==========================================================
         window.addEventListener('DOMContentLoaded', () => {
             updateStatuses();
             showTeacherName();
             loadGroupsCount();
-            console.log('✅ mester3 جاهز');
         });
 
-        // تحديث دوري لحالة التخصص (كل 3 ثواني)
         setInterval(updateStatuses, 3000);
-
-        // لما يرجع من أي صفحة
         window.addEventListener('pageshow', () => {
             updateStatuses();
             loadGroupsCount();
         });
-
-    })();
     </script>
 
 </body>
