@@ -1098,7 +1098,6 @@
                     restoreMester1();
                     isFirstLoad = false;
                     
-                    // ✅ رفع أول ما الصفحة تفتح (لو في بيانات محلية)
                     setTimeout(pushDataToCloud, 2000);
                 } else {
                     rebuildUIWithPreserve();
@@ -1236,37 +1235,14 @@
     </script>
 
     <!-- ==========================================================
-         ✅✅✅ زر الرجوع العادي بتاع المتصفح يروح لـ mester3 ✅✅✅
+         ✅✅✅ زر الرجوع العادي بتاع المتصفح يروح mester3.html ✅✅✅
          ========================================================== -->
     <script>
     (function() {
         'use strict';
 
-        // ✅ نحفظ البيانات قبل الرجوع
-        function saveBeforeBack() {
-            try {
-                const phone = localStorage.getItem('current_teacher_phone');
-                const profile = localStorage.getItem('current_teacher_profile');
-                
-                if (phone) localStorage.setItem('teacher_saved_phone', phone);
-                if (profile) localStorage.setItem('teacher_saved_profile', profile);
-
-                const backup = {
-                    teacherSelections: localStorage.getItem('teacherSelections'),
-                    mester1_selections: localStorage.getItem('mester1_selections'),
-                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
-                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
-                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
-                    last_selected_gender: localStorage.getItem('last_selected_gender'),
-                    last_selected_location: localStorage.getItem('last_selected_location')
-                };
-                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
-            } catch(e) {}
-        }
-
-        // ✅ لما المستخدم يضغط زر الرجوع → تروح لـ mester3
+        // ✅ زر الرجوع العادي → يروح mester3.html
         window.addEventListener('popstate', function(e) {
-            saveBeforeBack();
             console.log('🔙 رجوع من mester1 → mester3');
             window.location.replace('mester3.html');
         });
@@ -1274,7 +1250,6 @@
         // ✅ لو الصفحة رجعت من cache → تروح mester3
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                saveBeforeBack();
                 console.log('🔙 الصفحة رجعت من cache → mester3');
                 window.location.replace('mester3.html');
             }
