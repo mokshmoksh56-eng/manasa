@@ -315,6 +315,14 @@
         align-items: center;
         gap: 6px;
     }
+    .reminder-table .rt-title .rt-date-info {
+        font-size: 10px;
+        color: var(--text-gray);
+        font-weight: 800;
+        background: #f1f5f9;
+        padding: 3px 8px;
+        border-radius: 12px;
+    }
     .reminder-table .rt-title .rt-count-badge {
         background: linear-gradient(135deg, #10B981, #047857);
         color: #fff;
@@ -404,110 +412,28 @@
         }
     }
 
-    .lesson-chip.chip-ended {
-        background: linear-gradient(135deg, #FEE2E2, #FECACA);
-        border-color: #DC2626;
-        color: #7F1D1D;
-        box-shadow: 0 2px 6px -2px rgba(220,38,38,0.35);
-        opacity: 0.85;
+    .lesson-chip.chip-active {
+        background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+        border-color: #3B82F6;
+        color: #1E3A8A;
+        animation: chipActivePulse 1.5s ease-in-out infinite;
     }
-    .lesson-chip.chip-ended .chip-num {
-        background: #DC2626;
+    .lesson-chip.chip-active .chip-num {
+        background: #3B82F6;
     }
-    .lesson-chip.chip-ended .chip-time {
-        background: rgba(220,38,38,0.15);
-        color: #7F1D1D;
-    }
-
-    /* ========================================================== */
-    /* 📦 جدول الأرشيف */
-    /* ========================================================== */
-    .archive-table {
-        margin-top: 14px;
-        background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
-        border: 1.5px solid #C4B5FD;
-        border-radius: 12px;
-        padding: 12px;
-        box-shadow: 0 4px 12px -4px rgba(124, 58, 237, 0.15);
-        display: none;
-    }
-    .archive-table.show { display: block; }
-
-    .archive-table .rt-title {
-        font-size: 12.5px;
-        font-weight: 900;
-        color: #5B21B6;
-        margin-bottom: 8px;
-        padding-bottom: 6px;
-        border-bottom: 1.5px dashed #C4B5FD;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-    .archive-table .rt-title .rt-title-left {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .archive-table .rt-count-badge {
-        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 900;
-        padding: 3px 9px;
-        border-radius: 20px;
-        box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
-    }
-
-    .archive-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
-        border: 1.5px solid #A78BFA;
-        border-radius: 20px;
-        padding: 5px 10px;
-        font-size: 10px;
-        font-weight: 900;
-        color: #5B21B6;
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-        white-space: nowrap;
-        font-family: inherit;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        user-select: none;
-        margin: 2px 2px 2px 0;
-    }
-    .archive-chip:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px -2px rgba(139, 92, 246, 0.5);
-    }
-    .archive-chip:active { transform: scale(0.96); }
-
-    .archive-chip .chip-num {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 16px; height: 16px;
-        background: #8B5CF6;
-        color: #fff;
-        border-radius: 50%;
-        font-size: 9px;
-        font-weight: 900;
-    }
-
-    .archive-empty {
-        text-align: center;
-        padding: 14px 10px;
-        color: #7C3AED;
-        font-size: 11px;
-        font-weight: 800;
-        background: rgba(255,255,255,0.5);
-        border: 1.5px dashed #C4B5FD;
-        border-radius: 10px;
+    @keyframes chipActivePulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(59,130,246,0.7);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(59,130,246,0);
+            transform: scale(1.06);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(59,130,246,0);
+            transform: scale(1);
+        }
     }
 
     /* ========================================================== */
@@ -549,9 +475,9 @@
         background: linear-gradient(135deg, #F59E0B, #D97706);
         box-shadow: 0 2px 10px rgba(245,158,11,0.4);
     }
-    .lesson-modal-header.ended-header {
-        background: linear-gradient(135deg, #DC2626, #991B1B);
-        box-shadow: 0 2px 10px rgba(220,38,38,0.4);
+    .lesson-modal-header.active-header {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        box-shadow: 0 2px 10px rgba(59,130,246,0.4);
     }
     .lesson-modal-header h3 {
         font-size: 15px; font-weight: 900; margin: 0;
@@ -636,26 +562,20 @@
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.02); }
     }
-    .lesson-status-banner.ended {
-        background: linear-gradient(135deg, #FEE2E2, #FECACA);
-        color: #7F1D1D;
-        border: 2px solid #DC2626;
-    }
     .lesson-status-banner.active {
+        background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+        color: #1E3A8A;
+        border: 2px solid #3B82F6;
+    }
+    .lesson-status-banner.upcoming {
         background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
         color: #065F46;
         border: 2px solid #10B981;
     }
-    .lesson-status-banner.archive-banner {
-        background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
-        color: #5B21B6;
-        border: 2px solid #A78BFA;
-    }
 
-    /* أزرار الأكشن */
     .lesson-actions-row {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 6px;
         margin-top: 12px;
         padding-top: 12px;
@@ -664,16 +584,15 @@
 
     .lesson-action-btn {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 3px;
-        padding: 10px 6px;
+        gap: 6px;
+        padding: 12px;
         border: none;
         border-radius: 10px;
         font-family: 'Cairo', sans-serif;
         font-weight: 900;
-        font-size: 11px;
+        font-size: 13px;
         cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
         -webkit-tap-highlight-color: transparent;
@@ -685,21 +604,9 @@
     .lesson-action-btn:hover { transform: translateY(-2px); }
     .lesson-action-btn:active { transform: scale(0.96); }
     .lesson-action-btn .btn-icon { font-size: 16px; }
-    .lesson-action-btn .btn-text { font-size: 10.5px; }
 
     .lesson-action-btn.btn-close-action {
         background: linear-gradient(135deg, #64748B, #475569);
-    }
-    .lesson-action-btn.btn-delete-action {
-        background: linear-gradient(135deg, #DC2626, #991B1B);
-    }
-    .lesson-action-btn.btn-archive-action {
-        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
-        animation: archiveBtnPulse 2s ease-in-out infinite;
-    }
-    @keyframes archiveBtnPulse {
-        0%, 100% { box-shadow: 0 3px 8px -2px rgba(139,92,246,0.5); }
-        50% { box-shadow: 0 6px 18px -2px rgba(139,92,246,0.9); }
     }
 
     .logout-modal-overlay {
@@ -738,13 +645,24 @@
 
     .empty-lessons {
         text-align: center;
-        padding: 20px 10px;
+        padding: 22px 10px;
         color: var(--text-gray);
         font-size: 12px;
         font-weight: 800;
         background: #f8fafc;
         border: 1.5px dashed #cbd5e1;
         border-radius: 10px;
+    }
+    .empty-lessons .empty-icon {
+        font-size: 26px;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .empty-lessons .empty-sub {
+        font-size: 10px;
+        opacity: 0.7;
+        margin-top: 4px;
+        display: block;
     }
 
     .footer-note {
@@ -776,9 +694,6 @@
         .lesson-chip .chip-subject { max-width: 65px; }
         .lesson-chip .chip-time { font-size: 9px; }
         .lesson-modal-box { max-width: 95%; }
-        .lesson-action-btn { padding: 8px 4px; }
-        .lesson-action-btn .btn-icon { font-size: 14px; }
-        .lesson-action-btn .btn-text { font-size: 9.5px; }
     }
 </style>
 </head>
@@ -867,31 +782,21 @@
             </a>
         </div>
 
-        <!-- 📅 جدول الحصص -->
+        <!-- 📅 جدول حصص النهاردة -->
         <div class="reminder-table" id="reminderTable">
             <div class="rt-title">
                 <div class="rt-title-left">
                     <span>📅</span>
-                    <span>الحصص</span>
+                    <span>حصص النهاردة</span>
                 </div>
+                <span class="rt-date-info" id="rtDateInfo">--</span>
                 <span class="rt-count-badge" id="rtCountBadge">0 حصة</span>
             </div>
             <div class="lesson-chips-list" id="lessonsList">
-                <div class="empty-lessons">لا توجد حصص مضافة بعد</div>
-            </div>
-        </div>
-
-        <!-- 📦 جدول الأرشيف -->
-        <div class="archive-table" id="archiveTable">
-            <div class="rt-title">
-                <div class="rt-title-left">
-                    <span>📦</span>
-                    <span>الأرشيف (للمراجعة)</span>
+                <div class="empty-lessons">
+                    <span class="empty-icon">🎉</span>
+                    <div>لا توجد حصص النهاردة</div>
                 </div>
-                <span class="rt-count-badge" id="archiveCountBadge">0</span>
-            </div>
-            <div id="archiveList">
-                <div class="archive-empty">لا توجد حصص مؤرشفة</div>
             </div>
         </div>
 
@@ -954,10 +859,10 @@
 
                 if (minutesToEnd < 0) {
                     status = 'ended';
-                } else if (minutesToStart <= 30 && minutesToStart > 0) {
-                    status = 'soon';
                 } else if (minutesToStart <= 0 && minutesToEnd >= 0) {
                     status = 'active';
+                } else if (minutesToStart <= 30 && minutesToStart > 0) {
+                    status = 'soon';
                 } else {
                     status = 'upcoming';
                 }
@@ -974,13 +879,27 @@
         }
 
         // ==========================================================
-        // 📅 تحديث قائمة الحصص
+        // 🗓️ اسم اليوم بالعربي
+        // ==========================================================
+        function getTodayName() {
+            const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            return days[new Date().getDay()];
+        }
+
+        // ==========================================================
+        // 📅 تحديث حصص النهاردة
         // ==========================================================
         function updateLessonsList() {
             try {
                 const lessonsList = document.getElementById('lessonsList');
                 const rtCountBadge = document.getElementById('rtCountBadge');
+                const rtDateInfo = document.getElementById('rtDateInfo');
                 if (!lessonsList) return;
+
+                const now = new Date();
+                const todayName = getTodayName();
+                const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+                if (rtDateInfo) rtDateInfo.textContent = `${todayName} ${dateStr}`;
 
                 let savedAppts = [];
                 try {
@@ -988,7 +907,41 @@
                     if (apptRaw) savedAppts = JSON.parse(apptRaw);
                 } catch(e) {}
 
-                const count = savedAppts.length;
+                // فلتر: حصص النهاردة بس + مش منتهية
+                const todayLessons = [];
+                savedAppts.forEach((appt, originalIndex) => {
+                    const apptType = appt.apptType || 'normal';
+                    let isToday = false;
+
+                    // 1) حصة بتاريخ محدد
+                    if (appt.date && apptType === 'normal') {
+                        const [y, m, d] = appt.date.split('-').map(Number);
+                        const apptDate = new Date(y, m - 1, d);
+                        const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        if (apptDate.getTime() === nowDate.getTime()) isToday = true;
+                    }
+                    // 2) حصة أسبوعية والنهاردة يومها
+                    else if (apptType === 'recurring' && appt.daysNames && appt.daysNames.length > 0) {
+                        if (appt.daysNames.includes(todayName)) isToday = true;
+                    }
+
+                    if (!isToday) return;
+
+                    // نتأكد إنها مش منتهية
+                    const timeInfo = parseLessonDateTime(appt);
+                    if (timeInfo && timeInfo.status === 'ended') return;
+
+                    todayLessons.push({ appt, originalIndex, timeInfo });
+                });
+
+                // ترتيب حسب وقت البداية
+                todayLessons.sort((a, b) => {
+                    const aT = a.appt.startTime || a.appt.start || '00:00';
+                    const bT = b.appt.startTime || b.appt.start || '00:00';
+                    return aT.localeCompare(bT);
+                });
+
+                const count = todayLessons.length;
 
                 if (rtCountBadge) {
                     rtCountBadge.textContent = `${count} حصة`;
@@ -1002,22 +955,27 @@
                 }
 
                 if (count === 0) {
-                    lessonsList.innerHTML = '<div class="empty-lessons">لا توجد حصص مضافة بعد</div>';
+                    lessonsList.innerHTML = `
+                        <div class="empty-lessons">
+                            <span class="empty-icon">🎉</span>
+                            <div>لا توجد حصص النهاردة</div>
+                            <span class="empty-sub">${todayName}</span>
+                        </div>
+                    `;
                     return;
                 }
 
                 let chipsHtml = '';
-                savedAppts.forEach((appt, idx) => {
-                    const timeInfo = parseLessonDateTime(appt);
+                todayLessons.forEach((item, displayIdx) => {
+                    const { appt, originalIndex, timeInfo } = item;
                     let extraClass = '';
                     let timeDisplay = '';
 
                     if (timeInfo) {
                         timeDisplay = timeInfo.startTimeStr;
-
-                        if (timeInfo.status === 'ended') {
-                            extraClass = 'chip-ended';
-                        } else if (timeInfo.status === 'soon' || timeInfo.status === 'active') {
+                        if (timeInfo.status === 'active') {
+                            extraClass = 'chip-active';
+                        } else if (timeInfo.status === 'soon') {
                             extraClass = 'chip-soon';
                         }
                     } else {
@@ -1027,8 +985,8 @@
                     const subjectShort = (appt.subject || 'حصة').substring(0, 12);
 
                     chipsHtml += `
-                        <button class="lesson-chip ${extraClass}" onclick="showLessonDetails(${idx})">
-                            <span class="chip-num">${idx + 1}</span>
+                        <button class="lesson-chip ${extraClass}" onclick="showLessonDetails(${originalIndex})">
+                            <span class="chip-num">${displayIdx + 1}</span>
                             <span class="chip-subject">${subjectShort}${subjectShort.length >= 12 ? '..' : ''}</span>
                             ${timeDisplay ? `<span class="chip-time">${timeDisplay}</span>` : ''}
                         </button>
@@ -1038,48 +996,6 @@
                 lessonsList.innerHTML = chipsHtml;
             } catch(e) {
                 console.warn('⚠️ فشل تحديث قائمة الحصص:', e);
-            }
-        }
-
-        // ==========================================================
-        // 📦 تحديث قائمة الأرشيف
-        // ==========================================================
-        function updateArchiveList() {
-            try {
-                const archiveTable = document.getElementById('archiveTable');
-                const archiveList = document.getElementById('archiveList');
-                const archiveCountBadge = document.getElementById('archiveCountBadge');
-                if (!archiveTable || !archiveList) return;
-
-                let archive = [];
-                try {
-                    const existing = localStorage.getItem('teacher_lessons_archive');
-                    if (existing) archive = JSON.parse(existing);
-                } catch(e) {}
-
-                if (archive.length === 0) {
-                    archiveTable.classList.remove('show');
-                    return;
-                }
-
-                archiveTable.classList.add('show');
-                if (archiveCountBadge) archiveCountBadge.textContent = archive.length;
-
-                let chipsHtml = '';
-                archive.forEach((appt, idx) => {
-                    const subjectShort = (appt.subject || 'حصة').substring(0, 12);
-                    chipsHtml += `
-                        <button class="archive-chip" onclick="showArchivedLesson(${idx})">
-                            <span class="chip-num">${idx + 1}</span>
-                            <span>📖</span>
-                            <span>${subjectShort}${subjectShort.length >= 12 ? '..' : ''}</span>
-                        </button>
-                    `;
-                });
-
-                archiveList.innerHTML = chipsHtml;
-            } catch(e) {
-                console.warn('⚠️ فشل تحديث الأرشيف:', e);
             }
         }
 
@@ -1217,7 +1133,7 @@
         }
 
         // ==========================================================
-        // 🎯 عرض تفاصيل الحصة (النشطة)
+        // 🎯 عرض تفاصيل الحصة
         // ==========================================================
         window.showLessonDetails = function(index) {
             try {
@@ -1234,7 +1150,6 @@
 
                 overlay.classList.add('active');
 
-                // إعادة ضبط الهيدر
                 header.className = 'lesson-modal-header';
                 header.style.background = '';
 
@@ -1242,52 +1157,37 @@
                 let headerClass = '';
                 let statusBanner = '';
                 let titleIcon = '📖';
-                let isEnded = false;
 
                 if (timeInfo) {
-                    if (timeInfo.status === 'ended') {
-                        headerClass = 'ended-header';
-                        titleIcon = '🔴';
-                        isEnded = true;
+                    if (timeInfo.status === 'active') {
+                        headerClass = 'active-header';
+                        titleIcon = '🔵';
                         statusBanner = `
-                            <div class="lesson-status-banner ended">
-                                <span>🔴</span>
+                            <div class="lesson-status-banner active">
+                                <span>🔵</span>
                                 <div>
-                                    <strong>هذه الحصة انتهت</strong>
+                                    <strong>الحصة جارية الآن</strong>
                                     <br>
-                                    <small style="font-weight:700;">انتهت منذ ${Math.abs(timeInfo.minutesToEnd)} دقيقة</small>
+                                    <small style="font-weight:700;">تنتهي بعد ${timeInfo.minutesToEnd} دقيقة</small>
                                 </div>
                             </div>
                         `;
-                    } else if (timeInfo.status === 'soon' || timeInfo.status === 'active') {
+                    } else if (timeInfo.status === 'soon') {
                         headerClass = 'soon-header';
                         titleIcon = '⏰';
-                        if (timeInfo.status === 'active') {
-                            statusBanner = `
-                                <div class="lesson-status-banner soon">
-                                    <span>🔵</span>
-                                    <div>
-                                        <strong>الحصة جارية الآن</strong>
-                                        <br>
-                                        <small style="font-weight:700;">تنتهي بعد ${timeInfo.minutesToEnd} دقيقة</small>
-                                    </div>
+                        statusBanner = `
+                            <div class="lesson-status-banner soon">
+                                <span>⏰</span>
+                                <div>
+                                    <strong>الحصة قريبة جداً</strong>
+                                    <br>
+                                    <small style="font-weight:700;">تبدأ بعد ${timeInfo.minutesToStart} دقيقة</small>
                                 </div>
-                            `;
-                        } else {
-                            statusBanner = `
-                                <div class="lesson-status-banner soon">
-                                    <span>⏰</span>
-                                    <div>
-                                        <strong>الحصة قريبة جداً</strong>
-                                        <br>
-                                        <small style="font-weight:700;">تبدأ بعد ${timeInfo.minutesToStart} دقيقة</small>
-                                    </div>
-                                </div>
-                            `;
-                        }
+                            </div>
+                        `;
                     } else {
                         statusBanner = `
-                            <div class="lesson-status-banner active">
+                            <div class="lesson-status-banner upcoming">
                                 <span>✅</span>
                                 <div>
                                     <strong>الحصة قادمة</strong>
@@ -1335,36 +1235,6 @@
                     else locationFullText = `✨ ${detailedAddress}`;
                 }
                 if (!locationFullText) locationFullText = locationText;
-
-                // ============ أزرار الأكشن ============
-                let actionsHtml = '';
-                if (isEnded) {
-                    actionsHtml = `
-                        <div class="lesson-actions-row">
-                            <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
-                                <span class="btn-icon">✖</span>
-                                <span class="btn-text">إغلاق</span>
-                            </button>
-                            <button class="lesson-action-btn btn-archive-action" onclick="archiveLesson(${index})">
-                                <span class="btn-icon">📦</span>
-                                <span class="btn-text">حفظ بالأرشيف</span>
-                            </button>
-                            <button class="lesson-action-btn btn-delete-action" onclick="deleteLesson(${index})">
-                                <span class="btn-icon">🗑</span>
-                                <span class="btn-text">حذف</span>
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    actionsHtml = `
-                        <div class="lesson-actions-row" style="grid-template-columns: 1fr;">
-                            <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
-                                <span class="btn-icon">✖</span>
-                                <span class="btn-text">إغلاق</span>
-                            </button>
-                        </div>
-                    `;
-                }
 
                 content.innerHTML = `
                     ${statusBanner}
@@ -1419,249 +1289,15 @@
                         </div>
                     </div>
                     ` : ''}
-                    ${actionsHtml}
-                `;
-            } catch(e) {
-                console.warn('⚠️ فشل عرض تفاصيل الحصة:', e);
-            }
-        };
-
-        // ==========================================================
-        // 📦 أرشفة حصة
-        // ==========================================================
-        window.archiveLesson = function(index) {
-            try {
-                const summaryKey = 'teacher_appointments_summary';
-                const archiveKey = 'teacher_lessons_archive';
-
-                let savedAppts = [];
-                try {
-                    const existing = localStorage.getItem(summaryKey);
-                    if (existing) savedAppts = JSON.parse(existing);
-                } catch(e) {}
-
-                if (!savedAppts[index]) return;
-
-                const lesson = savedAppts[index];
-
-                let archive = [];
-                try {
-                    const existingArch = localStorage.getItem(archiveKey);
-                    if (existingArch) archive = JSON.parse(existingArch);
-                } catch(e) {}
-
-                archive.push({
-                    ...lesson,
-                    archivedAt: Date.now()
-                });
-                localStorage.setItem(archiveKey, JSON.stringify(archive));
-
-                savedAppts.splice(index, 1);
-                localStorage.setItem(summaryKey, JSON.stringify(savedAppts));
-                localStorage.setItem('teacher_groups_count', String(savedAppts.length));
-
-                closeLessonModal(null, true);
-                updateLessonsList();
-                updateArchiveList();
-                updateScheduleCard();
-
-                console.log('📦 تمت أرشفة الحصة:', lesson.subject);
-            } catch(e) {
-                console.warn('⚠️ فشل أرشفة الحصة:', e);
-            }
-        };
-
-        // ==========================================================
-        // 🗑 حذف حصة نهائياً
-        // ==========================================================
-        window.deleteLesson = function(index) {
-            try {
-                if (!confirm('⚠️ هل أنت متأكد من حذف هذه الحصة نهائياً؟\n(لا يمكن استرجاعها)')) return;
-
-                const summaryKey = 'teacher_appointments_summary';
-                let savedAppts = [];
-                try {
-                    const existing = localStorage.getItem(summaryKey);
-                    if (existing) savedAppts = JSON.parse(existing);
-                } catch(e) {}
-
-                if (!savedAppts[index]) return;
-
-                const lesson = savedAppts[index];
-                savedAppts.splice(index, 1);
-                localStorage.setItem(summaryKey, JSON.stringify(savedAppts));
-                localStorage.setItem('teacher_groups_count', String(savedAppts.length));
-
-                closeLessonModal(null, true);
-                updateLessonsList();
-                updateArchiveList();
-                updateScheduleCard();
-
-                console.log('🗑 تم حذف الحصة:', lesson.subject);
-            } catch(e) {
-                console.warn('⚠️ فشل حذف الحصة:', e);
-            }
-        };
-
-        // ==========================================================
-        // 🎯 عرض تفاصيل حصة مؤرشفة
-        // ==========================================================
-        window.showArchivedLesson = function(index) {
-            try {
-                const archive = JSON.parse(localStorage.getItem('teacher_lessons_archive') || '[]');
-                const appt = archive[index];
-                if (!appt) return;
-
-                const overlay = document.getElementById('lessonModalOverlay');
-                const header = document.getElementById('lessonModalHeader');
-                const title = document.getElementById('lessonModalTitle');
-                const content = document.getElementById('lessonModalContent');
-
-                overlay.classList.add('active');
-
-                header.className = 'lesson-modal-header';
-                header.style.background = 'linear-gradient(135deg, #8B5CF6, #6D28D9)';
-
-                title.innerHTML = `<span>📦</span> حصة مؤرشفة #${index + 1}`;
-
-                const genderLabels = {
-                    'boys': '👨‍🎓 أولاد فقط',
-                    'girls': '👩‍🎓 بنات فقط',
-                    'mixed': '👫 مختلط'
-                };
-                const locationLabels = {
-                    'center': '🏫 السنتر',
-                    'teacher_home': '🏠 بيت المستر',
-                    'student_home': '🚗 منزل الطالب'
-                };
-
-                const genderText = genderLabels[appt.gender] || appt.genderAllowed || 'مختلط';
-                const locationText = locationLabels[appt.type] || appt.location || 'غير محدد';
-
-                let timeText = 'غير محدد';
-                const startT = appt.startTime || appt.start || '';
-                const endT = appt.endTime || appt.end || '';
-                if (startT && endT) timeText = `من ${startT} إلى ${endT}`;
-
-                let dayText = appt.dayName || 'غير محدد';
-                if (appt.date) dayText = `${dayText} (${appt.date})`;
-
-                let fullAddress = appt.fullAddress || appt.address || appt.street || '';
-                let detailedAddress = appt.detailedAddress || '';
-                let locationFullText = '';
-                if (fullAddress) locationFullText += `📍 ${fullAddress}`;
-                if (detailedAddress) {
-                    if (locationFullText) locationFullText += `<br>✨ ${detailedAddress}`;
-                    else locationFullText = `✨ ${detailedAddress}`;
-                }
-                if (!locationFullText) locationFullText = locationText;
-
-                let archivedDateText = '';
-                if (appt.archivedAt) {
-                    const d = new Date(appt.archivedAt);
-                    archivedDateText = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-                }
-
-                content.innerHTML = `
-                    <div class="lesson-status-banner archive-banner">
-                        <span>📦</span>
-                        <div>
-                            <strong>حصة مؤرشفة</strong>
-                            ${archivedDateText ? `<br><small style="font-weight:700;">تم الأرشفة: ${archivedDateText}</small>` : ''}
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row highlight">
-                        <span class="ld-icon">📖</span>
-                        <div>
-                            <span class="ld-label">المادة</span>
-                            <span class="ld-value">${appt.subject || 'غير محدد'}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row highlight">
-                        <span class="ld-icon">👑</span>
-                        <div>
-                            <span class="ld-label">الصف</span>
-                            <span class="ld-value">${appt.grade || 'غير محدد'}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row time-row">
-                        <span class="ld-icon">🕐</span>
-                        <div>
-                            <span class="ld-label">الوقت</span>
-                            <span class="ld-value">${timeText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">📅</span>
-                        <div>
-                            <span class="ld-label">اليوم</span>
-                            <span class="ld-value">${dayText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">👥</span>
-                        <div>
-                            <span class="ld-label">الفئة</span>
-                            <span class="ld-value">${genderText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row location-row">
-                        <span class="ld-icon">📍</span>
-                        <div>
-                            <span class="ld-label">المكان (${locationText})</span>
-                            <span class="ld-value">${locationFullText}</span>
-                        </div>
-                    </div>
-                    ${appt.capacity ? `
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">👨‍👩‍👧</span>
-                        <div>
-                            <span class="ld-label">السعة</span>
-                            <span class="ld-value">${appt.capacity} طالب</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                    <div class="lesson-actions-row" style="grid-template-columns: 1fr 1fr;">
+                    <div class="lesson-actions-row">
                         <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
                             <span class="btn-icon">✖</span>
                             <span class="btn-text">إغلاق</span>
                         </button>
-                        <button class="lesson-action-btn btn-delete-action" onclick="deleteArchivedLesson(${index})">
-                            <span class="btn-icon">🗑</span>
-                            <span class="btn-text">حذف من الأرشيف</span>
-                        </button>
                     </div>
                 `;
             } catch(e) {
-                console.warn('⚠️ فشل عرض الحصة المؤرشفة:', e);
-            }
-        };
-
-        // ==========================================================
-        // 🗑 حذف حصة من الأرشيف
-        // ==========================================================
-        window.deleteArchivedLesson = function(index) {
-            try {
-                if (!confirm('⚠️ هل تريد حذف هذه الحصة من الأرشيف نهائياً؟')) return;
-
-                const archiveKey = 'teacher_lessons_archive';
-                let archive = [];
-                try {
-                    const existing = localStorage.getItem(archiveKey);
-                    if (existing) archive = JSON.parse(existing);
-                } catch(e) {}
-
-                if (!archive[index]) return;
-
-                archive.splice(index, 1);
-                localStorage.setItem(archiveKey, JSON.stringify(archive));
-
-                closeLessonModal(null, true);
-                updateArchiveList();
-
-                console.log('🗑 تم حذف حصة من الأرشيف');
-            } catch(e) {
-                console.warn('⚠️ فشل حذف الحصة من الأرشيف:', e);
+                console.warn('⚠️ فشل عرض تفاصيل الحصة:', e);
             }
         };
 
@@ -1742,7 +1378,6 @@
             updateSpecialtyCard();
             updateScheduleCard();
             updateLessonsList();
-            updateArchiveList();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1755,11 +1390,36 @@
             updateAll();
         });
 
+        // تحديث كل 30 ثانية (لتحديث حالة الحصص)
         setInterval(updateLessonsList, 30000);
+
+        // تحديث الكروت كل 3 ثواني
         setInterval(() => {
             updateSpecialtyCard();
             updateScheduleCard();
         }, 3000);
+
+        // ==========================================================
+        // 🌙 تحديث تلقائي عند منتصف الليل
+        // ==========================================================
+        function scheduleMidnightRefresh() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const msUntilMidnight = midnight.getTime() - now.getTime();
+
+            console.log(`🌙 التحديث التلقائي القادم بعد ${Math.round(msUntilMidnight / 1000 / 60)} دقيقة`);
+
+            setTimeout(() => {
+                console.log('🌙 منتصف الليل — تحديث حصص اليوم الجديد');
+                updateLessonsList();
+                updateSpecialtyCard();
+                updateScheduleCard();
+                scheduleMidnightRefresh();
+            }, msUntilMidnight);
+        }
+
+        scheduleMidnightRefresh();
 
     })();
     </script>
