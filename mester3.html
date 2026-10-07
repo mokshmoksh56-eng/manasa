@@ -380,7 +380,6 @@
         border-radius: 8px;
     }
 
-    /* ⏰ الحالة القريبة — نبض ضوئي */
     .lesson-chip.chip-soon {
         background: linear-gradient(135deg, #FEF3C7, #FDE68A);
         border-color: #F59E0B;
@@ -405,7 +404,6 @@
         }
     }
 
-    /* 🔴 الحالة المنتهية */
     .lesson-chip.chip-ended {
         background: linear-gradient(135deg, #FEE2E2, #FECACA);
         border-color: #DC2626;
@@ -422,7 +420,98 @@
     }
 
     /* ========================================================== */
-    /* 🎯 نافذة تفاصيل الحصة — سريعة */
+    /* 📦 جدول الأرشيف */
+    /* ========================================================== */
+    .archive-table {
+        margin-top: 14px;
+        background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+        border: 1.5px solid #C4B5FD;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 4px 12px -4px rgba(124, 58, 237, 0.15);
+        display: none;
+    }
+    .archive-table.show { display: block; }
+
+    .archive-table .rt-title {
+        font-size: 12.5px;
+        font-weight: 900;
+        color: #5B21B6;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1.5px dashed #C4B5FD;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .archive-table .rt-title .rt-title-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .archive-table .rt-count-badge {
+        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 3px 9px;
+        border-radius: 20px;
+        box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+    }
+
+    .archive-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+        border: 1.5px solid #A78BFA;
+        border-radius: 20px;
+        padding: 5px 10px;
+        font-size: 10px;
+        font-weight: 900;
+        color: #5B21B6;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        white-space: nowrap;
+        font-family: inherit;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        margin: 2px 2px 2px 0;
+    }
+    .archive-chip:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px -2px rgba(139, 92, 246, 0.5);
+    }
+    .archive-chip:active { transform: scale(0.96); }
+
+    .archive-chip .chip-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px; height: 16px;
+        background: #8B5CF6;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+    .archive-empty {
+        text-align: center;
+        padding: 14px 10px;
+        color: #7C3AED;
+        font-size: 11px;
+        font-weight: 800;
+        background: rgba(255,255,255,0.5);
+        border: 1.5px dashed #C4B5FD;
+        border-radius: 10px;
+    }
+
+    /* ========================================================== */
+    /* 🎯 نافذة تفاصيل الحصة */
     /* ========================================================== */
     .lesson-modal-overlay {
         display: none;
@@ -557,23 +646,61 @@
         color: #065F46;
         border: 2px solid #10B981;
     }
+    .lesson-status-banner.archive-banner {
+        background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+        color: #5B21B6;
+        border: 2px solid #A78BFA;
+    }
 
-    .lesson-modal-footer {
-        padding: 12px 16px;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        text-align: center;
+    /* أزرار الأكشن */
+    .lesson-actions-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 2px dashed #e2e8f0;
     }
-    .lesson-close-btn-footer {
-        width: 100%; padding: 11px;
-        background: linear-gradient(135deg, #10B981, #047857);
-        color: #fff; border: none; border-radius: 10px;
-        font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 14px;
-        cursor: pointer; transition: all 0.2s;
-        box-shadow: 0 4px 10px rgba(16,185,129,0.3);
+
+    .lesson-action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 10px 6px;
+        border: none;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 900;
+        font-size: 11px;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        color: #fff;
+        box-shadow: 0 3px 8px -2px rgba(0,0,0,0.2);
     }
-    .lesson-close-btn-footer:hover { transform: translateY(-2px); }
-    .lesson-close-btn-footer:active { transform: scale(0.97); }
+    .lesson-action-btn:hover { transform: translateY(-2px); }
+    .lesson-action-btn:active { transform: scale(0.96); }
+    .lesson-action-btn .btn-icon { font-size: 16px; }
+    .lesson-action-btn .btn-text { font-size: 10.5px; }
+
+    .lesson-action-btn.btn-close-action {
+        background: linear-gradient(135deg, #64748B, #475569);
+    }
+    .lesson-action-btn.btn-delete-action {
+        background: linear-gradient(135deg, #DC2626, #991B1B);
+    }
+    .lesson-action-btn.btn-archive-action {
+        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+        animation: archiveBtnPulse 2s ease-in-out infinite;
+    }
+    @keyframes archiveBtnPulse {
+        0%, 100% { box-shadow: 0 3px 8px -2px rgba(139,92,246,0.5); }
+        50% { box-shadow: 0 6px 18px -2px rgba(139,92,246,0.9); }
+    }
 
     .logout-modal-overlay {
         display: none; position: fixed; inset: 0;
@@ -649,6 +776,9 @@
         .lesson-chip .chip-subject { max-width: 65px; }
         .lesson-chip .chip-time { font-size: 9px; }
         .lesson-modal-box { max-width: 95%; }
+        .lesson-action-btn { padding: 8px 4px; }
+        .lesson-action-btn .btn-icon { font-size: 14px; }
+        .lesson-action-btn .btn-text { font-size: 9.5px; }
     }
 </style>
 </head>
@@ -662,6 +792,7 @@
         <div class="decorative-lines"></div>
     </div>
 
+    <!-- 🚪 تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
@@ -676,6 +807,7 @@
         </div>
     </div>
 
+    <!-- 🎯 نافذة تفاصيل الحصة -->
     <div class="lesson-modal-overlay" id="lessonModalOverlay" onclick="closeLessonModal(event)">
         <div class="lesson-modal-box">
             <div class="lesson-modal-header" id="lessonModalHeader">
@@ -683,9 +815,6 @@
                 <button class="lesson-close-btn" onclick="closeLessonModal(event, true)">✖</button>
             </div>
             <div class="lesson-modal-content" id="lessonModalContent"></div>
-            <div class="lesson-modal-footer">
-                <button class="lesson-close-btn-footer" onclick="closeLessonModal(event, true)">إغلاق</button>
-            </div>
         </div>
     </div>
 
@@ -738,6 +867,7 @@
             </a>
         </div>
 
+        <!-- 📅 جدول الحصص -->
         <div class="reminder-table" id="reminderTable">
             <div class="rt-title">
                 <div class="rt-title-left">
@@ -751,6 +881,20 @@
             </div>
         </div>
 
+        <!-- 📦 جدول الأرشيف -->
+        <div class="archive-table" id="archiveTable">
+            <div class="rt-title">
+                <div class="rt-title-left">
+                    <span>📦</span>
+                    <span>الأرشيف (للمراجعة)</span>
+                </div>
+                <span class="rt-count-badge" id="archiveCountBadge">0</span>
+            </div>
+            <div id="archiveList">
+                <div class="archive-empty">لا توجد حصص مؤرشفة</div>
+            </div>
+        </div>
+
         <div class="footer-note">
             <div>منصة احجزلي — بوابة المعلم</div>
         </div>
@@ -760,6 +904,9 @@
     (function() {
         'use strict';
 
+        // ==========================================================
+        // 🕐 تحليل وقت الحصة
+        // ==========================================================
         function parseLessonDateTime(appt) {
             try {
                 const now = new Date();
@@ -826,6 +973,9 @@
             }
         }
 
+        // ==========================================================
+        // 📅 تحديث قائمة الحصص
+        // ==========================================================
         function updateLessonsList() {
             try {
                 const lessonsList = document.getElementById('lessonsList');
@@ -891,6 +1041,51 @@
             }
         }
 
+        // ==========================================================
+        // 📦 تحديث قائمة الأرشيف
+        // ==========================================================
+        function updateArchiveList() {
+            try {
+                const archiveTable = document.getElementById('archiveTable');
+                const archiveList = document.getElementById('archiveList');
+                const archiveCountBadge = document.getElementById('archiveCountBadge');
+                if (!archiveTable || !archiveList) return;
+
+                let archive = [];
+                try {
+                    const existing = localStorage.getItem('teacher_lessons_archive');
+                    if (existing) archive = JSON.parse(existing);
+                } catch(e) {}
+
+                if (archive.length === 0) {
+                    archiveTable.classList.remove('show');
+                    return;
+                }
+
+                archiveTable.classList.add('show');
+                if (archiveCountBadge) archiveCountBadge.textContent = archive.length;
+
+                let chipsHtml = '';
+                archive.forEach((appt, idx) => {
+                    const subjectShort = (appt.subject || 'حصة').substring(0, 12);
+                    chipsHtml += `
+                        <button class="archive-chip" onclick="showArchivedLesson(${idx})">
+                            <span class="chip-num">${idx + 1}</span>
+                            <span>📖</span>
+                            <span>${subjectShort}${subjectShort.length >= 12 ? '..' : ''}</span>
+                        </button>
+                    `;
+                });
+
+                archiveList.innerHTML = chipsHtml;
+            } catch(e) {
+                console.warn('⚠️ فشل تحديث الأرشيف:', e);
+            }
+        }
+
+        // ==========================================================
+        // 📚 تحديث كارت التخصص
+        // ==========================================================
         function updateSpecialtyCard() {
             try {
                 const card = document.getElementById('specialtyCard');
@@ -958,6 +1153,9 @@
             }
         }
 
+        // ==========================================================
+        // 📅 تحديث كارت المواعيد
+        // ==========================================================
         function updateScheduleCard() {
             try {
                 const card = document.getElementById('scheduleCard');
@@ -1018,6 +1216,9 @@
             }
         }
 
+        // ==========================================================
+        // 🎯 عرض تفاصيل الحصة (النشطة)
+        // ==========================================================
         window.showLessonDetails = function(index) {
             try {
                 const apptRaw = localStorage.getItem('teacher_appointments_summary');
@@ -1031,18 +1232,23 @@
                 const title = document.getElementById('lessonModalTitle');
                 const content = document.getElementById('lessonModalContent');
 
-                // ✅ نعرض النافذة فوراً
                 overlay.classList.add('active');
+
+                // إعادة ضبط الهيدر
+                header.className = 'lesson-modal-header';
+                header.style.background = '';
 
                 const timeInfo = parseLessonDateTime(appt);
                 let headerClass = '';
                 let statusBanner = '';
                 let titleIcon = '📖';
+                let isEnded = false;
 
                 if (timeInfo) {
                     if (timeInfo.status === 'ended') {
                         headerClass = 'ended-header';
                         titleIcon = '🔴';
+                        isEnded = true;
                         statusBanner = `
                             <div class="lesson-status-banner ended">
                                 <span>🔴</span>
@@ -1093,7 +1299,6 @@
                     }
                 }
 
-                header.className = 'lesson-modal-header';
                 if (headerClass) header.classList.add(headerClass);
 
                 title.innerHTML = `<span>${titleIcon}</span> تفاصيل الحصة #${index + 1}`;
@@ -1115,15 +1320,12 @@
                 let timeText = 'غير محدد';
                 const startT = appt.startTime || appt.start || '';
                 const endT = appt.endTime || appt.end || '';
-                if (startT && endT) {
-                    timeText = `من ${startT} إلى ${endT}`;
-                }
+                if (startT && endT) timeText = `من ${startT} إلى ${endT}`;
 
                 let dayText = appt.dayName || 'غير محدد';
                 if (appt.daysNames && appt.daysNames.length > 0) dayText = appt.daysNames[0];
                 if (appt.date) dayText = `${dayText} (${appt.date})`;
 
-                // ✅ المكان من الـ GPS
                 let fullAddress = appt.fullAddress || appt.address || appt.street || '';
                 let detailedAddress = appt.detailedAddress || '';
                 let locationFullText = '';
@@ -1133,6 +1335,36 @@
                     else locationFullText = `✨ ${detailedAddress}`;
                 }
                 if (!locationFullText) locationFullText = locationText;
+
+                // ============ أزرار الأكشن ============
+                let actionsHtml = '';
+                if (isEnded) {
+                    actionsHtml = `
+                        <div class="lesson-actions-row">
+                            <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
+                                <span class="btn-icon">✖</span>
+                                <span class="btn-text">إغلاق</span>
+                            </button>
+                            <button class="lesson-action-btn btn-archive-action" onclick="archiveLesson(${index})">
+                                <span class="btn-icon">📦</span>
+                                <span class="btn-text">حفظ بالأرشيف</span>
+                            </button>
+                            <button class="lesson-action-btn btn-delete-action" onclick="deleteLesson(${index})">
+                                <span class="btn-icon">🗑</span>
+                                <span class="btn-text">حذف</span>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    actionsHtml = `
+                        <div class="lesson-actions-row" style="grid-template-columns: 1fr;">
+                            <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
+                                <span class="btn-icon">✖</span>
+                                <span class="btn-text">إغلاق</span>
+                            </button>
+                        </div>
+                    `;
+                }
 
                 content.innerHTML = `
                     ${statusBanner}
@@ -1187,18 +1419,271 @@
                         </div>
                     </div>
                     ` : ''}
+                    ${actionsHtml}
                 `;
             } catch(e) {
                 console.warn('⚠️ فشل عرض تفاصيل الحصة:', e);
             }
         };
 
-        window.closeLessonModal = function(e, force = false) {
-            if (force || (e && e.target.id === 'lessonModalOverlay')) {
-                document.getElementById('lessonModalOverlay')?.classList.remove('active');
+        // ==========================================================
+        // 📦 أرشفة حصة
+        // ==========================================================
+        window.archiveLesson = function(index) {
+            try {
+                const summaryKey = 'teacher_appointments_summary';
+                const archiveKey = 'teacher_lessons_archive';
+
+                let savedAppts = [];
+                try {
+                    const existing = localStorage.getItem(summaryKey);
+                    if (existing) savedAppts = JSON.parse(existing);
+                } catch(e) {}
+
+                if (!savedAppts[index]) return;
+
+                const lesson = savedAppts[index];
+
+                let archive = [];
+                try {
+                    const existingArch = localStorage.getItem(archiveKey);
+                    if (existingArch) archive = JSON.parse(existingArch);
+                } catch(e) {}
+
+                archive.push({
+                    ...lesson,
+                    archivedAt: Date.now()
+                });
+                localStorage.setItem(archiveKey, JSON.stringify(archive));
+
+                savedAppts.splice(index, 1);
+                localStorage.setItem(summaryKey, JSON.stringify(savedAppts));
+                localStorage.setItem('teacher_groups_count', String(savedAppts.length));
+
+                closeLessonModal(null, true);
+                updateLessonsList();
+                updateArchiveList();
+                updateScheduleCard();
+
+                console.log('📦 تمت أرشفة الحصة:', lesson.subject);
+            } catch(e) {
+                console.warn('⚠️ فشل أرشفة الحصة:', e);
             }
         };
 
+        // ==========================================================
+        // 🗑 حذف حصة نهائياً
+        // ==========================================================
+        window.deleteLesson = function(index) {
+            try {
+                if (!confirm('⚠️ هل أنت متأكد من حذف هذه الحصة نهائياً؟\n(لا يمكن استرجاعها)')) return;
+
+                const summaryKey = 'teacher_appointments_summary';
+                let savedAppts = [];
+                try {
+                    const existing = localStorage.getItem(summaryKey);
+                    if (existing) savedAppts = JSON.parse(existing);
+                } catch(e) {}
+
+                if (!savedAppts[index]) return;
+
+                const lesson = savedAppts[index];
+                savedAppts.splice(index, 1);
+                localStorage.setItem(summaryKey, JSON.stringify(savedAppts));
+                localStorage.setItem('teacher_groups_count', String(savedAppts.length));
+
+                closeLessonModal(null, true);
+                updateLessonsList();
+                updateArchiveList();
+                updateScheduleCard();
+
+                console.log('🗑 تم حذف الحصة:', lesson.subject);
+            } catch(e) {
+                console.warn('⚠️ فشل حذف الحصة:', e);
+            }
+        };
+
+        // ==========================================================
+        // 🎯 عرض تفاصيل حصة مؤرشفة
+        // ==========================================================
+        window.showArchivedLesson = function(index) {
+            try {
+                const archive = JSON.parse(localStorage.getItem('teacher_lessons_archive') || '[]');
+                const appt = archive[index];
+                if (!appt) return;
+
+                const overlay = document.getElementById('lessonModalOverlay');
+                const header = document.getElementById('lessonModalHeader');
+                const title = document.getElementById('lessonModalTitle');
+                const content = document.getElementById('lessonModalContent');
+
+                overlay.classList.add('active');
+
+                header.className = 'lesson-modal-header';
+                header.style.background = 'linear-gradient(135deg, #8B5CF6, #6D28D9)';
+
+                title.innerHTML = `<span>📦</span> حصة مؤرشفة #${index + 1}`;
+
+                const genderLabels = {
+                    'boys': '👨‍🎓 أولاد فقط',
+                    'girls': '👩‍🎓 بنات فقط',
+                    'mixed': '👫 مختلط'
+                };
+                const locationLabels = {
+                    'center': '🏫 السنتر',
+                    'teacher_home': '🏠 بيت المستر',
+                    'student_home': '🚗 منزل الطالب'
+                };
+
+                const genderText = genderLabels[appt.gender] || appt.genderAllowed || 'مختلط';
+                const locationText = locationLabels[appt.type] || appt.location || 'غير محدد';
+
+                let timeText = 'غير محدد';
+                const startT = appt.startTime || appt.start || '';
+                const endT = appt.endTime || appt.end || '';
+                if (startT && endT) timeText = `من ${startT} إلى ${endT}`;
+
+                let dayText = appt.dayName || 'غير محدد';
+                if (appt.date) dayText = `${dayText} (${appt.date})`;
+
+                let fullAddress = appt.fullAddress || appt.address || appt.street || '';
+                let detailedAddress = appt.detailedAddress || '';
+                let locationFullText = '';
+                if (fullAddress) locationFullText += `📍 ${fullAddress}`;
+                if (detailedAddress) {
+                    if (locationFullText) locationFullText += `<br>✨ ${detailedAddress}`;
+                    else locationFullText = `✨ ${detailedAddress}`;
+                }
+                if (!locationFullText) locationFullText = locationText;
+
+                let archivedDateText = '';
+                if (appt.archivedAt) {
+                    const d = new Date(appt.archivedAt);
+                    archivedDateText = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+                }
+
+                content.innerHTML = `
+                    <div class="lesson-status-banner archive-banner">
+                        <span>📦</span>
+                        <div>
+                            <strong>حصة مؤرشفة</strong>
+                            ${archivedDateText ? `<br><small style="font-weight:700;">تم الأرشفة: ${archivedDateText}</small>` : ''}
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row highlight">
+                        <span class="ld-icon">📖</span>
+                        <div>
+                            <span class="ld-label">المادة</span>
+                            <span class="ld-value">${appt.subject || 'غير محدد'}</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row highlight">
+                        <span class="ld-icon">👑</span>
+                        <div>
+                            <span class="ld-label">الصف</span>
+                            <span class="ld-value">${appt.grade || 'غير محدد'}</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row time-row">
+                        <span class="ld-icon">🕐</span>
+                        <div>
+                            <span class="ld-label">الوقت</span>
+                            <span class="ld-value">${timeText}</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row">
+                        <span class="ld-icon">📅</span>
+                        <div>
+                            <span class="ld-label">اليوم</span>
+                            <span class="ld-value">${dayText}</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row">
+                        <span class="ld-icon">👥</span>
+                        <div>
+                            <span class="ld-label">الفئة</span>
+                            <span class="ld-value">${genderText}</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail-row location-row">
+                        <span class="ld-icon">📍</span>
+                        <div>
+                            <span class="ld-label">المكان (${locationText})</span>
+                            <span class="ld-value">${locationFullText}</span>
+                        </div>
+                    </div>
+                    ${appt.capacity ? `
+                    <div class="lesson-detail-row">
+                        <span class="ld-icon">👨‍👩‍👧</span>
+                        <div>
+                            <span class="ld-label">السعة</span>
+                            <span class="ld-value">${appt.capacity} طالب</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="lesson-actions-row" style="grid-template-columns: 1fr 1fr;">
+                        <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
+                            <span class="btn-icon">✖</span>
+                            <span class="btn-text">إغلاق</span>
+                        </button>
+                        <button class="lesson-action-btn btn-delete-action" onclick="deleteArchivedLesson(${index})">
+                            <span class="btn-icon">🗑</span>
+                            <span class="btn-text">حذف من الأرشيف</span>
+                        </button>
+                    </div>
+                `;
+            } catch(e) {
+                console.warn('⚠️ فشل عرض الحصة المؤرشفة:', e);
+            }
+        };
+
+        // ==========================================================
+        // 🗑 حذف حصة من الأرشيف
+        // ==========================================================
+        window.deleteArchivedLesson = function(index) {
+            try {
+                if (!confirm('⚠️ هل تريد حذف هذه الحصة من الأرشيف نهائياً؟')) return;
+
+                const archiveKey = 'teacher_lessons_archive';
+                let archive = [];
+                try {
+                    const existing = localStorage.getItem(archiveKey);
+                    if (existing) archive = JSON.parse(existing);
+                } catch(e) {}
+
+                if (!archive[index]) return;
+
+                archive.splice(index, 1);
+                localStorage.setItem(archiveKey, JSON.stringify(archive));
+
+                closeLessonModal(null, true);
+                updateArchiveList();
+
+                console.log('🗑 تم حذف حصة من الأرشيف');
+            } catch(e) {
+                console.warn('⚠️ فشل حذف الحصة من الأرشيف:', e);
+            }
+        };
+
+        // ==========================================================
+        // 🚪 إغلاق النافذة
+        // ==========================================================
+        window.closeLessonModal = function(e, force = false) {
+            if (force || (e && e.target.id === 'lessonModalOverlay')) {
+                const overlay = document.getElementById('lessonModalOverlay');
+                if (overlay) overlay.classList.remove('active');
+
+                const header = document.getElementById('lessonModalHeader');
+                if (header) {
+                    header.className = 'lesson-modal-header';
+                    header.style.background = '';
+                }
+            }
+        };
+
+        // ==========================================================
+        // 👤 عرض اسم المعلم
+        // ==========================================================
         function showTeacherName() {
             try {
                 const profile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
@@ -1215,6 +1700,9 @@
             } catch(e) {}
         }
 
+        // ==========================================================
+        // 🚪 تسجيل الخروج
+        // ==========================================================
         window.openLogoutModal = function() {
             document.getElementById('logoutModalOverlay')?.classList.add('active');
         };
@@ -1232,6 +1720,7 @@
                 localStorage.removeItem('teacher_groups_count');
                 localStorage.removeItem('selected_contact_type');
                 localStorage.removeItem('teacher_appointments_summary');
+                localStorage.removeItem('teacher_lessons_archive');
                 localStorage.removeItem('last_selected_gender');
                 localStorage.removeItem('last_selected_location');
                 closeLogoutModal();
@@ -1246,10 +1735,14 @@
             if (modal && e.target === modal) closeLogoutModal();
         });
 
+        // ==========================================================
+        // 🎯 التهيئة
+        // ==========================================================
         function updateAll() {
             updateSpecialtyCard();
             updateScheduleCard();
             updateLessonsList();
+            updateArchiveList();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
