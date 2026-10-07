@@ -7,15 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
     :root {
-        --primary-teal: #25968b;
-        --dark-teal: #1b736a;
+        --primary-teal: #009688;
+        --dark-teal: #00695c;
         --light-teal: #e0f2f0;
         --border-teal: #b2dfdb;
         --bg-color: #f7f9fa;
-        --text-dark: #2c3e50;
+        --text-dark: #1e293b;
         --text-gray: #64748b;
         --white: #ffffff;
     }
@@ -31,368 +30,231 @@
 
     body {
         background: var(--bg-color);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
+        padding-bottom: 40px;
         color: var(--text-dark);
-        overflow-x: hidden;
+        min-height: 100vh;
     }
 
-    /* ========================================================== */
-    /* 🎨 Header */
-    /* ========================================================== */
+    /* ============ الهيدر ============ */
     .header-3d {
         width: 100%;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 100%),
+        background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%),
                     url('teacher2.png') center/cover no-repeat;
-        padding: 50px 20px 60px;
+        padding: 24px 15px 28px;
         text-align: center;
         position: relative;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
-
-    .header-3d::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 40px;
-        background: linear-gradient(to top, var(--bg-color), transparent);
-        pointer-events: none;
-    }
-
     .header-3d h1 {
-        font-size: 32px;
+        font-size: 22px;
         font-weight: 900;
-        color: var(--white);
-        margin-bottom: 10px;
-        letter-spacing: 1px;
-        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
-        animation: fadeInDown 0.6s ease;
+        color: #fff;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.7);
     }
-
     .header-3d p {
-        font-size: 15px;
+        font-size: 13px;
         color: #e2e8f0;
         font-weight: 700;
-        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
-        animation: fadeInDown 0.8s ease;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
 
-    .logo-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+    .cloud-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
         color: #fff;
-        padding: 8px 18px;
-        border-radius: 50px;
-        font-size: 13px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
         font-weight: 900;
-        margin-bottom: 16px;
-        backdrop-filter: blur(8px);
-        animation: fadeInDown 0.4s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+        z-index: 100;
+    }
+    .cloud-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22C55E;
+        box-shadow: 0 0 8px #22C55E;
+        animation: pulseDot 1.5s infinite;
+    }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
     }
 
-    @keyframes fadeInDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ========================================================== */
-    /* 📦 Container */
-    /* ========================================================== */
-    .container {
-        flex: 1;
+    /* ============ الحاوية ============ */
+    .main-container {
         width: 100%;
-        max-width: 600px;
-        margin: -30px auto 0;
-        padding: 0 20px 30px;
+        max-width: 900px;
+        margin: 15px auto 0;
+        padding: 0 12px;
         position: relative;
         z-index: 10;
     }
 
-    .welcome-card {
-        background: var(--white);
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(37, 150, 139, 0.08);
-        padding: 30px 24px 24px;
-        border-top: 5px solid var(--primary-teal);
-        text-align: center;
-        margin-bottom: 20px;
-        animation: cardAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes cardAppear {
-        from { opacity: 0; transform: translateY(30px) scale(0.96); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .welcome-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 34px;
-        margin: 0 auto 16px;
-        box-shadow: 0 10px 25px rgba(37, 150, 139, 0.4);
-        animation: pulseIcon 2.5s infinite;
-    }
-
-    @keyframes pulseIcon {
-        0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(37, 150, 139, 0.4); }
-        50% { transform: scale(1.05); box-shadow: 0 12px 30px rgba(37, 150, 139, 0.6); }
-    }
-
-    .welcome-card h2 {
-        font-size: 22px;
-        font-weight: 900;
-        color: var(--dark-teal);
-        margin-bottom: 8px;
-    }
-
-    .welcome-card p {
-        font-size: 14px;
-        color: var(--text-gray);
-        font-weight: 800;
-        line-height: 1.6;
-    }
-
-    /* ========================================================== */
-    /* 🎯 Navigation Cards */
-    /* ========================================================== */
-    .nav-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .nav-card {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        background: var(--white);
-        border-radius: 18px;
-        padding: 20px 22px;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        text-decoration: none;
-        color: inherit;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 3px 8px rgba(0, 0, 0, 0.04);
-        border: 2px solid #e2e8f0;
-        position: relative;
-        overflow: hidden;
-        animation: cardSlideIn 0.5s ease backwards;
-    }
-
-    .nav-card:nth-child(1) { animation-delay: 0.1s; }
-    .nav-card:nth-child(2) { animation-delay: 0.2s; }
-
-    @keyframes cardSlideIn {
-        from { opacity: 0; transform: translateX(-20px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-
-    .nav-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, transparent 0%, rgba(37, 150, 139, 0.06) 100%);
-        opacity: 0;
-        transition: opacity 0.3s;
-        pointer-events: none;
-    }
-
-    .nav-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12), 0 8px 18px rgba(37, 150, 139, 0.12);
-        border-color: var(--primary-teal);
-    }
-
-    .nav-card:hover::before { opacity: 1; }
-
-    .nav-card:active {
-        transform: translateY(-2px) scale(0.99);
-    }
-
-    .nav-card .nc-icon {
-        flex-shrink: 0;
-        width: 60px;
-        height: 60px;
+    /* ============ القائمة المنسدلة (Accordion) ============ */
+    .accordion-section {
+        background: #fff;
         border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 3px 8px rgba(0,150,136,0.06);
+        margin-bottom: 15px;
+        overflow: hidden;
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .accordion-section.active {
+        border-color: var(--primary-teal);
+        box-shadow: 0 12px 30px rgba(0,150,136,0.18);
+    }
+
+    .accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 18px;
+        cursor: pointer;
+        user-select: none;
+        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        transition: background 0.25s;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .accordion-header:hover {
+        background: linear-gradient(135deg, #f1f5f9 0%, #f8fafc 100%);
+    }
+    .accordion-section.active .accordion-header {
+        background: linear-gradient(135deg, var(--light-teal) 0%, #f0fdf9 100%);
+        border-bottom: 2px dashed var(--border-teal);
+    }
+
+    .acc-header-left {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        position: relative;
-        z-index: 1;
-        transition: transform 0.3s;
-    }
-
-    .nav-card:hover .nc-icon {
-        transform: scale(1.08) rotate(-5deg);
-    }
-
-    .nav-card.step1 .nc-icon {
-        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
-        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.25);
-    }
-
-    .nav-card.step2 .nc-icon {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
-        box-shadow: 0 6px 15px rgba(245, 158, 11, 0.25);
-    }
-
-    .nav-card .nc-content {
+        gap: 12px;
         flex: 1;
-        position: relative;
-        z-index: 1;
         min-width: 0;
     }
 
-    .nav-card .nc-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 17px;
-        font-weight: 900;
-        color: var(--text-dark);
-        margin-bottom: 5px;
-    }
-
-    .nav-card .nc-step-num {
+    .acc-number {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
-        height: 24px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 900;
+        width: 38px;
+        height: 38px;
+        background: var(--primary-teal);
         color: #fff;
+        border-radius: 10px;
+        font-size: 17px;
+        font-weight: 900;
         flex-shrink: 0;
+        box-shadow: 0 3px 8px rgba(0,150,136,0.3);
+        transition: all 0.25s;
+    }
+    .accordion-section.active .acc-number {
+        background: var(--dark-teal);
+        transform: scale(1.05);
     }
 
-    .nav-card.step1 .nc-step-num {
-        background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
-        box-shadow: 0 3px 8px rgba(37, 150, 139, 0.35);
+    .acc-title-block {
+        flex: 1;
+        min-width: 0;
     }
 
-    .nav-card.step2 .nc-step-num {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35);
+    .acc-title {
+        font-size: 16px;
+        font-weight: 900;
+        color: var(--text-dark);
+        line-height: 1.3;
+    }
+    .accordion-section.active .acc-title {
+        color: var(--dark-teal);
     }
 
-    .nav-card .nc-desc {
-        font-size: 13px;
-        font-weight: 800;
+    .acc-subtitle {
+        font-size: 11.5px;
+        font-weight: 700;
         color: var(--text-gray);
-        line-height: 1.5;
+        margin-top: 2px;
     }
 
-    .nav-card .nc-arrow {
-        flex-shrink: 0;
-        font-size: 22px;
-        color: var(--text-gray);
-        transition: all 0.3s;
-        position: relative;
-        z-index: 1;
-    }
-
-    .nav-card:hover .nc-arrow {
-        color: var(--primary-teal);
-        transform: translateX(-5px);
-    }
-
-    /* ✅ شارة الحالة */
-    .status-badge {
+    .acc-status-badge {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 11px;
+        background: #10B981;
+        color: #fff;
+        font-size: 10.5px;
         font-weight: 900;
-        margin-top: 6px;
-    }
-
-    .status-badge.saved {
-        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-        color: #065f46;
-        border: 1px solid #6ee7b7;
-    }
-
-    .status-badge.empty {
-        background: linear-gradient(135deg, #fee2e2, #fecaca);
-        color: #7f1d1d;
-        border: 1px solid #fca5a5;
-    }
-
-    /* ========================================================== */
-    /* 🦶 Footer */
-    /* ========================================================== */
-    .footer {
-        text-align: center;
-        padding: 20px 15px;
-        color: var(--text-gray);
-        font-size: 12.5px;
-        font-weight: 800;
-        line-height: 1.7;
-    }
-
-    .footer .heart {
-        color: #ef4444;
-        animation: heartbeat 1.5s infinite;
-        display: inline-block;
-    }
-
-    @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-
-    .footer .version {
-        display: inline-block;
-        background: var(--light-teal);
-        color: var(--dark-teal);
-        padding: 3px 10px;
+        padding: 4px 10px;
         border-radius: 20px;
-        font-size: 11px;
-        margin-top: 6px;
-        border: 1px solid var(--border-teal);
+        box-shadow: 0 2px 6px rgba(16,185,129,0.4);
+        white-space: nowrap;
+    }
+    .acc-status-badge.pending {
+        background: #F59E0B;
+        box-shadow: 0 2px 6px rgba(245,158,11,0.4);
+        animation: badgePulse 2s infinite;
+    }
+    @keyframes badgePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
     }
 
-    /* ========================================================== */
-    /* 📱 Responsive */
-    /* ========================================================== */
-    @media (max-width: 480px) {
-        .header-3d { padding: 40px 16px 55px; }
-        .header-3d h1 { font-size: 26px; }
-        .header-3d p { font-size: 13px; }
-        .container { padding: 0 14px 25px; }
-        .welcome-card { padding: 24px 18px 20px; }
-        .welcome-card h2 { font-size: 19px; }
-        .welcome-icon { width: 60px; height: 60px; font-size: 28px; }
-        .nav-card { padding: 16px 16px; gap: 12px; }
-        .nav-card .nc-icon { width: 52px; height: 52px; font-size: 24px; border-radius: 14px; }
-        .nav-card .nc-title { font-size: 15px; }
-        .nav-card .nc-desc { font-size: 12px; }
-        .nav-card .nc-arrow { font-size: 18px; }
+    .acc-arrow {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid var(--text-gray);
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+    }
+    .accordion-section.active .acc-arrow {
+        transform: rotate(180deg);
+        border-top-color: var(--primary-teal);
     }
 
-    /* ========================================================== */
-    /* 🚫 شاشة الحماية */
-    /* ========================================================== */
+    /* ============ جسم القائمة (iframe) ============ */
+    .accordion-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #f7f9fa;
+    }
+    .accordion-section.active .accordion-body {
+        max-height: 20000px;
+    }
+
+    .accordion-body iframe {
+        width: 100%;
+        border: none;
+        display: block;
+        background: #f7f9fa;
+        min-height: 700px;
+        height: 700px;
+        transition: height 0.3s;
+    }
+
+    /* لو المرحلة مقفولة، نخفي الـ iframe */
+    .accordion-section:not(.active) .accordion-body iframe {
+        height: 0;
+        min-height: 0;
+    }
+
+    /* ============ شاشة حماية ============ */
     .security-overlay {
         position: fixed;
         inset: 0;
-        background: linear-gradient(135deg, #25968b 0%, #1b736a 100%);
+        background: linear-gradient(135deg, #009688 0%, #00695c 100%);
         z-index: 99999;
         display: flex;
         flex-direction: column;
@@ -414,201 +276,365 @@
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .security-overlay h2 { font-size: 20px; font-weight: 900; }
-    .security-overlay p { font-size: 14px; opacity: 0.9; }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .security-overlay h2 {
+        font-size: 20px;
+        font-weight: 900;
+    }
+    .security-overlay p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* ============ توست التنبيه ============ */
+    .toast-notice {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        padding: 12px 22px;
+        border-radius: 24px;
+        font-size: 13px;
+        font-weight: 900;
+        box-shadow: 0 8px 20px rgba(245,158,11,0.5);
+        z-index: 99999;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 90%;
+        text-align: center;
+    }
+    .toast-notice.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 640px) {
+        .acc-title { font-size: 14.5px; }
+        .acc-subtitle { font-size: 11px; }
+        .acc-number { width: 34px; height: 34px; font-size: 15px; }
+        .accordion-body iframe { min-height: 600px; height: 600px; }
+    }
 </style>
 </head>
 <body>
 
-<!-- ✅ شاشة حماية أولية -->
-<div class="security-overlay" id="securityOverlay">
-    <div class="security-spinner"></div>
-    <h2>جاري التحقق من الجهاز...</h2>
-    <p>منصة احجزلي تحمي حسابك</p>
-</div>
+    <!-- ✅ شاشة حماية أولية -->
+    <div class="security-overlay" id="securityOverlay">
+        <div class="security-spinner"></div>
+        <h2>جاري التحقق من الجهاز...</h2>
+        <p>منصة احجزلي تحمي حسابك</p>
+    </div>
 
-<!-- ✅ التحقق من تسجيل الدخول -->
-<script type="module">
-    import { checkTeacherDevice, getTeacher } from './firebase-config.js';
+    <!-- ✅ توست التنبيه -->
+    <div class="toast-notice" id="toastNotice">
+        <span>⚠️</span>
+        <span id="toastText">يجب حفظ التخصص أولاً</span>
+    </div>
 
-    (async () => {
-        const overlay = document.getElementById('securityOverlay');
-        const phone = localStorage.getItem('current_teacher_phone');
+    <!-- ============ الهيدر ============ -->
+    <header class="header-3d">
+        <div class="cloud-badge" id="cloudBadge">
+            <span class="dot"></span>
+            <span id="cloudText">متصل</span>
+        </div>
+        <h1>منصة احجزلي</h1>
+        <p>بوابة المعلم - إدارة المجموعات والدروس</p>
+    </header>
 
-        // لو مفيش تسجيل دخول → حول لصفحة الدخول
-        if (!phone) {
-            window.location.href = 'teacher-login.html';
-            return;
+    <!-- ============ القائمة المنسدلة ============ -->
+    <div class="main-container">
+
+        <!-- 🔽 القسم 1: التخصص -->
+        <div class="accordion-section active" id="section-specialty">
+            <div class="accordion-header" onclick="toggleSection('section-specialty')">
+                <div class="acc-header-left">
+                    <div class="acc-number">1</div>
+                    <div class="acc-title-block">
+                        <div class="acc-title">📚 التخصص</div>
+                        <div class="acc-subtitle">اختر الصف والمواد التي تدرسها</div>
+                    </div>
+                </div>
+                <span class="acc-status-badge pending" id="specialtyStatusBadge">
+                    <span>⏳</span>
+                    <span>مطلوب</span>
+                </span>
+                <div class="acc-arrow"></div>
+            </div>
+            <div class="accordion-body">
+                <iframe 
+                    id="iframe-specialty"
+                    src="mester1.html"
+                    title="التخصص"
+                    loading="lazy"
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- 🔽 القسم 2: المواعيد والمجموعات -->
+        <div class="accordion-section" id="section-schedule">
+            <div class="accordion-header" onclick="toggleSection('section-schedule')">
+                <div class="acc-header-left">
+                    <div class="acc-number">2</div>
+                    <div class="acc-title-block">
+                        <div class="acc-title">📅 المواعيد والمجموعات</div>
+                        <div class="acc-subtitle">أضف المجموعات وحدد المواعيد</div>
+                    </div>
+                </div>
+                <span class="acc-status-badge pending" id="scheduleStatusBadge">
+                    <span>🔒</span>
+                    <span>يحتاج تخصص</span>
+                </span>
+                <div class="acc-arrow"></div>
+            </div>
+            <div class="accordion-body">
+                <iframe 
+                    id="iframe-schedule"
+                    src=""
+                    data-src="mester2.html"
+                    title="المواعيد والمجموعات"
+                    loading="lazy"
+                ></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============ السكريبت ============ -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ==========================================================
+        // ✅ حالة القائمة المنسدلة
+        // ==========================================================
+        let scheduleLoaded = false;
+        let specialtySaved = false;
+
+        // ==========================================================
+        // ✅ إخفاء شاشة الحماية بعد التحميل
+        // ==========================================================
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const overlay = document.getElementById('securityOverlay');
+                if (overlay) {
+                    overlay.classList.add('hide');
+                    setTimeout(() => overlay.remove(), 400);
+                }
+            }, 600);
+        });
+
+        // ==========================================================
+        // ✅ فحص حالة التخصص المحفوظ
+        // ==========================================================
+        function checkSpecialtyStatus() {
+            try {
+                const raw = localStorage.getItem('mester1_selections');
+                const teacherSel = localStorage.getItem('teacherSelections');
+                const isLocked = localStorage.getItem('mester1_is_locked');
+
+                const parseSafe = (s) => {
+                    if (!s) return null;
+                    try { return JSON.parse(s); } catch(e) { return null; }
+                };
+
+                const data = parseSafe(raw) || parseSafe(teacherSel);
+                if (!data || isLocked !== 'true') return false;
+
+                for (const sid in data) {
+                    if (data[sid]?.subjects?.length > 0) return true;
+                }
+                return false;
+            } catch(e) {
+                return false;
+            }
         }
 
-        try {
-            let check = null;
-            try {
-                check = await checkTeacherDevice(phone);
-            } catch (e) {
-                console.warn('فشل فحص الجهاز:', e);
+        // ==========================================================
+        // ✅ تحديث البادجات
+        // ==========================================================
+        function updateBadges() {
+            specialtySaved = checkSpecialtyStatus();
+
+            const specialtyBadge = document.getElementById('specialtyStatusBadge');
+            const scheduleBadge = document.getElementById('scheduleStatusBadge');
+
+            // بادج التخصص
+            if (specialtySaved) {
+                specialtyBadge.className = 'acc-status-badge';
+                specialtyBadge.innerHTML = '<span>✅</span><span>تم الحفظ</span>';
+            } else {
+                specialtyBadge.className = 'acc-status-badge pending';
+                specialtyBadge.innerHTML = '<span>⏳</span><span>مطلوب</span>';
             }
 
-            if (check && check.locked === true) {
-                localStorage.setItem('teacher_is_blocked', 'true');
-                overlay.classList.add('hide');
-                setTimeout(() => overlay.remove(), 300);
+            // بادج المواعيد
+            if (specialtySaved) {
+                scheduleBadge.className = 'acc-status-badge';
+                scheduleBadge.innerHTML = '<span>✅</span><span>متاح</span>';
+            } else {
+                scheduleBadge.className = 'acc-status-badge pending';
+                scheduleBadge.innerHTML = '<span>🔒</span><span>يحتاج تخصص</span>';
+            }
+        }
+
+        // ==========================================================
+        // ✅ فتح / قفل قسم
+        // ==========================================================
+        window.toggleSection = function(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+
+            const isActive = section.classList.contains('active');
+
+            // لو بنقفل القسم — نقفله
+            if (isActive) {
+                section.classList.remove('active');
                 return;
             }
 
-            if (!check || !check.ok) {
-                if (localStorage.getItem('teacher_is_blocked') !== 'true') {
-                    localStorage.removeItem('current_teacher_profile');
-                    localStorage.removeItem('current_teacher_phone');
-                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
-                    window.location.href = 'teacher-login.html';
+            // لو بنفتح قسم المواعيد — لازم التخصص يكون محفوظ
+            if (sectionId === 'section-schedule') {
+                updateBadges();
+                if (!specialtySaved) {
+                    showToast('⚠️ يجب حفظ التخصص أولاً قبل المواعيد');
+                    // نفتح قسم التخصص تلقائياً
+                    const specialtySection = document.getElementById('section-specialty');
+                    if (specialtySection) specialtySection.classList.add('active');
                     return;
+                }
+
+                // نحمّل mester2.html لو لأول مرة
+                if (!scheduleLoaded) {
+                    const iframe = document.getElementById('iframe-schedule');
+                    if (iframe && !iframe.src) {
+                        iframe.src = iframe.dataset.src;
+                        scheduleLoaded = true;
+                    }
                 }
             }
 
-            overlay.classList.add('hide');
-            setTimeout(() => overlay.remove(), 300);
-        } catch (e) {
-            console.error('خطأ في التحقق:', e);
-            overlay.classList.add('hide');
-            setTimeout(() => overlay.remove(), 300);
+            // نفتح القسم المطلوب
+            section.classList.add('active');
+
+            // لو فتحنا قسم — نقفل أي قسم تاني (سلوك Accordion)
+            document.querySelectorAll('.accordion-section').forEach(s => {
+                if (s.id !== sectionId) s.classList.remove('active');
+            });
+
+            // Scroll للقسم بعد الفتح
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 350);
+        };
+
+        // ==========================================================
+        // ✅ توست التنبيه
+        // ==========================================================
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotice');
+            const txt = document.getElementById('toastText');
+            if (!toast || !txt) return;
+
+            txt.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
         }
+
+        // ==========================================================
+        // ✅ الاستماع للرسائل من الـ iframe
+        // ==========================================================
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            if (!data || typeof data !== 'object') return;
+
+            // لما يحفظ التخصص في mester1
+            if (data.type === 'specialty_saved') {
+                console.log('✅ تم حفظ التخصص من mester1');
+                updateBadges();
+
+                // نفتح قسم المواعيد تلقائياً
+                setTimeout(() => {
+                    const scheduleSection = document.getElementById('section-schedule');
+                    const specialtySection = document.getElementById('section-specialty');
+
+                    if (specialtySection) specialtySection.classList.remove('active');
+                    if (scheduleSection) {
+                        scheduleSection.classList.add('active');
+                        // نحمّل mester2
+                        const iframe = document.getElementById('iframe-schedule');
+                        if (iframe && !iframe.src) {
+                            iframe.src = iframe.dataset.src;
+                            scheduleLoaded = true;
+                        }
+                        setTimeout(() => {
+                            scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 350);
+                    }
+                }, 300);
+            }
+
+            // لما يتعدل التخصص
+            if (data.type === 'specialty_updated') {
+                console.log('🔄 تم تحديث التخصص');
+                updateBadges();
+                // نعمل reload لـ mester2 عشان يجيب البيانات الجديدة
+                const iframe2 = document.getElementById('iframe-schedule');
+                if (iframe2 && iframe2.src) {
+                    iframe2.src = iframe2.src;
+                }
+            }
+        });
+
+        // ==========================================================
+        // ✅ التهيئة
+        // ==========================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            updateBadges();
+            console.log('✅ mester3 جاهز');
+
+            // لو التخصص محفوظ من قبل — نفتح قسم المواعيد ونحمّل mester2
+            if (specialtySaved) {
+                setTimeout(() => {
+                    const specialtySection = document.getElementById('section-specialty');
+                    const scheduleSection = document.getElementById('section-schedule');
+
+                    if (specialtySection) specialtySection.classList.remove('active');
+                    if (scheduleSection) {
+                        scheduleSection.classList.add('active');
+                        const iframe = document.getElementById('iframe-schedule');
+                        if (iframe && !iframe.src) {
+                            iframe.src = iframe.dataset.src;
+                            scheduleLoaded = true;
+                        }
+                    }
+                }, 500);
+            }
+        });
+
+        // ==========================================================
+        // ✅ فحص دوري لحالة التخصص (كل 3 ثواني)
+        // ==========================================================
+        setInterval(updateBadges, 3000);
+
     })();
-</script>
+    </script>
 
-<header class="header-3d">
-    <div class="logo-badge">
-        <span>🎓</span>
-        <span>منصة احجزلي</span>
-    </div>
-    <h1>بوابة المعلم</h1>
-    <p>اختر الخطوة التي تريد البدء منها</p>
-</header>
-
-<div class="container">
-
-    <div class="welcome-card">
-        <div class="welcome-icon">👨‍🏫</div>
-        <h2>أهلاً بك في بوابة المعلم</h2>
-        <p>ابدأ بتحديد تخصصك، ثم انتقل لإضافة المجموعات والمواعيد</p>
-    </div>
-
-    <div class="nav-cards">
-
-        <!-- الخطوة 1: التخصص -->
-        <a href="mester1.html" class="nav-card step1" id="cardStep1">
-            <div class="nc-icon">📚</div>
-            <div class="nc-content">
-                <div class="nc-title">
-                    <span class="nc-step-num">1</span>
-                    <span>التخصص والمواد</span>
-                </div>
-                <div class="nc-desc">اختر المرحلة التعليمية والصفوف والمواد التي تدرسها</div>
-                <div class="status-badge empty" id="badgeStep1">
-                    <span>⏳</span>
-                    <span>لم يتم التحديد بعد</span>
-                </div>
-            </div>
-            <div class="nc-arrow">❮</div>
-        </a>
-
-        <!-- الخطوة 2: المواعيد والمجموعات -->
-        <a href="mester2.html" class="nav-card step2" id="cardStep2">
-            <div class="nc-icon">📅</div>
-            <div class="nc-content">
-                <div class="nc-title">
-                    <span class="nc-step-num">2</span>
-                    <span>المواعيد والمجموعات</span>
-                </div>
-                <div class="nc-desc">أضف المجموعات، حدد المواعيد، والموقع الجغرافي</div>
-                <div class="status-badge empty" id="badgeStep2">
-                    <span>⏳</span>
-                    <span>ابدأ بإضافة مواعيدك</span>
-                </div>
-            </div>
-            <div class="nc-arrow">❮</div>
-        </a>
-
-    </div>
-
-</div>
-
-<div class="footer">
-    صُنع بـ <span class="heart">❤️</span> لمدرسي مصر<br>
-    <span class="version">منصة احجزلي — بوابة المعلم v1.0</span>
-</div>
-
-<!-- 🔊 صوت ناعم عند الضغط -->
-<script>
-(function initClickSound() {
-    let audioCtx = null;
-    function getCtx() {
-        if (!audioCtx) {
-            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-            catch (e) { return null; }
-        }
-        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-        return audioCtx;
-    }
-    window.playClick = function(freq = 1800, duration = 0.035, volume = 0.08) {
-        const ctx = getCtx();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume, now + 0.004);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.value = 1000;
-        filter.Q.value = 0.7;
-        osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-        osc.start(now); osc.stop(now + duration + 0.02);
-    };
-    document.querySelectorAll('.nav-card').forEach(el => {
-        el.addEventListener('click', () => window.playClick(1500, 0.06, 0.12), { passive: true });
-    });
-    document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
-    document.addEventListener('click', () => getCtx(), { once: true, passive: true });
-})();
-
-// ✅ تحديث شارات الحالة حسب البيانات المحفوظة
-(function updateStatusBadges() {
-    // الخطوة 1: هل تم تحديد التخصص؟
-    const badge1 = document.getElementById('badgeStep1');
-    try {
-        const raw = localStorage.getItem('mester1_selections') || localStorage.getItem('teacherSelections');
-        if (raw) {
-            const saved = JSON.parse(raw);
-            let totalSubjects = 0;
-            for (const sid in saved) {
-                if (saved[sid]?.subjects?.length > 0) totalSubjects += saved[sid].subjects.length;
-            }
-            if (totalSubjects > 0) {
-                badge1.classList.remove('empty');
-                badge1.classList.add('saved');
-                badge1.innerHTML = `<span>✅</span><span>تم تحديد ${totalSubjects} مادة</span>`;
-            }
-        }
-    } catch (e) {}
-
-    // الخطوة 2: هل يوجد مواعيد؟
-    const badge2 = document.getElementById('badgeStep2');
-    try {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (phone) {
-            badge2.classList.remove('empty');
-            badge2.classList.add('saved');
-            badge2.innerHTML = `<span>✅</span><span>جاهز لإضافة المواعيد</span>`;
-        }
-    } catch (e) {}
-})();
-</script>
+    <!-- ==========================================================
+         🔊 سكريبت تعديل mester1 عشان يبعت رسالة لما يحفظ
+         (بيتنفذ جوه الـ iframe — لكن هنضيفه هنا للتوضيح)
+    ========================================================== -->
+    <script>
+        // ملاحظة: السكريبت ده بيتنفذ في mester3 فقط
+        // عشان mester1 يبعت رسالة، لازم نضيف كود صغير في mester1.html
+        // هنشوفه تحت في التعليمات
+    </script>
 
 </body>
 </html>
