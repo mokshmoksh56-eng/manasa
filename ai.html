@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>🎓 المساعد التعليمي الذكي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #7c3aed;
+    --dark: #6d28d9;
+    --light: #ede9fe;
+    --border: #c4b5fd;
+    --bg: #f5f3ff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --student-color: #3b82f6;
+    --teacher-color: #f59e0b;
+    --text: #2c3e50;
+    --gray: #64748b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
+
+body { 
+    background: var(--bg); 
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============ Header ============ */
+.tutor-header {
+    background: linear-gradient(135deg, var(--dark), var(--primary));
+    color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    z-index: 100;
+    flex-shrink: 0;
+}
+.tutor-header .avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    position: relative;
+}
+.tutor-header .avatar::after {
+    content: '🎓';
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    background: var(--primary);
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 2px solid #fff;
+}
+.tutor-header .info { flex: 1; min-width: 0; }
+.tutor-header .info h2 { font-size: 16px; font-weight: 900; }
+.tutor-header .info p { font-size: 12px; opacity: 0.85; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.tutor-header .info .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px #22C55E;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.mode-btn, .action-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.25s;
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+}
+.mode-btn:hover, .action-btn:hover { background: rgba(255,255,255,0.35); }
+
+.mode-btn.student-mode { background: var(--student-color); border-color: #93c5fd; }
+.mode-btn.teacher-mode { background: var(--teacher-color); border-color: #fcd34d; }
+.mode-btn { font-size: 12px; padding: 6px 10px; }
+
+/* ============ Main Layout ============ */
+.main-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ============ Quick Category Bar ============ */
+.category-bar {
+    background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+    border-bottom: 2px solid var(--border);
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.1);
+    max-height: 130px;
+    overflow-y: auto;
+}
+.category-bar::-webkit-scrollbar { width: 4px; }
+.category-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+.cat-header {
+    width: 100%;
+    font-size: 12px;
+    color: var(--dark);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+.cat-header .level-badge {
+    background: var(--primary);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.cat-chip {
+    background: #fff;
+    border: 2px solid var(--border);
+    color: var(--dark);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(124,58,237,0.1);
+}
+.cat-chip:hover {
+    background: var(--light);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+.cat-chip.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--dark);
+}
+
+/* ============ Chat Area ============ */
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 12px 20px;
+    scroll-behavior: smooth;
+    min-width: 0;
+    background: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.chat-area::-webkit-scrollbar { width: 6px; }
+.chat-area::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.2); border-radius: 10px; }
+
+.msg {
+    max-width: 88%;
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    position: relative;
+    word-wrap: break-word;
+    animation: msgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.msg.user {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    border-bottom-left-radius: 4px;
+    margin-right: auto;
+    margin-left: 0;
+}
+.msg.ai {
+    background: #fff;
+    color: var(--text);
+    border-bottom-right-radius: 4px;
+    margin-left: auto;
+    margin-right: 0;
+    border: 2px solid var(--light);
+}
+.msg.ai::before {
+    content: '🎓 AI';
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+.msg.user .time, .msg.ai .time {
+    font-size: 10px;
+    color: var(--gray);
+    text-align: left;
+    margin-top: 6px;
+    font-weight: 700;
+    opacity: 0.7;
+}
+.msg.user .time { text-align: right; }
+
+/* Message styling */
+.msg.ai b { color: var(--dark); font-weight: 900; }
+.msg.ai code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #dc2626;
+    direction: ltr;
+    display: inline-block;
+}
+.msg.ai ul, .msg.ai ol {
+    margin: 8px 0;
+    padding-right: 20px;
+}
+.msg.ai li { margin-bottom: 4px; }
+.msg.ai hr {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 10px 0;
+}
+
+/* ============ Suggested questions ============ */
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    animation: msgIn 0.3s ease;
+}
+.suggestion-chip {
+    background: #fff;
+    border: 2px solid var(--primary);
+    color: var(--dark);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(124,58,237,0.1);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-align: right;
+    direction: rtl;
+}
+.suggestion-chip:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ============ Input area ============ */
+.input-area {
+    background: #f0f0f0;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    border-top: 1px solid #d0d0d0;
+    flex-shrink: 0;
+}
+.input-area .input-wrap {
+    flex: 1;
+    background: #fff;
+    border-radius: 22px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+.input-area .input-wrap:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(124,58,237,0.15);
+}
+.input-area input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 800;
+    color: var(--text);
+    background: transparent;
+    padding: 6px 0;
+    -webkit-appearance: none;
+}
+.input-area input::placeholder { color: #94a3b8; }
+.send-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(124,58,237,0.3);
+    transition: all 0.2s;
+}
+.send-btn:active { transform: scale(0.9); }
+.send-btn:disabled { opacity: 0.5; }
+
+.typing {
+    display: inline-flex; gap: 4px; padding: 12px 16px;
+    background: #fff; border-radius: 16px; border-bottom-right-radius: 4px;
+    margin-left: auto; margin-bottom: 12px; width: fit-content;
+    border: 2px solid var(--light);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.typing span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: typing 1.4s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+/* ============ Toast ============ */
+.toast {
+    position: fixed; bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #dc2626; color: #fff;
+    padding: 12px 20px; border-radius: 22px;
+    font-size: 14px; font-weight: 800;
+    opacity: 0; transition: all 0.3s;
+    z-index: 9998; pointer-events: none;
+    max-width: 90%; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; }
+
+/* ============ Welcome Card ============ */
+.welcome-card {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(124,58,237,0.15);
+    animation: msgIn 0.3s ease;
+}
+.welcome-card h3 {
+    color: var(--dark);
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.welcome-card .levels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+.welcome-card .level-item {
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--dark);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border);
+}
+
+/* ============ Mobile ============ */
+@media (max-width: 768px) {
+    .header-actions { gap: 4px; }
+    .mode-btn, .action-btn { padding: 6px 8px; font-size: 11px; }
+    .cat-chip { font-size: 11px; padding: 5px 10px; }
+    .msg { font-size: 14px; }
+    .welcome-card .levels { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="tutor-header">
+    <div class="avatar">🎓</div>
+    <div class="info">
+        <h2>المساعد التعليمي الذكي</h2>
+        <p><span class="dot"></span> <span id="statusText">جاهز يجاوب على أي سؤال</span></p>
+    </div>
+    <div class="header-actions">
+        <button class="mode-btn student-mode" id="modeBtn" onclick="toggleMode()">
+            <span id="modeIcon">🎒</span>
+            <span id="modeText">طالب</span>
+        </button>
+    </div>
+</div>
+
+<div class="main-layout">
+    
+    <!-- Category Bar -->
+    <div class="category-bar" id="categoryBar">
+        <div class="cat-header">
+            <span>📚 اختر المرحلة والمادة</span>
+            <span class="level-badge" id="currentLevel">عام</span>
+        </div>
+        <!-- Categories will be generated -->
+    </div>
+    
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatArea"></div>
+    
+    <!-- Input Area -->
+    <div class="input-area" id="inputArea">
+        <div class="input-wrap">
+            <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off" inputmode="text">
+        </div>
+        <button class="send-btn" id="sendBtn">➤</button>
+    </div>
+    
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>try { eruda.init({ tool: ['console'], autoScale: true }); } catch(e) {}</script>
+
+<script type="module">
+import { saveTeacherData } from './firebase-config.js';
+
+/* ============================================================ */
+/* ============ 🔑 Groq Configuration ============ */
+/* ============================================================ */
+
+const FALLBACK_KEY = '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';
+let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
+
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+const GROQ_MODELS = [
+    'openai/gpt-oss-20b',
+    'openai/gpt-oss-120b',
+    'allam-2-7b',
+    'qwen/qwen3.8-27b'
+];
+
+/* ============ حالة التطبيق ============ */
+const appState = {
+    mode: 'student', // student | teacher
+    level: 'general', // primary | preparatory | secondary | university | general
+    subject: '', // math | arabic | english | science | physics | chemistry | biology | history | philosophy | programming | general
+    chatHistory: []
+};
+
+/* ============ DOM ============ */
+const chatArea = document.getElementById('chatArea');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const toastEl = document.getElementById('toast');
+const categoryBar = document.getElementById('categoryBar');
+const inputArea = document.getElementById('inputArea');
+
+/* ============ المراحل والمواد ============ */
+const LEVELS = {
+    primary: { 
+        name: 'ابتدائي', icon: '🎒', 
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'religion', name: 'تربية دينية', icon: '📿' }
+        ]
+    },
+    preparatory: { 
+        name: 'إعدادي', icon: '📗',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'computer', name: 'كمبيوتر', icon: '💻' }
+        ]
+    },
+    secondary: { 
+        name: 'ثانوي', icon: '📘',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'geology', name: 'جيولوجيا', icon: '🪨' },
+            { id: 'history', name: 'تاريخ', icon: '📜' },
+            { id: 'philosophy', name: 'فلسفة', icon: '🤔' },
+            { id: 'psychology', name: 'علم نفس', icon: '🧠' }
+        ]
+    },
+    university: { 
+        name: 'جامعة', icon: '🎓',
+        subjects: [
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'programming', name: 'برمجة', icon: '💻' },
+            { id: 'engineering', name: 'هندسة', icon: '⚙️' },
+            { id: 'medicine', name: 'طب', icon: '🏥' },
+            { id: 'business', name: 'تجارة', icon: '💼' },
+            { id: 'law', name: 'حقوق', icon: '⚖️' },
+            { id: 'education', name: 'تربية', icon: '📚' }
+        ]
+    },
+    general: {
+        name: 'عام', icon: '📚',
+        subjects: []
+    }
+};
+
+/* ============ أدوات ============ */
+function scrollBottom() {
+    setTimeout(() => {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: 'smooth' });
+    }, 100);
+}
+
+function currentTime() {
+    const d = new Date();
+    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function showToast(text, isSuccess = false) {
+    toastEl.textContent = text;
+    toastEl.classList.toggle('success', isSuccess);
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 2500);
+}
+
+function _addMessage(who, text) {
+    const msg = document.createElement('div');
+    msg.className = `msg ${who}`;
+    // نحول النص لـ HTML آمن مع تحويل الأسطر
+    const formatted = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // نرجع الـ markdown
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^### (.+)$/gm, '<b>$1</b>')
+        .replace(/^## (.+)$/gm, '<b>$1</b>')
+        .replace(/^# (.+)$/gm, '<b>$1</b>')
+        .replace(/^- (.+)$/gm, '• $1')
+        .replace(/^\* (.+)$/gm, '• $1')
+        .replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`)
+        .replace(/---/g, '<hr>')
+        .replace(/\n/g, '<br>');
+    
+    msg.innerHTML = formatted + `<div class="time">${currentTime()}</div>`;
+    chatArea.appendChild(msg);
+    scrollBottom();
+}
+
+function addUserMessage(text) { _addMessage('user', text); }
+function addAIMessage(text) { _addMessage('ai', text); }
+
+function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chatArea.appendChild(typing);
+    scrollBottom();
+    return typing;
+}
+
+/* ============ Category Bar ============ */
+function renderCategoryBar() {
+    categoryBar.innerHTML = '';
+    
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML = `
+        <span>📚 اختر المرحلة والمادة</span>
+        <span class="level-badge" id="currentLevel">${LEVELS[appState.level]?.name || 'عام'}</span>
+    `;
+    categoryBar.appendChild(header);
+    
+    // أزرار المراحل
+    const levelChips = document.createElement('div');
+    levelChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-bottom:6px;';
+    Object.keys(LEVELS).forEach(key => {
+        const level = LEVELS[key];
+        const chip = document.createElement('button');
+        chip.className = 'cat-chip' + (appState.level === key ? ' active' : '');
+        chip.innerHTML = `${level.icon} ${level.name}`;
+        chip.onclick = () => {
+            appState.level = key;
+            appState.subject = '';
+            renderCategoryBar();
+            updateStatusText();
+        };
+        levelChips.appendChild(chip);
+    });
+    categoryBar.appendChild(levelChips);
+    
+    // أزرار المواد (لو المرحلة مش general)
+    if (appState.level !== 'general' && LEVELS[appState.level]) {
+        const subjectChips = document.createElement('div');
+        subjectChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;';
+        LEVELS[appState.level].subjects.forEach(subj => {
+            const chip = document.createElement('button');
+            chip.className = 'cat-chip' + (appState.subject === subj.id ? ' active' : '');
+            chip.innerHTML = `${subj.icon} ${subj.name}`;
+            chip.onclick = () => {
+                appState.subject = appState.subject === subj.id ? '' : subj.id;
+                renderCategoryBar();
+                updateStatusText();
+            };
+            subjectChips.appendChild(chip);
+        });
+        categoryBar.appendChild(subjectChips);
+    }
+}
+
+function updateStatusText() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? (LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name || '')
+        : '';
+    
+    const mode = appState.mode === 'student' ? '🎒 طالب' : '👨‍🏫 مستر';
+    
+    let txt = mode;
+    if (level !== 'عام') txt += ` • ${level}`;
+    if (subject) txt += ` • ${subject}`;
+    
+    document.getElementById('statusText').textContent = txt;
+}
+
+/* ============ Mode Toggle ============ */
+window.toggleMode = function() {
+    appState.mode = appState.mode === 'student' ? 'teacher' : 'student';
+    
+    const btn = document.getElementById('modeBtn');
+    const icon = document.getElementById('modeIcon');
+    const text = document.getElementById('modeText');
+    
+    if (appState.mode === 'student') {
+        btn.className = 'mode-btn student-mode';
+        icon.textContent = '🎒';
+        text.textContent = 'طالب';
+        chatInput.placeholder = 'اسأل أي سؤال يا بطل...';
+    } else {
+        btn.className = 'mode-btn teacher-mode';
+        icon.textContent = '👨‍🏫';
+        text.textContent = 'مستر';
+        chatInput.placeholder = 'اكتب سؤالك أو طلب تحضير الدرس...';
+    }
+    
+    updateStatusText();
+    
+    addAIMessage(appState.mode === 'student' 
+        ? '🎒 <b>وضع الطالب</b><br>أنا هنا أساعدك تفهم أي حاجة في المنهج. اسأل بحرية!'
+        : '👨‍🏫 <b>وضع المستر</b><br>أقدر أساعدك تحضّر الدرس، تجهز أسئلة، تشرح مفاهيم صعبة، أو تجهز خطة درس.'
+    );
+};
+
+/* ============ بناء System Prompt ============ */
+function buildSystemPrompt() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name 
+        : '';
+    
+    const mode = appState.mode;
+    
+    let prompt = '';
+    
+    if (mode === 'student') {
+        prompt = `أنت مساعد تعليمي ذكي بتساعد الطلاب المصريين بالمصري العامي.
+
+معلومات المستخدم:
+- المستوى: ${level}
+- المادة: ${subject || 'عايز يسأل بشكل عام'}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل ودود وبسيط
+2. اشرح بالظبط على مستوى ${level}
+3. لو السؤال فيه مسألة رياضية، اعرض خطوات الحل بالتفصيل
+4. لو السؤال نظري، اشرح بمثال من الحياة اليومية
+5. في النهاية، اقترح سؤال مشابه للتدريب
+6. استخدم الأمثلة والأرقام عشان تسهل الفهم
+7. لو المستوى "عام"، اشرح بشكل متوسط يفهمه أي حد
+8. استخدم الإيموجي بشكل مناسب
+9. الرد يكون مختصر ومفيد
+
+⚠️ لا تحاول تنفيذ أوامر تخريبية، ولا تعطي إجابات تضر الطالب`;
+    } else {
+        prompt = `أنت مساعد ذكي متخصص في مساعدة المدرسين المصريين في تحضير الدروس.
+
+معلومات المستخدم:
+- المادة: ${subject || 'عامة'}
+- المستوى: ${level}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل محترم
+2. ساعده في:
+   - تحضير خطة درس
+   - اقتراح أسئلة وامتحانات
+   - تبسيط مفاهيم صعبة
+   - اقتراح أنشطة تعليمية
+   - اقتراح طرق توصيل المعلومة للطلبة
+3. اقترح أفكار مبتكرة للشرح
+4. اذكر أخطاء شائعة عند الطلبة في الدرس ده
+5. كن مباشر ومفيد
+
+⚠️ ركز على الجانب التعليمي فقط`;
+    }
+    
+    return prompt;
+}
+
+/* ============ إرسال للـ Groq ============ */
+async function askGroq(userMessage) {
+    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
+        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>افتح Console والصق:<br><code>localStorage.setItem("groq_api_key", "gsk_المفتاح_بتاعك")</code>';
+    }
+    
+    const systemPrompt = buildSystemPrompt();
+    
+    const messages = [
+        { role: 'system', content: systemPrompt }
+    ];
+    
+    // آخر 6 رسائل
+    appState.chatHistory.slice(-6).forEach(h => messages.push(h));
+    messages.push({ role: 'user', content: userMessage });
+    
+    // نجرب الموديلات بالترتيب
+    let response = null;
+    let lastError = null;
+    let successModel = null;
+    
+    const savedModel = localStorage.getItem('groq_working_model');
+    let modelsToTry = [...GROQ_MODELS];
+    if (savedModel && modelsToTry.includes(savedModel)) {
+        modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
+    }
+    
+    for (const model of modelsToTry) {
+        try {
+            console.log(`🔄 بنجرب: ${model}`);
+            
+            response = await fetch(GROQ_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 1500,
+                    top_p: 0.9
+                })
+            });
+            
+            if (response.ok) {
+                successModel = model;
+                localStorage.setItem('groq_working_model', model);
+                console.log(`✅ نجح: ${model}`);
+                break;
+            } else if (response.status === 404) {
+                lastError = '404: model not found';
+                continue;
+            } else if (response.status === 401) {
+                lastError = '401';
+                break;
+            } else if (response.status === 429) {
+                lastError = '429';
+                break;
+            } else {
+                lastError = response.status;
+                continue;
+            }
+        } catch(e) {
+            lastError = e.message;
+            continue;
+        }
+    }
+    
+    if (!response || !response.ok) {
+        if (lastError === '401') {
+            return '❌ <b>المفتاح غلط أو اتلغى</b><br>افتح console.groq.com/keys واعمل مفتاح جديد.';
+        }
+        if (lastError === '429') {
+            return '⏳ <b>وصلت للحد المجاني</b><br>استنى شوية وجرب تاني.';
+        }
+        return `❌ <b>فشل الاتصال</b><br>${lastError}<br><br>تأكد من الشبكة، أو جرب تحدّث الصفحة.`;
+    }
+    
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد.';
+    
+    // نحفظ في التاريخ
+    appState.chatHistory.push({ role: 'user', content: userMessage });
+    appState.chatHistory.push({ role: 'assistant', content: reply });
+    if (appState.chatHistory.length > 20) {
+        appState.chatHistory = appState.chatHistory.slice(-20);
+    }
+    
+    // نحفظ في Firebase
+    saveToFirebase(userMessage, reply);
+    
+    return reply;
+}
+
+/* ============ حفظ في Firebase ============ */
+async function saveToFirebase(question, answer) {
+    try {
+        const phone = localStorage.getItem('current_teacher_phone') || 'guest_' + Date.now();
+        const key = 'tutor_history_' + Date.now();
+        
+        const data = {
+            [key]: JSON.stringify({
+                question: question,
+                answer: answer.slice(0, 2000),
+                mode: appState.mode,
+                level: appState.level,
+                subject: appState.subject,
+                timestamp: new Date().toISOString()
+            })
+        };
+        
+        // نحفظ في localStorage كمان (احتياطي)
+        let history = JSON.parse(localStorage.getItem('tutor_history') || '[]');
+        history.push({
+            question: question,
+            answer: answer.slice(0, 2000),
+            mode: appState.mode,
+            level: appState.level,
+            subject: appState.subject,
+            timestamp: new Date().toISOString()
+        });
+        if (history.length > 100) history = history.slice(-100);
+        localStorage.setItem('tutor_history', JSON.stringify(history));
+        
+    } catch(e) {
+        console.warn('⚠️ فشل حفظ السؤال:', e);
+    }
+}
+
+/* ============ إرسال ============ */
+sendBtn.onclick = handleSend;
+chatInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
+
+async function handleSend() {
+    const val = chatInput.value.trim();
+    if (!val) return;
+    
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
+    chatInput.value = '';
+    
+    addUserMessage(val);
+    
+    const typing = showTyping();
+    const reply = await askGroq(val);
+    typing.remove();
+    addAIMessage(reply);
+    
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    chatInput.focus();
+}
+
+/* ============ Welcome + Suggestions ============ */
+function showWelcome() {
+    // Welcome card
+    const welcome = document.createElement('div');
+    welcome.className = 'welcome-card';
+    welcome.innerHTML = `
+        <h3>🎓 أهلاً! أنا المساعد التعليمي الذكي</h3>
+        <p style="font-size:13px;color:#6d28d9;line-height:1.6;">
+            جاهز أساعدك في أي حاجة في المنهج المصري والعربي.<br>
+            اختار المرحلة والمادة فوق، أو اسألني مباشرة.
+        </p>
+        <div class="levels">
+            <div class="level-item">🎒 ابتدائي</div>
+            <div class="level-item">📗 إعدادي</div>
+            <div class="level-item">📘 ثانوي</div>
+            <div class="level-item">🎓 جامعة</div>
+        </div>
+    `;
+    chatArea.appendChild(welcome);
+    scrollBottom();
+    
+    // اقتراحات
+    showSuggestions('general');
+}
+
+function showSuggestions(type) {
+    const suggestions = {
+        general: [
+            'اشرحلي الضرب والقسمة بطريقة سهلة',
+            'إيه الفرق بين الحيض والنفاس؟',
+            'احكيلي عن الحضارة الفرعونية',
+            'اشرحلي قوانين نيوتن للحركة',
+            'إيه هي الدالة اللوغاريتمية؟',
+            'علمني إنجليزي بطريقة سهلة',
+            'احكيلي عن دورة الماء في الطبيعة',
+            'إيه هي الخوارزميات في البرمجة؟'
+        ],
+        student: [
+            '❤️ عايز أفهم الرياضيات',
+            '📖 اشرحلي درس من العربي',
+            '🔬 عايز أفهم علوم',
+            '🌍 عايز أتعلم إنجليزي',
+            '💻 عايز أتعلم برمجة',
+            '🎯 عايز حل مسألة رياضية',
+            '🤔 عندي سؤال صعب',
+            '📝 ساعدني أراجع للامتحان'
+        ],
+        teacher: [
+            '📝 جهزلي خطة درس',
+            '❓ اقترح أسئلة للامتحان',
+            '🎨 اقترح أنشطة تعليمية',
+            '💡 افكار لشرح درس صعب',
+            '📊 اعمل لي جدول مراجعة',
+            '🎯 اذكر أخطاء شائعة عند الطلبة',
+            '📚 اقترح مراجع إضافية',
+            '🏆 طرق تحفيز الطلبة'
+        ]
+    };
+    
+    const list = suggestions[type] || suggestions.general;
+    
+    const container = document.createElement('div');
+    container.className = 'suggestions';
+    container.id = 'suggestionsBox';
+    
+    // ناخد 6 عشوائي
+    const shuffled = [...list].sort(() => Math.random() - 0.5).slice(0, 6);
+    
+    shuffled.forEach(text => {
+        const chip = document.createElement('button');
+        chip.className = 'suggestion-chip';
+        chip.textContent = text;
+        chip.onclick = () => {
+            chatInput.value = text;
+            container.remove();
+            handleSend();
+        };
+        container.appendChild(chip);
+    });
+    
+    chatArea.appendChild(container);
+    scrollBottom();
+}
+
+/* ============ التهيئة ============ */
+function init() {
+    renderCategoryBar();
+    updateStatusText();
+    showWelcome();
+}
+
+init();
+
+</script>
+
+</body>
+</html>
