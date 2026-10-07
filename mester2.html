@@ -21,7 +21,6 @@
     --bubble-bot: #ffffff;
     --text: #2c3e50;
     --gray: #64748b;
-    --panel-bg: #f7fafc;
     --success: #10b981;
     --warning: #f59e0b;
     --ai-glow: #8b5cf6;
@@ -37,6 +36,7 @@ body {
     overflow: hidden;
 }
 
+/* ============ Header ============ */
 .chat-header {
     background: linear-gradient(135deg, var(--dark), var(--primary));
     color: #fff;
@@ -97,7 +97,7 @@ body {
 
 .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-.toggle-sidebar-btn, .ai-toggle-btn, .key-btn {
+.toggle-groups-btn, .ai-toggle-btn, .key-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
     color: #fff;
@@ -114,7 +114,7 @@ body {
     backdrop-filter: blur(6px);
     flex-shrink: 0;
 }
-.toggle-sidebar-btn:hover, .ai-toggle-btn:hover, .key-btn:hover { background: rgba(255,255,255,0.35); }
+.toggle-groups-btn:hover, .ai-toggle-btn:hover, .key-btn:hover { background: rgba(255,255,255,0.35); }
 .key-btn { padding: 8px 10px; font-size: 14px; }
 
 .ai-toggle-btn.active {
@@ -128,7 +128,7 @@ body {
     50% { box-shadow: 0 0 25px rgba(139,92,246,0.8); }
 }
 
-.toggle-sidebar-btn .badge-count {
+.toggle-groups-btn .badge-count {
     background: #fbbf24;
     color: #78350f;
     font-size: 10px;
@@ -153,217 +153,70 @@ body {
     box-shadow: 0 0 10px #fbbf24;
 }
 
+/* ============ Main Layout - Chat only ============ */
 .main-layout {
     flex: 1;
     display: flex;
-    overflow: hidden;
-    position: relative;
-}
-
-.groups-sidebar {
-    width: 0;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
-    border-left: 3px solid var(--border);
-    display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: width 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 20;
-    flex-shrink: 0;
-    box-shadow: -3px 0 15px rgba(0,0,0,0.08);
     position: relative;
 }
-.groups-sidebar.open { width: 320px; }
 
-.sidebar-header {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+/* ============ Live Summary Bar (فوق الشات) ============ */
+.live-summary {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-bottom: 2px solid var(--success);
+    padding: 8px 12px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
     flex-shrink: 0;
-    min-width: 320px;
+    animation: slideDown 0.3s ease;
+    max-height: 100px;
+    overflow-y: auto;
 }
-.sidebar-header .title { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-.sidebar-header .title .count-badge {
-    background: #fbbf24;
-    color: #78350f;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    min-width: 24px;
-    text-align: center;
+.live-summary.show { display: flex; }
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
-.sidebar-header .close-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.sidebar-body { flex: 1; overflow-y: auto; padding: 12px; min-width: 320px; }
-.sidebar-body::-webkit-scrollbar { width: 6px; }
-.sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-.add-new-btn {
+.live-summary .ls-header {
     width: 100%;
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 10px rgba(37,150,139,0.25);
-}
-
-.sb-group-card {
-    background: #fff;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-}
-.sb-group-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(37,150,139,0.15); transform: translateX(-3px); }
-.sb-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
-.sb-group-card.recurring-group::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #8b5cf6; }
-.sb-group-card.normal-group::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: #3b82f6; }
-.sb-group-card.hidden-group::before { background: #dc2626; }
-
-.sb-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
-.sb-card-name { font-size: 14px; font-weight: 900; color: var(--text); flex: 1; word-break: break-word; line-height: 1.3; }
-.sb-card-badges { display: flex; gap: 3px; flex-shrink: 0; }
-.sb-badge { font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 900; white-space: nowrap; }
-.sb-badge.rec { background: #8b5cf6; color: #fff; }
-.sb-badge.norm { background: #3b82f6; color: #fff; }
-.sb-badge.vis { background: #16a34a; color: #fff; }
-.sb-badge.hid { background: #dc2626; color: #fff; }
-
-.sb-card-info { font-size: 11.5px; color: var(--gray); display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
-.sb-card-info .row { display: flex; align-items: center; gap: 5px; }
-.sb-card-info .row b { color: var(--text); font-weight: 900; }
-
-.sb-card-actions { display: flex; gap: 4px; padding-top: 8px; border-top: 1px solid #f1f5f9; }
-.sb-action-btn {
-    flex: 1;
-    padding: 6px 4px;
-    border-radius: 6px;
-    border: none;
-    font-family: inherit;
     font-size: 11px;
+    color: #065f46;
     font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-}
-.sb-action-btn.edit { background: #dbeafe; color: #1e40af; }
-.sb-action-btn.toggle { background: #fef3c7; color: #92400e; }
-.sb-action-btn.delete { background: #fee2e2; color: #b91c1c; }
-
-.sb-empty { text-align: center; padding: 40px 20px; color: var(--gray); }
-.sb-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
-
-.options-panel {
-    width: 320px;
-    background: var(--panel-bg);
-    border-left: 3px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: -3px 0 15px rgba(0,0,0,0.05);
-    z-index: 5;
-    flex-shrink: 0;
-}
-.options-panel-header {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: #fff;
-    padding: 12px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    margin-bottom: 2px;
 }
-.options-panel-header .title { font-size: 14px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
-.options-panel-header .reset-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
+.live-summary .ls-header .progress-text {
+    background: var(--success);
     color: #fff;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 900;
-    cursor: pointer;
-    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
 }
-
-.options-panel-body { flex: 1; overflow-y: auto; padding: 12px; }
-.options-panel-body::-webkit-scrollbar { width: 5px; }
-.options-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-.build-step {
+.live-summary .ls-item {
     background: #fff;
-    border: 2px solid #e2e8f0;
+    border: 1px solid #6ee7b7;
     border-radius: 12px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #065f46;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(16,185,129,0.1);
+    animation: popIn 0.3s ease;
 }
-.build-step.pending { opacity: 0.55; background: #f8fafc; border-style: dashed; }
-.build-step.active { border-color: var(--warning); background: linear-gradient(135deg, #fffbeb, #fef3c7); }
-.build-step.active::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: var(--warning); animation: activeBar 1.5s infinite; }
-@keyframes activeBar { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.build-step.done { border-color: var(--success); background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
-.build-step.done::before {
-    content: '✓';
-    position: absolute;
-    left: 8px; top: 50%; transform: translateY(-50%);
-    width: 20px; height: 20px;
-    background: var(--success); color: #fff;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 900;
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
-.build-step .bs-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 12px; color: var(--gray); font-weight: 900; }
-.build-step .bs-value { font-size: 14px; font-weight: 900; color: var(--text); padding: 6px 0; word-break: break-word; line-height: 1.4; }
-.build-step.pending .bs-value { color: #94a3b8; font-style: italic; }
-.build-step.active .bs-value { color: #92400e; }
-.build-step.done .bs-value { color: #065f46; }
-
-.panel-summary {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid var(--success);
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 12px;
-}
-.panel-summary h4 { color: #065f46; font-size: 13px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1.5px dashed #a7f3d0; }
-.panel-summary .prow { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; gap: 6px; }
-.panel-summary .prow .k { color: #065f46; font-weight: 800; }
-.panel-summary .prow .v { color: #064e3b; font-weight: 900; text-align: left; }
-
+/* ============ Chat Area ============ */
 .chat-area {
     flex: 1;
     overflow-y: auto;
@@ -421,6 +274,7 @@ body {
 }
 .msg.teacher .time { text-align: right; }
 
+/* ============ Options ============ */
 .options-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .option-btn {
     background: #fff;
@@ -436,13 +290,16 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    box-shadow: 0 2px 6px rgba(37,150,139,0.1);
 }
 .option-btn:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
 
+/* ============ Time grid ============ */
 .chat-time-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
     max-height: 240px; overflow-y: auto; padding: 8px;
     background: #fff; border-radius: 12px; margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 .chat-time-chip {
     background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px;
@@ -452,7 +309,8 @@ body {
 .chat-time-chip:hover { background: var(--light); border-color: var(--primary); }
 .chat-time-chip.disabled { opacity: 0.3; pointer-events: none; }
 
-.chat-cal { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+/* ============ Calendar ============ */
+.chat-cal { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .chat-cal .ccal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid #f1f5f9; }
 .chat-cal .ccal-title { font-size: 14px; font-weight: 900; color: var(--dark); }
 .chat-cal .ccal-nav { background: var(--light); border: 1px solid var(--border); color: var(--dark); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
@@ -466,13 +324,15 @@ body {
 .chat-cal-day.past { opacity: 0.35; cursor: not-allowed; }
 .chat-cal-day.empty { background: transparent; cursor: default; }
 
-.chat-map-widget { background: #fff; border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+/* ============ Map widget ============ */
+.chat-map-widget { background: #fff; border-radius: 14px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 #mini-map { width: 100%; height: 220px; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); }
 .chat-gps-btn { width: 100%; background: linear-gradient(135deg, var(--primary), var(--dark)); color: #fff; border: none; padding: 11px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; margin-top: 8px; font-family: inherit; }
 .chat-addr-display { margin-top: 8px; padding: 10px; background: #f0fdf4; border-radius: 8px; font-size: 12px; color: #065f46; text-align: center; border: 1.5px dashed var(--success); display: none; }
 .chat-addr-display.show { display: block; }
 .chat-extra-input { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
 
+/* ============ Quick actions ============ */
 .quick-actions {
     background: #f0f0f0;
     padding: 8px 12px 0;
@@ -507,6 +367,7 @@ body {
     border-color: #6d28d9;
 }
 
+/* ============ Input area ============ */
 .input-area {
     background: #f0f0f0;
     padding: 10px 12px;
@@ -578,6 +439,139 @@ body {
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
 
+/* ============ Groups Modal (بدل Sidebar) ============ */
+.groups-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+    backdrop-filter: blur(4px);
+}
+.groups-modal.open { display: flex; }
+.groups-modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    margin: auto;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes modalPop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.groups-modal-header {
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: #fff;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.groups-modal-header .title { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.groups-modal-header .title .count-badge {
+    background: #fbbf24;
+    color: #78350f;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+.groups-modal-header .close-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.groups-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+.groups-modal-body::-webkit-scrollbar { width: 6px; }
+.groups-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.gm-add-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(37,150,139,0.25);
+}
+
+.gm-group-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+}
+.gm-group-card.hidden-group { background: #fef2f2; border-color: #fecaca; opacity: 0.9; }
+.gm-group-card.recurring-group { border-right: 4px solid #8b5cf6; }
+.gm-group-card.normal-group { border-right: 4px solid #3b82f6; }
+.gm-group-card.hidden-group { border-right-color: #dc2626; }
+
+.gm-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
+.gm-card-name { font-size: 14px; font-weight: 900; color: var(--text); flex: 1; word-break: break-word; }
+.gm-card-badges { display: flex; gap: 3px; }
+.gm-badge { font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 900; }
+.gm-badge.rec { background: #8b5cf6; color: #fff; }
+.gm-badge.norm { background: #3b82f6; color: #fff; }
+.gm-badge.vis { background: #16a34a; color: #fff; }
+.gm-badge.hid { background: #dc2626; color: #fff; }
+
+.gm-card-info { font-size: 11.5px; color: var(--gray); display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+.gm-card-info .row { display: flex; align-items: center; gap: 5px; }
+.gm-card-info .row b { color: var(--text); font-weight: 900; }
+
+.gm-card-actions { display: flex; gap: 4px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
+.gm-action-btn {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 6px;
+    border: none;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+.gm-action-btn.edit { background: #dbeafe; color: #1e40af; }
+.gm-action-btn.toggle { background: #fef3c7; color: #92400e; }
+.gm-action-btn.delete { background: #fee2e2; color: #b91c1c; }
+
+.gm-empty { text-align: center; padding: 40px 20px; color: var(--gray); }
+.gm-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
+
+/* ============ Toast ============ */
 .toast {
     position: fixed; bottom: 90px; left: 50%;
     transform: translateX(-50%) translateY(20px);
@@ -591,15 +585,11 @@ body {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; }
 
+/* ============ Mobile ============ */
 @media (max-width: 768px) {
-    .main-layout { flex-direction: column; }
-    .groups-sidebar { position: fixed; right: 0; top: 0; bottom: 0; width: 0; z-index: 1000; }
-    .groups-sidebar.open { width: 85%; max-width: 320px; }
-    .options-panel { width: 100%; height: 40%; border-left: none; border-bottom: 3px solid var(--border); }
-    .chat-area { height: 60%; }
-    .chat-time-grid { grid-template-columns: repeat(3, 1fr); }
     .header-actions { gap: 4px; }
-    .toggle-sidebar-btn, .ai-toggle-btn, .key-btn { padding: 6px 10px; font-size: 11px; }
+    .toggle-groups-btn, .ai-toggle-btn, .key-btn { padding: 6px 10px; font-size: 11px; }
+    .chat-time-grid { grid-template-columns: repeat(3, 1fr); }
 }
 </style>
 </head>
@@ -619,80 +609,77 @@ body {
             <span>⚡</span>
             <span>AI</span>
         </button>
-        <button class="toggle-sidebar-btn" onclick="toggleGroupsSidebar()">
+        <button class="toggle-groups-btn" onclick="openGroupsModal()">
             <span>📚</span>
-            <span class="badge-count" id="sidebarBadge" style="display:none;">0</span>
+            <span class="badge-count" id="groupsBadge" style="display:none;">0</span>
         </button>
     </div>
 </div>
 <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%"></div></div>
 
+<!-- Main Layout - Chat Only -->
 <div class="main-layout">
     
-    <aside class="groups-sidebar" id="groupsSidebar">
-        <div class="sidebar-header">
+    <!-- Live Summary Bar -->
+    <div class="live-summary" id="liveSummary"></div>
+    
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatArea"></div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions" id="quickActions" style="display:none;">
+        <button class="quick-btn ai-mode" onclick="startAISBooking()">
+            <span>⚡</span><span>ابدأ الحجز بالـ AI</span>
+        </button>
+        <button class="quick-btn" onclick="showNextClass()">
+            <span>⏭️</span><span>الحصة القادمة</span>
+        </button>
+        <button class="quick-btn" onclick="showTodayClasses()">
+            <span>📆</span><span>النهاردة</span>
+        </button>
+        <button class="quick-btn" onclick="showAllAddresses()">
+            <span>📍</span><span>عناويني</span>
+        </button>
+        <button class="quick-btn" onclick="showQuestionMenu()">
+            <span>❓</span><span>أسئلة</span>
+        </button>
+    </div>
+    
+    <!-- Input Area -->
+    <div class="input-area" id="inputArea" style="display:none;">
+        <div class="input-wrap">
+            <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off" inputmode="text">
+        </div>
+        <button class="send-btn" id="sendBtn">➤</button>
+    </div>
+    
+</div>
+
+<!-- Groups Modal -->
+<div class="groups-modal" id="groupsModal" onclick="closeGroupsModal(event)">
+    <div class="groups-modal-content" onclick="event.stopPropagation()">
+        <div class="groups-modal-header">
             <div class="title">
                 <span>📚</span>
                 <span>مجموعاتي</span>
-                <span class="count-badge" id="sidebarCount">0</span>
+                <span class="count-badge" id="groupsModalCount">0</span>
             </div>
-            <button class="close-btn" onclick="toggleGroupsSidebar()">✖</button>
+            <button class="close-btn" onclick="closeGroupsModal()">✖</button>
         </div>
-        <div class="sidebar-body" id="sidebarBody">
-            <button class="add-new-btn" onclick="startNewFromSidebar()">
+        <div class="groups-modal-body" id="groupsModalBody">
+            <button class="gm-add-btn" onclick="startNewFromModal()">
                 <span>➕</span>
                 <span>اعمل مجموعة جديدة</span>
             </button>
-            <div id="sidebarGroupsList"></div>
+            <div id="groupsModalList"></div>
         </div>
-    </aside>
-    
-    <aside class="options-panel">
-        <div class="options-panel-header">
-            <div class="title">
-                <span>📋</span>
-                <span>بناء المجموعة</span>
-            </div>
-            <button class="reset-btn" onclick="startFresh()">🔄 جديد</button>
-        </div>
-        <div class="options-panel-body" id="optionsPanelBody"></div>
-    </aside>
-    
-    <main style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
-        <div class="chat-area" id="chatArea"></div>
-        
-        <div class="quick-actions" id="quickActions" style="display:none;">
-            <button class="quick-btn ai-mode" onclick="aiQuickAsk('الحصة القادمة إمتى؟')">
-                <span>⚡</span><span>اسأل AI</span>
-            </button>
-            <button class="quick-btn" onclick="showNextClass()">
-                <span>⏭️</span><span>الحصة القادمة</span>
-            </button>
-            <button class="quick-btn" onclick="showTodayClasses()">
-                <span>📆</span><span>النهاردة</span>
-            </button>
-            <button class="quick-btn" onclick="showAllAddresses()">
-                <span>📍</span><span>عناويني</span>
-            </button>
-            <button class="quick-btn" onclick="showQuestionMenu()">
-                <span>❓</span><span>أسئلة</span>
-            </button>
-        </div>
-        
-        <div class="input-area" id="inputArea" style="display:none;">
-            <div class="input-wrap">
-                <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off" inputmode="text">
-            </div>
-            <button class="send-btn" id="sendBtn">➤</button>
-        </div>
-    </main>
-    
+    </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>try { eruda.init({ tool: ['console', 'elements'], autoScale: true }); } catch(e) {}</script>
+<script>try { eruda.init({ tool: ['console'], autoScale: true }); } catch(e) {}</script>
 
 <script type="module">
 import { 
@@ -713,7 +700,6 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// ✅ قائمة الموديلات المتاحة لحسابك (محدثة)
 const GROQ_MODELS = [
     'openai/gpt-oss-20b',
     'openai/gpt-oss-120b',
@@ -722,6 +708,13 @@ const GROQ_MODELS = [
 ];
 
 let aiModeActive = false;
+let aiBookingMode = false;
+let aiBookingStep = 0;
+let aiBookingData = {
+    groupName: '', teacherName: '', centerName: '',
+    studentsCount: '', gender: '', location: '',
+    startTime: '', endTime: '', dayName: '', repeatWeekly: null
+};
 
 window.manageGroqKey = function() {
     const current = localStorage.getItem('groq_api_key') || '';
@@ -731,10 +724,8 @@ window.manageGroqKey = function() {
         `🔑 إدارة مفتاح Groq\n\n` +
         `المفتاح الحالي: ${currentPreview}\n` +
         `الطول: ${current.length} حرف\n\n` +
-        `اكتب الأمر:\n` +
-        `• الصق مفتاح جديد (يبدأ بـ gsk_) عشان تحفظه\n` +
-        `• أو اكتب "حذف" عشان تمسح المفتاح\n` +
-        `• أو "اختبار" عشان تختبر المفتاح الحالي`,
+        `الصق مفتاح جديد (يبدأ بـ gsk_) عشان تحفظه\n` +
+        `أو اكتب "حذف" لمسح المفتاح`,
         current
     );
     
@@ -749,61 +740,19 @@ window.manageGroqKey = function() {
         return;
     }
     
-    if (trimmed === 'اختبار' || trimmed.toLowerCase() === 'test') {
-        testGroqKey(GROQ_API_KEY);
-        return;
-    }
-    
     if (trimmed.startsWith('gsk_')) {
         if (trimmed.length < 40) {
             alert('⚠️ المفتاح قصير أوي!\n\nالطول الحالي: ' + trimmed.length);
             return;
         }
-        
         localStorage.setItem('groq_api_key', trimmed);
         localStorage.removeItem('groq_working_model');
         GROQ_API_KEY = trimmed;
         showToast('✅ تم حفظ المفتاح', true);
-        testGroqKey(trimmed);
     } else {
         alert('⚠️ المفتاح لازم يبدأ بـ gsk_');
     }
 };
-
-async function testGroqKey(key) {
-    if (!key) {
-        showToast('❌ مفيش مفتاح');
-        return;
-    }
-    
-    showToast('⏳ جاري اختبار المفتاح...');
-    
-    try {
-        const res = await fetch('https://api.groq.com/openai/v1/models', {
-            headers: { 'Authorization': 'Bearer ' + key }
-        });
-        
-        if (res.ok) {
-            const data = await res.json();
-            const models = data.data?.map(m => m.id) || [];
-            showToast('✅ المفتاح شغال! ' + models.length + ' موديل', true);
-            
-            addBotMessage(
-                `✅ <b>المفتاح شغال!</b><br><br>` +
-                `عدد الموديلات المتاحة: <b>${models.length}</b><br><br>` +
-                `الموديلات:<br>` +
-                models.slice(0, 5).map(m => `• <code>${m}</code>`).join('<br>')
-            );
-        } else if (res.status === 401) {
-            showToast('❌ المفتاح غلط (401)');
-        } else {
-            showToast('❌ فشل: ' + res.status);
-        }
-    } catch(e) {
-        console.error(e);
-        showToast('❌ مشكلة في الاتصال');
-    }
-}
 
 /* ============ الحالة ============ */
 const state = {
@@ -829,13 +778,9 @@ const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const progressFill = document.getElementById('progressFill');
 const toastEl = document.getElementById('toast');
-const optionsPanelBody = document.getElementById('optionsPanelBody');
 const inputArea = document.getElementById('inputArea');
 const quickActions = document.getElementById('quickActions');
-const groupsSidebar = document.getElementById('groupsSidebar');
-const sidebarGroupsList = document.getElementById('sidebarGroupsList');
-const sidebarBadge = document.getElementById('sidebarBadge');
-const sidebarCount = document.getElementById('sidebarCount');
+const liveSummary = document.getElementById('liveSummary');
 
 /* ============ أدوات ============ */
 function scrollBottom() {
@@ -898,33 +843,29 @@ function formatTime(val) {
 }
 
 function setInputMode(mode, placeholder = '') {
-    const inputAreaEl = document.getElementById('inputArea');
-    const chatInputEl = document.getElementById('chatInput');
-    const sendBtnEl = document.getElementById('sendBtn');
-    
     if (mode === 'hidden') {
-        inputAreaEl.style.display = 'none';
+        inputArea.style.display = 'none';
         return;
     }
     
-    inputAreaEl.style.display = 'flex';
-    chatInputEl.disabled = false;
-    chatInputEl.readOnly = false;
-    chatInputEl.value = '';
-    chatInputEl.placeholder = placeholder || 'اكتب هنا...';
+    inputArea.style.display = 'flex';
+    chatInput.disabled = false;
+    chatInput.readOnly = false;
+    chatInput.value = '';
+    chatInput.placeholder = placeholder || 'اكتب هنا...';
     
     if (mode === 'number') {
-        chatInputEl.type = 'number';
-        chatInputEl.setAttribute('inputmode', 'numeric');
+        chatInput.type = 'number';
+        chatInput.setAttribute('inputmode', 'numeric');
     } else {
-        chatInputEl.type = 'text';
-        chatInputEl.setAttribute('inputmode', 'text');
+        chatInput.type = 'text';
+        chatInput.setAttribute('inputmode', 'text');
     }
     
-    sendBtnEl.disabled = false;
+    sendBtn.disabled = false;
     
-    setTimeout(() => { try { chatInputEl.focus(); } catch(e) {} }, 200);
-    setTimeout(() => { try { if (document.activeElement !== chatInputEl) chatInputEl.focus(); } catch(e) {} }, 500);
+    setTimeout(() => { try { chatInput.focus(); } catch(e) {} }, 200);
+    setTimeout(() => { try { if (document.activeElement !== chatInput) chatInput.focus(); } catch(e) {} }, 500);
 }
 
 function resetState() {
@@ -945,12 +886,330 @@ function showQuickActions() { quickActions.style.display = 'flex'; }
 function hideQuickActions() { quickActions.style.display = 'none'; }
 
 /* ============================================================ */
-/* ============ 🤖 AI Mode ============ */
+/* ============ Live Summary Bar ============ */
+/* ============================================================ */
+function updateLiveSummary() {
+    const d = aiBookingMode ? aiBookingData : state.data;
+    
+    const items = [];
+    if (d.groupName) items.push({ icon: '📝', text: d.groupName });
+    if (d.teacherName) items.push({ icon: '👤', text: d.teacherName });
+    if (d.location) items.push({ icon: '📍', text: d.location });
+    if (d.centerName) items.push({ icon: '🏫', text: d.centerName });
+    if (d.studentsCount) items.push({ icon: '👥', text: `${d.studentsCount} طالب` });
+    if (d.gender) items.push({ icon: '👫', text: d.gender });
+    if (d.startTime && d.endTime) {
+        const st = /^\d{2}:\d{2}$/.test(d.startTime) ? formatTime(d.startTime) : d.startTime;
+        const et = /^\d{2}:\d{2}$/.test(d.endTime) ? formatTime(d.endTime) : d.endTime;
+        items.push({ icon: '🕐', text: `${st} - ${et}` });
+    }
+    if (d.dayName) items.push({ icon: '📅', text: d.dayName });
+    if (d.repeatWeekly !== null && d.repeatWeekly !== undefined && d.dayName) {
+        items.push({ icon: '🔁', text: d.repeatWeekly ? 'أسبوعي' : 'مرة واحدة' });
+    }
+    
+    if (items.length === 0) {
+        liveSummary.classList.remove('show');
+        return;
+    }
+    
+    const totalSteps = 10;
+    const progress = Math.min(items.length, totalSteps);
+    
+    liveSummary.innerHTML = `
+        <div class="ls-header">
+            <span>📋 بناء المجموعة</span>
+            <span class="progress-text">${progress}/${totalSteps}</span>
+        </div>
+        ${items.map(item => `<div class="ls-item">${item.icon} ${item.text}</div>`).join('')}
+    `;
+    liveSummary.classList.add('show');
+}
+
+function hideLiveSummary() {
+    liveSummary.classList.remove('show');
+    liveSummary.innerHTML = '';
+}
+
+/* ============================================================ */
+/* ============ 🤖 AI Booking Flow ============ */
 /* ============================================================ */
 
-window.toggleAIMode = function() {
-    aiModeActive = !aiModeActive;
+window.startAISBooking = async function() {
+    if (!aiModeActive) {
+        aiModeActive = true;
+        updateAIUI(true);
+    }
     
+    aiBookingMode = true;
+    aiBookingStep = 1;
+    aiBookingData = {
+        groupName: '', teacherName: '', centerName: '',
+        studentsCount: '', gender: '', location: '',
+        startTime: '', endTime: '', dayName: '', repeatWeekly: null
+    };
+    
+    chatHistory = [];
+    updateLiveSummary();
+    
+    addBotMessage(
+        '🤖 <b>أهلاً يا مستر!</b><br><br>' +
+        'أنا هسألك على بيانات المجموعة واحدة واحدة.<br>' +
+        'هتشوف إجاباتك بتتجمع فوق في الشريط الأخضر ✨<br><br>' +
+        '━━━━━━━━━━━━━━━<br><br>' +
+        '<b>السؤال 1/10:</b><br>' +
+        '🎯 اسم المجموعة إيه؟'
+    );
+    
+    setInputMode('text', 'اكتب اسم المجموعة...');
+};
+
+/* معلومات كل خطوة */
+function getStepInfo(step) {
+    const map = {
+        1: { field: 'groupName', question: '🎯 اسم المجموعة إيه؟', placeholder: 'اكتب اسم المجموعة...' },
+        2: { field: 'teacherName', question: '👤 اسمك إيه يا مستر؟', placeholder: 'اكتب اسمك...' },
+        3: { field: 'location', question: '📍 الدرس هيبقى فين؟', placeholder: 'اختار المكان...', options: [
+            { label: 'السنتر', icon: '🏫', value: 'السنتر' },
+            { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
+            { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
+        ]},
+        4: { field: 'centerName', question: '🏫 اسم السنتر إيه؟', placeholder: 'اسم السنتر...' },
+        5: { field: 'studentsCount', question: '👥 عدد الطلبة في المجموعة؟', placeholder: 'مثال: 20', options: [
+            { label: '10 طلاب', value: 10 },
+            { label: '15 طالب', value: 15 },
+            { label: '20 طالب', value: 20 },
+            { label: '30 طالب', value: 30 }
+        ]},
+        6: { field: 'gender', question: '👫 الفئة المسموحة؟', placeholder: 'اختار الفئة...', options: [
+            { label: 'مختلط', icon: '👫', value: 'مختلط' },
+            { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
+            { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
+        ]},
+        7: { field: 'startTime', question: '⏰ الحصة بتبدأ الساعة كام؟', placeholder: 'مثال: 4 العصر' },
+        8: { field: 'endTime', question: '⏰ وتنتهي الساعة كام؟', placeholder: 'مثال: 6 المغرب' },
+        9: { field: 'dayName', question: '📅 يوم الحصة إيه؟', placeholder: 'اختار اليوم...', options: [
+            { label: 'السبت', value: 'السبت' },
+            { label: 'الأحد', value: 'الأحد' },
+            { label: 'الاثنين', value: 'الاثنين' },
+            { label: 'الثلاثاء', value: 'الثلاثاء' },
+            { label: 'الأربعاء', value: 'الأربعاء' },
+            { label: 'الخميس', value: 'الخميس' },
+            { label: 'الجمعة', value: 'الجمعة' }
+        ]},
+        10: { field: 'repeatWeekly', question: '🔁 عايز تكرار أسبوعي؟', placeholder: 'اختار...', options: [
+            { label: 'أيوه، كل أسبوع', icon: '🔁', value: 'أيوه' },
+            { label: 'لا، مرة واحدة بس', icon: '📅', value: 'لا' }
+        ]}
+    };
+    return map[step];
+}
+
+/* معالجة رد المستر */
+async function processAISBookingResponse(userMessage) {
+    const stepInfo = getStepInfo(aiBookingStep);
+    if (!stepInfo) {
+        await aiBookingComplete();
+        return;
+    }
+    
+    // لو الخيارات كانت معروضة، المستر رد بنص حر
+    // نحاول نفهم الرد
+    let value = userMessage;
+    let unclear = false;
+    
+    try {
+        const typing = document.createElement('div');
+        typing.className = 'typing ai-typing';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        chatArea.appendChild(typing);
+        scrollBottom();
+        
+        const extractPrompt = `المستخدم رد على السؤال: "${stepInfo.question}"
+الرد: "${userMessage}"
+اسم الحقل المطلوب: "${stepInfo.field}"
+نوع المعلومة: ${stepInfo.field === 'studentsCount' ? 'رقم' : stepInfo.field === 'repeatWeekly' ? 'أيوه أو لا' : 'نص'}
+
+استخرج القيمة وحطها. لو مش واضح، اكتب "UNCLEAR".
+
+ردك لازم يكون JSON بالشكل:
+{"value": "القيمة", "unclear": false}`;
+        
+        const response = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: GROQ_MODELS[0],
+                messages: [
+                    { role: 'system', content: 'أنت بتستخرج بيانات. ردك JSON صافي بس. مفيش كلام تاني.' },
+                    { role: 'user', content: extractPrompt }
+                ],
+                temperature: 0.2,
+                max_tokens: 150
+            })
+        });
+        
+        typing.remove();
+        
+        if (response.ok) {
+            const data = await response.json();
+            let content = data.choices?.[0]?.message?.content || '{}';
+            content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+            
+            try {
+                const parsed = JSON.parse(content);
+                if (parsed.unclear) {
+                    unclear = true;
+                } else if (parsed.value) {
+                    value = parsed.value;
+                }
+            } catch(e) {
+                // استخدام الرد كما هو
+            }
+        }
+    } catch(e) {
+        console.error('AI extract error:', e);
+    }
+    
+    if (unclear) {
+        await addBotMessage(`🤔 <b>معلش، مفهمتش.</b><br>ممكن توضح تاني؟<br><br><b>${stepInfo.question}</b>`);
+        setInputMode('text', stepInfo.placeholder);
+        return;
+    }
+    
+    // احفظ القيمة
+    aiBookingData[stepInfo.field] = value;
+    updateLiveSummary();
+    
+    // انتقل للسؤال التالي
+    aiBookingStep++;
+    
+    // تخطي اسم السنتر لو المكان مش سنتر
+    if (aiBookingStep === 4 && aiBookingData.location !== 'السنتر') {
+        aiBookingStep = 5;
+    }
+    
+    await askNextAISBookingQuestion();
+}
+
+/* نطرح السؤال التالي */
+async function askNextAISBookingQuestion() {
+    if (aiBookingStep > 10) {
+        await aiBookingComplete();
+        return;
+    }
+    
+    const stepInfo = getStepInfo(aiBookingStep);
+    const progressBar = `[${aiBookingStep}/10]`;
+    
+    await addBotMessage(`━━━━━━━━━━━━━━━<br><br><b>السؤال ${progressBar}:</b><br>${stepInfo.question}`);
+    
+    if (stepInfo.options) {
+        // نعرض الخيارات جاهزة
+        showOptions(stepInfo.options, async (opt) => {
+            const val = opt.value;
+            addTeacherMessage(`${opt.icon || ''} ${opt.label}`.trim());
+            aiBookingData[stepInfo.field] = val;
+            updateLiveSummary();
+            aiBookingStep++;
+            
+            // تخطي اسم السنتر لو المكان مش سنتر
+            if (aiBookingStep === 4 && aiBookingData.location !== 'السنتر') {
+                aiBookingStep = 5;
+            }
+            
+            await askNextAISBookingQuestion();
+        });
+        setInputMode('hidden');
+    } else {
+        setInputMode('text', stepInfo.placeholder);
+    }
+}
+
+/* خلصنا */
+async function aiBookingComplete() {
+    updateLiveSummary();
+    
+    // تحويل الأوقات
+    const parseTime = (str) => {
+        if (!str) return '16:00';
+        if (/^\d{2}:\d{2}$/.test(str)) return str;
+        const m = str.match(/(\d{1,2})/);
+        if (!m) return '16:00';
+        let h = parseInt(m[1]);
+        if (str.includes('العصر') || str.includes('المسا') || str.includes('مسا') || str.includes('الليل')) {
+            if (h < 12) h += 12;
+        }
+        return String(h).padStart(2, '0') + ':00';
+    };
+    
+    const start = parseTime(aiBookingData.startTime);
+    const end = parseTime(aiBookingData.endTime);
+    
+    await addBotMessage(
+        `🎉 <b>تمام يا مستر! جاهز أحفظ المجموعة</b><br><br>` +
+        `📋 <b>الملخص النهائي:</b><br><br>` +
+        `🎯 <b>${aiBookingData.groupName}</b><br>` +
+        `👤 ${aiBookingData.teacherName}<br>` +
+        (aiBookingData.centerName ? `🏫 ${aiBookingData.centerName}<br>` : '') +
+        `📍 ${aiBookingData.location}<br>` +
+        `👥 ${aiBookingData.studentsCount} طالب<br>` +
+        `👫 ${aiBookingData.gender}<br>` +
+        `🕐 ${formatTime(start)} - ${formatTime(end)}<br>` +
+        `📅 ${aiBookingData.dayName}<br>` +
+        `🔁 ${aiBookingData.repeatWeekly === 'أيوه' || aiBookingData.repeatWeekly === true ? 'أسبوعي' : 'مرة واحدة'}`
+    );
+    
+    setInputMode('hidden');
+    showOptions([
+        { label: 'احفظ المجموعة', icon: '💾', value: 'save' },
+        { label: 'الغي', icon: '❌', value: 'cancel' }
+    ], async (opt) => {
+        if (opt.value === 'save') {
+            await aiBookingSave(start, end);
+        } else {
+            addTeacherMessage('الغي');
+            aiBookingMode = false;
+            hideLiveSummary();
+            updateAIUI(false);
+            aiModeActive = false;
+            await addBotMessage('ماشي، لغينا. لو عايز تبدأ من جديد دوس "⚡ ابدأ الحجز بالـ AI"');
+        }
+    });
+}
+
+/* نحفظ */
+async function aiBookingSave(start, end) {
+    addTeacherMessage('احفظ');
+    
+    // نحط القيم في state
+    state.data.groupName = aiBookingData.groupName;
+    state.data.teacherName = aiBookingData.teacherName;
+    state.data.location = aiBookingData.location || 'السنتر';
+    state.data.centerName = aiBookingData.centerName || '';
+    state.data.studentsCount = parseInt(aiBookingData.studentsCount) || 20;
+    state.data.gender = aiBookingData.gender || 'مختلط';
+    state.data.startTime = start;
+    state.data.endTime = end;
+    state.data.dayName = aiBookingData.dayName;
+    state.data.repeatWeekly = aiBookingData.repeatWeekly === 'أيوه' || aiBookingData.repeatWeekly === true;
+    
+    // نحفظ باستخدام finishSetup
+    await finishSetup();
+    
+    // نرجع الوضع العادي
+    aiBookingMode = false;
+    aiBookingStep = 0;
+    hideLiveSummary();
+    updateAIUI(false);
+    aiModeActive = false;
+}
+
+/* تحديث واجهة AI */
+function updateAIUI(active) {
     const aiBtn = document.getElementById('aiToggleBtn');
     const avatar = document.getElementById('botAvatar');
     const botName = document.getElementById('botName');
@@ -959,29 +1218,15 @@ window.toggleAIMode = function() {
     const inputAreaEl = document.getElementById('inputArea');
     const sendBtnEl = document.getElementById('sendBtn');
     
-    if (aiModeActive) {
+    if (active) {
         aiBtn.classList.add('active');
         avatar.classList.add('ai-mode');
         avatar.textContent = '⚡';
-        botName.textContent = 'المساعد الذكي';
-        botStatus.textContent = 'متصل بـ Groq AI';
+        botName.textContent = 'مساعد ذكي - حجز';
+        botStatus.textContent = 'بيسألك ويسجّل';
         botInfo.classList.add('ai-active');
         inputAreaEl.classList.add('ai-active');
         sendBtnEl.classList.add('ai-active');
-        chatInput.placeholder = 'اسألني أي حاجة... 🤖';
-        
-        showToast('⚡ تم تفعيل الوضع الذكي', true);
-        
-        addBotMessage(
-            '⚡ <b>أهلاً! الوضع الذكي شغال</b><br><br>' +
-            'أنا دلوقتي متصل بـ AI (Groq) وعارف كل مجموعاتك.<br><br>' +
-            'اسألني أي حاجة زي:<br>' +
-            '• "الحصة القادمة إمتى؟"<br>' +
-            '• "عندي كام طالب النهاردة؟"<br>' +
-            '• "ايه أفضل ترتيب لجدولي؟"<br>' +
-            '• "اقترحلي يوم مناسب لمجموعة جديدة"',
-            true
-        );
     } else {
         aiBtn.classList.remove('active');
         avatar.classList.remove('ai-mode');
@@ -991,744 +1236,28 @@ window.toggleAIMode = function() {
         botInfo.classList.remove('ai-active');
         inputAreaEl.classList.remove('ai-active');
         sendBtnEl.classList.remove('ai-active');
+    }
+}
+
+window.toggleAIMode = function() {
+    if (!aiModeActive) {
+        startAISBooking();
+    } else {
+        aiModeActive = false;
+        aiBookingMode = false;
+        updateAIUI(false);
+        hideLiveSummary();
         chatInput.placeholder = 'اكتب هنا...';
-        
         showToast('تم إيقاف الوضع الذكي');
         addBotMessage('تم إيقاف الوضع الذكي. رجعنا للوضع العادي 🤖', false);
     }
-    
-    if (inputAreaEl.style.display === 'none') {
-        setInputMode('text', chatInput.placeholder);
-    }
-    
-    chatInput.focus();
-};
-
-async function buildGroupsContext() {
-    const groups = await loadSavedGroups();
-    if (groups.length === 0) {
-        return 'المستر لسه مفيش عنده مجموعات محفوظة.';
-    }
-    
-    const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const todayName = dayNames[new Date().getDay()];
-    
-    let ctx = `إجمالي المجموعات: ${groups.length}\n`;
-    ctx += `النهاردة: ${todayName}\n\n`;
-    ctx += `تفاصيل المجموعات:\n`;
-    
-    groups.forEach((g, i) => {
-        const isRec = g.apptType === 'recurring';
-        const isVisible = g.isActive !== false;
-        const day = g.daysNames?.[0] || '؟';
-        const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ') || 'مفيش عنوان';
-        
-        ctx += `${i+1}. "${g.groupName}"\n`;
-        ctx += `   - المستر: ${g.teacherName || '؟'}\n`;
-        ctx += `   - المادة: ${g.subject || '؟'}\n`;
-        ctx += `   - اليوم: ${day}\n`;
-        ctx += `   - الوقت: ${formatTime(g.startTime)} - ${formatTime(g.endTime)}\n`;
-        ctx += `   - المكان: ${g.location || '؟'}\n`;
-        ctx += `   - العنوان: ${addr}\n`;
-        ctx += `   - السعة: ${g.maxCapacity || 20} طالب\n`;
-        ctx += `   - النوع: ${isRec ? 'أسبوعي' : 'مرة واحدة'}\n`;
-        ctx += `   - الحالة: ${isVisible ? 'ظاهرة' : 'مخفية'}\n`;
-        if (g.lat && g.lng) ctx += `   - إحداثيات: ${g.lat},${g.lng}\n`;
-        ctx += `\n`;
-    });
-    
-    return ctx;
-}
-
-async function askGroq(userMessage) {
-    // ✅ تحقق من المفتاح
-    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
-        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>دوس على الزر 🔑 في الهيدر فوق، والصق مفتاحك.<br><br>لو مش عندك:<br>روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a> واعمل واحد جديد.';
-    }
-    
-    if (GROQ_API_KEY.length < 40) {
-        return '⚠️ <b>المفتاح قصير أوي!</b><br><br>دوس على 🔑 فوق وصحح المفتاح.';
-    }
-    
-    const typing = document.createElement('div');
-    typing.className = 'typing ai-typing';
-    typing.innerHTML = '<span></span><span></span><span></span>';
-    chatArea.appendChild(typing);
-    scrollBottom();
-    
-    try {
-        const groupsContext = await buildGroupsContext();
-        
-        const systemPrompt = `أنت مساعد ذكي بتتكلم بالمصري وبتساعد مستر (مدرس) في تنظيم مجموعاته التعليمية.
-
-معلومات مجموعات المستر دلوقتي:
-${groupsContext}
-
-معلومات الوقت الحالي: ${new Date().toLocaleString('ar-EG')}
-
-قواعد مهمة:
-1. اتكلم بالمصري العامي بشكل ودود ومحترم
-2. لما المستر يسأل عن الحصة القادمة، اختار الحصة الأقرب للوقت الحالي
-3. لما يسأل عن مكان، قول العنوان بالتفصيل
-4. كن مختصر ومفيد في نفس الوقت
-5. استخدم الإيموجي بشكل مناسب
-6. لو السؤال مش له علاقة بالمجموعات، قول للمستر بأدب
-7. لو البيانات ناقصة، قول للمستر بأدب`;
-        
-        const messages = [{ role: 'system', content: systemPrompt }];
-        chatHistory.slice(-6).forEach(h => messages.push(h));
-        messages.push({ role: 'user', content: userMessage });
-        
-        // 🎯 نجرب كل موديل لحد ما واحد يشتغل
-        let lastError = null;
-        let successModel = null;
-        let response = null;
-        
-        const savedModel = localStorage.getItem('groq_working_model');
-        let modelsToTry = [...GROQ_MODELS];
-        if (savedModel && modelsToTry.includes(savedModel)) {
-            modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
-        }
-        
-        for (const model of modelsToTry) {
-            try {
-                console.log(`🔄 بنجرب الموديل: ${model}`);
-                
-                response = await fetch(GROQ_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${GROQ_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: messages,
-                        temperature: 0.6,
-                        max_tokens: 800,
-                        top_p: 0.9
-                    })
-                });
-                
-                if (response.ok) {
-                    successModel = model;
-                    localStorage.setItem('groq_working_model', model);
-                    console.log(`✅ الموديل ${model} شغال`);
-                    break;
-                } else if (response.status === 404) {
-                    console.warn(`❌ الموديل ${model} مش متاح، بنجرب اللي بعده`);
-                    lastError = `404: model ${model} not found`;
-                    continue;
-                } else if (response.status === 401) {
-                    lastError = '401: المفتاح غلط';
-                    break;
-                } else if (response.status === 429) {
-                    lastError = '429: الحد المجاني';
-                    break;
-                } else {
-                    lastError = `${response.status}: ${response.statusText}`;
-                    continue;
-                }
-            } catch (e) {
-                console.error(`خطأ مع الموديل ${model}:`, e);
-                lastError = e.message;
-                continue;
-            }
-        }
-        
-        typing.remove();
-        
-        if (!response || !response.ok) {
-            console.error('كل الموديلات فشلت:', lastError);
-            
-            if (lastError && lastError.includes('401')) {
-                return '❌ <b>المفتاح غلط (401)</b><br><br>دوس على 🔑 فوق وجيب مفتاح جديد من console.groq.com/keys';
-            }
-            if (lastError && lastError.includes('429')) {
-                return '⏳ <b>وصلت للحد المجاني</b><br><br>استنى شوية وجرب تاني.';
-            }
-            return `❌ <b>كل الموديلات فشلت</b><br><br>افتح Console وشوف قائمة الموديلات المتاحة لحسابك.`;
-        }
-        
-        const data = await response.json();
-        const botReply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد دلوقتي.';
-        
-        console.log(`✅ تم الرد باستخدام: ${successModel}`);
-        
-        chatHistory.push({ role: 'user', content: userMessage });
-        chatHistory.push({ role: 'assistant', content: botReply });
-        if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-        
-        return botReply;
-        
-    } catch (error) {
-        typing.remove();
-        console.error('AI Error:', error);
-        return `⚠️ <b>مشكلة في الاتصال بالـ AI</b><br><br>${error.message}`;
-    }
-}
-
-window.aiQuickAsk = async function(question) {
-    if (!aiModeActive) {
-        toggleAIMode();
-        await new Promise(r => setTimeout(r, 800));
-    }
-    
-    addTeacherMessage(question);
-    const reply = await askGroq(question);
-    _addMessage('bot', reply, true);
-    
-    setInputMode('text', 'اسألني أي حاجة... 🤖');
 };
 
 /* ============================================================ */
-/* ============ Sidebar ============ */
+/* ============ finishSetup ============ */
 /* ============================================================ */
-window.toggleGroupsSidebar = function() {
-    groupsSidebar.classList.toggle('open');
-    if (groupsSidebar.classList.contains('open')) {
-        refreshSidebarGroups();
-    }
-};
-
-async function refreshSidebarGroups() {
-    const groups = await loadSavedGroups();
-    
-    sidebarBadge.textContent = groups.length;
-    sidebarBadge.style.display = groups.length > 0 ? 'inline-block' : 'none';
-    sidebarCount.textContent = groups.length;
-    
-    if (groups.length === 0) {
-        sidebarGroupsList.innerHTML = `
-            <div class="sb-empty">
-                <span class="icon">📭</span>
-                <p>لسه مفيش مجموعات</p>
-            </div>
-        `;
-        return;
-    }
-    
-    sidebarGroupsList.innerHTML = '';
-    groups.forEach(g => {
-        const isRec = g.apptType === 'recurring';
-        const isVisible = g.isActive !== false;
-        const dayName = g.daysNames?.[0] || '';
-        
-        const card = document.createElement('div');
-        card.className = `sb-group-card ${isRec ? 'recurring-group' : 'normal-group'} ${!isVisible ? 'hidden-group' : ''}`;
-        card.innerHTML = `
-            <div class="sb-card-header">
-                <div class="sb-card-name">${g.groupName || 'بدون اسم'}</div>
-                <div class="sb-card-badges">
-                    <span class="sb-badge ${isRec ? 'rec' : 'norm'}">${isRec ? '🔁' : '📅'}</span>
-                    <span class="sb-badge ${isVisible ? 'vis' : 'hid'}">${isVisible ? '👁️' : '🙈'}</span>
-                </div>
-            </div>
-            <div class="sb-card-info">
-                <div class="row"><span>👤</span><b>${g.teacherName || '-'}</b></div>
-                <div class="row"><span>👥</span><span>${g.maxCapacity || 20} طالب</span></div>
-                <div class="row"><span>🕐</span><span>${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span></div>
-                <div class="row"><span>📅</span><span>${dayName}</span></div>
-            </div>
-            <div class="sb-card-actions">
-                <button class="sb-action-btn edit" data-action="edit" data-id="${g.id}">✏️ عدّل</button>
-                <button class="sb-action-btn toggle" data-action="toggle" data-id="${g.id}">${isVisible ? '🙈 اخفي' : '👁️ اظهر'}</button>
-                <button class="sb-action-btn delete" data-action="delete" data-id="${g.id}">🗑️ امسح</button>
-            </div>
-        `;
-        sidebarGroupsList.appendChild(card);
-    });
-    
-    sidebarGroupsList.querySelectorAll('[data-action]').forEach(btn => {
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            handleGroupAction(btn.dataset.action, btn.dataset.id);
-        };
-    });
-}
-
-window.startNewFromSidebar = function() {
-    toggleGroupsSidebar();
-    resetState();
-    chatArea.innerHTML = '';
-    chatHistory = [];
-    hideQuickActions();
-    startFresh();
-};
-
-async function loadSavedGroups() {
-    try {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) return [];
-        const all = await getAllGroups();
-        cachedGroups = all.filter(g => g.phone === phone);
-        return cachedGroups;
-    } catch(e) { return []; }
-}
-
-async function handleGroupAction(action, id) {
-    const group = cachedGroups.find(g => g.id === id);
-    if (!group) return;
-    
-    if (action === 'delete') {
-        if (!confirm(`متأكد إنك عايز تمسح "${group.groupName}"؟`)) return;
-        try {
-            await deleteGroup(id);
-            showToast('✅ اتمسحت خلاص', true);
-            await refreshSidebarGroups();
-            await updateHeaderBadge();
-        } catch(e) { showToast('❌ المسح مش نافع'); }
-    } else if (action === 'toggle') {
-        try {
-            const newVis = !group.isActive;
-            await updateGroup(id, { isActive: newVis });
-            showToast(newVis ? '👁️ بقت ظاهرة' : '🙈 بقت مخفية', true);
-            await refreshSidebarGroups();
-        } catch(e) { showToast('❌ مش نافع'); }
-    } else if (action === 'edit') {
-        toggleGroupsSidebar();
-        startEditFlow(group);
-    }
-}
-
-async function updateHeaderBadge() {
-    const groups = await loadSavedGroups();
-    sidebarBadge.textContent = groups.length;
-    sidebarBadge.style.display = groups.length > 0 ? 'inline-block' : 'none';
-    sidebarCount.textContent = groups.length;
-}
-
-/* ============ Panel Steps ============ */
-const BUILD_STEPS = [
-    { key: 'groupName', icon: '📝', label: 'اسم المجموعة' },
-    { key: 'teacherName', icon: '👤', label: 'اسم المستر' },
-    { key: 'location', icon: '📍', label: 'مكان الدرس' },
-    { key: 'centerName', icon: '🏫', label: 'اسم السنتر', conditional: true },
-    { key: 'studentsCount', icon: '👥', label: 'عدد الطلبة' },
-    { key: 'gender', icon: '👫', label: 'الفئة المسموحة' },
-    { key: 'map', icon: '🗺️', label: 'الموقع على الخريطة' },
-    { key: 'time', icon: '⏰', label: 'موعد الحصة' },
-    { key: 'date', icon: '📅', label: 'يوم الحصة' },
-    { key: 'repeat', icon: '🔁', label: 'التكرار' }
-];
-
-function renderPanel() {
-    optionsPanelBody.innerHTML = '';
-    const d = state.data;
-    
-    BUILD_STEPS.forEach(step => {
-        if (step.conditional && d.location !== 'السنتر') return;
-        
-        let value = '';
-        let status = 'pending';
-        
-        if (step.key === 'groupName') {
-            value = d.groupName || 'لسه متحددش';
-            status = d.groupName ? 'done' : (state.step === 1 ? 'active' : 'pending');
-        } else if (step.key === 'teacherName') {
-            value = d.teacherName || 'لسه متحددش';
-            status = d.teacherName ? 'done' : (state.step === 2 ? 'active' : 'pending');
-        } else if (step.key === 'location') {
-            value = d.location;
-            status = (state.step === 3 || state.step === 3.5 || state.step === 4) ? 'active' : (d.teacherName ? 'done' : 'pending');
-        } else if (step.key === 'centerName') {
-            value = d.centerName || 'لسه متحددش';
-            status = d.centerName ? 'done' : (state.step === 3.5 ? 'active' : 'pending');
-        } else if (step.key === 'studentsCount') {
-            value = d.studentsCount ? `${d.studentsCount} طالب` : 'لسه متحددش';
-            status = d.studentsCount ? 'done' : (state.step === 4 ? 'active' : 'pending');
-        } else if (step.key === 'gender') {
-            value = d.gender || 'لسه متحددش';
-            status = (state.step === 5) ? 'active' : (d.studentsCount ? 'done' : 'pending');
-        } else if (step.key === 'map') {
-            value = d.street || (d.lat && d.lng ? `${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}` : 'لسه متحددش');
-            status = d.gpsCoords ? 'done' : (state.step === 6 ? 'active' : 'pending');
-        } else if (step.key === 'time') {
-            value = d.startTime && d.endTime ? `${formatTime(d.startTime)} - ${formatTime(d.endTime)}` : 'لسه متحددش';
-            status = (d.startTime && d.endTime) ? 'done' : (state.step === 7 || state.step === 8 ? 'active' : 'pending');
-        } else if (step.key === 'date') {
-            value = d.date ? `${d.dayName} ${d.date}` : 'لسه متحددش';
-            status = d.date ? 'done' : (state.step === 9 ? 'active' : 'pending');
-        } else if (step.key === 'repeat') {
-            value = d.date ? (d.repeatWeekly ? '🔁 أسبوعي' : '📅 مرة واحدة') : 'لسه متحددش';
-            status = d.date && state.step >= 10 ? (state.step === 10 ? 'active' : 'done') : 'pending';
-        }
-        
-        const card = document.createElement('div');
-        card.className = `build-step ${status}`;
-        card.innerHTML = `
-            <div class="bs-header">
-                <span class="icon">${step.icon}</span>
-                <span>${step.label}</span>
-            </div>
-            <div class="bs-value">${value}</div>
-        `;
-        optionsPanelBody.appendChild(card);
-    });
-    
-    if (state.step === 11 || state.step === 12) {
-        const summary = document.createElement('div');
-        summary.className = 'panel-summary';
-        summary.innerHTML = `
-            <h4>✅ ملخص المجموعة</h4>
-            <div class="prow"><span class="k">المجموعة:</span><span class="v">${d.groupName}</span></div>
-            <div class="prow"><span class="k">المستر:</span><span class="v">${d.teacherName}</span></div>
-            ${d.centerName ? `<div class="prow"><span class="k">السنتر:</span><span class="v">${d.centerName}</span></div>` : ''}
-            <div class="prow"><span class="k">المكان:</span><span class="v">${d.location}</span></div>
-            <div class="prow"><span class="k">العدد:</span><span class="v">${d.studentsCount} طالب</span></div>
-            <div class="prow"><span class="k">الفئة:</span><span class="v">${d.gender}</span></div>
-            <div class="prow"><span class="k">الموعد:</span><span class="v">${formatTime(d.startTime)} - ${formatTime(d.endTime)}</span></div>
-            <div class="prow"><span class="k">اليوم:</span><span class="v">${d.dayName}</span></div>
-            <div class="prow"><span class="k">التكرار:</span><span class="v">${d.repeatWeekly ? '🔁 أسبوعي' : '📅 مرة واحدة'}</span></div>
-        `;
-        optionsPanelBody.appendChild(summary);
-    }
-}
-
-function showOptions(options, onSelect) {
-    const container = document.createElement('div');
-    container.className = 'options-container';
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
-        btn.onclick = () => {
-            container.remove();
-            onSelect(opt);
-        };
-        container.appendChild(btn);
-    });
-    chatArea.appendChild(container);
-    scrollBottom();
-}
-
-function showTimeGridChat(times, onSelect, filterAfter = null) {
-    const grid = document.createElement('div');
-    grid.className = 'chat-time-grid';
-    times.forEach(t => {
-        const chip = document.createElement('div');
-        chip.className = 'chat-time-chip';
-        if (filterAfter && t.value <= filterAfter) chip.classList.add('disabled');
-        chip.textContent = t.label;
-        chip.onclick = () => { grid.remove(); onSelect(t); };
-        grid.appendChild(chip);
-    });
-    chatArea.appendChild(grid);
-    scrollBottom();
-}
-
-function showCalendarChat(onSelect) {
-    const today = new Date();
-    let calDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    const monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-    
-    const cal = document.createElement('div');
-    cal.className = 'chat-cal';
-    cal.innerHTML = `
-        <div class="ccal-header">
-            <button class="ccal-nav" id="cprevM">❮</button>
-            <span class="ccal-title" id="ccalTitle"></span>
-            <button class="ccal-nav" id="cnextM">❯</button>
-        </div>
-        <div class="chat-cal-weekdays">
-            <div>س</div><div>ح</div><div>ن</div><div>ث</div><div>ر</div><div>خ</div><div>ج</div>
-        </div>
-        <div class="chat-cal-days" id="ccalDays"></div>
-    `;
-    chatArea.appendChild(cal);
-    scrollBottom();
-    
-    function renderCal() {
-        const y = calDate.getFullYear();
-        const m = calDate.getMonth();
-        document.getElementById('ccalTitle').textContent = `${monthNames[m]} ${y}`;
-        const firstDay = new Date(y, m, 1).getDay();
-        const displayFirst = (firstDay + 1) % 7;
-        const daysInMonth = new Date(y, m+1, 0).getDate();
-        const todayReset = new Date(); todayReset.setHours(0,0,0,0);
-        
-        let html = '';
-        for (let i = 0; i < displayFirst; i++) html += '<div class="chat-cal-day empty"></div>';
-        for (let d = 1; d <= daysInMonth; d++) {
-            const thisDate = new Date(y, m, d);
-            thisDate.setHours(0,0,0,0);
-            const isPast = thisDate < todayReset;
-            const isToday = thisDate.getTime() === todayReset.getTime();
-            let cls = 'chat-cal-day';
-            if (isPast) cls += ' past';
-            if (isToday) cls += ' today';
-            html += `<div class="${cls}" data-y="${y}" data-m="${m}" data-d="${d}">${d}</div>`;
-        }
-        document.getElementById('ccalDays').innerHTML = html;
-        
-        document.querySelectorAll('.chat-cal-day:not(.empty):not(.past)').forEach(el => {
-            el.onclick = () => {
-                const y = +el.dataset.y, m = +el.dataset.m, d = +el.dataset.d;
-                const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const dayOfWeek = new Date(y, m, d).getDay();
-                const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-                cal.remove();
-                onSelect({
-                    date: dateStr, dayOfWeek: dayOfWeek,
-                    dayName: dayNames[dayOfWeek], dayNum: d,
-                    monthName: monthNames[m], year: y
-                });
-            };
-        });
-    }
-    document.getElementById('cprevM').onclick = () => { calDate.setMonth(calDate.getMonth() - 1); renderCal(); };
-    document.getElementById('cnextM').onclick = () => { calDate.setMonth(calDate.getMonth() + 1); renderCal(); };
-    renderCal();
-}
-
-function showMapWidgetChat(onConfirm) {
-    const widget = document.createElement('div');
-    widget.className = 'chat-map-widget';
-    widget.innerHTML = `
-        <div id="mini-map"></div>
-        <button class="chat-gps-btn" id="chatGpsBtn">📍 نزل موقعي الحالي</button>
-        <div class="chat-addr-display" id="chatAddrDisplay"></div>
-        <input type="text" class="chat-extra-input" id="chatAddrExtra" placeholder="🏠 علامة مميزة (اختياري)">
-        <button class="chat-gps-btn" id="chatConfirmBtn" style="background:linear-gradient(135deg,#10b981,#047857); display:none;">✅ تمام، كمّل</button>
-    `;
-    chatArea.appendChild(widget);
-    scrollBottom();
-    
-    setTimeout(() => {
-        const defaultLat = state.data.lat || 26.8206;
-        const defaultLng = state.data.lng || 30.8025;
-        const zoom = state.data.lat ? 15 : 6;
-        map = L.map('mini-map').setView([defaultLat, defaultLng], zoom);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(map);
-        marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
-        
-        if (state.data.street) {
-            const disp = document.getElementById('chatAddrDisplay');
-            disp.classList.add('show');
-            disp.textContent = `📍 ${state.data.street}`;
-            document.getElementById('chatConfirmBtn').style.display = 'flex';
-            if (state.data.detailedAddress) document.getElementById('chatAddrExtra').value = state.data.detailedAddress;
-        }
-        
-        map.on('click', e => { marker.setLatLng(e.latlng); updateChatLocation(e.latlng.lat, e.latlng.lng); });
-        marker.on('dragend', () => { const p = marker.getLatLng(); updateChatLocation(p.lat, p.lng); });
-        
-        document.getElementById('chatGpsBtn').onclick = async () => {
-            const btn = document.getElementById('chatGpsBtn');
-            btn.disabled = true;
-            btn.innerHTML = '⏳ ثانية بنزل موقعك...';
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        marker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
-                        map.flyTo([pos.coords.latitude, pos.coords.longitude], 17, { animate: true });
-                        updateChatLocation(pos.coords.latitude, pos.coords.longitude);
-                        btn.innerHTML = '✅ نزلنا موقعك';
-                        btn.disabled = false;
-                    },
-                    err => {
-                        btn.innerHTML = '❌ مش عارف أحدد - جرب تاني';
-                        btn.disabled = false;
-                        showToast('اتأكد إن الـ GPS شغال');
-                    },
-                    { enableHighAccuracy: true, timeout: 15000 }
-                );
-            }
-        };
-        
-        document.getElementById('chatConfirmBtn').onclick = () => {
-            const extra = document.getElementById('chatAddrExtra').value.trim();
-            state.data.detailedAddress = extra;
-            const summary = extra ? `${state.data.street} - ${extra}` : state.data.street;
-            addTeacherMessage(`📍 ${summary}`);
-            widget.style.opacity = '0.6';
-            widget.style.pointerEvents = 'none';
-            onConfirm();
-        };
-    }, 100);
-}
-
-async function updateChatLocation(lat, lng) {
-    state.data.gpsCoords = `${lat.toFixed(6)},${lng.toFixed(6)}`;
-    state.data.lat = lat;
-    state.data.lng = lng;
-    
-    const display = document.getElementById('chatAddrDisplay');
-    const confirmBtn = document.getElementById('chatConfirmBtn');
-    if (!display) return;
-    
-    display.classList.add('show');
-    display.textContent = '⏳ ثانية بشوف اسم الشارع...';
-    
-    try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=ar`);
-        const data = await res.json();
-        if (data && data.address) {
-            const road = data.address.road || data.address.pedestrian || '';
-            const nb = data.address.neighbourhood || data.address.suburb || '';
-            const city = data.address.city || data.address.town || '';
-            const parts = [road, nb, city].filter(Boolean);
-            const street = parts.length ? parts.join('، ') : data.display_name.split(',').slice(0,3).join('، ');
-            state.data.street = street;
-            display.textContent = `📍 ${street}`;
-        } else {
-            display.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-        }
-    } catch(e) {
-        display.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    }
-    
-    confirmBtn.style.display = 'flex';
-    renderPanel();
-}
-
-/* ============ الخطوات ============ */
-async function stepGroupName() {
-    setProgress(10); state.step = 1; renderPanel();
-    hideQuickActions();
-    if (!state.isEditing) {
-        await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة على السريع.<br><br><b>اسم المجموعة إيه؟</b>');
-    } else {
-        await addBotMessage('ماشي، <b>الاسم الجديد للمجموعة إيه؟</b>');
-    }
-    setInputMode('text', 'اكتب اسم المجموعة...');
-}
-
-async function stepTeacherName() {
-    setProgress(20); state.step = 2; renderPanel();
-    await addBotMessage(`تمام! اسم المجموعة <b>"${state.data.groupName}"</b> ✅<br><br><b>اسمك إيه يا مستر؟</b>`);
-    setInputMode('text', 'اكتب اسمك...');
-}
-
-async function stepLocation() {
-    setProgress(30); state.step = 3; renderPanel();
-    await addBotMessage(`أهلاً <b>${state.data.teacherName}</b> 👨‍🏫<br><br>الدرس هيبقى فين؟`);
-    setInputMode('hidden');
-    showOptions([
-        { label: 'السنتر', icon: '🏫', value: 'السنتر' },
-        { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
-        { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
-    ], async (opt) => {
-        state.data.location = opt.value;
-        state.data.centerName = '';
-        addTeacherMessage(`${opt.icon} ${opt.label}`);
-        if (opt.value === 'السنتر') await stepCenterName();
-        else await stepStudentsCount();
-    });
-}
-
-async function stepCenterName() {
-    setProgress(35); state.step = 3.5; renderPanel();
-    await addBotMessage('ماشي، <b>اسم السنتر إيه؟</b>');
-    setInputMode('text', 'اسم السنتر...');
-}
-
-async function stepStudentsCount() {
-    setProgress(40); state.step = 4; renderPanel();
-    await addBotMessage('<b>كام طالب عايز في المجموعة؟</b>');
-    setInputMode('hidden');
-    showOptions([
-        { label: '10 طلاب', value: 10 },
-        { label: '15 طالب', value: 15 },
-        { label: '20 طالب', value: 20 },
-        { label: '30 طالب', value: 30 }
-    ], async (opt) => {
-        state.data.studentsCount = opt.value;
-        addTeacherMessage(`${opt.value} طالب`);
-        await stepGender();
-    });
-}
-
-async function stepGender() {
-    setProgress(50); state.step = 5; renderPanel();
-    await addBotMessage('<b>مين اللي يقدر يحجز؟</b>');
-    setInputMode('hidden');
-    showOptions([
-        { label: 'مختلط', icon: '👫', value: 'مختلط' },
-        { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
-        { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
-    ], async (opt) => {
-        state.data.gender = opt.value;
-        addTeacherMessage(`${opt.icon} ${opt.label}`);
-        await stepMapLocation();
-    });
-}
-
-async function stepMapLocation() {
-    setProgress(60); state.step = 6; renderPanel();
-    await addBotMessage('تعالى نحدد <b>مكان الدرس على الخريطة</b> 📍<br>دوس على الخريطة أو زرار GPS.');
-    setInputMode('hidden');
-    showMapWidgetChat(async () => { await stepTime(); });
-}
-
-async function stepTime() {
-    setProgress(70); state.step = 7; renderPanel();
-    await addBotMessage('⏰ <b>الحصة بتبدأ من الساعة كام؟</b>');
-    setInputMode('hidden');
-    
-    const times = [];
-    for (let h = 6; h <= 23; h++) {
-        for (let m = 0; m < 60; m += 30) {
-            const hour12 = h > 12 ? h - 12 : h;
-            const period = h < 12 ? 'ص' : 'م';
-            times.push({ value: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`, label: `${hour12}:${String(m).padStart(2,'0')} ${period}` });
-        }
-    }
-    
-    showTimeGridChat(times, async (t) => {
-        state.data.startTime = t.value;
-        addTeacherMessage(`من الساعة ${t.label}`);
-        await stepEndTime();
-    });
-}
-
-async function stepEndTime() {
-    setProgress(80); state.step = 8; renderPanel();
-    await addBotMessage('و<b>بتخلص الساعة كام؟</b>');
-    
-    const times = [];
-    for (let h = 6; h <= 23; h++) {
-        for (let m = 0; m < 60; m += 30) {
-            const hour12 = h > 12 ? h - 12 : h;
-            const period = h < 12 ? 'ص' : 'م';
-            times.push({ value: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`, label: `${hour12}:${String(m).padStart(2,'0')} ${period}` });
-        }
-    }
-    
-    showTimeGridChat(times, async (t) => {
-        state.data.endTime = t.value;
-        addTeacherMessage(`لحد الساعة ${t.label}`);
-        await stepDate();
-    }, state.data.startTime);
-}
-
-async function stepDate() {
-    setProgress(90); state.step = 9; renderPanel();
-    await addBotMessage('📅 <b>آخر حاجة: اختار يوم الحصة</b>');
-    showCalendarChat(async (info) => {
-        state.data.date = info.date;
-        state.data.dayOfWeek = info.dayOfWeek;
-        state.data.dayName = info.dayName;
-        addTeacherMessage(`📅 ${info.dayName} ${info.dayNum} ${info.monthName} ${info.year}`);
-        await stepRepeat();
-    });
-}
-
-async function stepRepeat() {
-    setProgress(95); state.step = 10; renderPanel();
-    await addBotMessage('<b>عايز تكرار أسبوعي؟</b> يعني كل أسبوع نفس اليوم.');
-    setInputMode('hidden');
-    showOptions([
-        { label: 'أيوه، كل أسبوع', icon: '🔁', value: true },
-        { label: 'لا، مرة واحدة بس', icon: '📅', value: false }
-    ], async (opt) => {
-        state.data.repeatWeekly = opt.value;
-        addTeacherMessage(opt.label);
-        await finishSetup();
-    });
-}
-
 async function finishSetup() {
-    setProgress(100); state.step = 11; renderPanel();
+    setProgress(100);
     await addBotMessage('ثانية بحفظ المجموعة... ⏳');
     
     try {
@@ -1755,6 +1284,15 @@ async function finishSetup() {
         if (state.data.gender === 'أولاد فقط') genderMapped = 'boys';
         else if (state.data.gender === 'بنات فقط') genderMapped = 'girls';
         
+        // نحسب التاريخ من اليوم
+        const dayMap = { 'الأحد': 0, 'الاثنين': 1, 'الثلاثاء': 2, 'الأربعاء': 3, 'الخميس': 4, 'الجمعة': 5, 'السبت': 6 };
+        const dayOfWeek = dayMap[state.data.dayName];
+        const today = new Date();
+        const diff = (dayOfWeek - today.getDay() + 7) % 7;
+        const targetDate = new Date(today);
+        targetDate.setDate(today.getDate() + diff);
+        const dateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth()+1).padStart(2,'0')}-${String(targetDate.getDate()).padStart(2,'0')}`;
+        
         const payload = {
             teacherName: state.data.teacherName,
             centerName: state.data.centerName,
@@ -1762,20 +1300,20 @@ async function finishSetup() {
             subject: subjectClean,
             grade: grade,
             groupName: state.data.groupName,
-            maxCapacity: parseInt(state.data.studentsCount),
+            maxCapacity: parseInt(state.data.studentsCount) || 20,
             gender: genderMapped,
             type: typeMapped,
             location: state.data.location,
-            address: state.data.street,
-            fullAddress: state.data.detailedAddress ? `${state.data.street} - ${state.data.detailedAddress}` : state.data.street,
-            detailedAddress: state.data.detailedAddress,
+            address: state.data.street || '',
+            fullAddress: state.data.detailedAddress ? `${state.data.street} - ${state.data.detailedAddress}` : (state.data.street || ''),
+            detailedAddress: state.data.detailedAddress || '',
             lat: state.data.lat,
             lng: state.data.lng,
             startTime: state.data.startTime,
             endTime: state.data.endTime,
             daysNames: [state.data.dayName],
             apptType: state.data.repeatWeekly ? 'recurring' : 'normal',
-            date: state.data.date,
+            date: dateStr,
             phone: localStorage.getItem('current_teacher_phone') || '01000000000'
         };
         
@@ -1789,278 +1327,30 @@ async function finishSetup() {
             payload.bookedGirls = 0;
             await publishGroup(payload);
             showToast('🎉 اتحفظت المجموعة', true);
-            addBotMessage(`🎉 خلصنا! مجموعة <b>"${state.data.groupName}"</b> اتحفظت.`);
+            addBotMessage(`🎉 <b>خلصنا يا مستر!</b><br><br>مجموعة <b>"${state.data.groupName}"</b> اتحفظت ✅<br><br>تقدر تشوفها في 📚 مجموعاتي فوق.`);
         }
         
         chatHistory = [];
-        
-        await updateHeaderBadge();
-        await refreshSidebarGroups();
+        await updateGroupsBadge();
         setInputMode('hidden');
         showQuickActions();
         
-        showOptions([
-            { label: 'زود مجموعة كمان', icon: '➕', value: 'new' },
-            { label: 'شوف مجموعاتي', icon: '📚', value: 'list' },
-            { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
-        ], async (opt) => {
-            if (opt.value === 'new') {
-                resetState();
-                chatArea.innerHTML = '';
-                hideQuickActions();
-                await stepGroupName();
-            } else if (opt.value === 'list') {
-                if (!groupsSidebar.classList.contains('open')) toggleGroupsSidebar();
-                else await refreshSidebarGroups();
-            } else {
-                window.location.href = 'mester3.html';
-            }
-        });
-        
-    } catch(err) {
-        console.error(err);
-        showToast('في مشكلة، جرب تاني');
-    }
-}
-
-/* ============ التعديل الذكي ============ */
-async function startEditFlow(group) {
-    resetState();
-    state.isEditing = true;
-    state.data.editingId = group.id;
-    state.originalGroup = { ...group };
-    
-    state.data.groupName = group.groupName || '';
-    state.data.teacherName = group.teacherName || '';
-    state.data.centerName = group.centerName || '';
-    state.data.studentsCount = group.maxCapacity || 20;
-    state.data.location = group.location || 'السنتر';
-    state.data.startTime = group.startTime || '';
-    state.data.endTime = group.endTime || '';
-    state.data.date = group.date || '';
-    state.data.dayName = group.daysNames?.[0] || '';
-    state.data.dayOfWeek = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].indexOf(state.data.dayName);
-    state.data.repeatWeekly = group.apptType === 'recurring';
-    state.data.street = group.address || '';
-    state.data.detailedAddress = group.detailedAddress || '';
-    state.data.lat = group.lat || null;
-    state.data.lng = group.lng || null;
-    state.data.gpsCoords = (group.lat && group.lng) ? `${group.lat},${group.lng}` : '';
-    
-    if (group.gender === 'boys') state.data.gender = 'أولاد فقط';
-    else if (group.gender === 'girls') state.data.gender = 'بنات فقط';
-    else state.data.gender = 'مختلط';
-    
-    chatArea.innerHTML = '';
-    hideQuickActions();
-    await addBotMessage(`✏️ <b>هنعدل مجموعة "${group.groupName}"</b><br><br>عايز تعدل إيه؟`);
-    
-    setProgress(50); state.step = 12; renderPanel();
-    showEditMenu();
-}
-
-function showEditMenu() {
-    setInputMode('hidden');
-    showOptions([
-        { label: 'اسم المجموعة', icon: '📝', value: 'groupName' },
-        { label: 'اسم المستر', icon: '👤', value: 'teacherName' },
-        { label: 'المكان', icon: '📍', value: 'location' },
-        { label: 'عدد الطلبة', icon: '👥', value: 'studentsCount' },
-        { label: 'الفئة', icon: '👫', value: 'gender' },
-        { label: 'الموقع على الخريطة', icon: '🗺️', value: 'map' },
-        { label: 'الوقت', icon: '⏰', value: 'time' },
-        { label: 'اليوم', icon: '📅', value: 'date' },
-        { label: 'التكرار', icon: '🔁', value: 'repeat' },
-        { label: '✅ خلاص، احفظ التعديلات', icon: '💾', value: 'save' }
-    ], async (opt) => {
-        await handleEditChoice(opt.value);
-    });
-}
-
-async function handleEditChoice(field) {
-    if (field === 'save') { await saveEditChanges(); return; }
-    
-    if (field === 'groupName') {
-        state.step = 1; renderPanel();
-        await addBotMessage('تمام، <b>الاسم الجديد إيه؟</b>');
-        setTimeout(() => { setInputMode('text', 'اكتب الاسم الجديد...'); }, 200);
-    } else if (field === 'teacherName') {
-        state.step = 2; renderPanel();
-        await addBotMessage('ماشي، <b>الاسم الجديد للمستر إيه؟</b>');
-        setTimeout(() => { setInputMode('text', 'اكتب الاسم الجديد...'); }, 200);
-    } else if (field === 'location') {
-        state.step = 3; renderPanel();
-        await addBotMessage('اختار <b>المكان الجديد</b>:');
-        setInputMode('hidden');
-        showOptions([
-            { label: 'السنتر', icon: '🏫', value: 'السنتر' },
-            { label: 'بيت المستر', icon: '🏠', value: 'بيت المستر' },
-            { label: 'منزل الطالب', icon: '🚗', value: 'منزل الطالب' }
-        ], async (opt) => {
-            state.data.location = opt.value;
-            state.data.centerName = '';
-            addTeacherMessage(`${opt.icon} ${opt.label}`);
-            if (opt.value === 'السنتر') {
-                state.step = 3.5; renderPanel();
-                await addBotMessage('و<b>اسم السنتر إيه؟</b>');
-                setTimeout(() => { setInputMode('text', 'اسم السنتر...'); }, 200);
-            } else {
-                await returnToEditMenu();
-            }
-        });
-    } else if (field === 'studentsCount') {
-        state.step = 4; renderPanel();
-        await addBotMessage('ماشي، <b>العدد الجديد كام؟</b>');
-        setInputMode('hidden');
-        showOptions([
-            { label: '10 طلاب', value: 10 },
-            { label: '15 طالب', value: 15 },
-            { label: '20 طالب', value: 20 },
-            { label: '30 طالب', value: 30 }
-        ], async (opt) => {
-            state.data.studentsCount = opt.value;
-            addTeacherMessage(`${opt.value} طالب`);
-            await returnToEditMenu();
-        });
-    } else if (field === 'gender') {
-        state.step = 5; renderPanel();
-        await addBotMessage('اختار <b>الفئة الجديدة</b>:');
-        setInputMode('hidden');
-        showOptions([
-            { label: 'مختلط', icon: '👫', value: 'مختلط' },
-            { label: 'أولاد فقط', icon: '👨‍🎓', value: 'أولاد فقط' },
-            { label: 'بنات فقط', icon: '👩‍🎓', value: 'بنات فقط' }
-        ], async (opt) => {
-            state.data.gender = opt.value;
-            addTeacherMessage(`${opt.icon} ${opt.label}`);
-            await returnToEditMenu();
-        });
-    } else if (field === 'map') {
-        state.step = 6; renderPanel();
-        await addBotMessage('يلا <b>حدد الموقع الجديد على الخريطة</b> 📍');
-        setInputMode('hidden');
-        showMapWidgetChat(async () => { await returnToEditMenu(); });
-    } else if (field === 'time') {
-        state.step = 7; renderPanel();
-        await addBotMessage('ماشي، <b>وقت البداية الجديد إيه؟</b>');
-        setInputMode('hidden');
-        
-        const times = [];
-        for (let h = 6; h <= 23; h++) {
-            for (let m = 0; m < 60; m += 30) {
-                const hour12 = h > 12 ? h - 12 : h;
-                const period = h < 12 ? 'ص' : 'م';
-                times.push({ value: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`, label: `${hour12}:${String(m).padStart(2,'0')} ${period}` });
-            }
-        }
-        
-        showTimeGridChat(times, async (t) => {
-            state.data.startTime = t.value;
-            addTeacherMessage(`من الساعة ${t.label}`);
-            state.step = 8; renderPanel();
-            await addBotMessage('و<b>وقت النهاية الجديد؟</b>');
-            showTimeGridChat(times, async (t2) => {
-                state.data.endTime = t2.value;
-                addTeacherMessage(`لحد الساعة ${t2.label}`);
-                await returnToEditMenu();
-            }, state.data.startTime);
-        });
-    } else if (field === 'date') {
-        state.step = 9; renderPanel();
-        await addBotMessage('ماشي، <b>اختار اليوم الجديد</b> 📅');
-        setInputMode('hidden');
-        showCalendarChat(async (info) => {
-            state.data.date = info.date;
-            state.data.dayOfWeek = info.dayOfWeek;
-            state.data.dayName = info.dayName;
-            addTeacherMessage(`📅 ${info.dayName} ${info.dayNum} ${info.monthName} ${info.year}`);
-            await returnToEditMenu();
-        });
-    } else if (field === 'repeat') {
-        state.step = 10; renderPanel();
-        await addBotMessage('عايز <b>التكرار الأسبوعي</b>؟');
-        setInputMode('hidden');
-        showOptions([
-            { label: 'أيوه، كل أسبوع', icon: '🔁', value: true },
-            { label: 'لا، مرة واحدة بس', icon: '📅', value: false }
-        ], async (opt) => {
-            state.data.repeatWeekly = opt.value;
-            addTeacherMessage(opt.label);
-            await returnToEditMenu();
-        });
-    }
-}
-
-async function returnToEditMenu() {
-    setProgress(50); state.step = 12; renderPanel();
-    setInputMode('hidden');
-    await addBotMessage('✅ اتعدل! عايز تعدل حاجة تانية؟');
-    showEditMenu();
-}
-
-async function saveEditChanges() {
-    setProgress(100);
-    await addBotMessage('ثانية بحفظ التعديلات... ⏳');
-    
-    try {
-        const original = state.originalGroup || {};
-        let typeMapped = original.type || 'center';
-        if (state.data.location === 'بيت المستر') typeMapped = 'teacher_home';
-        else if (state.data.location === 'منزل الطالب') typeMapped = 'student_home';
-        else if (state.data.location === 'السنتر') typeMapped = 'center';
-        
-        let genderMapped = original.gender || 'all';
-        if (state.data.gender === 'أولاد فقط') genderMapped = 'boys';
-        else if (state.data.gender === 'بنات فقط') genderMapped = 'girls';
-        else if (state.data.gender === 'مختلط') genderMapped = 'all';
-        
-        const payload = {
-            teacherName: state.data.teacherName,
-            centerName: state.data.centerName,
-            groupName: state.data.groupName,
-            maxCapacity: parseInt(state.data.studentsCount),
-            gender: genderMapped,
-            type: typeMapped,
-            location: state.data.location,
-            address: state.data.street,
-            fullAddress: state.data.detailedAddress ? `${state.data.street} - ${state.data.detailedAddress}` : state.data.street,
-            detailedAddress: state.data.detailedAddress,
-            lat: state.data.lat,
-            lng: state.data.lng,
-            startTime: state.data.startTime,
-            endTime: state.data.endTime,
-            daysNames: [state.data.dayName],
-            apptType: state.data.repeatWeekly ? 'recurring' : 'normal',
-            date: state.data.date
-        };
-        
-        await updateGroup(state.data.editingId, payload);
-        showToast('✅ اتحدثت المجموعة', true);
-        await addBotMessage(`✏️ اتعدلت مجموعة <b>"${state.data.groupName}"</b> خلاص! ✅`);
-        
-        chatHistory = [];
-        
-        await updateHeaderBadge();
-        await refreshSidebarGroups();
-        setInputMode('hidden');
-        showQuickActions();
-        
-        showOptions([
-            { label: 'زود مجموعة كمان', icon: '➕', value: 'new' },
-            { label: 'شوف مجموعاتي', icon: '📚', value: 'list' },
-            { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
-        ], async (opt) => {
-            if (opt.value === 'new') {
-                resetState(); chatArea.innerHTML = '';
-                hideQuickActions();
-                await stepGroupName();
-            } else if (opt.value === 'list') {
-                if (!groupsSidebar.classList.contains('open')) toggleGroupsSidebar();
-                else await refreshSidebarGroups();
-            } else {
-                window.location.href = 'mester3.html';
-            }
-        });
+        setTimeout(() => {
+            showOptions([
+                { label: 'زود مجموعة كمان', icon: '➕', value: 'new' },
+                { label: 'الصفحة الجاية', icon: '➡️', value: 'next' }
+            ], async (opt) => {
+                if (opt.value === 'new') {
+                    resetState();
+                    chatArea.innerHTML = '';
+                    hideQuickActions();
+                    hideLiveSummary();
+                    await startAISBooking();
+                } else {
+                    window.location.href = 'mester3.html';
+                }
+            });
+        }, 500);
         
     } catch(err) {
         console.error(err);
@@ -2068,7 +1358,160 @@ async function saveEditChanges() {
     }
 }
 
-/* ============ الإدخال ============ */
+/* ============================================================ */
+/* ============ Groups Modal ============ */
+/* ============================================================ */
+
+window.openGroupsModal = async function() {
+    const modal = document.getElementById('groupsModal');
+    modal.classList.add('open');
+    await refreshGroupsModal();
+};
+
+window.closeGroupsModal = function(e) {
+    if (e && e.target.id !== 'groupsModal') return;
+    document.getElementById('groupsModal').classList.remove('open');
+};
+
+window.startNewFromModal = function() {
+    closeGroupsModal();
+    resetState();
+    chatArea.innerHTML = '';
+    hideQuickActions();
+    hideLiveSummary();
+    startAISBooking();
+};
+
+async function refreshGroupsModal() {
+    const groups = await loadSavedGroups();
+    
+    document.getElementById('groupsModalCount').textContent = groups.length;
+    
+    const list = document.getElementById('groupsModalList');
+    
+    if (groups.length === 0) {
+        list.innerHTML = `
+            <div class="gm-empty">
+                <span class="icon">📭</span>
+                <p>لسه مفيش مجموعات</p>
+            </div>
+        `;
+        return;
+    }
+    
+    list.innerHTML = '';
+    groups.forEach(g => {
+        const isRec = g.apptType === 'recurring';
+        const isVisible = g.isActive !== false;
+        const dayName = g.daysNames?.[0] || '';
+        
+        const card = document.createElement('div');
+        card.className = `gm-group-card ${isRec ? 'recurring-group' : 'normal-group'} ${!isVisible ? 'hidden-group' : ''}`;
+        card.innerHTML = `
+            <div class="gm-card-header">
+                <div class="gm-card-name">${g.groupName || 'بدون اسم'}</div>
+                <div class="gm-card-badges">
+                    <span class="gm-badge ${isRec ? 'rec' : 'norm'}">${isRec ? '🔁' : '📅'}</span>
+                    <span class="gm-badge ${isVisible ? 'vis' : 'hid'}">${isVisible ? '👁️' : '🙈'}</span>
+                </div>
+            </div>
+            <div class="gm-card-info">
+                <div class="row"><span>👤</span><b>${g.teacherName || '-'}</b></div>
+                <div class="row"><span>👥</span><span>${g.maxCapacity || 20} طالب</span></div>
+                <div class="row"><span>🕐</span><span>${formatTime(g.startTime)} - ${formatTime(g.endTime)}</span></div>
+                <div class="row"><span>📅</span><span>${dayName}</span></div>
+            </div>
+            <div class="gm-card-actions">
+                <button class="gm-action-btn edit" data-action="edit" data-id="${g.id}">✏️ عدّل</button>
+                <button class="gm-action-btn toggle" data-action="toggle" data-id="${g.id}">${isVisible ? '🙈 اخفي' : '👁️ اظهر'}</button>
+                <button class="gm-action-btn delete" data-action="delete" data-id="${g.id}">🗑️ امسح</button>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+    
+    list.querySelectorAll('[data-action]').forEach(btn => {
+        btn.onclick = () => handleGroupAction(btn.dataset.action, btn.dataset.id);
+    });
+}
+
+async function loadSavedGroups() {
+    try {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (!phone) return [];
+        const all = await getAllGroups();
+        cachedGroups = all.filter(g => g.phone === phone);
+        return cachedGroups;
+    } catch(e) { return []; }
+}
+
+async function handleGroupAction(action, id) {
+    const group = cachedGroups.find(g => g.id === id);
+    if (!group) return;
+    
+    if (action === 'delete') {
+        if (!confirm(`متأكد إنك عايز تمسح "${group.groupName}"؟`)) return;
+        try {
+            await deleteGroup(id);
+            showToast('✅ اتمسحت خلاص', true);
+            await refreshGroupsModal();
+            await updateGroupsBadge();
+        } catch(e) { showToast('❌ المسح مش نافع'); }
+    } else if (action === 'toggle') {
+        try {
+            const newVis = !group.isActive;
+            await updateGroup(id, { isActive: newVis });
+            showToast(newVis ? '👁️ بقت ظاهرة' : '🙈 بقت مخفية', true);
+            await refreshGroupsModal();
+        } catch(e) { showToast('❌ مش نافع'); }
+    } else if (action === 'edit') {
+        closeGroupsModal();
+        startEditFlow(group);
+    }
+}
+
+async function updateGroupsBadge() {
+    const groups = await loadSavedGroups();
+    const badge = document.getElementById('groupsBadge');
+    badge.textContent = groups.length;
+    badge.style.display = groups.length > 0 ? 'inline-block' : 'none';
+}
+
+/* ============ تعديل مجموعة ============ */
+async function startEditFlow(group) {
+    resetState();
+    state.isEditing = true;
+    state.data.editingId = group.id;
+    
+    chatArea.innerHTML = '';
+    hideQuickActions();
+    
+    await addBotMessage(
+        `✏️ <b>تعديل مجموعة "${group.groupName}"</b><br><br>` +
+        `هنعيد كل الأسئلة عشان تحدّث البيانات.<br><br>` +
+        `<b>السؤال 1/10:</b><br>🎯 اسم المجموعة الجديد إيه؟`
+    );
+    
+    aiBookingMode = true;
+    aiBookingStep = 1;
+    aiBookingData = {
+        groupName: group.groupName || '',
+        teacherName: group.teacherName || '',
+        centerName: group.centerName || '',
+        studentsCount: group.maxCapacity || '',
+        gender: group.gender === 'boys' ? 'أولاد فقط' : group.gender === 'girls' ? 'بنات فقط' : 'مختلط',
+        location: group.location || 'السنتر',
+        startTime: group.startTime || '',
+        endTime: group.endTime || '',
+        dayName: group.daysNames?.[0] || '',
+        repeatWeekly: group.apptType === 'recurring' ? 'أيوه' : 'لا'
+    };
+    
+    updateLiveSummary();
+    setInputMode('text', 'اكتب الاسم الجديد...');
+}
+
+/* ============ handleSend ============ */
 sendBtn.onclick = handleSend;
 chatInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); handleSend(); } };
 
@@ -2080,70 +1523,21 @@ async function handleSend() {
     sendBtn.disabled = true;
     setInputMode('hidden');
     
-    if (aiModeActive) {
+    if (aiBookingMode) {
         addTeacherMessage(val);
-        const reply = await askGroq(val);
-        _addMessage('bot', reply, true);
-        setInputMode('text', 'اسألني أي حاجة... 🤖');
+        await processAISBookingResponse(val);
         chatInput.disabled = false;
         sendBtn.disabled = false;
         return;
-    }
-    
-    if (state.step === 1) {
-        state.data.groupName = val;
-        addTeacherMessage(val);
-        if (state.isEditing) await returnToEditMenu();
-        else await stepTeacherName();
-    } else if (state.step === 2) {
-        state.data.teacherName = val;
-        addTeacherMessage(val);
-        if (state.isEditing) await returnToEditMenu();
-        else await stepLocation();
-    } else if (state.step === 3.5) {
-        state.data.centerName = val;
-        addTeacherMessage(val);
-        if (state.isEditing) await returnToEditMenu();
-        else await stepStudentsCount();
-    } else if (state.step === 4 && !state.isEditing) {
-        const num = parseInt(val);
-        if (num > 0) {
-            state.data.studentsCount = num;
-            addTeacherMessage(`${num} طالب`);
-            await stepGender();
-        }
     }
     
     chatInput.disabled = false;
     sendBtn.disabled = false;
 }
 
-async function startFresh() {
-    resetState();
-    chatArea.innerHTML = '';
-    chatHistory = [];
-    setProgress(0);
-    hideQuickActions();
-    await stepGroupName();
-}
-window.startFresh = startFresh;
-
-window.goToNext = function() { window.location.href = 'mester3.html'; };
-
-function checkSubject() {
-    const saved = localStorage.getItem('teacherSelections');
-    if (!saved || saved === '{}') {
-        addBotMessage('⚠️ <b>مش لاقي مواد مختارة!</b><br>ارجع للصفحة اللي فاتت اختار موادك.', false);
-        setTimeout(() => { window.location.href = 'mester1.html'; }, 2500);
-        return false;
-    }
-    return true;
-}
-
 /* ============ الأزرار السريعة ============ */
 
 window.showNextClass = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('⏭️ ثانية بشوف الحصة الجاية...');
     
     const groups = await loadSavedGroups();
@@ -2184,9 +1578,7 @@ window.showNextClass = async function() {
 };
 
 window.showTodayClasses = async function() {
-    chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('📆 ثانية بشوف حصص النهاردة...');
-    
     const groups = await loadSavedGroups();
     const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const todayName = dayNames[new Date().getDay()];
@@ -2210,7 +1602,6 @@ window.showTodayClasses = async function() {
         text += `   ${status}<br>`;
         text += `   📍 ${addr}<br><br>`;
     });
-    
     await addBotMessage(text);
 };
 
@@ -2244,50 +1635,14 @@ window.showQuestionMenu = async function() {
         { label: 'النهاردة عندي إيه؟', icon: '📆', value: 'today' },
         { label: 'بكرة عندي إيه؟', icon: '📅', value: 'tomorrow' },
         { label: 'عناوين مجموعاتي فين؟', icon: '📍', value: 'addresses' },
-        { label: 'عندي كام مجموعة؟', icon: '📊', value: 'count' },
-        { label: 'الأسبوع كله', icon: '🗓️', value: 'week' },
-        { label: '⚡ اسأل AI سؤال حر', icon: '⚡', value: 'ai' }
+        { label: 'عندي كام مجموعة؟', icon: '📊', value: 'count' }
     ], async (opt) => {
         if (opt.value === 'next') await showNextClass();
         else if (opt.value === 'today') await showTodayClasses();
         else if (opt.value === 'tomorrow') await showTomorrowClasses();
         else if (opt.value === 'addresses') await showAllAddresses();
         else if (opt.value === 'count') await showGroupsCount();
-        else if (opt.value === 'week') await showWeekSchedule();
-        else if (opt.value === 'ai') {
-            if (!aiModeActive) toggleAIMode();
-            setInputMode('text', 'اسأل AI أي حاجة...');
-        }
     });
-};
-
-window.showWeekSchedule = async function() {
-    await addBotMessage('🗓️ ثانية بجهزلك الجدول الأسبوعي...');
-    const groups = await loadSavedGroups();
-    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
-    
-    const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
-    const grouped = {};
-    weekOrder.forEach(d => grouped[d] = []);
-    groups.filter(g => g.isActive !== false).forEach(g => {
-        const day = g.daysNames?.[0] || 'غير محدد';
-        if (!grouped[day]) grouped[day] = [];
-        grouped[day].push(g);
-    });
-    
-    let text = `🗓️ <b>الجدول الأسبوعي:</b><br><br>`;
-    weekOrder.forEach(day => {
-        const dayGroups = grouped[day] || [];
-        if (dayGroups.length === 0) return;
-        text += `<b>━━━ ${day} (${dayGroups.length}) ━━━</b><br>`;
-        dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')).forEach(g => {
-            text += `• ${g.groupName} — 🕐 ${formatTime(g.startTime)}<br>`;
-            const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
-            if (addr) text += `  📍 ${addr}<br>`;
-        });
-        text += `<br>`;
-    });
-    await addBotMessage(text);
 };
 
 window.showTomorrowClasses = async function() {
@@ -2332,27 +1687,43 @@ window.showGroupsCount = async function() {
     );
 };
 
+/* ============ showOptions ============ */
+function showOptions(options, onSelect) {
+    const container = document.createElement('div');
+    container.className = 'options-container';
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `${opt.icon || ''} ${opt.label}`;
+        btn.onclick = () => {
+            container.remove();
+            onSelect(opt);
+        };
+        container.appendChild(btn);
+    });
+    chatArea.appendChild(container);
+    scrollBottom();
+}
+
 /* ============ التهيئة ============ */
 async function init() {
-    if (!checkSubject()) return;
-    
-    hideQuickActions();
-    
-    const key = localStorage.getItem('groq_api_key');
-    let keyMsg = '';
-    
-    if (!key) {
-        keyMsg = `<br><br>🔑 <b>مفيش مفتاح Groq محفوظ</b><br>دوس على الزر 🔑 في الهيدر عشان تضيف مفتاح وتستخدم المساعد الذكي.`;
+    const saved = localStorage.getItem('teacherSelections');
+    if (!saved || saved === '{}') {
+        addBotMessage('⚠️ <b>مش لاقي مواد مختارة!</b><br>ارجع للصفحة اللي فاتت اختار موادك.', false);
+        setTimeout(() => { window.location.href = 'mester1.html'; }, 2500);
+        return;
     }
     
+    hideQuickActions();
+    hideLiveSummary();
+    
     await addBotMessage(
-        'إزيك يا مستر 👋<br>تعالى نعمل مجموعة.<br><br>' +
-        '💡 <b>نصيحة:</b> دوس على زرار <b>⚡ AI</b> فوق عشان تكلم المساعد الذكي في أي وقت!' +
-        keyMsg
+        'إزيك يا مستر 👋<br><br>' +
+        '💡 <b>ابدأ الحجز بالـ AI:</b> دوس على زر <b>⚡ ابدأ الحجز بالـ AI</b> تحت، وأنا هسألك على كل البيانات واحدة واحدة.'
     );
-    await stepGroupName();
-    await updateHeaderBadge();
-    await refreshSidebarGroups();
+    
+    showQuickActions();
+    await updateGroupsBadge();
 }
 
 init();
