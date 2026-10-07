@@ -527,7 +527,6 @@
     </div>
 </div>
 
-<!-- ✏️ نافذة تعديل -->
 <div class="publish-modal-overlay" id="editModalOverlay" onclick="closeEditModal(event)">
   <div class="publish-modal-box" style="max-width: 440px;">
     <div class="publish-modal-header">
@@ -556,7 +555,6 @@
   </div>
 </div>
 
-<!-- 🎉 نافذة التفاصيل -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
@@ -578,7 +576,8 @@
     publishGroup, 
     getAllGroups, 
     deleteGroup, 
-    updateGroup
+    updateGroup,
+    saveTeacherData
   } from './firebase-config.js';
 
   // ==========================================
@@ -610,16 +609,13 @@
           const locTextEl = document.getElementById('location-text');
           if (!locTextEl) return { street: '', fullText: '' };
 
-          // 1) نقرأ من dataset أول
           let street = (locTextEl.dataset && locTextEl.dataset.street)
               ? locTextEl.dataset.street.trim()
               : '';
 
-          // 2) لو فاضي، نقرأ النص الظاهر
           const fullText = (locTextEl.textContent || '').trim();
 
           if (!street && fullText) {
-              // نشيل الإيموجي والبادئات
               street = fullText
                   .replace(/📍/g, '')
                   .replace(/⏳/g, '')
@@ -633,7 +629,6 @@
                   .trim();
           }
 
-          // 3) لو لسه فاضي، نتجاهل الرسائل الافتراضية
           if (street.includes('يرجى تحديد الموقع')) street = '';
           if (street.includes('تأكد من تفعيل')) street = '';
 
@@ -1233,7 +1228,6 @@
       const location = locationChecked;
       const gpsLocation = document.getElementById('gps-coords').value;
 
-      // ✅✅✅ السطر المهم — قراءة العنوان الفعلي من UI ✅✅✅
       const uiAddress = getCurrentAddressFromUI();
       let street = uiAddress.street || appt.street || '';
 
@@ -1305,7 +1299,6 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          // ✅ نحفظ التفاصيل الكاملة في الملخص
           const finalStreet = street || '';
           const finalFullAddress = fullAddress || street || '';
           const finalDetailedAddress = detailedAddress || '';
@@ -1706,9 +1699,6 @@
     window.cancelEdit();
   };
 
-  // ==========================================
-  // ✅ addAppointment
-  // ==========================================
   window.addAppointment = async function() {
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
@@ -1796,7 +1786,6 @@
     const location = locationChecked;
     const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
 
-    // ✅ نقرأ العنوان من الـ UI مباشرة
     const uiAddress = getCurrentAddressFromUI();
     const street = uiAddress.street || '';
 
@@ -1854,6 +1843,52 @@
       }
   };
 
+  // ==========================================================
+  // ☁️ رفع تلقائي للبيانات على السحابة
+  // ==========================================================
+  async function pushDataToCloud() {
+      try {
+          const phone = localStorage.getItem('current_teacher_phone');
+          if (!phone) {
+              console.log('⚠️ لا يوجد رقم معلم — تخطي الرفع');
+              return;
+          }
+          
+          await saveTeacherData(phone, {
+              teacherSelections: localStorage.getItem('teacherSelections'),
+              mester1_selections: localStorage.getItem('mester1_selections'),
+              mester1_is_locked: localStorage.getItem('mester1_is_locked') === 'true',
+              teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+              teacher_groups_count: parseInt(localStorage.getItem('teacher_groups_count') || '0'),
+              last_selected_gender: localStorage.getItem('last_selected_gender'),
+              last_selected_location: localStorage.getItem('last_selected_location')
+          });
+          console.log('☁️ تم رفع البيانات من mester2');
+      } catch(e) {
+          console.warn('⚠️ فشل الرفع التلقائي:', e);
+      }
+  }
+
+  // ✅ رفع عند أي تغيير في localStorage
+  const originalSetItem = localStorage.setItem.bind(localStorage);
+  localStorage.setItem = function(key, value) {
+      originalSetItem(key, value);
+      
+      const syncKeys = [
+          'teacherSelections',
+          'mester1_selections',
+          'teacher_appointments_summary',
+          'teacher_groups_count',
+          'last_selected_gender',
+          'last_selected_location'
+      ];
+      
+      if (syncKeys.includes(key)) {
+          clearTimeout(window._cloudPushTimer);
+          window._cloudPushTimer = setTimeout(pushDataToCloud, 1500);
+      }
+  };
+
   function initApp() {
       initMap();
       setupSwipeCal();
@@ -1887,6 +1922,9 @@
       toggleCenterNameField();
       
       window.loadLocalPublishedSlots();
+
+      // ✅ رفع أول ما الصفحة تفتح (بعد 2 ثانية)
+      setTimeout(pushDataToCloud, 2000);
   }
 
   initApp();
