@@ -117,16 +117,8 @@
     }
 
     @keyframes slideDownFade {
-        from {
-            opacity: 0;
-            transform: translateY(-15px);
-            max-height: 0;
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 200px;
-        }
+        from { opacity: 0; transform: translateY(-15px); max-height: 0; }
+        to { opacity: 1; transform: translateY(0); max-height: 200px; }
     }
 
     #center-name-group .form-control {
@@ -141,13 +133,8 @@
         border-color: var(--primary-teal);
         box-shadow: 0 8px 15px rgba(37, 150, 139, 0.2), 0 0 0 4px rgba(37, 150, 139, 0.12);
     }
-    #center-name-group label {
-        color: var(--dark-teal);
-        font-weight: 900;
-    }
-    #center-name-group .step-num {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-    }
+    #center-name-group label { color: var(--dark-teal); font-weight: 900; }
+    #center-name-group .step-num { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
     .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .cards-grid input[type="radio"] { display: none; }
@@ -235,43 +222,29 @@
     .detailed-address-box::before {
         content: '✨';
         position: absolute;
-        top: -10px;
-        right: 15px;
+        top: -10px; right: 15px;
         background: #fff;
         padding: 0 6px;
         font-size: 16px;
         border-radius: 50%;
     }
     .detailed-address-box .label-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        display: flex; align-items: center; gap: 6px;
         margin-bottom: 8px;
-        font-size: 13.5px;
-        font-weight: 900;
-        color: #92400E;
-        flex-wrap: wrap;
+        font-size: 13.5px; font-weight: 900;
+        color: #92400E; flex-wrap: wrap;
     }
     .detailed-address-box .label-row .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
+        display: inline-flex; align-items: center; gap: 3px;
         background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: 900;
+        color: #fff; padding: 2px 8px; border-radius: 6px;
+        font-size: 10px; font-weight: 900;
         box-shadow: 0 2px 4px -1px rgba(217, 119, 6, 0.4);
     }
     .detailed-address-box .hint-text {
-        font-size: 11.5px;
-        color: #92400E;
-        margin-top: 6px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 4px;
+        font-size: 11.5px; color: #92400E;
+        margin-top: 6px; font-weight: 700;
+        display: flex; align-items: center; gap: 4px;
         opacity: 0.85;
     }
     .detailed-address-box .form-control {
@@ -381,408 +354,142 @@
         box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15); 
     }
 
-    .summary-card.recurring-card {
-        border-color: #8b5cf6;
-        background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%);
-    }
-    .summary-card.recurring-card .sc-top-strip {
-        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-    }
+    .summary-card.recurring-card { border-color: #8b5cf6; background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%); }
+    .summary-card.recurring-card .sc-top-strip { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
 
-    .summary-card.normal-card {
-        border-color: #3b82f6;
-        background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%);
-    }
-    .summary-card.normal-card .sc-top-strip {
-        background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    }
+    .summary-card.normal-card { border-color: #3b82f6; background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%); }
+    .summary-card.normal-card .sc-top-strip { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
 
-    .summary-card.visible-card {
-        border-color: #16a34a;
-        background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%);
-    }
-    .summary-card.visible-card .sc-top-strip {
-        background: linear-gradient(90deg, #16a34a, #4ade80);
-    }
+    .summary-card.visible-card { border-color: #16a34a; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%); }
+    .summary-card.visible-card .sc-top-strip { background: linear-gradient(90deg, #16a34a, #4ade80); }
 
-    .summary-card.hidden-card {
-        border-color: #dc2626;
-        background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%);
-        opacity: 0.95;
-    }
-    .summary-card.hidden-card .sc-top-strip {
-        background: linear-gradient(90deg, #dc2626, #f87171);
-    }
-    .summary-card.hidden-card .sc-group-name {
-        color: #991b1b;
-    }
+    .summary-card.hidden-card { border-color: #dc2626; background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%); opacity: 0.95; }
+    .summary-card.hidden-card .sc-top-strip { background: linear-gradient(90deg, #dc2626, #f87171); }
+    .summary-card.hidden-card .sc-group-name { color: #991b1b; }
 
-    .sc-top-strip {
-        height: 8px;
-        width: 100%;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
+    .sc-top-strip { height: 8px; width: 100%; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 
-    .sc-status-row {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        padding: 12px 14px 0;
-    }
+    .sc-status-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 14px 0; }
 
     .badge-status { 
-        font-size: 11px; 
-        font-weight: 900; 
-        padding: 5px 10px; 
-        border-radius: 20px; 
-        display: inline-flex; 
-        align-items: center; 
-        gap: 4px; 
+        font-size: 11px; font-weight: 900; padding: 5px 10px; border-radius: 20px; 
+        display: inline-flex; align-items: center; gap: 4px; 
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        letter-spacing: 0.2px;
     }
-    .badge-status.online { 
-        background: #16a34a; 
-        color: #fff; 
-        border: 1px solid #15803d;
-        animation: pulse-green 2s infinite;
-    }
-    @keyframes pulse-green {
-        0%, 100% { box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
-        50% { box-shadow: 0 2px 15px rgba(22, 163, 74, 0.8); }
-    }
+    .badge-status.online { background: #16a34a; color: #fff; border: 1px solid #15803d; animation: pulse-green 2s infinite; }
+    @keyframes pulse-green { 0%,100% { box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); } 50% { box-shadow: 0 2px 15px rgba(22, 163, 74, 0.8); } }
 
-    .badge-status.recurring { 
-        background: #8b5cf6; 
-        color: #fff; 
-        border: 1px solid #7c3aed; 
-    }
-    .badge-status.one-time { 
-        background: #3b82f6; 
-        color: #fff; 
-        border: 1px solid #2563eb; 
-    }
+    .badge-status.recurring { background: #8b5cf6; color: #fff; border: 1px solid #7c3aed; }
+    .badge-status.one-time { background: #3b82f6; color: #fff; border: 1px solid #2563eb; }
 
     .status-message {
-        margin: 0 14px 12px;
-        padding: 12px 16px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        margin: 0 14px 12px; padding: 12px 16px;
+        border-radius: 10px; font-size: 14px; font-weight: 900;
+        display: flex; align-items: center; gap: 10px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        position: relative;
-        overflow: hidden;
+        position: relative; overflow: hidden;
     }
-    .status-message::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 5px;
-    }
-    .status-message.visible-msg {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-        color: #14532d;
-        border: 2px solid #16a34a;
-    }
-    .status-message.visible-msg::before {
-        background: #16a34a;
-    }
-    .status-message.hidden-msg {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        color: #7f1d1d;
-        border: 2px solid #dc2626;
-        animation: pulse-red 2s infinite;
-    }
-    .status-message.hidden-msg::before {
-        background: #dc2626;
-    }
-    @keyframes pulse-red {
-        0%, 100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
-        50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6); }
-    }
-    .status-message .status-icon {
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-    .status-message .status-text {
-        flex: 1;
-        line-height: 1.4;
-    }
-    .status-message .status-text strong {
-        display: block;
-        font-size: 15px;
-        margin-bottom: 2px;
-    }
-    .status-message .status-text small {
-        font-size: 12px;
-        font-weight: 700;
-        opacity: 0.85;
-    }
+    .status-message::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 5px; }
+    .status-message.visible-msg { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #14532d; border: 2px solid #16a34a; }
+    .status-message.visible-msg::before { background: #16a34a; }
+    .status-message.hidden-msg { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #7f1d1d; border: 2px solid #dc2626; animation: pulse-red 2s infinite; }
+    .status-message.hidden-msg::before { background: #dc2626; }
+    @keyframes pulse-red { 0%,100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); } 50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6); } }
+    .status-message .status-icon { font-size: 22px; flex-shrink: 0; }
+    .status-message .status-text { flex: 1; line-height: 1.4; }
+    .status-message .status-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+    .status-message .status-text small { font-size: 12px; font-weight: 700; opacity: 0.85; }
 
-    .sc-header { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: flex-start; 
-        gap: 10px; 
-        padding: 8px 14px 12px;
-    }
-    .sc-group-name { 
-        font-size: 18px; 
-        font-weight: 900; 
-        color: var(--text-dark); 
-        line-height: 1.3; 
-    }
-    .sc-teacher { 
-        font-size: 13px; 
-        color: var(--text-gray); 
-        font-weight: 800; 
-        margin-top: 3px; 
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        align-items: center;
-    }
-    .sc-teacher .center-tag {
-        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
-        color: #1b736a;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 12px;
-        border: 1px solid #b2dfdb;
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-    }
+    .sc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 8px 14px 12px; }
+    .sc-group-name { font-size: 18px; font-weight: 900; color: var(--text-dark); line-height: 1.3; }
+    .sc-teacher { font-size: 13px; color: var(--text-gray); font-weight: 800; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 
     .sc-subject-block {
         background: linear-gradient(135deg, #fef3c7, #fde68a);
         border: 2px solid #f59e0b;
-        border-radius: 10px;
-        padding: 10px 12px;
+        border-radius: 10px; padding: 10px 12px;
         margin: 0 14px 10px;
-        text-align: center;
-        font-weight: 900;
-        color: #92400e;
-        font-size: 14px;
+        text-align: center; font-weight: 900;
+        color: #92400e; font-size: 14px;
         box-shadow: 0 3px 8px rgba(245, 158, 11, 0.2);
     }
-    .sc-subject-block .subject-icon {
-        font-size: 16px;
-        margin-left: 4px;
-    }
+    .sc-subject-block .subject-icon { font-size: 16px; margin-left: 4px; }
 
     .sc-time-banner { 
         background: linear-gradient(135deg, #1e293b, #334155);
-        border-radius: 10px; 
-        padding: 12px 14px; 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        font-size: 14px; 
-        font-weight: 900; 
+        border-radius: 10px; padding: 12px 14px; 
+        display: flex; justify-content: space-between; align-items: center; 
+        font-size: 14px; font-weight: 900; 
         margin: 0 14px 12px;
         color: #fff;
         box-shadow: 0 4px 10px rgba(30, 41, 59, 0.3);
-        flex-wrap: wrap;
-        gap: 6px;
+        flex-wrap: wrap; gap: 6px;
     }
-    .sc-time-banner .time-text { 
-        color: #fff; 
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .sc-time-banner .duration-pill { 
-        background: #fbbf24; 
-        color: #78350f; 
-        padding: 3px 10px; 
-        border-radius: 20px; 
-        font-size: 12px; 
-        font-weight: 900;
-        box-shadow: 0 2px 5px rgba(251, 191, 36, 0.4);
-    }
+    .sc-time-banner .time-text { color: #fff; display: flex; align-items: center; gap: 6px; }
+    .sc-time-banner .duration-pill { background: #fbbf24; color: #78350f; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 900; box-shadow: 0 2px 5px rgba(251, 191, 36, 0.4); }
 
     .sc-details-grid { 
-        display: grid; 
-        grid-template-columns: 1fr 1fr; 
-        gap: 8px; 
-        background: #f8fafc; 
-        border-radius: 10px; 
-        padding: 12px; 
-        font-size: 13px; 
-        margin: 0 14px 12px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 8px; 
+        background: #f8fafc; border-radius: 10px; padding: 12px; 
+        font-size: 13px; margin: 0 14px 12px;
         border: 1px solid #e2e8f0;
     }
-    .sc-detail-item { 
-        display: flex; 
-        align-items: center; 
-        gap: 6px; 
-        color: var(--text-gray); 
-        font-weight: 800; 
-        padding: 6px 8px;
-        background: #fff;
-        border-radius: 6px;
-        border: 1px solid #e2e8f0;
-    }
-    .sc-detail-item.full { 
-        grid-column: span 2; 
-    }
-    .sc-detail-item .val { 
-        font-weight: 900; 
-        color: var(--text-dark); 
-    }
-    .sc-detail-item.address-item {
-        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-        border-color: #6ee7b7;
-        color: #065f46;
-    }
-    .sc-detail-item.address-item .val {
-        color: #065f46;
-    }
-    .sc-detail-item.detailed-address-item {
-        background: linear-gradient(135deg, #fffbeb, #fef3c7);
-        border-color: #fcd34d;
-        color: #92400e;
-    }
-    .sc-detail-item.detailed-address-item .val {
-        color: #92400e;
-    }
-    .sc-detail-item.center-item {
-        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
-        border-color: #25968b;
-        color: #1b736a;
-    }
-    .sc-detail-item.center-item .val {
-        color: #1b736a;
-    }
+    .sc-detail-item { display: flex; align-items: center; gap: 6px; color: var(--text-gray); font-weight: 800; padding: 6px 8px; background: #fff; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .sc-detail-item.full { grid-column: span 2; }
+    .sc-detail-item .val { font-weight: 900; color: var(--text-dark); }
+    .sc-detail-item.address-item { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-color: #6ee7b7; color: #065f46; }
+    .sc-detail-item.address-item .val { color: #065f46; }
+    .sc-detail-item.detailed-address-item { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-color: #fcd34d; color: #92400e; }
+    .sc-detail-item.detailed-address-item .val { color: #92400e; }
+    .sc-detail-item.center-item { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); border-color: #25968b; color: #1b736a; }
+    .sc-detail-item.center-item .val { color: #1b736a; }
 
     .sc-footer-actions { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        gap: 8px; 
-        padding: 12px 14px; 
+        display: flex; justify-content: space-between; align-items: center; 
+        gap: 8px; padding: 12px 14px; 
         background: #f8fafc;
         border-top: 2px solid #e2e8f0;
         flex-wrap: wrap; 
     }
-    .sc-actions-sub { 
-        display: flex; 
-        gap: 6px; 
-    }
-    .btn-action { 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 5px; 
-        font-size: 12px; 
-        font-weight: 900; 
-        padding: 8px 12px; 
-        border-radius: 8px; 
-        border: none; 
-        cursor: pointer; 
-        transition: all 0.2s; 
-        font-family: inherit; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
-    }
-    .btn-edit { 
-        background: #f1f5f9; 
-        color: #334155; 
-        border: 1px solid #cbd5e1; 
-    }
-    .btn-edit:hover { 
-        background: #e2e8f0; 
-        transform: translateY(-2px); 
-    }
-    .btn-delete { 
-        background: #fee2e2; 
-        color: #b91c1c; 
-        border: 1px solid #fecaca;
-    }
-    .btn-delete:hover { 
-        background: #fecaca;
-        transform: translateY(-2px); 
-    }
+    .sc-actions-sub { display: flex; gap: 6px; }
+    .btn-action { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; font-weight: 900; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+    .btn-edit { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-edit:hover { background: #e2e8f0; transform: translateY(-2px); }
+    .btn-delete { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .btn-delete:hover { background: #fecaca; transform: translateY(-2px); }
 
     .btn-visibility {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        font-size: 13px;
-        font-weight: 900;
-        padding: 10px 16px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        font-size: 13px; font-weight: 900; padding: 10px 16px; border-radius: 10px;
+        border: none; cursor: pointer;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        font-family: inherit;
-        color: #fff;
-        letter-spacing: 0.3px;
-        position: relative;
-        overflow: hidden;
+        font-family: inherit; color: #fff; letter-spacing: 0.3px;
+        position: relative; overflow: hidden;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    .btn-visibility.hide-state {
-        background: linear-gradient(135deg, #dc2626, #ef4444);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-    }
-    .btn-visibility.hide-state:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
-    }
-    .btn-visibility.show-state {
-        background: linear-gradient(135deg, #16a34a, #22c55e);
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
-        animation: pulse-show 2s infinite;
-    }
-    .btn-visibility.show-state:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6);
-    }
-    @keyframes pulse-show {
-        0%, 100% { box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
-        50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.8); }
-    }
+    .btn-visibility.hide-state { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); }
+    .btn-visibility.hide-state:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6); }
+    .btn-visibility.show-state { background: linear-gradient(135deg, #16a34a, #22c55e); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); animation: pulse-show 2s infinite; }
+    .btn-visibility.show-state:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6); }
+    @keyframes pulse-show { 0%,100% { box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); } 50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.8); } }
 
     .btn-view-details {
         background: linear-gradient(135deg, #25968b, #1b736a);
-        color: #fff;
-        font-size: 12px;
-        font-weight: 900;
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
+        color: #fff; font-size: 12px; font-weight: 900;
+        padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer;
         box-shadow: 0 3px 8px rgba(37, 150, 139, 0.3);
-        transition: all 0.2s;
-        font-family: inherit;
+        transition: all 0.2s; font-family: inherit;
     }
-    .btn-view-details:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.5);
-    }
+    .btn-view-details:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.5); }
 
     .empty-cards-state { text-align: center; padding: 40px 20px; color: var(--text-gray); font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
 
     .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
     .publish-modal-overlay.active { display: flex; }
     .publish-modal-box { 
-        background: var(--white); 
-        border-radius: 16px; 
-        width: 100%; 
-        max-width: 500px; 
-        max-height: 90vh; 
-        display: flex; 
-        flex-direction: column; 
-        overflow: hidden; 
+        background: var(--white); border-radius: 16px; width: 100%; max-width: 500px; 
+        max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; 
         box-shadow: 0 25px 50px rgba(0,0,0,0.2), 0 10px 20px rgba(37, 150, 139, 0.1); 
-        transform: translateY(0) scale(1);
         animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     @keyframes modalPopIn { 0% { transform: translateY(20px) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
@@ -795,674 +502,12 @@
     .publish-data-item:last-child { border-bottom: none; }
     .publish-data-label { color: var(--text-gray); font-weight: 900; font-size: 13px; margin-bottom: 4px; }
     .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex-wrap: wrap; }
-    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; box-shadow: inset 0 2px 4px rgba(37, 150, 139, 0.04); }
-    .publish-data-value.address-detail { background: #FFFBEB; border-color: #FCD34D; color: #92400E; display: block; box-shadow: inset 0 2px 4px rgba(217, 119, 6, 0.04); }
+    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; }
+    .publish-data-value.address-detail { background: #FFFBEB; border-color: #FCD34D; color: #92400E; display: block; }
     .publish-data-value.center-value { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); color: #1b736a; border-color: #b2dfdb; }
     .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; display: flex; gap: 10px; }
     .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: all 0.2s; box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
     .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
-
-    .security-overlay {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg, #25968b 0%, #1b736a 100%);
-        z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        gap: 20px;
-        transition: opacity 0.3s ease;
-    }
-    .security-overlay.hide {
-        opacity: 0;
-        pointer-events: none;
-    }
-    .security-spinner {
-        width: 60px;
-        height: 60px;
-        border: 5px solid rgba(255,255,255,0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    .security-overlay h2 {
-        font-size: 20px;
-        font-weight: 900;
-    }
-    .security-overlay p {
-        font-size: 14px;
-        opacity: 0.9;
-    }
-
-    .blocked-overlay {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #991b1b 100%);
-        z-index: 100000;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        text-align: center;
-        color: #fff;
-        animation: blockedFadeIn 0.4s ease;
-        overflow-y: auto;
-    }
-    .blocked-overlay.show { display: flex; }
-
-    @keyframes blockedFadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .blocked-overlay .blocked-icon {
-        font-size: 80px;
-        margin-bottom: 16px;
-        animation: blockedPulse 1.5s infinite;
-        filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
-    }
-    @keyframes blockedPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-
-    .blocked-overlay h1 {
-        font-size: 24px;
-        font-weight: 900;
-        margin-bottom: 12px;
-        text-shadow: 0 3px 10px rgba(0,0,0,0.4);
-        letter-spacing: 0.5px;
-    }
-
-    .blocked-overlay p {
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1.7;
-        max-width: 520px;
-        margin-bottom: 10px;
-        opacity: 0.95;
-    }
-
-    .blocked-overlay .support-box {
-        background: rgba(255, 255, 255, 0.12);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 20px;
-        padding: 22px;
-        margin-top: 22px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        max-width: 760px;
-        width: 100%;
-    }
-
-    .blocked-overlay .support-box .support-label {
-        font-size: 15px;
-        font-weight: 900;
-        margin-bottom: 16px;
-        letter-spacing: 0.5px;
-        text-align: center;
-        opacity: 0.98;
-    }
-
-    .plans-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-top: 8px;
-    }
-
-    .plan-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 20px 12px 16px;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 8px 22px rgba(0,0,0,0.25);
-        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 3px solid transparent;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .plan-card:hover {
-        transform: translateY(-8px) scale(1.04);
-        box-shadow: 0 16px 35px rgba(0,0,0,0.4);
-    }
-
-    .plan-card.plan-3m {
-        border-color: #3B82F6;
-        background: linear-gradient(180deg, #EFF6FF 0%, #fff 40%);
-    }
-    .plan-card.plan-3m .plan-name { color: #1D4ED8; }
-    .plan-card.plan-3m .plan-btn {
-        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-    }
-
-    .plan-card.plan-6m {
-        border-color: #8B5CF6;
-        background: linear-gradient(180deg, #F5F3FF 0%, #fff 40%);
-    }
-    .plan-card.plan-6m .plan-name { color: #6D28D9; }
-    .plan-card.plan-6m .plan-btn {
-        background: linear-gradient(135deg, #8B5CF6, #6D28D9);
-    }
-
-    .plan-card.plan-1y {
-        border-color: #F59E0B;
-        background: linear-gradient(180deg, #FFFBEB 0%, #fff 40%);
-        transform: scale(1.05);
-    }
-    .plan-card.plan-1y:hover {
-        transform: translateY(-8px) scale(1.1);
-    }
-    .plan-card.plan-1y .plan-name { color: #B45309; }
-    .plan-card.plan-1y .plan-btn {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-    }
-
-    .plan-badge {
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 0 14px 0 14px;
-        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.5);
-        animation: badgePulse 1.5s infinite;
-    }
-
-    @keyframes badgePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.08); }
-    }
-
-    .plan-icon {
-        font-size: 38px;
-        margin-bottom: 4px;
-        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
-    }
-
-    .plan-name {
-        font-size: 16px;
-        font-weight: 900;
-        margin-bottom: 2px;
-        letter-spacing: 0.3px;
-    }
-
-    .plan-price {
-        font-size: 14px;
-        font-weight: 900;
-        color: #047857;
-        margin-bottom: 6px;
-        padding: 6px 8px;
-        background: #DCFCE7;
-        border-radius: 8px;
-        border: 1.5px solid #86EFAC;
-        direction: ltr;
-        min-height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .plan-duration {
-        font-size: 11px;
-        font-weight: 800;
-        color: #64748B;
-        margin-bottom: 10px;
-        min-height: 15px;
-    }
-
-    .plan-btn {
-        display: block;
-        width: 100%;
-        color: #fff;
-        text-decoration: none;
-        padding: 11px 8px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 900;
-        border: none;
-        cursor: pointer;
-        font-family: 'Cairo', sans-serif;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        transition: all 0.2s;
-        letter-spacing: 0.3px;
-        margin-top: auto;
-    }
-    .plan-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        filter: brightness(1.1);
-    }
-    .plan-btn:active {
-        transform: translateY(0) scale(0.97);
-    }
-    .plan-btn:disabled {
-        background: #94A3B8 !important;
-        cursor: not-allowed;
-        transform: none;
-        opacity: 0.7;
-    }
-
-    .blocked-overlay .blocked-note {
-        margin-top: 22px;
-        font-size: 12.5px;
-        font-weight: 700;
-        opacity: 0.85;
-        line-height: 1.7;
-        max-width: 480px;
-    }
-
-    .blocked-overlay .blocked-badge {
-        display: inline-block;
-        background: rgba(0,0,0,0.25);
-        border: 1px solid rgba(255,255,255,0.25);
-        color: #fff;
-        padding: 6px 16px;
-        border-radius: 30px;
-        font-size: 12px;
-        font-weight: 900;
-        margin-bottom: 16px;
-        letter-spacing: 1px;
-    }
-
-    @media (max-width: 640px) {
-        .plans-grid {
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-        .plan-card {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 12px;
-            padding: 14px;
-            text-align: right;
-        }
-        .plan-card.plan-1y {
-            transform: scale(1);
-        }
-        .plan-card.plan-1y:hover {
-            transform: translateY(-4px);
-        }
-        .plan-icon {
-            font-size: 32px;
-            margin-bottom: 0;
-        }
-        .plan-card > div:not(.plan-icon) {
-            flex: 1;
-        }
-        .plan-name { font-size: 15px; }
-        .plan-price { font-size: 13px; margin-bottom: 0; padding: 4px 6px; }
-        .plan-duration { display: none; }
-        .plan-btn {
-            padding: 10px 14px;
-            white-space: nowrap;
-            margin-top: 0;
-            width: auto;
-        }
-        .blocked-overlay h1 { font-size: 20px; }
-        .blocked-overlay .blocked-icon { font-size: 60px; }
-        .blocked-overlay .support-box { padding: 16px; }
-    }
-
-    .contact-sent-msg {
-        display: none;
-        margin-top: 14px;
-        padding: 12px 16px;
-        border-radius: 12px;
-        background: rgba(34, 197, 94, 0.25);
-        border: 2px solid rgba(34, 197, 94, 0.6);
-        color: #fff;
-        font-size: 13px;
-        font-weight: 900;
-        animation: contactMsgPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        text-align: center;
-        line-height: 1.5;
-    }
-    .contact-sent-msg.show { display: block; }
-    .contact-sent-msg.error {
-        background: rgba(220, 38, 38, 0.3);
-        border-color: rgba(220, 38, 38, 0.7);
-    }
-    @keyframes contactMsgPop {
-        from { transform: scale(0.85); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    /* ✅ حالة التحميل للباقات */
-    .plan-price.loading {
-        background: #F1F5F9;
-        border-color: #CBD5E1;
-        color: #94A3B8;
-    }
-    .plan-price.loading::after {
-        content: '';
-        width: 14px;
-        height: 14px;
-        border: 2px solid #CBD5E1;
-        border-top-color: #64748B;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        display: inline-block;
-    }
-
-    /* ========================================================== */
-    /* 🆘 زر التواصل مع الإدارة (استفسار/مشكلة/اشتراك) */
-    /* ========================================================== */
-    .email-contact-box {
-        margin-top: 16px;
-        padding: 14px;
-        background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
-        border: 2px dashed #FCA5A5;
-        border-radius: 14px;
-        text-align: center;
-    }
-
-    .email-contact-box .ec-title {
-        font-size: 13.5px;
-        font-weight: 900;
-        color: #7F1D1D;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-    }
-
-    .email-contact-box .ec-hint {
-        font-size: 11.5px;
-        color: #991B1B;
-        margin-top: 8px;
-        font-weight: 700;
-        opacity: 0.85;
-        line-height: 1.5;
-    }
-
-    /* 🔽 قائمة أنواع التواصل */
-    .contact-type-selector {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-
-    .contact-type-btn {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 14px;
-        background: #fff;
-        border: 2px solid #FECACA;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        font-family: 'Cairo', sans-serif;
-        text-align: right;
-        width: 100%;
-        position: relative;
-    }
-
-    .contact-type-btn:hover {
-        border-color: #F87171;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
-    }
-
-    .contact-type-btn.selected {
-        background: linear-gradient(135deg, #FEE2E2, #FECACA);
-        border-color: #DC2626;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
-    }
-
-    .contact-type-btn .ct-icon {
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-
-    .contact-type-btn .ct-info {
-        flex: 1;
-        min-width: 0;
-        text-align: right;
-    }
-
-    .contact-type-btn .ct-info strong {
-        display: block;
-        font-size: 13px;
-        font-weight: 900;
-        color: #7F1D1D;
-        margin-bottom: 2px;
-    }
-
-    .contact-type-btn .ct-info small {
-        display: block;
-        font-size: 11px;
-        font-weight: 700;
-        color: #991B1B;
-        opacity: 0.85;
-    }
-
-    .contact-type-btn .ct-check {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        border: 2px solid #FECACA;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 12px;
-        color: transparent;
-        transition: all 0.2s;
-        background: #fff;
-    }
-
-    .contact-type-btn.selected .ct-check {
-        background: #DC2626;
-        border-color: #DC2626;
-        color: #fff;
-    }
-
-    /* 🔽 حقل تفاصيل المشكلة */
-    .contact-details-input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 2px solid #FECACA;
-        border-radius: 10px;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 800;
-        font-size: 12.5px;
-        outline: none;
-        background: #fff;
-        color: #0F172A;
-        resize: vertical;
-        min-height: 60px;
-        max-height: 140px;
-        margin-bottom: 12px;
-        transition: all 0.2s;
-        display: none;
-    }
-
-    .contact-details-input.show { display: block; }
-
-    .contact-details-input:focus {
-        border-color: #DC2626;
-        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
-    }
-
-    .contact-details-input::placeholder {
-        color: #94A3B8;
-        font-weight: 700;
-    }
-
-    /* 🔽 زر الإرسال */
-    .btn-email-contact {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        background: linear-gradient(135deg, #EA4335, #C5221F);
-        color: #fff;
-        border: none;
-        padding: 12px 22px;
-        border-radius: 12px;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 900;
-        font-size: 14px;
-        cursor: pointer;
-        text-decoration: none;
-        box-shadow: 0 6px 18px rgba(234, 67, 53, 0.45);
-        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        letter-spacing: 0.3px;
-        width: 100%;
-    }
-
-    .btn-email-contact:hover:not(:disabled) {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 25px rgba(234, 67, 53, 0.65);
-        filter: brightness(1.08);
-    }
-
-    .btn-email-contact:active:not(:disabled) {
-        transform: translateY(0) scale(0.98);
-    }
-
-    .btn-email-contact:disabled {
-        background: #94A3B8;
-        box-shadow: none;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .btn-email-contact .email-icon {
-        font-size: 18px;
-        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-    }
-
-    .btn-email-contact .email-label {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        line-height: 1.2;
-    }
-
-    .btn-email-contact .email-label small {
-        font-size: 10.5px;
-        font-weight: 700;
-        opacity: 0.9;
-    }
-
-    @media (min-width: 500px) {
-        .contact-type-selector {
-            grid-template-columns: repeat(3, 1fr);
-        }
-        .contact-type-btn {
-            flex-direction: column;
-            text-align: center;
-            gap: 6px;
-            padding: 14px 8px;
-        }
-        .contact-type-btn .ct-info { text-align: center; }
-        .contact-type-btn .ct-info strong { font-size: 12px; }
-        .contact-type-btn .ct-info small { display: none; }
-        .contact-type-btn .ct-icon { font-size: 26px; }
-        .contact-type-btn .ct-check {
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-        }
-    }
-
-    .subscription-banner {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto 15px;
-        padding: 14px 18px;
-        border-radius: 14px;
-        display: none;
-        align-items: center;
-        gap: 12px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        animation: slideDownFade 0.4s ease;
-        position: relative;
-        z-index: 20;
-    }
-    .subscription-banner.show { display: flex; }
-    .subscription-banner.warning {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        border: 2px solid #FBBF24;
-    }
-    .subscription-banner.danger {
-        background: linear-gradient(135deg, #DC2626, #991B1B);
-        color: #fff;
-        border: 2px solid #F87171;
-        animation: slideDownFade 0.4s ease, pulse-danger-banner 2s infinite;
-    }
-    @keyframes pulse-danger-banner {
-        0%, 100% { box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
-        50% { box-shadow: 0 6px 30px rgba(220,38,38,0.7); }
-    }
-    .subscription-banner .sb-icon {
-        font-size: 32px;
-        flex-shrink: 0;
-    }
-    .subscription-banner .sb-text {
-        flex: 1;
-        line-height: 1.4;
-    }
-    .subscription-banner .sb-text strong {
-        display: block;
-        font-size: 15px;
-        margin-bottom: 2px;
-        font-weight: 900;
-    }
-    .subscription-banner .sb-text small {
-        font-size: 12.5px;
-        opacity: 0.95;
-        font-weight: 700;
-    }
-    .subscription-banner .sb-btn {
-        background: #fff;
-        color: #D97706;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 10px;
-        font-weight: 900;
-        font-size: 13px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        transition: all 0.2s;
-        white-space: nowrap;
-        font-family: inherit;
-    }
-    .subscription-banner.danger .sb-btn { color: #991B1B; }
-    .subscription-banner .sb-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    .subscription-banner .sb-btn:active {
-        transform: translateY(0);
-    }
 
     @media (max-width: 768px) {
         .form-grid-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
@@ -1476,637 +521,10 @@
         .btn-visibility { width: 100%; }
         .status-message { font-size: 13px; padding: 10px 12px; }
         .status-message .status-icon { font-size: 20px; }
-        .subscription-banner { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
-        .subscription-banner .sb-btn { width: 100%; justify-content: center; }
     }
 </style>
 </head>
 <body>
-
-<!-- 🚫 شاشة الحظر -->
-<div class="blocked-overlay" id="blockedOverlay">
-    <div class="blocked-icon">🚫</div>
-    <div class="blocked-badge">⛔ حساب محظور</div>
-    <h1>تم حظر حسابك من قبل الإدارة</h1>
-    <p>
-        عذراً، لا يمكنك الوصول إلى لوحة التحكم أو إضافة مواعيد جديدة حالياً.
-        <br>
-        حسابك موقوف مؤقتاً من قبل إدارة منصة <b>احجزلي</b>.
-    </p>
-
-    <div class="support-box">
-        <div class="support-label">💎 اختر باقة الاشتراك المناسبة للمتابعة</div>
-        
-        <div class="plans-grid">
-            <!-- باقة 3 شهور — كل القيم ديناميكية من السحابة -->
-            <div class="plan-card plan-3m">
-                <div class="plan-icon" id="planIcon3m">📅</div>
-                <div>
-                    <div class="plan-name" id="planName3m">جاري التحميل...</div>
-                    <div class="plan-price loading" id="priceText3m"></div>
-                    <div class="plan-duration" id="planDuration3m">⏱ ...</div>
-                </div>
-                <button class="plan-btn" id="planBtn3m" onclick="window.requestPlan('3months')" disabled>جاري التحميل...</button>
-            </div>
-
-            <!-- باقة 6 شهور -->
-            <div class="plan-card plan-6m">
-                <div class="plan-icon" id="planIcon6m">📅</div>
-                <div>
-                    <div class="plan-name" id="planName6m">جاري التحميل...</div>
-                    <div class="plan-price loading" id="priceText6m"></div>
-                    <div class="plan-duration" id="planDuration6m">⏱ ...</div>
-                </div>
-                <button class="plan-btn" id="planBtn6m" onclick="window.requestPlan('6months')" disabled>جاري التحميل...</button>
-            </div>
-
-            <!-- باقة سنة -->
-            <div class="plan-card plan-1y">
-                <div class="plan-badge" id="planBadge1y">⭐ الأفضل</div>
-                <div class="plan-icon" id="planIcon1y">👑</div>
-                <div>
-                    <div class="plan-name" id="planName1y">جاري التحميل...</div>
-                    <div class="plan-price loading" id="priceText1y"></div>
-                    <div class="plan-duration" id="planDuration1y">⏱ ...</div>
-                </div>
-                <button class="plan-btn" id="planBtn1y" onclick="window.requestPlan('1year')" disabled>جاري التحميل...</button>
-            </div>
-        </div>
-
-        <div class="contact-sent-msg" id="contactSentMsg"></div>
-
-        <!-- 🆘 صندوق التواصل مع الإدارة -->
-        <div class="email-contact-box">
-            <div class="ec-title">
-                <span>🆘</span>
-                <span>تواصل مع الإدارة</span>
-            </div>
-
-            <!-- اختيار نوع التواصل -->
-            <div class="contact-type-selector" id="contactTypeSelector">
-                <button type="button" class="contact-type-btn" data-type="inquiry" onclick="window.selectContactType('inquiry', event)">
-                    <span class="ct-icon">💬</span>
-                    <div class="ct-info">
-                        <strong>استفسار</strong>
-                        <small>سؤال عن المنصة أو المميزات</small>
-                    </div>
-                    <span class="ct-check">✓</span>
-                </button>
-
-                <button type="button" class="contact-type-btn" data-type="problem" onclick="window.selectContactType('problem', event)">
-                    <span class="ct-icon">⚠️</span>
-                    <div class="ct-info">
-                        <strong>مشكلة تقنية</strong>
-                        <small>خطأ أو عطل في المنصة</small>
-                    </div>
-                    <span class="ct-check">✓</span>
-                </button>
-
-                <button type="button" class="contact-type-btn" data-type="subscription" onclick="window.selectContactType('subscription', event)">
-                    <span class="ct-icon">💎</span>
-                    <div class="ct-info">
-                        <strong>اشتراك</strong>
-                        <small>طلب باقة أو تجديد</small>
-                    </div>
-                    <span class="ct-check">✓</span>
-                </button>
-            </div>
-
-            <!-- حقل تفاصيل المشكلة/الاستفسار -->
-            <textarea 
-                id="contactDetailsInput" 
-                class="contact-details-input" 
-                placeholder="اكتب تفاصيل المشكلة أو الاستفسار هنا..."
-                maxlength="500"
-            ></textarea>
-
-            <!-- زر الإرسال -->
-            <button id="emailContactBtn" class="btn-email-contact" onclick="window.sendEmailContact(event)" disabled>
-                <span class="email-icon">✉️</span>
-                <span class="email-label">
-                    <span id="emailBtnText">اختر نوع التواصل أولاً</span>
-                    <small id="emailBtnHint">سيتم فتح Gmail برسالة جاهزة</small>
-                </span>
-            </button>
-
-            <div class="ec-hint">
-                💡 الرسالة هتتفتح ببياناتك تلقائياً — كل اللي عليك تضغط "إرسال" في Gmail
-            </div>
-        </div>
-    </div>
-
-    <div class="blocked-note">
-        💡 بعد إتمام الاشتراك، سيتم إعادة تفعيل حسابك تلقائياً.<br>
-        للاستفسار تواصل مع الدعم الفني.
-    </div>
-</div>
-
-<!-- ✅ شاشة حماية أولية -->
-<div class="security-overlay" id="securityOverlay">
-    <div class="security-spinner"></div>
-    <h2>جاري التحقق من الجهاز...</h2>
-    <p>منصة احجزلي تحمي حسابك</p>
-</div>
-
-<!-- ✅ سكريبت حماية الجهاز + الحظر + طلب الباقات -->
-<script type="module">
-    import { 
-        checkTeacherDevice, 
-        getTeacher, 
-        db, doc, updateDoc, setDoc, serverTimestamp,
-        getPricingSettings,
-        subscribePricing
-    } from './firebase-config.js';
-
-    // ==========================================================
-    // 💾 تخزين أسعار الباقات الحالية في الذاكرة (للوصول السريع)
-    // ==========================================================
-    window.currentPricing = null;
-
-    // ==========================================================
-    // 🔑 دالة موحّدة لفحص حالة الحظر والاشتراك (تعتمد على teachers)
-    // ==========================================================
-    window.checkTeacherActiveStatus = async function(phone) {
-        try {
-            const teacher = await getTeacher(phone);
-            if (!teacher) {
-                return { active: false, reason: 'not_found' };
-            }
-
-            // 🚫 محظور صريحاً
-            if (teacher.isLocked === true) {
-                return { active: false, reason: 'locked' };
-            }
-
-            // ♾️ فتح دائم
-            if (teacher.lockType === 'permanent_open') {
-                return { active: true, reason: 'permanent_open' };
-            }
-
-            // ⏰ تفعيل مؤقت
-            if (teacher.unlockUntil) {
-                const until = typeof teacher.unlockUntil === 'number'
-                    ? teacher.unlockUntil
-                    : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
-
-                if (until && until > Date.now()) {
-                    return { active: true, reason: 'time_limited', until };
-                } else if (until && until <= Date.now()) {
-                    return { active: false, reason: 'expired', until };
-                }
-            }
-
-            // 🆓 مفيش تفعيل — نعتبرها غير نشطة
-            return { active: false, reason: 'no_activation' };
-        } catch (e) {
-            console.error('خطأ في فحص حالة الحظر:', e);
-            return { active: false, reason: 'error' };
-        }
-    };
-
-    // ==========================================================
-    // 💰 تحديث واجهة أسعار الباقات — كل القيم ديناميكية
-    // ==========================================================
-    function updatePricingUI(pricing) {
-        if (!pricing) {
-            console.log('⚠️ لا توجد أسعار محفوظة — في انتظار البيانات...');
-            return;
-        }
-
-        window.currentPricing = pricing;
-
-        const defaultLabels = {
-            '3months': '3 شهور',
-            '6months': '6 شهور',
-            '1year': 'سنة كاملة'
-        };
-        const defaultIcons = {
-            '3months': '📅',
-            '6months': '📅',
-            '1year': '👑'
-        };
-
-        const mapSuffix = { '3months': '3m', '6months': '6m', '1year': '1y' };
-
-        for (const planId of ['3months', '6months', '1year']) {
-            const data = pricing[planId] || {};
-            const suffix = mapSuffix[planId];
-
-            const nameEl = document.getElementById(`planName${suffix}`);
-            if (nameEl) nameEl.textContent = data.label || defaultLabels[planId];
-
-            const iconEl = document.getElementById(`planIcon${suffix}`);
-            if (iconEl) iconEl.textContent = data.icon || defaultIcons[planId];
-
-            const priceEl = document.getElementById(`priceText${suffix}`);
-            if (priceEl) {
-                priceEl.classList.remove('loading');
-                if (data.priceText) {
-                    priceEl.textContent = data.priceText;
-                } else if (data.price !== undefined && data.price !== null) {
-                    priceEl.textContent = `${data.price} جنيه`;
-                } else {
-                    priceEl.textContent = 'السعر عند الطلب';
-                }
-            }
-
-            const durEl = document.getElementById(`planDuration${suffix}`);
-            if (durEl) {
-                durEl.textContent = data.days ? `⏱ ${data.days} يوم` : '';
-            }
-
-            const btnEl = document.getElementById(`planBtn${suffix}`);
-            if (btnEl) {
-                btnEl.disabled = false;
-                btnEl.textContent = 'اشترك الآن';
-            }
-        }
-
-        console.log('✅ تم تحديث أسعار الباقات من السحابة:', pricing);
-    }
-
-    async function loadPricing() {
-        try {
-            const pricing = await getPricingSettings();
-            updatePricingUI(pricing);
-        } catch (e) {
-            console.warn('فشل جلب الأسعار:', e);
-        }
-    }
-
-    // ==========================================================
-    // 🔄 اشتراك لحظي في تغييرات الأسعار
-    // ==========================================================
-    let _unsubPricing = null;
-    function startPricingLiveUpdates() {
-        if (_unsubPricing) return;
-        try {
-            _unsubPricing = subscribePricing((pricing) => {
-                updatePricingUI(pricing);
-            });
-            console.log('🔄 تم تفعيل التحديث اللحظي للأسعار');
-        } catch (e) {
-            console.warn('فشل بدء الاشتراك اللحظي بالأسعار:', e);
-        }
-    }
-
-    // ==========================================================
-    // 💎 دالة طلب باقة
-    // ==========================================================
-    window.requestPlan = async function(planId) {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) {
-            alert('⚠️ يجب تسجيل الدخول أولاً');
-            return;
-        }
-
-        if (!window.currentPricing) {
-            alert('⏳ يرجى الانتظار قليلاً حتى يتم تحميل بيانات الباقة...');
-            return;
-        }
-
-        const pricing = window.currentPricing;
-        const planData = pricing[planId];
-        
-        if (!planData) {
-            alert('⚠️ بيانات هذه الباقة غير متوفرة حالياً، يرجى المحاولة لاحقاً.');
-            return;
-        }
-
-        const planName = planData.label || planData.name || ({
-            '3months': 'باقة 3 شهور',
-            '6months': 'باقة 6 شهور',
-            '1year': 'باقة سنة كاملة'
-        })[planId];
-
-        const planDays = planData.days || 0;
-        const planPrice = planData.priceText || (planData.price !== undefined ? `${planData.price} جنيه` : 'غير محدد');
-
-        if (!confirm(
-            `📋 تأكيد طلب الاشتراك\n\n` +
-            `💎 الباقة: ${planName}\n` +
-            `⏱️ المدة: ${planDays} يوم\n` +
-            `💰 السعر: ${planPrice}\n\n` +
-            `سيتم إرسال طلبك للإدارة، وسيتم التواصل معك خلال 24 ساعة.\n\n` +
-            `هل تريد إرسال الطلب؟`
-        )) return;
-
-        const msgEl = document.getElementById('contactSentMsg');
-
-        try {
-            if (msgEl) {
-                msgEl.classList.remove('error');
-                msgEl.classList.add('show');
-                msgEl.textContent = '⏳ جاري إرسال طلبك...';
-            }
-
-            let teacherName = '';
-            let teacherTitle = '';
-            try {
-                const teacherDoc = await getTeacher(phone);
-                if (teacherDoc) {
-                    teacherName = teacherDoc.name || '';
-                    teacherTitle = teacherDoc.title || '';
-                }
-            } catch (e) {}
-
-            await updateDoc(doc(db, 'teachers', phone), {
-                contactRequest: {
-                    requested: true,
-                    at: Date.now(),
-                    handled: false,
-                    planId: planId
-                }
-            });
-
-            const reqId = `contact_${phone}_${Date.now()}`;
-            await setDoc(doc(db, 'contact_requests', reqId), {
-                id: reqId,
-                phone: phone,
-                teacherName: teacherName,
-                teacherTitle: teacherTitle,
-                planId: planId,
-                planName: planName,
-                priceText: planPrice,
-                requestedAt: serverTimestamp(),
-                requestedAtMs: Date.now(),
-                handled: false,
-                handledAt: null
-            });
-
-            if (msgEl) {
-                msgEl.classList.remove('error');
-                msgEl.classList.add('show');
-                msgEl.innerHTML = `✅ تم إرسال طلبك بنجاح!<br>📧 سيتم التواصل معك خلال 24 ساعة على رقم: ${phone}`;
-            }
-
-        } catch (e) {
-            console.error('فشل إرسال الطلب:', e);
-            if (msgEl) {
-                msgEl.classList.add('show', 'error');
-                msgEl.textContent = '❌ فشل إرسال الطلب — جرب تاني';
-            }
-        }
-    };
-
-    // ==========================================================
-    // 🆘 متغيرات التواصل مع الإدارة
-    // ==========================================================
-    window.selectedContactType = null;
-
-    window.selectContactType = function(type, event) {
-        window.selectedContactType = type;
-
-        document.querySelectorAll('.contact-type-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-
-        if (event?.currentTarget) {
-            event.currentTarget.classList.add('selected');
-        } else {
-            const btn = document.querySelector(`.contact-type-btn[data-type="${type}"]`);
-            if (btn) btn.classList.add('selected');
-        }
-
-        const detailsInput = document.getElementById('contactDetailsInput');
-        const btnText = document.getElementById('emailBtnText');
-
-        if (type === 'inquiry' || type === 'problem') {
-            if (detailsInput) {
-                detailsInput.classList.add('show');
-                if (type === 'problem') {
-                    detailsInput.placeholder = 'اكتب تفاصيل المشكلة هنا... (مثال: لما أضغط على زر كذا، الصفحة بتقف)';
-                } else {
-                    detailsInput.placeholder = 'اكتب استفسارك هنا...';
-                }
-            }
-            if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة للإدارة' : 'إرسال الاستفسار للإدارة';
-        } else if (type === 'subscription') {
-            if (detailsInput) {
-                detailsInput.classList.remove('show');
-                detailsInput.value = '';
-            }
-            if (btnText) btnText.textContent = 'إرسال طلب الاشتراك';
-        }
-
-        const sendBtn = document.getElementById('emailContactBtn');
-        if (sendBtn) sendBtn.disabled = false;
-    };
-
-    window.sendEmailContact = async function(e) {
-        if (e) e.preventDefault();
-
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) {
-            alert('⚠️ يجب تسجيل الدخول أولاً');
-            return;
-        }
-
-        if (!window.selectedContactType) {
-            alert('⚠️ يرجى اختيار نوع التواصل أولاً (استفسار / مشكلة / اشتراك)');
-            return;
-        }
-
-        const ADMIN_EMAIL = 'mmoksh162@gmail.com';
-        const type = window.selectedContactType;
-        const detailsText = (document.getElementById('contactDetailsInput')?.value || '').trim();
-
-        if ((type === 'inquiry' || type === 'problem') && !detailsText) {
-            alert('⚠️ يرجى كتابة التفاصيل في المربع النصي');
-            document.getElementById('contactDetailsInput')?.focus();
-            return;
-        }
-
-        let teacherName = '';
-        let teacherTitle = '';
-        try {
-            const t = await getTeacher(phone);
-            if (t) {
-                teacherName = t.name || '';
-                teacherTitle = t.title || '';
-            }
-        } catch (err) {}
-
-        const pricing = window.currentPricing || {};
-        const p3m = pricing['3months']  || {};
-        const p6m = pricing['6months']  || {};
-        const p1y = pricing['1year']    || {};
-
-        const typeInfo = {
-            'inquiry':      { label: '💬 استفسار',        emoji: '💬' },
-            'problem':      { label: '⚠️ مشكلة تقنية',    emoji: '⚠️' },
-            'subscription': { label: '💎 طلب اشتراك',     emoji: '💎' }
-        };
-        const tInfo = typeInfo[type] || typeInfo['inquiry'];
-
-        const subject = `${tInfo.emoji} ${tInfo.label} من ${teacherTitle} ${teacherName}`;
-
-        let bodyLines = [
-            `السلام عليكم،`,
-            ``,
-            `📌 نوع التواصل: ${tInfo.label}`,
-            ``,
-            `━━━━━━━━━━━━━━━━━━`,
-            `📋 بياناتي:`,
-            `━━━━━━━━━━━━━━━━━━`,
-            `👤 الاسم: ${teacherTitle} ${teacherName}`,
-            `📱 رقم الهاتف: ${phone}`,
-        ];
-
-        if (type === 'inquiry' || type === 'problem') {
-            bodyLines.push(
-                ``,
-                `━━━━━━━━━━━━━━━━━━`,
-                type === 'problem' ? `⚠️ تفاصيل المشكلة:` : `💬 تفاصيل الاستفسار:`,
-                `━━━━━━━━━━━━━━━━━━`,
-                detailsText,
-            );
-        }
-
-        if (type === 'subscription') {
-            bodyLines.push(
-                ``,
-                `━━━━━━━━━━━━━━━━━━`,
-                `💎 الباقات المتاحة:`,
-                `━━━━━━━━━━━━━━━━━━`,
-                `📅 باقة 3 شهور   → ${p3m.priceText || 'غير محدد'}  (${p3m.days || 90} يوم)`,
-                `📅 باقة 6 شهور   → ${p6m.priceText || 'غير محدد'}  (${p6m.days || 180} يوم)`,
-                `👑 باقة سنة كاملة → ${p1y.priceText || 'غير محدد'}  (${p1y.days || 365} يوم)`,
-                ``,
-                `━━━━━━━━━━━━━━━━━━`,
-                `💬 الباقة المطلوبة: [اكتب اسم الباقة هنا]`,
-                `━━━━━━━━━━━━━━━━━━`,
-            );
-        }
-
-        bodyLines.push(
-            ``,
-            `برجاء التواصل معي في أقرب وقت.`,
-            ``,
-            `شكراً لكم 🌹`
-        );
-
-        const body = bodyLines.join('\n');
-        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ADMIN_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        window.open(gmailUrl, '_blank');
-    };
-
-    function showBlockedScreen() {
-        const overlay = document.getElementById('securityOverlay');
-        const blockedOverlay = document.getElementById('blockedOverlay');
-
-        if (overlay) {
-            overlay.classList.add('hide');
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-        }
-        if (blockedOverlay) {
-            blockedOverlay.classList.add('show');
-        }
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        console.log('🚫 تم عرض شاشة الحظر');
-    }
-
-    function hideAllOverlays() {
-        const overlay = document.getElementById('securityOverlay');
-        if (overlay) {
-            overlay.classList.add('hide');
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-        }
-    }
-
-    // ==========================================================
-    // ✅ الفحص الرئيسي للجهاز والحظر (باستخدام الدالة الموحّدة)
-    // ==========================================================
-    (async () => {
-        const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) {
-            window.location.href = 'teacher-login.html';
-            return;
-        }
-
-        try {
-            // ✅ فحص الحالة (باستخدام الدالة الموحّدة)
-            const status = await window.checkTeacherActiveStatus(phone);
-
-            if (!status.active) {
-                console.log('🚫 غير نشط — السبب:', status.reason);
-
-                // ✅ لو التفاعل انتهى — نقفل الحساب تلقائياً
-                if (status.reason === 'expired') {
-                    try {
-                        await updateDoc(doc(db, 'teachers', phone), {
-                            isLocked: true,
-                            lockType: 'auto_expired',
-                            autoLockedAt: Date.now()
-                        });
-                    } catch(_) {}
-                }
-
-                localStorage.setItem('teacher_is_blocked', 'true');
-                await loadPricing();
-                showBlockedScreen();
-                startPricingLiveUpdates();
-                return;
-            }
-
-            // ✅ نشط — نمسح علامة الحظر
-            localStorage.removeItem('teacher_is_blocked');
-
-            // ✅ فحص الجهاز
-            let check = null;
-            try {
-                check = await checkTeacherDevice(phone);
-            } catch (e) {
-                console.warn('فشل فحص الجهاز:', e);
-            }
-
-            if (check && check.locked === true) {
-                localStorage.setItem('teacher_is_blocked', 'true');
-                await loadPricing();
-                showBlockedScreen();
-                startPricingLiveUpdates();
-                return;
-            }
-
-            if (!check || !check.ok) {
-                if (localStorage.getItem('teacher_is_blocked') !== 'true') {
-                    localStorage.removeItem('current_teacher_profile');
-                    localStorage.removeItem('current_teacher_phone');
-                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
-                    window.location.href = 'teacher-login.html';
-                    return;
-                }
-                return;
-            }
-
-            // ✅ كله تمام
-            hideAllOverlays();
-            startPricingLiveUpdates();
-
-        } catch (e) {
-            console.error('خطأ في التحقق:', e);
-            hideAllOverlays();
-            startPricingLiveUpdates();
-        }
-    })();
-
-    // ✅ تحميل الأسعار فوراً عند فتح الصفحة
-    loadPricing();
-
-    // ✅ إتاحة الدوال للسكريبتات الأخرى
-    window.loadPricing = loadPricing;
-    window.startPricingLiveUpdates = startPricingLiveUpdates;
-
-    // ✅ تنظيف الاشتراك عند إغلاق الصفحة
-    window.addEventListener('beforeunload', () => {
-        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
-    });
-    window.addEventListener('pagehide', () => {
-        if (_unsubPricing) { _unsubPricing(); _unsubPricing = null; }
-    });
-</script>
 
 <header class="header-3d">
     <h1 id="page-header-title">إعداد تفاصيل المجموعة والمواعيد</h1>
@@ -2116,18 +534,6 @@
         <div class="step active">2. المواعيد والمجموعات</div>
     </div>
 </header>
-
-<!-- ✅ بانر الاشتراك -->
-<div class="subscription-banner" id="subscriptionBanner">
-    <span class="sb-icon" id="subBannerIcon">⏳</span>
-    <div class="sb-text">
-        <strong id="subBannerTitle">جاري فحص الاشتراك...</strong>
-        <small id="subBannerMsg">يرجى الانتظار قليلاً</small>
-    </div>
-    <a href="subscription.html" class="sb-btn" id="subBannerBtn">
-        💎 ترقية الباقة
-    </a>
-</div>
 
 <div class="main-container">
     <div class="booking-card">
@@ -2337,156 +743,8 @@
     publishGroup, 
     getAllGroups, 
     deleteGroup, 
-    updateGroup, 
-    isTeacherLocked,
-    isSubscriptionActive,
-    getTeacherSubscription,
-    SUBSCRIPTION_PLANS
+    updateGroup
   } from './firebase-config.js';
-
-  // ==========================================
-  // 🔄 فحص دوري لحالة الحظر (كل 20 ثانية)
-  // ==========================================
-  let _lockCheckInterval = null;
-
-  function startLockCheck() {
-      const teacherPhone = localStorage.getItem('current_teacher_phone');
-      if (!teacherPhone) return;
-
-      if (_lockCheckInterval) {
-          clearInterval(_lockCheckInterval);
-          _lockCheckInterval = null;
-      }
-
-      _lockCheckInterval = setInterval(async () => {
-          try {
-              // ✅ استخدام الدالة الموحّدة
-              let locked = false;
-
-              if (typeof window.checkTeacherActiveStatus === 'function') {
-                  const status = await window.checkTeacherActiveStatus(teacherPhone);
-                  locked = !status.active;
-              } else {
-                  locked = await isTeacherLocked(teacherPhone);
-              }
-
-              if (locked) {
-                  localStorage.setItem('teacher_is_blocked', 'true');
-                  const blockedOverlay = document.getElementById('blockedOverlay');
-                  if (blockedOverlay && !blockedOverlay.classList.contains('show')) {
-                      blockedOverlay.classList.add('show');
-                      document.body.style.overflow = 'hidden';
-                      document.documentElement.style.overflow = 'hidden';
-
-                      if (_lockCheckInterval) {
-                          clearInterval(_lockCheckInterval);
-                          _lockCheckInterval = null;
-                      }
-                  }
-              } else {
-                  const blockedOverlay = document.getElementById('blockedOverlay');
-                  if (blockedOverlay && blockedOverlay.classList.contains('show')) {
-                      blockedOverlay.classList.remove('show');
-                      document.body.style.overflow = '';
-                      document.documentElement.style.overflow = '';
-                  }
-                  localStorage.removeItem('teacher_is_blocked');
-              }
-          } catch (e) {
-              console.warn('فشل فحص الحظر الدوري:', e);
-          }
-      }, 20000);
-  }
-
-  const _initPhone = localStorage.getItem('current_teacher_phone');
-  if (_initPhone) {
-      const _initialBlock = document.getElementById('blockedOverlay');
-      if (_initialBlock && !_initialBlock.classList.contains('show')) {
-          startLockCheck();
-      }
-  }
-
-  window.addEventListener('beforeunload', () => {
-      if (_lockCheckInterval) {
-          clearInterval(_lockCheckInterval);
-          _lockCheckInterval = null;
-      }
-  });
-
-  window.addEventListener('pagehide', () => {
-      if (_lockCheckInterval) {
-          clearInterval(_lockCheckInterval);
-          _lockCheckInterval = null;
-      }
-  });
-
-  // ==========================================
-  // 💎 فحص الاشتراك وعرض البانر
-  // ==========================================
-  window.currentSubscriptionState = {
-      active: false,
-      plan: null,
-      sub: null,
-      daysLeft: null
-  };
-
-  async function checkAndShowSubscription() {
-      const phone = localStorage.getItem('current_teacher_phone');
-      if (!phone) return;
-
-      const banner = document.getElementById('subscriptionBanner');
-      const icon = document.getElementById('subBannerIcon');
-      const title = document.getElementById('subBannerTitle');
-      const msg = document.getElementById('subBannerMsg');
-      const btn = document.getElementById('subBannerBtn');
-
-      try {
-          const sub = await getTeacherSubscription(phone);
-          const active = await isSubscriptionActive(phone);
-
-          let daysLeft = null;
-          if (sub?.endDate && sub.status === 'active') {
-              daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
-          }
-
-          window.currentSubscriptionState = {
-              active,
-              plan: sub ? SUBSCRIPTION_PLANS[sub.planId] : null,
-              sub,
-              daysLeft
-          };
-
-          if (!active) {
-              banner.className = 'subscription-banner';
-              return;
-          }
-
-          if (sub?.planId === 'trial' || (daysLeft !== null && daysLeft <= 7 && daysLeft > 0)) {
-              banner.className = 'subscription-banner show warning';
-              icon.textContent = sub?.planId === 'trial' ? '🎁' : '⏰';
-              title.textContent = sub?.planId === 'trial' 
-                  ? `باقة تجريبية — باقي ${daysLeft} يوم` 
-                  : `اشتراكك ينتهي قريباً — باقي ${daysLeft} يوم`;
-              msg.textContent = 'قم بالترقية الآن للاستمرار بدون توقف';
-              btn.innerHTML = '💎 ترقية الباقة';
-              btn.href = 'subscription.html';
-          } 
-          else if (sub?.planId === 'free') {
-              banner.className = 'subscription-banner show warning';
-              icon.textContent = '🆓';
-              title.textContent = 'أنت على الباقة المجانية';
-              msg.textContent = 'محدودة بمجموعة واحدة وحتى 15 طالب';
-              btn.innerHTML = '💎 ترقية';
-              btn.href = 'subscription.html';
-          }
-          else {
-              banner.className = 'subscription-banner';
-          }
-      } catch (e) {
-          console.error('خطأ فحص الاشتراك:', e);
-          banner.className = 'subscription-banner';
-      }
-  }
 
   // ==========================================
   // 🗺 جلب اسم الشارع
@@ -2771,24 +1029,14 @@
     const dayOfWeek = new Date(year, month, day).getDay();
 
     const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ 
-        ...a, 
-        type: 'normal', 
-        isOnline: true,
-        date: key,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
-        start: a.startTime,
-        end: a.endTime
+        ...a, type: 'normal', isOnline: true,
+        date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek],
+        start: a.startTime, end: a.endTime
     }));
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ 
-        ...a, 
-        type: 'recurring', 
-        isOnline: true,
-        date: key,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
-        start: a.startTime,
-        end: a.endTime
+        ...a, type: 'recurring', isOnline: true,
+        date: key, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek],
+        start: a.startTime, end: a.endTime
     }));
 
     return [...normalOnline, ...recurringOnline].sort((a, b) => 
@@ -2991,10 +1239,8 @@
               };
 
               const uiItem = { 
-                  ...data, 
-                  appointment: appt, 
-                  isVisible: data.isActive,
-                  isOnline: true 
+                  ...data, appointment: appt, 
+                  isVisible: data.isActive, isOnline: true 
               };
 
               if (appt.type === 'recurring') {
@@ -3463,69 +1709,9 @@
   };
 
   // ==========================================
-  // ✅ addAppointment — مع فحص الاشتراك (حماية مزدوجة)
+  // ✅ addAppointment — بدون فحص اشتراك
   // ==========================================
   window.addAppointment = async function() {
-    const phone = localStorage.getItem('current_teacher_phone');
-    if (phone) {
-        try {
-            // ✅ 1) فحص أولاً باستخدام الدالة الموحّدة (teachers.unlockUntil)
-            let isActive = false;
-
-            if (typeof window.checkTeacherActiveStatus === 'function') {
-                const status = await window.checkTeacherActiveStatus(phone);
-                isActive = status.active;
-                console.log('🔍 فحص الحالة (موحّد):', status.reason);
-
-                if (!isActive) {
-                    // ✅ ملاذ أخير: نستخدم isSubscriptionActive الأصلي
-                    try {
-                        const subActive = await isSubscriptionActive(phone);
-                        if (subActive) {
-                            isActive = true;
-                            console.log('✅ نشط حسب isSubscriptionActive (fallback)');
-                        }
-                    } catch(e) {
-                        console.warn('فشل isSubscriptionActive:', e);
-                    }
-                }
-            } else {
-                // fallback لو الدالة الموحّدة مش موجودة
-                isActive = await isSubscriptionActive(phone);
-            }
-
-            if (!isActive) {
-                // ✅ عرض شاشة الحظر
-                console.log('🚫 لا يوجد اشتراك نشط — عرض شاشة الحظر');
-
-                if (!window.currentPricing && typeof window.loadPricing === 'function') {
-                    try { await window.loadPricing(); } catch(e) {}
-                }
-
-                if (typeof window.startPricingLiveUpdates === 'function') {
-                    window.startPricingLiveUpdates();
-                }
-
-                const blockedOverlay = document.getElementById('blockedOverlay');
-                if (blockedOverlay) {
-                    blockedOverlay.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                    document.documentElement.style.overflow = 'hidden';
-                    blockedOverlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-
-                return;
-            }
-
-            // ✅ المعلم نشط — نكمل عادي
-            console.log('✅ المعلم نشط — متابعة حفظ الموعد');
-
-        } catch (e) {
-            console.error('خطأ فحص الاشتراك:', e);
-            // في حالة الخطأ، نكمل عادي (مش نعرض شاشة حمراء)
-        }
-    }
-
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
     
@@ -3615,20 +1801,9 @@
     const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
 
     const newApptObj = { 
-        start, 
-        end, 
-        groupName, 
-        teacherName, 
-        centerName,
-        studentsCount, 
-        genderAllowed, 
-        location, 
-        subjectData,
-        street,
-        detailedAddress,
-        date: selectedDateKey,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
+        start, end, groupName, teacherName, centerName, studentsCount, 
+        genderAllowed, location, subjectData, street, detailedAddress,
+        date: selectedDateKey, dayOfWeek: dayOfWeek, dayName: dayNames[dayOfWeek],
         type: isRecurring ? 'recurring' : 'normal'
     };
 
@@ -3694,11 +1869,23 @@
       toggleCenterNameField();
       
       window.loadLocalPublishedSlots();
-
-      checkAndShowSubscription();
   }
 
   initApp();
+</script>
+
+<!-- 🔒 توجيه أي دخول مباشر إلى mester3 -->
+<script>
+(function() {
+    if (window.self === window.top) {
+        console.log('🔒 mester2: دخول مباشر — توجيه إلى mester3');
+        setTimeout(() => {
+            window.location.href = 'mester3.html';
+        }, 100);
+    } else {
+        console.log('🔗 mester2: محمّل في iframe — البقاء في الصفحة');
+    }
+})();
 </script>
 
 </body>
