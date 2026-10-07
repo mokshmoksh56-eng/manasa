@@ -20,6 +20,10 @@
         --orange: #F59E0B;
         --dark-orange: #D97706;
         --red: #DC2626;
+        --ai-purple: #7C3AED;
+        --ai-dark: #5B21B6;
+        --ai-light: #EDE9FE;
+        --ai-border: #C4B5FD;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -313,6 +317,181 @@
         flex-shrink: 0; transition: all 0.3s ease;
     }
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
+
+    /* ============ AI Card ============ */
+    .launcher-card.ai-card {
+        background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #DDD6FE 100%);
+        border-color: var(--ai-purple);
+        box-shadow: 0 10px 30px -8px rgba(124,58,237,0.4), 0 4px 12px rgba(124,58,237,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .launcher-card.ai-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0;
+        width: 8px;
+        background: linear-gradient(180deg, var(--ai-purple), var(--ai-dark));
+        transition: width 0.3s ease;
+    }
+
+    .launcher-card.ai-card::after {
+        content: '';
+        position: absolute;
+        inset: -50%;
+        background: conic-gradient(
+            from 0deg,
+            transparent 0deg,
+            rgba(124,58,237,0.18) 90deg,
+            transparent 180deg,
+            rgba(59,130,246,0.18) 270deg,
+            transparent 360deg
+        );
+        animation: aiRotateGlow 6s linear infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes aiRotateGlow {
+        to { transform: rotate(360deg); }
+    }
+
+    .launcher-card.ai-card .card-content,
+    .launcher-card.ai-card .card-icon,
+    .launcher-card.ai-card .card-arrow {
+        position: relative;
+        z-index: 1;
+    }
+
+    .launcher-card.ai-card:hover {
+        transform: translateY(-4px) scale(1.01);
+        border-color: var(--ai-dark);
+        box-shadow: 0 15px 40px -8px rgba(124,58,237,0.6);
+    }
+
+    .card-icon.ai-icon {
+        background: linear-gradient(135deg, var(--ai-purple), var(--ai-dark));
+        border: 2px solid var(--ai-dark);
+        position: relative;
+        overflow: visible;
+        animation: aiIconFloat 3s ease-in-out infinite;
+        box-shadow: 0 8px 20px -4px rgba(124,58,237,0.6);
+    }
+
+    @keyframes aiIconFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-4px) rotate(-3deg); }
+    }
+
+    .launcher-card.ai-card:hover .card-icon.ai-icon {
+        transform: scale(1.1) rotate(5deg);
+        animation: none;
+    }
+
+    .ai-emoji {
+        font-size: 34px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        animation: aiEmojiBlink 2.5s ease-in-out infinite;
+    }
+
+    @keyframes aiEmojiBlink {
+        0%, 90%, 100% { transform: scale(1); }
+        95% { transform: scale(1.15); }
+    }
+
+    .ai-sparkle {
+        position: absolute;
+        font-size: 12px;
+        pointer-events: none;
+        opacity: 0;
+        animation: sparkleAnim 2.5s ease-in-out infinite;
+    }
+
+    .sparkle-1 {
+        top: -6px;
+        right: -6px;
+        animation-delay: 0s;
+        color: #FCD34D;
+    }
+
+    .sparkle-2 {
+        bottom: -4px;
+        left: -6px;
+        animation-delay: 0.8s;
+        color: #F472B6;
+        font-size: 10px;
+    }
+
+    .sparkle-3 {
+        top: 50%;
+        left: -10px;
+        animation-delay: 1.6s;
+        color: #60A5FA;
+        font-size: 10px;
+    }
+
+    @keyframes sparkleAnim {
+        0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+    }
+
+    .launcher-card.ai-card .card-title {
+        color: #4C1D95;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ai-badge-new {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        font-size: 9.5px;
+        font-weight: 900;
+        padding: 2px 8px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(245,158,11,0.5);
+        animation: newBadgePulse 1.5s ease-in-out infinite;
+        letter-spacing: 0.5px;
+    }
+
+    @keyframes newBadgePulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 2px 6px rgba(245,158,11,0.5); }
+        50% { transform: scale(1.08); box-shadow: 0 4px 12px rgba(245,158,11,0.8); }
+    }
+
+    .launcher-card.ai-card .card-subtitle {
+        color: #6D28D9;
+    }
+
+    .card-ai-features {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+    }
+
+    .ai-feature {
+        background: rgba(255,255,255,0.85);
+        border: 1.5px solid var(--ai-border);
+        color: var(--ai-dark);
+        font-size: 10.5px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(124,58,237,0.15);
+    }
+
+    .launcher-card.ai-card .card-arrow {
+        background: linear-gradient(135deg, var(--ai-purple), var(--ai-dark));
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(124,58,237,0.4);
+    }
+
+    .launcher-card.ai-card:hover .card-arrow {
+        transform: translateX(-4px) scale(1.1);
+        box-shadow: 0 5px 15px rgba(124,58,237,0.6);
+    }
 
     .reminder-table {
         margin-top: 24px;
@@ -717,6 +896,10 @@
         .lesson-chip .chip-time { font-size: 9px; }
         .lesson-modal-box { max-width: 95%; }
         .cloud-badge, .sync-badge { font-size: 9.5px; padding: 5px 9px; }
+        .ai-emoji { font-size: 28px; }
+        .ai-sparkle { font-size: 10px; }
+        .ai-badge-new { font-size: 8.5px; padding: 2px 6px; }
+        .ai-feature { font-size: 9.5px; padding: 3px 8px; }
     }
 </style>
 </head>
@@ -803,6 +986,27 @@
                     <div class="card-title"><span>المواعيد والمجموعات</span></div>
                     <div class="card-subtitle">أضف المجموعات وحدد المواعيد والأماكن</div>
                     <div id="scheduleStateWrap"></div>
+                </div>
+                <div class="card-arrow">‹</div>
+            </a>
+
+            <a href="ai.html" class="launcher-card ai-card" id="aiCard">
+                <div class="card-icon ai-icon">
+                    <span class="ai-emoji">🤖</span>
+                    <span class="ai-sparkle sparkle-1">✨</span>
+                    <span class="ai-sparkle sparkle-2">✨</span>
+                    <span class="ai-sparkle sparkle-3">✨</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">
+                        <span>المساعد الذكي</span>
+                        <span class="ai-badge-new">جديد</span>
+                    </div>
+                    <div class="card-subtitle">اسأل أي سؤال في المنهج — شرح، حل مسائل، تحضير دروس</div>
+                    <div class="card-ai-features">
+                        <span class="ai-feature">🎒 وضع الطالب</span>
+                        <span class="ai-feature">👨‍🏫 وضع المستر</span>
+                    </div>
                 </div>
                 <div class="card-arrow">‹</div>
             </a>
