@@ -1090,6 +1090,12 @@
               groupName: appt.groupName || '',
               teacherName: appt.teacherName || '',
               centerName: appt.centerName || '',
+              // ✅ العنوان الكامل والتفاصيل من تحديد الموقع
+              fullAddress: appt.fullAddress || '',
+              detailedAddress: appt.detailedAddress || '',
+              street: appt.street || '',
+              lat: appt.lat || null,
+              lng: appt.lng || null,
               addedAt: Date.now()
           });
 
@@ -1256,7 +1262,7 @@
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
 
-          // ✅ حفظ التفاصيل الكاملة للحصة
+          // ✅ حفظ التفاصيل الكاملة للحصة في الملخص (بما فيها العنوان)
           saveApptToSummary({
               gender: genderMapped,
               genderAllowed: genderAllowed,
@@ -1273,7 +1279,13 @@
               capacity: parseInt(studentsCount),
               groupName: groupName,
               teacherName: teacherName,
-              centerName: centerName
+              centerName: centerName,
+              // ✅ العنوان الكامل والتفاصيل
+              fullAddress: fullAddress || '',
+              detailedAddress: detailedAddress || '',
+              street: street || '',
+              lat: lat,
+              lng: lng
           });
 
           await window.loadLocalPublishedSlots();
