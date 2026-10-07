@@ -713,15 +713,12 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// قائمة الموديلات — الكود هيجربهم بالترتيب لحد ما واحد يشتغل
+// ✅ قائمة الموديلات المتاحة لحسابك (محدثة)
 const GROQ_MODELS = [
-    'llama-3.1-8b-instant',
-    'llama-3.3-70b-versatile',
-    'llama-3.1-70b-versatile',
-    'llama3-8b-8192',
-    'llama3-70b-8192',
-    'gemma2-9b-it',
-    'mixtral-8x7b-32768'
+    'openai/gpt-oss-20b',
+    'openai/gpt-oss-120b',
+    'allam-2-7b',
+    'qwen/qwen3.8-27b'
 ];
 
 let aiModeActive = false;
@@ -759,7 +756,7 @@ window.manageGroqKey = function() {
     
     if (trimmed.startsWith('gsk_')) {
         if (trimmed.length < 40) {
-            alert('⚠️ المفتاح قصير أوي!\n\nالمفتاح الكامل بيبقى حوالي 56 حرف بعد gsk_\n\nالطول الحالي: ' + trimmed.length);
+            alert('⚠️ المفتاح قصير أوي!\n\nالطول الحالي: ' + trimmed.length);
             return;
         }
         
@@ -791,36 +788,20 @@ async function testGroqKey(key) {
             const models = data.data?.map(m => m.id) || [];
             showToast('✅ المفتاح شغال! ' + models.length + ' موديل', true);
             
-            // دور على أول موديل من قائمتنا موجود
-            let foundModel = null;
-            for (const m of GROQ_MODELS) {
-                if (models.includes(m)) { foundModel = m; break; }
-            }
-            
             addBotMessage(
                 `✅ <b>المفتاح شغال!</b><br><br>` +
-                `عدد الموديلات المتاحة: <b>${models.length}</b><br>` +
-                (foundModel ? `أول موديل هيشتغل معاك: <b>${foundModel}</b><br>` : '') +
-                `<br>تقدر تستخدم الـ AI عادي دلوقتي 🚀`
+                `عدد الموديلات المتاحة: <b>${models.length}</b><br><br>` +
+                `الموديلات:<br>` +
+                models.slice(0, 5).map(m => `• <code>${m}</code>`).join('<br>')
             );
         } else if (res.status === 401) {
             showToast('❌ المفتاح غلط (401)');
-            addBotMessage(
-                `❌ <b>المفتاح غلط أو اتلغى (401)</b><br><br>` +
-                `الخطوات:<br>` +
-                `1. روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a><br>` +
-                `2. اعمل مفتاح جديد<br>` +
-                `3. انسخه <b>كامل</b><br>` +
-                `4. دوس على زر 🔑 فوق والصقه`
-            );
         } else {
             showToast('❌ فشل: ' + res.status);
-            addBotMessage(`❌ فشل الاتصال (${res.status})`);
         }
     } catch(e) {
         console.error(e);
         showToast('❌ مشكلة في الاتصال');
-        addBotMessage(`❌ <b>مشكلة في الاتصال</b><br>${e.message}`);
     }
 }
 
@@ -1165,11 +1146,7 @@ ${groupsContext}
             if (lastError && lastError.includes('429')) {
                 return '⏳ <b>وصلت للحد المجاني</b><br><br>استنى شوية وجرب تاني.';
             }
-            return `❌ <b>مفيش موديل متاح لحسابك</b><br><br>` +
-                   `افتح Console والصق الأمر ده عشان تشوف الموديلات المتاحة:<br><br>` +
-                   `<code style="background:#f0f0f0;padding:4px;border-radius:4px;font-size:11px;display:block;direction:ltr;text-align:left;overflow-x:auto;">` +
-                   `fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+localStorage.getItem('groq_api_key')}}).then(r=>r.json()).then(d=>console.log(d.data.map(m=>m.id)))` +
-                   `</code>`;
+            return `❌ <b>كل الموديلات فشلت</b><br><br>افتح Console وشوف قائمة الموديلات المتاحة لحسابك.`;
         }
         
         const data = await response.json();
@@ -1186,7 +1163,7 @@ ${groupsContext}
     } catch (error) {
         typing.remove();
         console.error('AI Error:', error);
-        return `⚠️ <b>مشكلة في الاتصال بالـ AI</b><br><br>${error.message}<br><br>جرب:<br>• تتأكد من النت<br>• تدوس على 🔑 فوق و تختبر المفتاح`;
+        return `⚠️ <b>مشكلة في الاتصال بالـ AI</b><br><br>${error.message}`;
     }
 }
 
@@ -2366,8 +2343,6 @@ async function init() {
     
     if (!key) {
         keyMsg = `<br><br>🔑 <b>مفيش مفتاح Groq محفوظ</b><br>دوس على الزر 🔑 في الهيدر عشان تضيف مفتاح وتستخدم المساعد الذكي.`;
-    } else if (key.length < 40) {
-        keyMsg = `<br><br>⚠️ <b>مفتاح Groq قصير أوي (${key.length} حرف)</b><br>دوس على الزر 🔑 وصححه.`;
     }
     
     await addBotMessage(
