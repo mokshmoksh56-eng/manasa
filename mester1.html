@@ -415,7 +415,6 @@
         .btn-save-inline:hover { transform: translateY(-1px); }
         .btn-save-inline:active { transform: scale(0.96); }
 
-        /* 💾 زر الحفظ السفلي */
         .save-btn {
             margin-top: 6px; width: 100%; padding: 14px; 
             background: linear-gradient(135deg, #10B981, #047857);
@@ -459,7 +458,6 @@
 </head>
 <body>
 
-    <!-- ✅ شارة تحديث المواد -->
     <div class="curriculum-updated-badge" id="curriculumBadge">
         <span>☁️</span>
         <span>تم تحديث المواد من السحابة</span>
@@ -477,10 +475,8 @@
 
     <div class="container">
 
-        <!-- ✅ عنوان الصفحة -->
         <h2 class="page-title" id="pageTitle">ما هي المادة التي تدرسها؟ 📚</h2>
 
-        <!-- ✅ حاوية المراحل -->
         <div id="stagesContainer">
             <div class="loading-curriculum">
                 <div class="spinner"></div>
@@ -493,7 +489,6 @@
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <!-- 💾 زر الحفظ -->
         <button class="save-btn" id="mainSaveBtn" onclick="window.saveSelection()">
             <span>💾</span>
             <span>حفظ التخصص</span>
@@ -510,7 +505,11 @@
         // ==========================================================
         // ✅ استيراد دوال Firebase
         // ==========================================================
-        import { subscribeCurriculum, DEFAULT_CURRICULUM } from './firebase-config.js';
+        import { 
+            subscribeCurriculum, 
+            DEFAULT_CURRICULUM,
+            saveTeacherData
+        } from './firebase-config.js';
 
         // ==========================================================
         // ✅ 1) حالة السحابة
@@ -863,9 +862,53 @@
         }
 
         // ==========================================================
+        // ☁️ رفع تلقائي للبيانات على السحابة
+        // ==========================================================
+        async function pushDataToCloud() {
+            try {
+                const phone = localStorage.getItem('current_teacher_phone');
+                if (!phone) {
+                    console.log('⚠️ لا يوجد رقم معلم — تخطي الرفع');
+                    return;
+                }
+                
+                await saveTeacherData(phone, {
+                    teacherSelections: localStorage.getItem('teacherSelections'),
+                    mester1_selections: localStorage.getItem('mester1_selections'),
+                    mester1_is_locked: localStorage.getItem('mester1_is_locked') === 'true',
+                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+                    teacher_groups_count: parseInt(localStorage.getItem('teacher_groups_count') || '0'),
+                    last_selected_gender: localStorage.getItem('last_selected_gender'),
+                    last_selected_location: localStorage.getItem('last_selected_location')
+                });
+                console.log('☁️ تم رفع البيانات من mester1');
+            } catch(e) {
+                console.warn('⚠️ فشل الرفع التلقائي:', e);
+            }
+        }
+
+        // ✅ رفع عند أي تغيير في localStorage
+        const originalSetItem = localStorage.setItem.bind(localStorage);
+        localStorage.setItem = function(key, value) {
+            originalSetItem(key, value);
+            
+            const syncKeys = [
+                'teacherSelections',
+                'mester1_selections',
+                'teacher_appointments_summary',
+                'teacher_groups_count'
+            ];
+            
+            if (syncKeys.includes(key)) {
+                clearTimeout(window._cloudPushTimer);
+                window._cloudPushTimer = setTimeout(pushDataToCloud, 1500);
+            }
+        };
+
+        // ==========================================================
         // 💾 حفظ التخصص + رجوع لـ mester3
         // ==========================================================
-        window.saveSelection = function() {
+        window.saveSelection = async function() {
             let total = 0;
             for (const stageId in selections) {
                 total += selections[stageId].subjects.length;
@@ -891,6 +934,9 @@
             localStorage.setItem('mester1_last_saved', String(Date.now()));
 
             console.log('✅ تم حفظ التخصص:', finalData);
+
+            // ✅ رفع فوري للسحابة
+            await pushDataToCloud();
 
             // ✅ إشعار نجاح الحفظ
             const badge = document.getElementById('curriculumBadge');
@@ -1017,6 +1063,9 @@
                     buildStagesUI();
                     restoreMester1();
                     isFirstLoad = false;
+                    
+                    // ✅ رفع أول ما الصفحة تفتح (لو في بيانات محلية)
+                    setTimeout(pushDataToCloud, 2000);
                 } else {
                     rebuildUIWithPreserve();
 
@@ -1036,6 +1085,8 @@
                     restoreMester1();
                     isFirstLoad = false;
                     window.setCloudStatus('offline', 'استخدام النسخة المحلية');
+                    
+                    setTimeout(pushDataToCloud, 2000);
                 }
             }, 5000);
 
