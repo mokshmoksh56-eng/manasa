@@ -810,6 +810,25 @@
         'use strict';
 
         // ==========================================================
+        // 🕐 تحويل الوقت لنظام 12 ساعة مع ص/م
+        // ==========================================================
+        function formatTime12(timeStr) {
+            if (!timeStr) return '';
+            try {
+                const [h, m] = timeStr.split(':').map(Number);
+                if (isNaN(h) || isNaN(m)) return timeStr;
+                
+                const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+                const period = h < 12 ? 'ص' : 'م';
+                const mm = String(m).padStart(2, '0');
+                
+                return `${hour12}:${mm} ${period}`;
+            } catch(e) {
+                return timeStr;
+            }
+        }
+
+        // ==========================================================
         // 🕐 تحليل وقت الحصة
         // ==========================================================
         function parseLessonDateTime(appt) {
@@ -907,34 +926,29 @@
                     if (apptRaw) savedAppts = JSON.parse(apptRaw);
                 } catch(e) {}
 
-                // فلتر: حصص النهاردة بس + مش منتهية
                 const todayLessons = [];
                 savedAppts.forEach((appt, originalIndex) => {
                     const apptType = appt.apptType || 'normal';
                     let isToday = false;
 
-                    // 1) حصة بتاريخ محدد
                     if (appt.date && apptType === 'normal') {
                         const [y, m, d] = appt.date.split('-').map(Number);
                         const apptDate = new Date(y, m - 1, d);
                         const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                         if (apptDate.getTime() === nowDate.getTime()) isToday = true;
                     }
-                    // 2) حصة أسبوعية والنهاردة يومها
                     else if (apptType === 'recurring' && appt.daysNames && appt.daysNames.length > 0) {
                         if (appt.daysNames.includes(todayName)) isToday = true;
                     }
 
                     if (!isToday) return;
 
-                    // نتأكد إنها مش منتهية
                     const timeInfo = parseLessonDateTime(appt);
                     if (timeInfo && timeInfo.status === 'ended') return;
 
                     todayLessons.push({ appt, originalIndex, timeInfo });
                 });
 
-                // ترتيب حسب وقت البداية
                 todayLessons.sort((a, b) => {
                     const aT = a.appt.startTime || a.appt.start || '00:00';
                     const bT = b.appt.startTime || b.appt.start || '00:00';
@@ -972,14 +986,14 @@
                     let timeDisplay = '';
 
                     if (timeInfo) {
-                        timeDisplay = timeInfo.startTimeStr;
+                        timeDisplay = formatTime12(timeInfo.startTimeStr);
                         if (timeInfo.status === 'active') {
                             extraClass = 'chip-active';
                         } else if (timeInfo.status === 'soon') {
                             extraClass = 'chip-soon';
                         }
                     } else {
-                        timeDisplay = appt.startTime || appt.start || '';
+                        timeDisplay = formatTime12(appt.startTime || appt.start || '');
                     }
 
                     const subjectShort = (appt.subject || 'حصة').substring(0, 12);
@@ -1220,7 +1234,9 @@
                 let timeText = 'غير محدد';
                 const startT = appt.startTime || appt.start || '';
                 const endT = appt.endTime || appt.end || '';
-                if (startT && endT) timeText = `من ${startT} إلى ${endT}`;
+                if (startT && endT) {
+                    timeText = `من ${formatTime12(startT)} إلى ${formatTime12(endT)}`;
+                }
 
                 let dayText = appt.dayName || 'غير محدد';
                 if (appt.daysNames && appt.daysNames.length > 0) dayText = appt.daysNames[0];
@@ -1390,10 +1406,8 @@
             updateAll();
         });
 
-        // تحديث كل 30 ثانية (لتحديث حالة الحصص)
         setInterval(updateLessonsList, 30000);
 
-        // تحديث الكروت كل 3 ثواني
         setInterval(() => {
             updateSpecialtyCard();
             updateScheduleCard();
