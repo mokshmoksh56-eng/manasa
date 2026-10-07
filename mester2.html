@@ -110,6 +110,7 @@
         text-align: center; 
         border: 1px solid var(--border-teal);
         box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
+        white-space: pre-line;
     }
 
     #center-name-group {
@@ -1872,20 +1873,6 @@
   }
 
   initApp();
-</script>
-
-<!-- 🔒 توجيه أي دخول مباشر إلى mester3 -->
-<script>
-(function() {
-    if (window.self === window.top) {
-        console.log('🔒 mester2: دخول مباشر — توجيه إلى mester3');
-        setTimeout(() => {
-            window.location.href = 'mester3.html';
-        }, 100);
-    } else {
-        console.log('🔗 mester2: محمّل في iframe — البقاء في الصفحة');
-    }
-})();
 </script>
 
 </body>
