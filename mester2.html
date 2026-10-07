@@ -45,6 +45,34 @@
     .step.active { color: #a8f0e5; opacity: 1; font-size: 15px; }
     .step-divider { color: rgba(255,255,255,0.6); }
 
+    /* ✅ زر الرجوع لـ mester3 */
+    .back-btn-header {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+        transition: all 0.25s ease;
+        font-family: inherit;
+        z-index: 10;
+    }
+    .back-btn-header:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+    .back-btn-header:active { transform: scale(0.96); }
+
     .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
 
     .step-num {
@@ -522,12 +550,18 @@
         .btn-visibility { width: 100%; }
         .status-message { font-size: 13px; padding: 10px 12px; }
         .status-message .status-icon { font-size: 20px; }
+        .back-btn-header { font-size: 10px; padding: 5px 9px; }
+        .back-btn-header .back-label { display: none; }
     }
 </style>
 </head>
 <body>
 
 <header class="header-3d">
+    <a href="mester3.html" class="back-btn-header">
+        <span>🏠</span>
+        <span class="back-label">الرجوع للرئيسية</span>
+    </a>
     <h1 id="page-header-title">إعداد تفاصيل المجموعة والمواعيد</h1>
     <div class="stepper">
         <div class="step">1. التخصص</div>
@@ -677,7 +711,7 @@
             <div class="swipe-hint">👈 اسحب يميناً أو يساراً لتغيير الشهر 👉</div>
         </div>
 
-        <button class="btn-add" onclick="addAppointment()">حفظ الموعد ونشره مباشرة</button>
+        <button class="btn-add" id="addApptBtn" onclick="addAppointment()">حفظ الموعد ونشره مباشرة</button>
         <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
     </div>
 
@@ -1214,16 +1248,33 @@
     renderCalendar();
   }
 
+  // ==========================================
+  // 📊 تحديث عدد الحصص في localStorage
+  // ==========================================
+  function updateGroupsCount(myGroups) {
+      try {
+          const count = myGroups.length;
+          localStorage.setItem('teacher_groups_count', String(count));
+          console.log(`📊 تم تحديث عدد الحصص: ${count}`);
+      } catch(e) {
+          console.warn('⚠️ فشل تحديث عدد الحصص:', e);
+      }
+  }
+
   window.loadLocalPublishedSlots = async function() {
       try {
           const teacherPhone = localStorage.getItem('current_teacher_phone');
           if (!teacherPhone) {
               console.warn("لا يوجد رقم هاتف مسجل");
+              updateGroupsCount([]);
               return;
           }
           
           const groups = await getAllGroups(); 
           const myGroups = groups.filter(g => g.phone === teacherPhone);
+
+          // ✅ تحديث عدد الحصص في localStorage
+          updateGroupsCount(myGroups);
 
           window.onlineAppointments = {};
           window.onlineRecurring = {};
@@ -1258,6 +1309,7 @@
           renderAllCardsSummary();
       } catch (error) {
           console.error("فشل جلب المواعيد من Firebase:", error);
+          updateGroupsCount([]);
       }
   };
 
@@ -1808,18 +1860,37 @@
         type: isRecurring ? 'recurring' : 'normal'
     };
 
-    await window.publishSingleApptOnline(newApptObj);
-    
-    document.getElementById('startTime').value = ''; 
-    document.getElementById('endTime').value = '';
-    document.getElementById('durationInfo').classList.remove('show'); 
-    document.getElementById('repeatWeekly').checked = false;
-    document.getElementById('detailed-address').value = '';
-    hideAddError(); 
+    // ✅ تعطيل الزر + مؤشر التحميل
+    const btn = document.getElementById('addApptBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ جاري النشر...';
 
-    setTimeout(() => {
-        document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
-    }, 150);
+    try {
+        await window.publishSingleApptOnline(newApptObj);
+        
+        document.getElementById('startTime').value = ''; 
+        document.getElementById('endTime').value = '';
+        document.getElementById('durationInfo').classList.remove('show'); 
+        document.getElementById('repeatWeekly').checked = false;
+        document.getElementById('detailed-address').value = '';
+        hideAddError(); 
+
+        // ✅ إشعار نجاح
+        btn.innerHTML = '✅ تم الحفظ — جاري الرجوع...';
+        btn.style.background = 'linear-gradient(135deg, #10B981, #047857)';
+
+        // ✅ بعد ثانيتين → ارجع لـ mester3
+        setTimeout(() => {
+            window.location.href = 'mester3.html';
+        }, 1800);
+
+    } catch (error) {
+        console.error('خطأ:', error);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+    }
   };
 
   function showAddError(msg) { 
