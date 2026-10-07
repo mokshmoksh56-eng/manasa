@@ -299,6 +299,29 @@
     
     .row-group { display: flex; gap: 15px; }
     .row-group .form-group { flex: 1; }
+
+    .saved-session-banner {
+        display: none;
+        margin: 0 25px 15px;
+        padding: 10px 14px;
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        border: 2px solid #F59E0B;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #92400E;
+        align-items: center;
+        gap: 8px;
+        animation: bannerPop 0.4s ease-out;
+    }
+    .saved-session-banner.show { display: flex; }
+    @keyframes bannerPop {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .saved-session-banner .ss-icon {
+        font-size: 16px;
+    }
 </style>
 </head>
 <body>
@@ -312,6 +335,12 @@
     <div class="tabs">
         <button class="tab active" id="tabLogin" onclick="window.switchTab('login')">🔐 تسجيل دخول</button>
         <button class="tab" id="tabRegister" onclick="window.switchTab('register')">✍️️ حساب جديد</button>
+    </div>
+
+    <!-- ✅ بانر الجلسة المحفوظة -->
+    <div class="saved-session-banner" id="savedSessionBanner">
+        <span class="ss-icon">💾</span>
+        <span>عندك جلسة محفوظة — جاري التحويل تلقائياً...</span>
     </div>
 
     <div class="login-body">
@@ -466,7 +495,45 @@
     } from './firebase-config.js';
 
     // ==========================================================
-    // ✅ دالة مساعدة: فحص حالة الحظر/الاشتراك للمعلم
+    // ✅ حفظ دائم للبيانات
+    // ==========================================================
+    function savePersistentData(phone, profile) {
+        try {
+            if (phone) localStorage.setItem('teacher_saved_phone', phone);
+            if (profile) localStorage.setItem('teacher_saved_profile', JSON.stringify(profile));
+            console.log('💾 تم حفظ البيانات بشكل دائم');
+        } catch(e) {
+            console.warn('⚠️ فشل الحفظ الدائم:', e);
+        }
+    }
+
+    // ==========================================================
+    // ✅ استرجاع البيانات المحفوظة
+    // ==========================================================
+    function restoreSavedData() {
+        try {
+            const savedPhone = localStorage.getItem('teacher_saved_phone');
+            const savedProfile = localStorage.getItem('teacher_saved_profile');
+            
+            // ✅ لو الرقم والبروفايل اتمسحوا، نرجعهم
+            if (savedPhone && !localStorage.getItem('current_teacher_phone')) {
+                localStorage.setItem('current_teacher_phone', savedPhone);
+                console.log('✅ تم استرجاع رقم المعلم:', savedPhone);
+            }
+            if (savedProfile && !localStorage.getItem('current_teacher_profile')) {
+                localStorage.setItem('current_teacher_profile', savedProfile);
+                console.log('✅ تم استرجاع بروفايل المعلم');
+            }
+            
+            return { savedPhone, savedProfile };
+        } catch(e) {
+            console.warn('⚠️ فشل استرجاع البيانات:', e);
+            return { savedPhone: null, savedProfile: null };
+        }
+    }
+
+    // ==========================================================
+    // ✅ فحص حالة الحظر/الاشتراك
     // ==========================================================
     async function checkTeacherBlockStatus(phone) {
         const result = { isBlocked: false, reason: null, teacherDoc: null };
@@ -475,11 +542,9 @@
             const teacherDoc = await getTeacher(phone);
             result.teacherDoc = teacherDoc;
 
-            if (!teacherDoc) {
-                return result;
-            }
+            if (!teacherDoc) return result;
 
-            // ✅ 1) فحص الاشتراك المؤقت (unlockUntil) أولاً
+            // 1) فحص الاشتراك المؤقت
             if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
                 const until = typeof teacherDoc.unlockUntil === 'number'
                     ? teacherDoc.unlockUntil
@@ -492,21 +557,18 @@
                             lockType: 'auto_expired',
                             autoLockedAt: Date.now()
                         });
-                    } catch(e) {
-                        console.warn('فشل القفل التلقائي:', e);
-                    }
+                    } catch(e) {}
                     result.isBlocked = true;
                     result.reason = 'auto_expired';
                     localStorage.setItem('teacher_is_blocked', 'true');
                     return result;
                 } else {
                     localStorage.removeItem('teacher_is_blocked');
-                    result.isBlocked = false;
                     return result;
                 }
             }
 
-            // ✅ 2) فحص الحظر اليدوي من الإدارة
+            // 2) فحص الحظر اليدوي
             if (teacherDoc.isLocked === true) {
                 result.isBlocked = true;
                 result.reason = 'manual_lock';
@@ -514,7 +576,7 @@
                 return result;
             }
 
-            // ✅ 3) نشط عادي
+            // 3) نشط
             localStorage.removeItem('teacher_is_blocked');
             return result;
 
@@ -532,11 +594,23 @@
     // ✅ التحقق من الجلسة عند فتح الصفحة
     // ==========================================================
     window.addEventListener('DOMContentLoaded', async () => {
-        const savedPhone = localStorage.getItem('current_teacher_phone');
-        if (savedPhone) {
+        // ✅ استرجاع البيانات المحفوظة أولاً
+        const restored = restoreSavedData();
+        
+        const phone = localStorage.getItem('current_teacher_phone');
+        
+        if (phone) {
+            // ✅ نظهر بانر الجلسة المحفوظة
+            const banner = document.getElementById('savedSessionBanner');
+            if (banner) banner.classList.add('show');
+            
+            // ✅ نملأ الحقل بالرقم
+            const phoneInput = document.getElementById('loginPhone');
+            if (phoneInput) phoneInput.value = phone;
+            
             try {
-                // ✅ 1) فحص الحظر/الاشتراك أولاً
-                const blockStatus = await checkTeacherBlockStatus(savedPhone);
+                // ✅ 1) فحص الحظر/الاشتراك
+                const blockStatus = await checkTeacherBlockStatus(phone);
                 
                 if (blockStatus.isBlocked) {
                     window.location.href = 'mester2.html';
@@ -544,28 +618,33 @@
                 }
 
                 // ✅ 2) فحص الجهاز
-                const check = await checkTeacherDevice(savedPhone);
+                const check = await checkTeacherDevice(phone);
                 
                 if (!check.ok) {
                     localStorage.removeItem('current_teacher_profile');
                     localStorage.removeItem('current_teacher_phone');
                     localStorage.removeItem('teacher_is_blocked');
+                    // نمسح البانر
+                    if (banner) banner.classList.remove('show');
                 } else {
                     if (check.locked === true) {
                         localStorage.setItem('teacher_is_blocked', 'true');
                         window.location.href = 'mester2.html';
                         return;
                     }
-                    // ✅ التحويل للصفحة الرئيسية mester3.html
-                    window.location.href = 'mester3.html';
+                    // ✅ تحويل تلقائي لـ mester3
+                    setTimeout(() => {
+                        window.location.href = 'mester3.html';
+                    }, 600);
                 }
             } catch (e) {
                 console.error('خطأ في التحقق من الجلسة:', e);
+                if (banner) banner.classList.remove('show');
             }
         }
     });
 
-    // ✅ تحديث صورة الهيدر حسب اللقب
+    // ✅ تحديث صورة الهيدر
     window.updateHeaderImage = function(title) {
         const header = document.getElementById('headerSection');
         if (title === 'مس') {
@@ -575,7 +654,7 @@
         }
     };
 
-    // ✅ التحقق من الرقم أثناء الكتابة لتحديث الصورة
+    // ✅ التحقق من الرقم
     window.checkLoginPhone = async function(phone) {
         if (phone.length === 11) {
             try {
@@ -677,7 +756,7 @@
                 return;
             }
 
-            // ✅ 1) فحص حالة الحظر/الاشتراك
+            // ✅ فحص الحظر
             let isBlocked = false;
 
             if (user.unlockUntil && user.isLocked !== true) {
@@ -694,35 +773,31 @@
                         });
                     } catch(_) {}
                     isBlocked = true;
-                    console.log('⏰ انتهى الاشتراك المؤقت');
                 } else {
                     localStorage.removeItem('teacher_is_blocked');
-                    console.log('✅ الاشتراك نشط حتى:', new Date(until).toLocaleDateString('ar-EG'));
                 }
             }
             else if (user.isLocked === true) {
                 isBlocked = true;
-                console.log('🚫 المعلم محظور يدوياً');
             }
             else {
                 localStorage.removeItem('teacher_is_blocked');
             }
 
-            // ✅ لو محظور
             if (isBlocked) {
                 localStorage.setItem('teacher_is_blocked', 'true');
                 localStorage.setItem('current_teacher_profile', JSON.stringify(user));
                 localStorage.setItem('current_teacher_phone', user.phone);
-
+                
+                // ✅ حفظ دائم
+                savePersistentData(user.phone, user);
+                
                 window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
-
-                setTimeout(() => {
-                    window.location.href = 'mester2.html';
-                }, 1200);
+                setTimeout(() => { window.location.href = 'mester2.html'; }, 1200);
                 return;
             }
 
-            // ✅ 2) التحقق من الجهاز
+            // ✅ فحص الجهاز
             try {
                 const deviceCheck = await checkTeacherDevice(phone);
 
@@ -744,10 +819,9 @@
                     localStorage.setItem('teacher_is_blocked', 'true');
                     localStorage.setItem('current_teacher_profile', JSON.stringify(user));
                     localStorage.setItem('current_teacher_phone', user.phone);
+                    savePersistentData(user.phone, user);
                     window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
-                    setTimeout(() => {
-                        window.location.href = 'mester2.html';
-                    }, 1200);
+                    setTimeout(() => { window.location.href = 'mester2.html'; }, 1200);
                     return;
                 }
 
@@ -756,11 +830,13 @@
                 console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
             }
 
+            // ✅ حفظ بيانات الجلسة + حفظ دائم
             localStorage.setItem('current_teacher_profile', JSON.stringify(user));
             localStorage.setItem('current_teacher_phone', user.phone);
+            savePersistentData(user.phone, user);
+            
             window.showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
 
-            // ✅ التحويل للصفحة الرئيسية mester3.html
             setTimeout(() => {
                 window.location.href = 'mester3.html';
             }, 800);
@@ -790,30 +866,15 @@
         const btn = document.getElementById('registerBtn');
         const btnText = document.getElementById('registerBtnText');
 
-        if (!title) {
-            window.showError('يرجى اختيار اللقب.');
-            return;
-        }
-        if (age.length !== 2) {
-            window.showError('عفواً، العمر يجب أن يتكون من رقمين فقط.');
-            return;
-        }
-        if (name.length < 3) {
-            window.showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
-            return;
-        }
+        if (!title) { window.showError('يرجى اختيار اللقب.'); return; }
+        if (age.length !== 2) { window.showError('عفواً، العمر يجب أن يتكون من رقمين فقط.'); return; }
+        if (name.length < 3) { window.showError('الاسم يجب أن يكون 3 أحرف على الأقل.'); return; }
         if (phone.length !== 11 || !/^01[0125][0-9]{8}$/.test(phone)) {
             window.showError('يرجى إدخال رقم هاتف مصري صحيح (010, 011, 012, 015).');
             return;
         }
-        if (pin.length !== 4) {
-            window.showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
-            return;
-        }
-        if (pin !== pinConfirm) {
-            window.showError('الرقم السري وتأكيده غير متطابقين.');
-            return;
-        }
+        if (pin.length !== 4) { window.showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.'); return; }
+        if (pin !== pinConfirm) { window.showError('الرقم السري وتأكيده غير متطابقين.'); return; }
 
         const originalText = btnText.textContent;
         btn.disabled = true;
@@ -841,12 +902,14 @@
 
             await saveTeacher(teacherData);
 
+            // ✅ حفظ بيانات الجلسة + حفظ دائم
             localStorage.setItem('current_teacher_profile', JSON.stringify(teacherData));
             localStorage.setItem('current_teacher_phone', phone);
             localStorage.removeItem('teacher_is_blocked');
+            savePersistentData(phone, teacherData);
+            
             window.showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
 
-            // ✅ التحويل للصفحة الرئيسية mester3.html
             setTimeout(() => {
                 window.location.href = 'mester3.html';
             }, 800);
@@ -861,7 +924,7 @@
     };
 
     // ==========================================================
-    // ✅ تسجيل الخروج
+    // ✅ تسجيل الخروج (يحفظ البيانات)
     // ==========================================================
     window.logoutAccount = function() {
         const savedPhone = localStorage.getItem('current_teacher_phone');
@@ -871,23 +934,41 @@
             return;
         }
         
-        if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+        if (!confirm('هل أنت متأكد من تسجيل الخروج؟\n\nملاحظة: بياناتك ستُحفظ ولن تحتاج لتسجيل الدخول مرة أخرى.')) {
             return;
         }
         
+        // ✅ نحفظ الرقم والبروفايل دائم
+        const profile = localStorage.getItem('current_teacher_profile');
+        if (savedPhone) localStorage.setItem('teacher_saved_phone', savedPhone);
+        if (profile) localStorage.setItem('teacher_saved_profile', profile);
+        
+        // ✅ نحفظ النسخة الاحتياطية
+        const backup = {
+            teacherSelections: localStorage.getItem('teacherSelections'),
+            mester1_selections: localStorage.getItem('mester1_selections'),
+            mester1_is_locked: localStorage.getItem('mester1_is_locked'),
+            teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+            teacher_groups_count: localStorage.getItem('teacher_groups_count'),
+            last_selected_gender: localStorage.getItem('last_selected_gender'),
+            last_selected_location: localStorage.getItem('last_selected_location')
+        };
+        localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
+        
+        // ✅ نمسح بيانات الجلسة فقط
         localStorage.removeItem('current_teacher_profile');
         localStorage.removeItem('current_teacher_phone');
         localStorage.removeItem('teacher_is_blocked');
         
-        window.showSuccess('✅ تم تسجيل الخروج بنجاح.');
+        window.showSuccess('✅ تم تسجيل الخروج — بياناتك محفوظة.');
         
         setTimeout(() => {
             window.location.reload();
-        }, 1000);
+        }, 1200);
     };
 
     // ==========================================================
-    // ✅ حذف الحساب
+    // ✅ حذف الحساب (يحذف كل شيء)
     // ==========================================================
     window.deleteAccount = async function() {
         const phone = prompt('لحذف حسابك، يرجى إدخال رقم التليفون الخاص بك:');
@@ -917,6 +998,16 @@
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('teacher_is_blocked');
             }
+            
+            // ✅ نمسح كمان البيانات الدائمة
+            localStorage.removeItem('teacher_saved_phone');
+            localStorage.removeItem('teacher_saved_profile');
+            localStorage.removeItem('teacher_data_backup');
+            localStorage.removeItem('teacherSelections');
+            localStorage.removeItem('mester1_selections');
+            localStorage.removeItem('mester1_is_locked');
+            localStorage.removeItem('teacher_appointments_summary');
+            localStorage.removeItem('teacher_groups_count');
 
             alert('✅ تم حذف الحساب بنجاح.');
             window.location.reload();
