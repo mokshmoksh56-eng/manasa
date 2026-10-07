@@ -37,7 +37,6 @@ body {
     overflow: hidden;
 }
 
-/* Header */
 .chat-header {
     background: linear-gradient(135deg, var(--dark), var(--primary));
     color: #fff;
@@ -96,11 +95,7 @@ body {
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-.header-actions {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
-}
+.header-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
 .toggle-sidebar-btn, .ai-toggle-btn, .key-btn {
     background: rgba(255,255,255,0.2);
@@ -120,7 +115,6 @@ body {
     flex-shrink: 0;
 }
 .toggle-sidebar-btn:hover, .ai-toggle-btn:hover, .key-btn:hover { background: rgba(255,255,255,0.35); }
-
 .key-btn { padding: 8px 10px; font-size: 14px; }
 
 .ai-toggle-btn.active {
@@ -159,7 +153,6 @@ body {
     box-shadow: 0 0 10px #fbbf24;
 }
 
-/* Main Layout */
 .main-layout {
     flex: 1;
     display: flex;
@@ -167,7 +160,6 @@ body {
     position: relative;
 }
 
-/* Sidebar */
 .groups-sidebar {
     width: 0;
     background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
@@ -292,7 +284,6 @@ body {
 .sb-empty { text-align: center; padding: 40px 20px; color: var(--gray); }
 .sb-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
 
-/* Center Panel */
 .options-panel {
     width: 320px;
     background: var(--panel-bg);
@@ -373,7 +364,6 @@ body {
 .panel-summary .prow .k { color: #065f46; font-weight: 800; }
 .panel-summary .prow .v { color: #064e3b; font-weight: 900; text-align: left; }
 
-/* Chat Area */
 .chat-area {
     flex: 1;
     overflow-y: auto;
@@ -483,7 +473,6 @@ body {
 .chat-addr-display.show { display: block; }
 .chat-extra-input { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
 
-/* Quick actions */
 .quick-actions {
     background: #f0f0f0;
     padding: 8px 12px 0;
@@ -518,7 +507,6 @@ body {
     border-color: #6d28d9;
 }
 
-/* Input area */
 .input-area {
     background: #f0f0f0;
     padding: 10px 12px;
@@ -703,7 +691,6 @@ body {
 
 <div class="toast" id="toast"></div>
 
-<!-- Eruda للكونسول على الموبايل -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>try { eruda.init({ tool: ['console', 'elements'], autoScale: true }); } catch(e) {}</script>
 
@@ -721,17 +708,24 @@ import {
 /* ============ 🔑 إدارة مفتاح Groq ============ */
 /* ============================================================ */
 
-// المفتاح القديم كـ fallback (لازم تجيب واحد جديد)
-const FALLBACK_KEY = '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';
-
-// أولوية: localStorage > fallback
+const FALLBACK_KEY = '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';
 let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+// قائمة الموديلات — الكود هيجربهم بالترتيب لحد ما واحد يشتغل
+const GROQ_MODELS = [
+    'llama-3.1-8b-instant',
+    'llama-3.3-70b-versatile',
+    'llama-3.1-70b-versatile',
+    'llama3-8b-8192',
+    'llama3-70b-8192',
+    'gemma2-9b-it',
+    'mixtral-8x7b-32768'
+];
+
 let aiModeActive = false;
 
-/* دالة إدارة المفتاح - تفتح prompt لإدخال/تغيير المفتاح */
 window.manageGroqKey = function() {
     const current = localStorage.getItem('groq_api_key') || '';
     const currentPreview = current ? current.slice(0, 12) + '...' + current.slice(-6) : 'مش محفوظ';
@@ -752,6 +746,7 @@ window.manageGroqKey = function() {
     
     if (trimmed === 'حذف' || trimmed.toLowerCase() === 'delete') {
         localStorage.removeItem('groq_api_key');
+        localStorage.removeItem('groq_working_model');
         GROQ_API_KEY = FALLBACK_KEY;
         showToast('🗑️ اتمسح المفتاح المحفوظ');
         return;
@@ -763,24 +758,21 @@ window.manageGroqKey = function() {
     }
     
     if (trimmed.startsWith('gsk_')) {
-        // التحقق من الطول
         if (trimmed.length < 40) {
             alert('⚠️ المفتاح قصير أوي!\n\nالمفتاح الكامل بيبقى حوالي 56 حرف بعد gsk_\n\nالطول الحالي: ' + trimmed.length);
             return;
         }
         
         localStorage.setItem('groq_api_key', trimmed);
+        localStorage.removeItem('groq_working_model');
         GROQ_API_KEY = trimmed;
         showToast('✅ تم حفظ المفتاح', true);
-        
-        // اختبره تلقائياً
         testGroqKey(trimmed);
     } else {
         alert('⚠️ المفتاح لازم يبدأ بـ gsk_');
     }
 };
 
-/* اختبار المفتاح */
 async function testGroqKey(key) {
     if (!key) {
         showToast('❌ مفيش مفتاح');
@@ -796,13 +788,20 @@ async function testGroqKey(key) {
         
         if (res.ok) {
             const data = await res.json();
-            showToast('✅ المفتاح شغال! ' + (data.data?.length || 0) + ' موديل', true);
+            const models = data.data?.map(m => m.id) || [];
+            showToast('✅ المفتاح شغال! ' + models.length + ' موديل', true);
+            
+            // دور على أول موديل من قائمتنا موجود
+            let foundModel = null;
+            for (const m of GROQ_MODELS) {
+                if (models.includes(m)) { foundModel = m; break; }
+            }
+            
             addBotMessage(
                 `✅ <b>المفتاح شغال!</b><br><br>` +
-                `عدد الموديلات المتاحة: <b>${data.data?.length || 0}</b><br>` +
-                `المفتاح بيبدأ بـ: <code>${key.slice(0, 15)}...</code><br>` +
-                `الطول: <b>${key.length}</b> حرف<br><br>` +
-                `تقدر تستخدم الـ AI عادي دلوقتي 🚀`
+                `عدد الموديلات المتاحة: <b>${models.length}</b><br>` +
+                (foundModel ? `أول موديل هيشتغل معاك: <b>${foundModel}</b><br>` : '') +
+                `<br>تقدر تستخدم الـ AI عادي دلوقتي 🚀`
             );
         } else if (res.status === 401) {
             showToast('❌ المفتاح غلط (401)');
@@ -811,8 +810,8 @@ async function testGroqKey(key) {
                 `الخطوات:<br>` +
                 `1. روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a><br>` +
                 `2. اعمل مفتاح جديد<br>` +
-                `3. انسخه <b>كامل</b> (بيبقى ~56 حرف)<br>` +
-                `4. دوس على زر 🔑 فوق في الهيدر والصقه`
+                `3. انسخه <b>كامل</b><br>` +
+                `4. دوس على زر 🔑 فوق والصقه`
             );
         } else {
             showToast('❌ فشل: ' + res.status);
@@ -1061,13 +1060,13 @@ async function buildGroupsContext() {
 }
 
 async function askGroq(userMessage) {
-    // ✅ التحقق من المفتاح الأول
+    // ✅ تحقق من المفتاح
     if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
         return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>دوس على الزر 🔑 في الهيدر فوق، والصق مفتاحك.<br><br>لو مش عندك:<br>روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a> واعمل واحد جديد.';
     }
     
     if (GROQ_API_KEY.length < 40) {
-        return '⚠️ <b>المفتاح قصير أوي!</b><br><br>المفتاح الكامل بيبقى ~56 حرف.<br>دوس على 🔑 فوق وصحح المفتاح.';
+        return '⚠️ <b>المفتاح قصير أوي!</b><br><br>دوس على 🔑 فوق وصحح المفتاح.';
     }
     
     const typing = document.createElement('div');
@@ -1099,38 +1098,84 @@ ${groupsContext}
         chatHistory.slice(-6).forEach(h => messages.push(h));
         messages.push({ role: 'user', content: userMessage });
         
-        const response = await fetch(GROQ_API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: GROQ_MODEL,
-                messages: messages,
-                temperature: 0.6,
-                max_tokens: 800,
-                top_p: 0.9
-            })
-        });
+        // 🎯 نجرب كل موديل لحد ما واحد يشتغل
+        let lastError = null;
+        let successModel = null;
+        let response = null;
+        
+        const savedModel = localStorage.getItem('groq_working_model');
+        let modelsToTry = [...GROQ_MODELS];
+        if (savedModel && modelsToTry.includes(savedModel)) {
+            modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
+        }
+        
+        for (const model of modelsToTry) {
+            try {
+                console.log(`🔄 بنجرب الموديل: ${model}`);
+                
+                response = await fetch(GROQ_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: messages,
+                        temperature: 0.6,
+                        max_tokens: 800,
+                        top_p: 0.9
+                    })
+                });
+                
+                if (response.ok) {
+                    successModel = model;
+                    localStorage.setItem('groq_working_model', model);
+                    console.log(`✅ الموديل ${model} شغال`);
+                    break;
+                } else if (response.status === 404) {
+                    console.warn(`❌ الموديل ${model} مش متاح، بنجرب اللي بعده`);
+                    lastError = `404: model ${model} not found`;
+                    continue;
+                } else if (response.status === 401) {
+                    lastError = '401: المفتاح غلط';
+                    break;
+                } else if (response.status === 429) {
+                    lastError = '429: الحد المجاني';
+                    break;
+                } else {
+                    lastError = `${response.status}: ${response.statusText}`;
+                    continue;
+                }
+            } catch (e) {
+                console.error(`خطأ مع الموديل ${model}:`, e);
+                lastError = e.message;
+                continue;
+            }
+        }
         
         typing.remove();
         
-        if (!response.ok) {
-            const errText = await response.text();
-            console.error('Groq error:', response.status, errText);
+        if (!response || !response.ok) {
+            console.error('كل الموديلات فشلت:', lastError);
             
-            if (response.status === 401) {
+            if (lastError && lastError.includes('401')) {
                 return '❌ <b>المفتاح غلط (401)</b><br><br>دوس على 🔑 فوق وجيب مفتاح جديد من console.groq.com/keys';
             }
-            if (response.status === 429) {
+            if (lastError && lastError.includes('429')) {
                 return '⏳ <b>وصلت للحد المجاني</b><br><br>استنى شوية وجرب تاني.';
             }
-            throw new Error(`HTTP ${response.status}`);
+            return `❌ <b>مفيش موديل متاح لحسابك</b><br><br>` +
+                   `افتح Console والصق الأمر ده عشان تشوف الموديلات المتاحة:<br><br>` +
+                   `<code style="background:#f0f0f0;padding:4px;border-radius:4px;font-size:11px;display:block;direction:ltr;text-align:left;overflow-x:auto;">` +
+                   `fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+localStorage.getItem('groq_api_key')}}).then(r=>r.json()).then(d=>console.log(d.data.map(m=>m.id)))` +
+                   `</code>`;
         }
         
         const data = await response.json();
         const botReply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد دلوقتي.';
+        
+        console.log(`✅ تم الرد باستخدام: ${successModel}`);
         
         chatHistory.push({ role: 'user', content: userMessage });
         chatHistory.push({ role: 'assistant', content: botReply });
@@ -2316,7 +2361,6 @@ async function init() {
     
     hideQuickActions();
     
-    // ✅ تحقق من مفتاح Groq
     const key = localStorage.getItem('groq_api_key');
     let keyMsg = '';
     
