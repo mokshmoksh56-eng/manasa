@@ -856,7 +856,7 @@
             summaryContent.innerHTML = total === 0 ? 'لم تختر أي مادة بعد.' : html;
         }
 
-        // 💾 حفظ فقط — بدون انتقال + إعلام الصفحة الأم
+        // 💾 حفظ فقط — بدون انتقال + إعلام الصفحة الأم (لو موجودة)
         window.saveSelection = function() {
             let total = 0;
             for (const stageId in selections) {
@@ -1132,21 +1132,6 @@
 
         document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
         document.addEventListener('click', () => getCtx(), { once: true, passive: true });
-    })();
-    </script>
-
-    <!-- 🔒 توجيه أي دخول مباشر إلى mester3 -->
-    <script>
-    (function() {
-        // لو الصفحة مفتوحة مباشرة (مش جوه iframe) → وجّه المستخدم لـ mester3
-        if (window.self === window.top) {
-            console.log('🔒 mester1: دخول مباشر — توجيه إلى mester3');
-            setTimeout(() => {
-                window.location.href = 'mester3.html';
-            }, 100);
-        } else {
-            console.log('🔗 mester1: محمّل في iframe — البقاء في الصفحة');
-        }
     })();
     </script>
 
