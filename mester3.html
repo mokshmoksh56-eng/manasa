@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>منصة احجزلي - بوابة المعلم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-teal: #25968b;
+        --dark-teal: #1b736a;
+        --light-teal: #e0f2f0;
+        --border-teal: #b2dfdb;
+        --bg-color: #f7f9fa;
+        --text-dark: #2c3e50;
+        --text-gray: #64748b;
+        --white: #ffffff;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 700;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        background: var(--bg-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: var(--text-dark);
+        overflow-x: hidden;
+    }
+
+    /* ========================================================== */
+    /* 🎨 Header */
+    /* ========================================================== */
+    .header-3d {
+        width: 100%;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 100%),
+                    url('teacher2.png') center/cover no-repeat;
+        padding: 50px 20px 60px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-3d::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to top, var(--bg-color), transparent);
+        pointer-events: none;
+    }
+
+    .header-3d h1 {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--white);
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+        animation: fadeInDown 0.6s ease;
+    }
+
+    .header-3d p {
+        font-size: 15px;
+        color: #e2e8f0;
+        font-weight: 700;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+        animation: fadeInDown 0.8s ease;
+    }
+
+    .logo-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: 16px;
+        backdrop-filter: blur(8px);
+        animation: fadeInDown 0.4s ease;
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================================== */
+    /* 📦 Container */
+    /* ========================================================== */
+    .container {
+        flex: 1;
+        width: 100%;
+        max-width: 600px;
+        margin: -30px auto 0;
+        padding: 0 20px 30px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .welcome-card {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(37, 150, 139, 0.08);
+        padding: 30px 24px 24px;
+        border-top: 5px solid var(--primary-teal);
+        text-align: center;
+        margin-bottom: 20px;
+        animation: cardAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes cardAppear {
+        from { opacity: 0; transform: translateY(30px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .welcome-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        margin: 0 auto 16px;
+        box-shadow: 0 10px 25px rgba(37, 150, 139, 0.4);
+        animation: pulseIcon 2.5s infinite;
+    }
+
+    @keyframes pulseIcon {
+        0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(37, 150, 139, 0.4); }
+        50% { transform: scale(1.05); box-shadow: 0 12px 30px rgba(37, 150, 139, 0.6); }
+    }
+
+    .welcome-card h2 {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--dark-teal);
+        margin-bottom: 8px;
+    }
+
+    .welcome-card p {
+        font-size: 14px;
+        color: var(--text-gray);
+        font-weight: 800;
+        line-height: 1.6;
+    }
+
+    /* ========================================================== */
+    /* 🎯 Navigation Cards */
+    /* ========================================================== */
+    .nav-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .nav-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--white);
+        border-radius: 18px;
+        padding: 20px 22px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 3px 8px rgba(0, 0, 0, 0.04);
+        border: 2px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+        animation: cardSlideIn 0.5s ease backwards;
+    }
+
+    .nav-card:nth-child(1) { animation-delay: 0.1s; }
+    .nav-card:nth-child(2) { animation-delay: 0.2s; }
+
+    @keyframes cardSlideIn {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .nav-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, transparent 0%, rgba(37, 150, 139, 0.06) 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+
+    .nav-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12), 0 8px 18px rgba(37, 150, 139, 0.12);
+        border-color: var(--primary-teal);
+    }
+
+    .nav-card:hover::before { opacity: 1; }
+
+    .nav-card:active {
+        transform: translateY(-2px) scale(0.99);
+    }
+
+    .nav-card .nc-icon {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s;
+    }
+
+    .nav-card:hover .nc-icon {
+        transform: scale(1.08) rotate(-5deg);
+    }
+
+    .nav-card.step1 .nc-icon {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.25);
+    }
+
+    .nav-card.step2 .nc-icon {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        box-shadow: 0 6px 15px rgba(245, 158, 11, 0.25);
+    }
+
+    .nav-card .nc-content {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+    }
+
+    .nav-card .nc-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 17px;
+        font-weight: 900;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+    }
+
+    .nav-card .nc-step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 900;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .nav-card.step1 .nc-step-num {
+        background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+        box-shadow: 0 3px 8px rgba(37, 150, 139, 0.35);
+    }
+
+    .nav-card.step2 .nc-step-num {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35);
+    }
+
+    .nav-card .nc-desc {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text-gray);
+        line-height: 1.5;
+    }
+
+    .nav-card .nc-arrow {
+        flex-shrink: 0;
+        font-size: 22px;
+        color: var(--text-gray);
+        transition: all 0.3s;
+        position: relative;
+        z-index: 1;
+    }
+
+    .nav-card:hover .nc-arrow {
+        color: var(--primary-teal);
+        transform: translateX(-5px);
+    }
+
+    /* ✅ شارة الحالة */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 900;
+        margin-top: 6px;
+    }
+
+    .status-badge.saved {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+        border: 1px solid #6ee7b7;
+    }
+
+    .status-badge.empty {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #7f1d1d;
+        border: 1px solid #fca5a5;
+    }
+
+    /* ========================================================== */
+    /* 🦶 Footer */
+    /* ========================================================== */
+    .footer {
+        text-align: center;
+        padding: 20px 15px;
+        color: var(--text-gray);
+        font-size: 12.5px;
+        font-weight: 800;
+        line-height: 1.7;
+    }
+
+    .footer .heart {
+        color: #ef4444;
+        animation: heartbeat 1.5s infinite;
+        display: inline-block;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+
+    .footer .version {
+        display: inline-block;
+        background: var(--light-teal);
+        color: var(--dark-teal);
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        margin-top: 6px;
+        border: 1px solid var(--border-teal);
+    }
+
+    /* ========================================================== */
+    /* 📱 Responsive */
+    /* ========================================================== */
+    @media (max-width: 480px) {
+        .header-3d { padding: 40px 16px 55px; }
+        .header-3d h1 { font-size: 26px; }
+        .header-3d p { font-size: 13px; }
+        .container { padding: 0 14px 25px; }
+        .welcome-card { padding: 24px 18px 20px; }
+        .welcome-card h2 { font-size: 19px; }
+        .welcome-icon { width: 60px; height: 60px; font-size: 28px; }
+        .nav-card { padding: 16px 16px; gap: 12px; }
+        .nav-card .nc-icon { width: 52px; height: 52px; font-size: 24px; border-radius: 14px; }
+        .nav-card .nc-title { font-size: 15px; }
+        .nav-card .nc-desc { font-size: 12px; }
+        .nav-card .nc-arrow { font-size: 18px; }
+    }
+
+    /* ========================================================== */
+    /* 🚫 شاشة الحماية */
+    /* ========================================================== */
+    .security-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #25968b 0%, #1b736a 100%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        gap: 20px;
+        transition: opacity 0.3s ease;
+    }
+    .security-overlay.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .security-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .security-overlay h2 { font-size: 20px; font-weight: 900; }
+    .security-overlay p { font-size: 14px; opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<!-- ✅ شاشة حماية أولية -->
+<div class="security-overlay" id="securityOverlay">
+    <div class="security-spinner"></div>
+    <h2>جاري التحقق من الجهاز...</h2>
+    <p>منصة احجزلي تحمي حسابك</p>
+</div>
+
+<!-- ✅ التحقق من تسجيل الدخول -->
+<script type="module">
+    import { checkTeacherDevice, getTeacher } from './firebase-config.js';
+
+    (async () => {
+        const overlay = document.getElementById('securityOverlay');
+        const phone = localStorage.getItem('current_teacher_phone');
+
+        // لو مفيش تسجيل دخول → حول لصفحة الدخول
+        if (!phone) {
+            window.location.href = 'teacher-login.html';
+            return;
+        }
+
+        try {
+            let check = null;
+            try {
+                check = await checkTeacherDevice(phone);
+            } catch (e) {
+                console.warn('فشل فحص الجهاز:', e);
+            }
+
+            if (check && check.locked === true) {
+                localStorage.setItem('teacher_is_blocked', 'true');
+                overlay.classList.add('hide');
+                setTimeout(() => overlay.remove(), 300);
+                return;
+            }
+
+            if (!check || !check.ok) {
+                if (localStorage.getItem('teacher_is_blocked') !== 'true') {
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('current_teacher_phone');
+                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                    window.location.href = 'teacher-login.html';
+                    return;
+                }
+            }
+
+            overlay.classList.add('hide');
+            setTimeout(() => overlay.remove(), 300);
+        } catch (e) {
+            console.error('خطأ في التحقق:', e);
+            overlay.classList.add('hide');
+            setTimeout(() => overlay.remove(), 300);
+        }
+    })();
+</script>
+
+<header class="header-3d">
+    <div class="logo-badge">
+        <span>🎓</span>
+        <span>منصة احجزلي</span>
+    </div>
+    <h1>بوابة المعلم</h1>
+    <p>اختر الخطوة التي تريد البدء منها</p>
+</header>
+
+<div class="container">
+
+    <div class="welcome-card">
+        <div class="welcome-icon">👨‍🏫</div>
+        <h2>أهلاً بك في بوابة المعلم</h2>
+        <p>ابدأ بتحديد تخصصك، ثم انتقل لإضافة المجموعات والمواعيد</p>
+    </div>
+
+    <div class="nav-cards">
+
+        <!-- الخطوة 1: التخصص -->
+        <a href="mester1.html" class="nav-card step1" id="cardStep1">
+            <div class="nc-icon">📚</div>
+            <div class="nc-content">
+                <div class="nc-title">
+                    <span class="nc-step-num">1</span>
+                    <span>التخصص والمواد</span>
+                </div>
+                <div class="nc-desc">اختر المرحلة التعليمية والصفوف والمواد التي تدرسها</div>
+                <div class="status-badge empty" id="badgeStep1">
+                    <span>⏳</span>
+                    <span>لم يتم التحديد بعد</span>
+                </div>
+            </div>
+            <div class="nc-arrow">❮</div>
+        </a>
+
+        <!-- الخطوة 2: المواعيد والمجموعات -->
+        <a href="mester2.html" class="nav-card step2" id="cardStep2">
+            <div class="nc-icon">📅</div>
+            <div class="nc-content">
+                <div class="nc-title">
+                    <span class="nc-step-num">2</span>
+                    <span>المواعيد والمجموعات</span>
+                </div>
+                <div class="nc-desc">أضف المجموعات، حدد المواعيد، والموقع الجغرافي</div>
+                <div class="status-badge empty" id="badgeStep2">
+                    <span>⏳</span>
+                    <span>ابدأ بإضافة مواعيدك</span>
+                </div>
+            </div>
+            <div class="nc-arrow">❮</div>
+        </a>
+
+    </div>
+
+</div>
+
+<div class="footer">
+    صُنع بـ <span class="heart">❤️</span> لمدرسي مصر<br>
+    <span class="version">منصة احجزلي — بوابة المعلم v1.0</span>
+</div>
+
+<!-- 🔊 صوت ناعم عند الضغط -->
+<script>
+(function initClickSound() {
+    let audioCtx = null;
+    function getCtx() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { return null; }
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        return audioCtx;
+    }
+    window.playClick = function(freq = 1800, duration = 0.035, volume = 0.08) {
+        const ctx = getCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1000;
+        filter.Q.value = 0.7;
+        osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+        osc.start(now); osc.stop(now + duration + 0.02);
+    };
+    document.querySelectorAll('.nav-card').forEach(el => {
+        el.addEventListener('click', () => window.playClick(1500, 0.06, 0.12), { passive: true });
+    });
+    document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
+    document.addEventListener('click', () => getCtx(), { once: true, passive: true });
+})();
+
+// ✅ تحديث شارات الحالة حسب البيانات المحفوظة
+(function updateStatusBadges() {
+    // الخطوة 1: هل تم تحديد التخصص؟
+    const badge1 = document.getElementById('badgeStep1');
+    try {
+        const raw = localStorage.getItem('mester1_selections') || localStorage.getItem('teacherSelections');
+        if (raw) {
+            const saved = JSON.parse(raw);
+            let totalSubjects = 0;
+            for (const sid in saved) {
+                if (saved[sid]?.subjects?.length > 0) totalSubjects += saved[sid].subjects.length;
+            }
+            if (totalSubjects > 0) {
+                badge1.classList.remove('empty');
+                badge1.classList.add('saved');
+                badge1.innerHTML = `<span>✅</span><span>تم تحديد ${totalSubjects} مادة</span>`;
+            }
+        }
+    } catch (e) {}
+
+    // الخطوة 2: هل يوجد مواعيد؟
+    const badge2 = document.getElementById('badgeStep2');
+    try {
+        const phone = localStorage.getItem('current_teacher_phone');
+        if (phone) {
+            badge2.classList.remove('empty');
+            badge2.classList.add('saved');
+            badge2.innerHTML = `<span>✅</span><span>جاهز لإضافة المواعيد</span>`;
+        }
+    } catch (e) {}
+})();
+</script>
+
+</body>
+</html>
