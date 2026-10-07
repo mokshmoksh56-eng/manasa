@@ -199,7 +199,10 @@ export async function getWhatsappClicks() {
     return snap.exists() ? (snap.data().count || 0) : 0;
 }
 
-// ============ دوال Single Device Login ============
+// ==========================================================
+// 🔓 نظام Multi-Device (فتح من أكثر من جهاز في نفس الوقت)
+// ==========================================================
+
 export function generateDeviceId() {
     let deviceId = localStorage.getItem('device_id');
     if (!deviceId) {
@@ -209,36 +212,55 @@ export function generateDeviceId() {
     return deviceId;
 }
 
+/**
+ * ✅ فحص حالة الجهاز — بنسمح بأي عدد أجهزة دلوقتي
+ */
 export async function checkTeacherDevice(phone) {
     const teacher = await getTeacher(phone);
     if (!teacher) return { ok: false, locked: false, reason: 'not_found' };
 
+    // فحص الحظر فقط
     if (teacher.isLocked === true) {
         return { ok: false, locked: true, reason: 'locked', teacher };
     }
 
-    const currentDeviceId = generateDeviceId();
-
-    if (!teacher.activeDeviceId) {
-        return { ok: true, locked: false, isFirst: true, teacher };
-    }
-
-    if (teacher.activeDeviceId === currentDeviceId) {
-        return { ok: true, locked: false, isSame: true, teacher };
-    }
-
-    return { ok: false, locked: false, reason: 'different_device', teacher };
+    // ✅✅✅ تم تعطيل فحص الجهاز — أي جهاز يقدر يدخل ✅✅✅
+    return { ok: true, locked: false, isSame: true, teacher, multiDevice: true };
 }
 
+/**
+ * ✅ تسجيل الجهاز — بدون طرد الأجهزة التانية
+ */
 export async function updateTeacherDevice(phone) {
     const deviceId = generateDeviceId();
-    await updateDoc(doc(db, "teachers", phone), {
-        activeDeviceId: deviceId,
-        lastLoginAt: new Date().toISOString()
-    });
+    
+    try {
+        const teacher = await getTeacher(phone);
+        let devices = teacher?.activeDevices || [];
+        
+        if (!devices.includes(deviceId)) {
+            devices.push(deviceId);
+            // نحتفظ بآخر 5 أجهزة فقط
+            if (devices.length > 5) devices = devices.slice(-5);
+        }
+
+        await updateDoc(doc(db, "teachers", phone), {
+            activeDevices: devices,
+            lastDeviceId: deviceId,
+            lastLoginAt: new Date().toISOString()
+        });
+        
+        console.log(`✅ تم تسجيل الجهاز — إجمالي الأجهزة: ${devices.length}`);
+    } catch(e) {
+        console.warn('⚠️ فشل تسجيل الجهاز:', e);
+    }
+    
     return deviceId;
 }
 
+/**
+ * ✅ للطالب كمان — نسمح بأجهزة متعددة
+ */
 export async function checkStudentDevice(accountKey) {
     const student = await getStudentByKey(accountKey);
     if (!student) return { ok: false, locked: false, reason: 'not_found' };
@@ -247,8 +269,7 @@ export async function checkStudentDevice(accountKey) {
         return { ok: false, locked: true, reason: 'locked', student };
     }
 
-    const currentDeviceId = generateDeviceId();
-    
+    // مزامنة بيانات الطالب
     try {
         const profile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         if (profile.id === accountKey) {
@@ -267,17 +288,31 @@ export async function checkStudentDevice(accountKey) {
         console.warn('⚠️ فشل المزامنة (تم تجاهله):', e);
     }
     
-    if (!student.activeDeviceId) return { ok: true, locked: false, isFirst: true, student };
-    if (student.activeDeviceId === currentDeviceId) return { ok: true, locked: false, isSame: true, student };
-    return { ok: false, locked: false, reason: 'different_device', student };
+    // ✅ نسمح بأي عدد أجهزة
+    return { ok: true, locked: false, isSame: true, student, multiDevice: true };
 }
 
 export async function updateStudentDevice(accountKey) {
     const deviceId = generateDeviceId();
-    await updateDoc(doc(db, "students", accountKey), {
-        activeDeviceId: deviceId,
-        lastLoginAt: new Date().toISOString()
-    });
+    
+    try {
+        const student = await getStudentByKey(accountKey);
+        let devices = student?.activeDevices || [];
+        
+        if (!devices.includes(deviceId)) {
+            devices.push(deviceId);
+            if (devices.length > 5) devices = devices.slice(-5);
+        }
+
+        await updateDoc(doc(db, "students", accountKey), {
+            activeDevices: devices,
+            lastDeviceId: deviceId,
+            lastLoginAt: new Date().toISOString()
+        });
+    } catch(e) {
+        console.warn('⚠️ فشل تسجيل جهاز الطالب:', e);
+    }
+    
     return deviceId;
 }
 
@@ -449,7 +484,7 @@ export function subscribeGroups(callback) {
 }
 
 // ==========================================================
-// 💳 نظام الاشتراكات (بدون Google Play - تفعيل يدوي عبر الإيميل)
+// 💳 نظام الاشتراكات
 // ==========================================================
 
 export const ADMIN_EMAIL = 'mmoksh162@gmail.com';
@@ -695,9 +730,6 @@ export async function getTeacherSubscription(phone) {
     }
 }
 
-// ==========================================================
-// ✅ دالة فحص الاشتراك النشط (المُحدّثة - تقرأ من المصدرين)
-// ==========================================================
 export async function isSubscriptionActive(phone) {
     try {
         const teacher = await getTeacher(phone);
@@ -797,7 +829,7 @@ export function subscribeSubscriptionRequests(callback) {
 }
 
 // ==========================================================
-// 💰 إعدادات الأسعار (Pricing Settings)
+// 💰 إعدادات الأسعار
 // ==========================================================
 
 export const DEFAULT_PRICING = {
@@ -964,7 +996,7 @@ export async function syncTeacherDataToLocal(phone) {
             localStorage.setItem('last_selected_location', cloudData.last_selected_location);
         }
         
-        console.log('✅ تمت مزامنة البيانات من السحابة للجهاز الجديد');
+        console.log('✅ تمت مزامنة البيانات من السحابة للجهاز');
         return hasAnyData;
     } catch (e) {
         console.error('فشل المزامنة:', e);
@@ -996,6 +1028,23 @@ export async function syncLocalDataToCloud(phone) {
         console.error('فشل رفع البيانات:', e);
         return false;
     }
+}
+
+/**
+ * ✅✅✅ الاستماع الفوري لتغييرات بيانات المعلم (للمزامنة بين الأجهزة)
+ */
+export function subscribeTeacherData(phone, callback) {
+    if (!phone) return () => {};
+    
+    return onSnapshot(doc(db, TEACHER_DATA_COLLECTION, phone), (snap) => {
+        if (snap.exists()) {
+            const data = snap.data();
+            console.log('🔄 تم استقبال تحديث من السحابة');
+            callback(data);
+        }
+    }, (error) => {
+        console.error('خطأ في الاستماع لبيانات المعلم:', error);
+    });
 }
 
 // ==========================================================
