@@ -331,85 +331,6 @@
             margin-top: 8px;
         }
 
-        /* ========================================================== */
-        /* 🔓 حالة مفتوحة للتعديل */
-        /* ========================================================== */
-        .edit-mode-banner {
-            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-            border: 2px solid #F59E0B;
-            border-radius: 12px;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            box-shadow: 0 4px 12px -4px rgba(245, 158, 11, 0.4);
-            animation: lockCardAppear 0.3s ease;
-            flex-wrap: wrap;
-        }
-        .edit-mode-banner .banner-text {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 900;
-            color: #92400E;
-            flex: 1;
-            min-width: 180px;
-        }
-        .edit-mode-banner .banner-icon {
-            font-size: 20px;
-            animation: lockPulse 1.5s ease-in-out infinite;
-        }
-
-        .edit-mode-banner .banner-actions {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .edit-mode-banner .banner-save {
-            background: linear-gradient(135deg, #10B981, #047857);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 900;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-            white-space: nowrap;
-            box-shadow: 0 3px 8px -2px rgba(16, 185, 129, 0.5);
-        }
-        .edit-mode-banner .banner-save:hover { 
-            transform: translateY(-1px);
-            box-shadow: 0 5px 12px -2px rgba(16, 185, 129, 0.7);
-        }
-        .edit-mode-banner .banner-save:active { transform: scale(0.96); }
-
-        .edit-mode-banner .banner-cancel {
-            background: linear-gradient(135deg, #64748B, #475569);
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 900;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .edit-mode-banner .banner-cancel:hover { transform: translateY(-1px); }
-        .edit-mode-banner .banner-cancel:active { transform: scale(0.96); }
-
         .loading-curriculum {
             text-align: center;
             padding: 60px 20px;
@@ -696,15 +617,22 @@
         .btn-save-inline:hover { transform: translateY(-1px); }
         .btn-save-inline:active { transform: scale(0.96); }
 
+        /* 💾 زر الحفظ السفلي */
         .save-btn {
-            margin-top: 6px; width: 100%; padding: 11px; background: var(--primary-teal);
-            color: var(--white); border: none; border-radius: 8px; font-size: 15px;
-            font-weight: 900; cursor: pointer; box-shadow: 0 3px 8px rgba(0, 150, 136, 0.25);
-            transition: all 0.2s ease; font-family: inherit;
+            margin-top: 6px; width: 100%; padding: 14px; 
+            background: linear-gradient(135deg, #10B981, #047857);
+            color: var(--white); border: none; border-radius: 12px; font-size: 15px;
+            font-weight: 900; cursor: pointer; 
+            box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.6);
+            transition: all 0.25s ease; font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .save-btn:hover { background: var(--dark-teal); }
-        .save-btn:active { transform: scale(0.98); }
+        .save-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px -4px rgba(16, 185, 129, 0.85);
+        }
+        .save-btn:active { transform: scale(0.97); }
 
         .summary-box {
             background: var(--white); border: 1.5px solid var(--primary-teal); border-radius: 10px;
@@ -756,7 +684,6 @@
         @media (max-width: 380px) {
             .grades-grid { grid-template-columns: repeat(2, 1fr); }
             .subjects-grid { grid-template-columns: repeat(2, 1fr); }
-            .edit-mode-banner .banner-text { font-size: 11.5px; }
         }
     </style>
 </head>
@@ -913,24 +840,6 @@
             </div>
         </div>
 
-        <!-- ✅ بانر التعديل (يظهر فقط عند فتح التعديل) -->
-        <div id="editModeBanner" class="edit-mode-banner" style="display:none;">
-            <div class="banner-text">
-                <span class="banner-icon">✏️</span>
-                <span>وضع التعديل — اختر صف ومواد جديدة</span>
-            </div>
-            <div class="banner-actions">
-                <button class="banner-save" onclick="window.saveEditMode()">
-                    <span>💾</span>
-                    <span>حفظ</span>
-                </button>
-                <button class="banner-cancel" onclick="window.cancelEditMode()">
-                    <span>✖</span>
-                    <span>إلغاء</span>
-                </button>
-            </div>
-        </div>
-
         <!-- ✅ عنوان الصفحة -->
         <h2 class="page-title" id="pageTitle">ما هي المادة التي تدرسها؟ 📚</h2>
 
@@ -947,7 +856,11 @@
             <div id="summary-content">لم تختر أي مادة بعد.</div>
         </div>
 
-        <button class="save-btn" id="mainSaveBtn" onclick="window.saveSelection()">حفظ والانتقال إلى المرحلة التالية ❯</button>
+        <!-- 💾 زر الحفظ في وضع التعديل -->
+        <button class="save-btn" id="mainSaveBtn" onclick="window.saveEditMode()">
+            <span>💾</span>
+            <span>حفظ</span>
+        </button>
 
     </div>
 
@@ -1174,14 +1087,13 @@
             document.getElementById('stagesContainer').style.display = '';
             document.getElementById('pageTitle').style.display = '';
             document.getElementById('summary').style.display = '';
-            document.getElementById('mainSaveBtn').style.display = 'none'; // مخفي دايمًا (الحفظ في البانر)
+            document.getElementById('mainSaveBtn').style.display = 'flex';
         }
 
         function enterLockedMode() {
             isLocked = true;
             renderLockedCard();
             document.getElementById('lockedSelectionCard').style.display = 'block';
-            document.getElementById('editModeBanner').style.display = 'none';
             hideStagesUI();
             console.log('🔒 دخل وضع القفل — الاختيارات المحفوظة معروضة');
         }
@@ -1189,7 +1101,6 @@
         function enterEditMode(skipRestore = false) {
             isLocked = false;
             document.getElementById('lockedSelectionCard').style.display = 'none';
-            document.getElementById('editModeBanner').style.display = 'flex';
             showStagesUI();
             
             if (!skipRestore) {
@@ -1233,31 +1144,6 @@
             enterLockedMode();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.cancelEditMode = function() {
-            const saved = getSavedSelections();
-            const current = {};
-            for (const stageId in selections) {
-                const { grade, subjects } = selections[stageId];
-                if (subjects.length > 0) {
-                    current[stageId] = { grade, subjects };
-                }
-            }
-            const hasChanges = JSON.stringify(saved) !== JSON.stringify(current);
-            
-            if (hasChanges) {
-                if (!confirm('⚠️ سيتم إلغاء التعديلات غير المحفوظة.\n\nهل أنت متأكد؟')) return;
-                selections = {};
-                subjectsOpen = {};
-                dynamicStages.forEach(stage => {
-                    selections[stage.id] = { grade: '', subjects: [] };
-                    subjectsOpen[stage.id] = false;
-                });
-                restoreMester1();
-            }
-
-            enterLockedMode();
         };
 
         // ==========================================================
@@ -1735,7 +1621,6 @@
                 '.stage-header',
                 '.btn-save-inline',
                 '.save-btn',
-                '.banner-save',
                 '.banner-cancel',
                 '.locked-btn-edit',
                 '.locked-btn-continue',
@@ -1753,7 +1638,7 @@
                         window.playClick(2000, 0.035, 0.09);
                     } else if (el.classList.contains('grade-btn')) {
                         window.playClick(1700, 0.04, 0.09);
-                    } else if (el.classList.contains('banner-save') || el.classList.contains('save-btn') || el.classList.contains('locked-btn-continue')) {
+                    } else if (el.classList.contains('save-btn') || el.classList.contains('locked-btn-continue')) {
                         window.playClick(1400, 0.06, 0.13);
                     } else if (el.classList.contains('locked-btn-edit')) {
                         window.playClick(1600, 0.05, 0.11);
