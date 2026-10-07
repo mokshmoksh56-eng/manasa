@@ -1392,10 +1392,10 @@
         };
         window.confirmLogout = function() {
             try {
-                // ✅ نحفظ كل البيانات دائم قبل الخروج
+                // ✅ نحفظ كل البيانات دائم
                 savePersistentData();
 
-                // نمسح بيانات الجلسة فقط (مش البيانات)
+                // ✅ نمسح بيانات الجلسة فقط (علشان ما يحوّلش تلقائي في teacher-login)
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('teacher_is_blocked');
@@ -1467,7 +1467,7 @@
     })();
     </script>
 
-    <!-- 🔒 منع الرجوع للصفحات السابقة (mester1 / mester2) + حفظ البيانات -->
+    <!-- 🔒 منع الرجوع للصفحات السابقة + حفظ البيانات + بدون تحويل تلقائي -->
     <script>
     (function() {
         'use strict';
@@ -1508,10 +1508,10 @@
             
             console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول (البيانات محفوظة)');
             
-            // ✅ نحفظ البيانات قبل التحويل
+            // ✅ نحفظ البيانات
             saveDataBeforeExit();
             
-            // ✅ نمسح بيانات الجلسة فقط
+            // ✅ نمسح بيانات الجلسة (علشان teacher-login ما يحوّلش تلقائي)
             try {
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
