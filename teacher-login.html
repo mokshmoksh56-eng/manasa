@@ -445,7 +445,7 @@
     </div>
 
     <div class="bottom-links">
-        <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
+        <a href="mester3.html" class="back-home">← العودة للصفحة الرئيسية</a>
         <div class="links-right">
             <button type="button" class="logout-account" onclick="window.logoutAccount()">🚪 تسجيل الخروج</button>
             <button type="button" class="delete-account" onclick="window.deleteAccount()">🗑️ حذف الحساب</button>
@@ -469,7 +469,6 @@
     // ✅ دالة مساعدة: فحص حالة الحظر/الاشتراك للمعلم
     // ==========================================================
     async function checkTeacherBlockStatus(phone) {
-        // القيمة الافتراضية: مش محظور
         const result = { isBlocked: false, reason: null, teacherDoc: null };
 
         try {
@@ -477,7 +476,6 @@
             result.teacherDoc = teacherDoc;
 
             if (!teacherDoc) {
-                // مش موجود - نخليها للمعالجة في المكان اللي يستدعيها
                 return result;
             }
 
@@ -488,7 +486,6 @@
                     : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
 
                 if (until && until <= Date.now()) {
-                    // ⏰ انتهت المدة — قفل تلقائي
                     try {
                         await updateDoc(doc(db, 'teachers', phone), {
                             isLocked: true,
@@ -503,7 +500,6 @@
                     localStorage.setItem('teacher_is_blocked', 'true');
                     return result;
                 } else {
-                    // ✅ الاشتراك ساري — نمسح علامة الحظر
                     localStorage.removeItem('teacher_is_blocked');
                     result.isBlocked = false;
                     return result;
@@ -524,7 +520,6 @@
 
         } catch (e) {
             console.warn('فشل فحص حالة الحظر:', e);
-            // في حالة الخطأ، نعتمد على localStorage كـ fallback
             if (localStorage.getItem('teacher_is_blocked') === 'true') {
                 result.isBlocked = true;
                 result.reason = 'from_localStorage';
@@ -556,13 +551,13 @@
                     localStorage.removeItem('current_teacher_phone');
                     localStorage.removeItem('teacher_is_blocked');
                 } else {
-                    // ✅ لو محظور حسب فحص الجهاز
                     if (check.locked === true) {
                         localStorage.setItem('teacher_is_blocked', 'true');
                         window.location.href = 'mester2.html';
                         return;
                     }
-                    window.location.href = 'mester1.html';
+                    // ✅ التحويل للصفحة الرئيسية mester3.html
+                    window.location.href = 'mester3.html';
                 }
             } catch (e) {
                 console.error('خطأ في التحقق من الجلسة:', e);
@@ -668,7 +663,6 @@
         btnText.innerHTML = '⏳ جاري التحقق...';
 
         try {
-            // ✅ جلب بيانات المعلم
             let user = null;
             try {
                 user = await getTeacher(phone);
@@ -683,17 +677,15 @@
                 return;
             }
 
-            // ✅ 1) فحص حالة الحظر/الاشتراك بالمنطق الجديد
+            // ✅ 1) فحص حالة الحظر/الاشتراك
             let isBlocked = false;
 
-            // فحص الاشتراك المؤقت
             if (user.unlockUntil && user.isLocked !== true) {
                 const until = typeof user.unlockUntil === 'number'
                     ? user.unlockUntil
                     : (user.unlockUntil.seconds ? user.unlockUntil.seconds * 1000 : 0);
 
                 if (until && until <= Date.now()) {
-                    // ⏰ انتهت المدة — قفل تلقائي
                     try {
                         await updateDoc(doc(db, 'teachers', phone), {
                             isLocked: true,
@@ -704,12 +696,10 @@
                     isBlocked = true;
                     console.log('⏰ انتهى الاشتراك المؤقت');
                 } else {
-                    // ✅ الاشتراك ساري
                     localStorage.removeItem('teacher_is_blocked');
                     console.log('✅ الاشتراك نشط حتى:', new Date(until).toLocaleDateString('ar-EG'));
                 }
             }
-            // فحص الحظر اليدوي
             else if (user.isLocked === true) {
                 isBlocked = true;
                 console.log('🚫 المعلم محظور يدوياً');
@@ -718,7 +708,7 @@
                 localStorage.removeItem('teacher_is_blocked');
             }
 
-            // ✅ لو محظور: نسجله دخول عادي ونوديه لصفحة mester2.html
+            // ✅ لو محظور
             if (isBlocked) {
                 localStorage.setItem('teacher_is_blocked', 'true');
                 localStorage.setItem('current_teacher_profile', JSON.stringify(user));
@@ -750,7 +740,6 @@
                     }
                 }
 
-                // ✅ لو الجهاز رجع locked
                 if (deviceCheck.locked === true) {
                     localStorage.setItem('teacher_is_blocked', 'true');
                     localStorage.setItem('current_teacher_profile', JSON.stringify(user));
@@ -762,7 +751,6 @@
                     return;
                 }
 
-                // ✅ تحديث الجهاز النشط
                 await updateTeacherDevice(phone);
             } catch (deviceErr) {
                 console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
@@ -772,8 +760,9 @@
             localStorage.setItem('current_teacher_phone', user.phone);
             window.showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
 
+            // ✅ التحويل للصفحة الرئيسية mester3.html
             setTimeout(() => {
-                window.location.href = 'mester1.html';
+                window.location.href = 'mester3.html';
             }, 800);
 
         } catch (error) {
@@ -857,8 +846,9 @@
             localStorage.removeItem('teacher_is_blocked');
             window.showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
 
+            // ✅ التحويل للصفحة الرئيسية mester3.html
             setTimeout(() => {
-                window.location.href = 'mester1.html';
+                window.location.href = 'mester3.html';
             }, 800);
 
         } catch (error) {
