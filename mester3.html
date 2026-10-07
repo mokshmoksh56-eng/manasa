@@ -82,7 +82,35 @@
         display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
     }
     .cloud-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulseDot 1.5s infinite; }
+    .cloud-badge.offline .dot { background: #DC2626; box-shadow: 0 0 8px #DC2626; animation: none; }
     @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .sync-badge {
+        position: absolute; top: 12px; right: 12px;
+        background: linear-gradient(135deg, #10B981, #047857);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff; padding: 6px 12px; border-radius: 20px;
+        font-size: 11px; font-weight: 900;
+        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.4s ease;
+        pointer-events: none;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
+    }
+    .sync-badge.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .sync-badge .sync-dot {
+        width: 8px; height: 8px; border-radius: 50%; background: #fff;
+        animation: syncPulse 1.2s infinite;
+    }
+    @keyframes syncPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+    }
 
     .user-bar {
         display: flex;
@@ -286,9 +314,6 @@
     }
     .launcher-card:hover .card-arrow { transform: translateX(-4px); }
 
-    /* ========================================================== */
-    /* 📝 جدول الحصص */
-    /* ========================================================== */
     .reminder-table {
         margin-top: 24px;
         background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -436,9 +461,6 @@
         }
     }
 
-    /* ========================================================== */
-    /* 🎯 نافذة تفاصيل الحصة */
-    /* ========================================================== */
     .lesson-modal-overlay {
         display: none;
         position: fixed; inset: 0;
@@ -694,6 +716,7 @@
         .lesson-chip .chip-subject { max-width: 65px; }
         .lesson-chip .chip-time { font-size: 9px; }
         .lesson-modal-box { max-width: 95%; }
+        .cloud-badge, .sync-badge { font-size: 9.5px; padding: 5px 9px; }
     }
 </style>
 </head>
@@ -707,7 +730,6 @@
         <div class="decorative-lines"></div>
     </div>
 
-    <!-- 🚪 تسجيل الخروج -->
     <div class="logout-modal-overlay" id="logoutModalOverlay">
         <div class="logout-modal-box">
             <div class="logout-icon-wrap">🚪</div>
@@ -722,7 +744,6 @@
         </div>
     </div>
 
-    <!-- 🎯 نافذة تفاصيل الحصة -->
     <div class="lesson-modal-overlay" id="lessonModalOverlay" onclick="closeLessonModal(event)">
         <div class="lesson-modal-box">
             <div class="lesson-modal-header" id="lessonModalHeader">
@@ -734,9 +755,14 @@
     </div>
 
     <header class="header-3d">
-        <div class="cloud-badge">
+        <div class="cloud-badge" id="cloudBadge">
             <span class="dot"></span>
-            <span>متصل</span>
+            <span id="cloudText">متصل</span>
+        </div>
+
+        <div class="sync-badge" id="syncBadge">
+            <span class="sync-dot"></span>
+            <span>تمت المزامنة من جهاز آخر</span>
         </div>
 
         <h1>منصة احجزلي</h1>
@@ -782,7 +808,6 @@
             </a>
         </div>
 
-        <!-- 📅 جدول حصص النهاردة -->
         <div class="reminder-table" id="reminderTable">
             <div class="rt-title">
                 <div class="rt-title-left">
@@ -820,7 +845,6 @@
                 if (phone) localStorage.setItem('teacher_saved_phone', phone);
                 if (profile) localStorage.setItem('teacher_saved_profile', profile);
 
-                // نسخة احتياطية لكل البيانات
                 const backup = {
                     teacherSelections: localStorage.getItem('teacherSelections'),
                     mester1_selections: localStorage.getItem('mester1_selections'),
@@ -839,7 +863,7 @@
         }
 
         // ==========================================================
-        // 🕐 تحويل الوقت لنظام 12 ساعة مع ص/م
+        // 🕐 تحويل الوقت لنظام 12 ساعة
         // ==========================================================
         function formatTime12(timeStr) {
             if (!timeStr) return '';
@@ -1382,7 +1406,37 @@
         }
 
         // ==========================================================
-        // 🚪 تسجيل الخروج (يحفظ البيانات)
+        // ☁️ تحديث بادج السحابة
+        // ==========================================================
+        function setCloudStatus(online, text) {
+            const badge = document.getElementById('cloudBadge');
+            const txt = document.getElementById('cloudText');
+            if (!badge || !txt) return;
+            
+            badge.classList.toggle('offline', !online);
+            txt.textContent = text || (online ? 'متصل' : 'غير متصل');
+        }
+
+        // ==========================================================
+        // 🔄 بادج المزامنة
+        // ==========================================================
+        function showSyncBadge(message = 'تمت المزامنة من جهاز آخر') {
+            const badge = document.getElementById('syncBadge');
+            if (!badge) return;
+            
+            const textEl = badge.querySelector('span:last-child');
+            if (textEl) textEl.textContent = message;
+            
+            badge.classList.add('show');
+            
+            clearTimeout(window._syncBadgeTimer);
+            window._syncBadgeTimer = setTimeout(() => {
+                badge.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================================
+        // 🚪 تسجيل الخروج
         // ==========================================================
         window.openLogoutModal = function() {
             document.getElementById('logoutModalOverlay')?.classList.add('active');
@@ -1392,10 +1446,8 @@
         };
         window.confirmLogout = function() {
             try {
-                // ✅ نحفظ كل البيانات دائم
                 savePersistentData();
 
-                // ✅ نمسح بيانات الجلسة فقط (علشان ما يحوّلش تلقائي في teacher-login)
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
                 localStorage.removeItem('teacher_is_blocked');
@@ -1421,11 +1473,18 @@
             updateLessonsList();
         }
 
+        // ✅ نكشف الدوال للنطاق العام عشان المزامنة تقدر تستخدمها
+        window.updateAll = updateAll;
+        window.updateSpecialtyCard = updateSpecialtyCard;
+        window.updateScheduleCard = updateScheduleCard;
+        window.updateLessonsList = updateLessonsList;
+        window.showSyncBadge = showSyncBadge;
+        window.setCloudStatus = setCloudStatus;
+
         window.addEventListener('DOMContentLoaded', () => {
             showTeacherName();
             updateAll();
             
-            // ✅ نحفظ البيانات أول ما الصفحة تفتح
             savePersistentData();
             
             console.log('✅ mester3 جاهز');
@@ -1451,13 +1510,9 @@
             midnight.setHours(24, 0, 0, 0);
             const msUntilMidnight = midnight.getTime() - now.getTime();
 
-            console.log(`🌙 التحديث التلقائي القادم بعد ${Math.round(msUntilMidnight / 1000 / 60)} دقيقة`);
-
             setTimeout(() => {
                 console.log('🌙 منتصف الليل — تحديث حصص اليوم الجديد');
-                updateLessonsList();
-                updateSpecialtyCard();
-                updateScheduleCard();
+                updateAll();
                 scheduleMidnightRefresh();
             }, msUntilMidnight);
         }
@@ -1467,17 +1522,134 @@
     })();
     </script>
 
-    <!-- 🔒 منع الرجوع للصفحات السابقة + حفظ البيانات + بدون تحويل تلقائي -->
+    <!-- ==========================================================
+         ✅✅✅ المزامنة الفورية 100% بين الأجهزة ✅✅✅
+         ========================================================== -->
+    <script type="module">
+        // ==========================================================
+        // 🔄 المزامنة الفورية 100% بين الأجهزة
+        // ==========================================================
+        (async function startRealtimeSync() {
+            const teacherPhone = localStorage.getItem('current_teacher_phone');
+            
+            if (!teacherPhone) {
+                console.log('⚠️ لا يوجد رقم معلم — تخطي المزامنة الفورية');
+                return;
+            }
+
+            console.log('🔄 تشغيل المزامنة الفورية في mester3...');
+
+            try {
+                const firebase = await import('./firebase-config.js');
+                
+                // ✅ تحديث حالة السحابة
+                if (window.setCloudStatus) {
+                    window.setCloudStatus(true, 'متصل ☁️');
+                }
+
+                // ==================================================
+                // 1) مزامنة بيانات المعلم (teacher_data) فورياً
+                // ==================================================
+                firebase.subscribeTeacherData(teacherPhone, (cloudData) => {
+                    console.log('🔄 استقبلت تحديث من جهاز آخر');
+                    
+                    let needUpdate = false;
+
+                    if (cloudData.teacher_appointments_summary) {
+                        const current = localStorage.getItem('teacher_appointments_summary');
+                        if (current !== cloudData.teacher_appointments_summary) {
+                            localStorage.setItem('teacher_appointments_summary', 
+                                cloudData.teacher_appointments_summary);
+                            needUpdate = true;
+                        }
+                    }
+
+                    if (cloudData.mester1_selections) {
+                        const current = localStorage.getItem('mester1_selections');
+                        if (current !== cloudData.mester1_selections) {
+                            localStorage.setItem('mester1_selections', 
+                                cloudData.mester1_selections);
+                            needUpdate = true;
+                        }
+                    }
+
+                    if (cloudData.teacherSelections) {
+                        const current = localStorage.getItem('teacherSelections');
+                        if (current !== cloudData.teacherSelections) {
+                            localStorage.setItem('teacherSelections', 
+                                cloudData.teacherSelections);
+                            needUpdate = true;
+                        }
+                    }
+
+                    if (cloudData.teacher_groups_count !== undefined && 
+                        cloudData.teacher_groups_count !== null) {
+                        const current = localStorage.getItem('teacher_groups_count');
+                        if (current !== String(cloudData.teacher_groups_count)) {
+                            localStorage.setItem('teacher_groups_count', 
+                                String(cloudData.teacher_groups_count));
+                            needUpdate = true;
+                        }
+                    }
+
+                    if (needUpdate) {
+                        console.log('✅ تم تحديث البيانات من السحابة');
+                        if (window.showSyncBadge) {
+                            window.showSyncBadge('تمت المزامنة من جهاز آخر');
+                        }
+                        if (window.updateAll) {
+                            window.updateAll();
+                        }
+                    }
+                });
+
+                // ==================================================
+                // 2) مزامنة المجموعات فورياً
+                // ==================================================
+                firebase.subscribeGroups((allGroups) => {
+                    const myGroups = allGroups.filter(g => g.phone === teacherPhone);
+                    const currentCount = parseInt(localStorage.getItem('teacher_groups_count') || '0');
+                    
+                    if (myGroups.length !== currentCount) {
+                        console.log(`🔄 عدد المجموعات اتغير: ${currentCount} → ${myGroups.length}`);
+                        localStorage.setItem('teacher_groups_count', String(myGroups.length));
+                        
+                        if (window.showSyncBadge) {
+                            window.showSyncBadge(`تم تحديث المجموعات (${myGroups.length})`);
+                        }
+                        
+                        if (window.updateScheduleCard) {
+                            window.updateScheduleCard();
+                        }
+                    }
+                });
+
+                // ✅ مؤشر السحابة شغالة
+                if (window.setCloudStatus) {
+                    window.setCloudStatus(true, 'متصل ☁️');
+                }
+
+                console.log('✅ المزامنة الفورية مفعّلة في mester3');
+
+            } catch(e) {
+                console.warn('⚠️ فشل تشغيل المزامنة الفورية:', e);
+                
+                if (window.setCloudStatus) {
+                    window.setCloudStatus(false, 'غير متصل');
+                }
+            }
+        })();
+    </script>
+
+    <!-- 🔒 منع الرجوع للصفحات السابقة + حفظ البيانات -->
     <script>
     (function() {
         'use strict';
 
-        // نضيف حالة جديدة في التاريخ عشان نمنع الرجوع
         try {
             history.pushState({ page: 'mester3' }, '', location.href);
         } catch(e) {}
 
-        // دالة حفظ البيانات
         function saveDataBeforeExit() {
             try {
                 const phone = localStorage.getItem('current_teacher_phone');
@@ -1496,22 +1668,18 @@
                     last_selected_location: localStorage.getItem('last_selected_location')
                 };
                 localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
-                console.log('💾 تم حفظ البيانات قبل الرجوع');
             } catch(err) {}
         }
 
-        // منع الرجوع
         window.addEventListener('popstate', function(e) {
             try {
                 history.pushState({ page: 'mester3' }, '', location.href);
             } catch(err) {}
             
-            console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول (البيانات محفوظة)');
+            console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول');
             
-            // ✅ نحفظ البيانات
             saveDataBeforeExit();
             
-            // ✅ نمسح بيانات الجلسة (علشان teacher-login ما يحوّلش تلقائي)
             try {
                 localStorage.removeItem('current_teacher_phone');
                 localStorage.removeItem('current_teacher_profile');
@@ -1521,7 +1689,6 @@
             window.location.replace('teacher-login.html');
         });
 
-        // لو الصفحة رجعت من الـ bfcache
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 console.log('🔒 الصفحة رجعت من cache — توجيه لتسجيل الدخول');
