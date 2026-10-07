@@ -70,7 +70,6 @@ body {
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* Toggle sidebar button */
 .toggle-sidebar-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
@@ -124,9 +123,7 @@ body {
     position: relative;
 }
 
-/* ============================= */
-/* Sidebar - Groups List (Right) */
-/* ============================= */
+/* Sidebar */
 .groups-sidebar {
     width: 0;
     background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
@@ -140,9 +137,7 @@ body {
     box-shadow: -3px 0 15px rgba(0,0,0,0.08);
     position: relative;
 }
-.groups-sidebar.open {
-    width: 320px;
-}
+.groups-sidebar.open { width: 320px; }
 
 .sidebar-header {
     background: linear-gradient(135deg, var(--primary), var(--dark));
@@ -185,9 +180,7 @@ body {
     justify-content: center;
     transition: all 0.2s;
 }
-.sidebar-header .close-btn:hover {
-    background: rgba(255,255,255,0.35);
-}
+.sidebar-header .close-btn:hover { background: rgba(255,255,255,0.35); }
 
 .sidebar-body {
     flex: 1;
@@ -198,7 +191,6 @@ body {
 .sidebar-body::-webkit-scrollbar { width: 6px; }
 .sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-/* Add new button */
 .add-new-btn {
     width: 100%;
     background: linear-gradient(135deg, var(--primary), var(--dark));
@@ -221,7 +213,6 @@ body {
 .add-new-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37,150,139,0.35); }
 .add-new-btn:active { transform: scale(0.98); }
 
-/* Group card in sidebar */
 .sb-group-card {
     background: #fff;
     border: 2px solid #e2e8f0;
@@ -340,9 +331,7 @@ body {
 .sb-empty .icon { font-size: 50px; margin-bottom: 12px; display: block; }
 .sb-empty p { font-size: 13px; font-weight: 800; }
 
-/* ============================= */
-/* Center Panel - Build Steps */
-/* ============================= */
+/* Center Panel */
 .options-panel {
     width: 320px;
     background: var(--panel-bg);
@@ -384,9 +373,7 @@ body {
     font-family: inherit;
     transition: all 0.2s;
 }
-.options-panel-header .reset-btn:hover {
-    background: rgba(255,255,255,0.35);
-}
+.options-panel-header .reset-btn:hover { background: rgba(255,255,255,0.35); }
 
 .options-panel-body {
     flex: 1;
@@ -396,7 +383,6 @@ body {
 .options-panel-body::-webkit-scrollbar { width: 5px; }
 .options-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-/* Build step cards */
 .build-step {
     background: #fff;
     border: 2px solid #e2e8f0;
@@ -506,9 +492,7 @@ body {
 .panel-summary .prow .k { color: #065f46; font-weight: 800; }
 .panel-summary .prow .v { color: #064e3b; font-weight: 900; text-align: left; }
 
-/* ============================= */
-/* Chat Area (Left) */
-/* ============================= */
+/* Chat Area */
 .chat-area {
     flex: 1;
     overflow-y: auto;
@@ -521,7 +505,6 @@ body {
 .chat-area::-webkit-scrollbar { width: 6px; }
 .chat-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
 
-/* Messages */
 .msg {
     max-width: 85%;
     margin-bottom: 12px;
@@ -562,7 +545,6 @@ body {
 }
 .msg.teacher .time { text-align: right; }
 
-/* Options in chat */
 .options-container {
     display: flex;
     flex-wrap: wrap;
@@ -593,7 +575,6 @@ body {
     box-shadow: 0 4px 12px rgba(37,150,139,0.35);
 }
 
-/* Time grid in chat */
 .chat-time-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -624,12 +605,8 @@ body {
     border-color: var(--primary);
     transform: translateY(-2px);
 }
-.chat-time-chip.disabled {
-    opacity: 0.3;
-    pointer-events: none;
-}
+.chat-time-chip.disabled { opacity: 0.3; pointer-events: none; }
 
-/* Calendar in chat */
 .chat-cal {
     background: #fff;
     border-radius: 12px;
@@ -646,11 +623,7 @@ body {
     padding-bottom: 8px;
     border-bottom: 1.5px solid #f1f5f9;
 }
-.chat-cal .ccal-title {
-    font-size: 14px;
-    font-weight: 900;
-    color: var(--dark);
-}
+.chat-cal .ccal-title { font-size: 14px; font-weight: 900; color: var(--dark); }
 .chat-cal .ccal-nav {
     background: var(--light);
     border: 1px solid var(--border);
@@ -702,7 +675,6 @@ body {
 .chat-cal-day.past { opacity: 0.35; cursor: not-allowed; }
 .chat-cal-day.empty { background: transparent; cursor: default; }
 
-/* Map in chat */
 .chat-map-widget {
     background: #fff;
     border-radius: 14px;
@@ -775,6 +747,8 @@ body {
     border-top: 1px solid #d0d0d0;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
 .input-area .input-wrap {
     flex: 1;
@@ -789,12 +763,13 @@ body {
     flex: 1;
     border: none;
     outline: none;
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
     font-weight: 800;
     color: var(--text);
     background: transparent;
-    padding: 4px 0;
+    padding: 6px 0;
+    -webkit-appearance: none;
 }
 .input-area input::placeholder { color: #94a3b8; }
 .send-btn {
@@ -811,8 +786,8 @@ body {
     flex-shrink: 0;
 }
 .send-btn:active { transform: scale(0.9); }
+.send-btn:disabled { opacity: 0.5; }
 
-/* Typing */
 .typing {
     display: inline-flex;
     gap: 4px;
@@ -838,7 +813,6 @@ body {
     30% { transform: translateY(-6px); opacity: 1; }
 }
 
-/* Toast */
 .toast {
     position: fixed;
     bottom: 90px;
@@ -861,7 +835,6 @@ body {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; }
 
-/* Success overlay */
 .success-overlay {
     position: fixed;
     inset: 0;
@@ -898,16 +871,13 @@ body {
     box-shadow: 0 4px 12px rgba(37,150,139,0.3);
 }
 
-/* Mobile responsive */
 @media (max-width: 1024px) {
     .groups-sidebar.open { width: 280px; }
     .options-panel { width: 280px; }
 }
 
 @media (max-width: 768px) {
-    .main-layout {
-        flex-direction: column;
-    }
+    .main-layout { flex-direction: column; }
     .groups-sidebar {
         position: fixed;
         right: 0;
@@ -920,32 +890,19 @@ body {
         width: 85%;
         max-width: 320px;
     }
-    .groups-sidebar.open::after {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: -1;
-        right: 85%;
-    }
     .options-panel {
         width: 100%;
         height: 40%;
         border-left: none;
         border-bottom: 3px solid var(--border);
     }
-    .chat-area {
-        height: 60%;
-    }
-    .chat-time-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .chat-area { height: 60%; }
+    .chat-time-grid { grid-template-columns: repeat(3, 1fr); }
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="chat-header">
     <div class="avatar">🤖</div>
     <div class="info">
@@ -960,10 +917,8 @@ body {
 </div>
 <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%"></div></div>
 
-<!-- Main Layout -->
 <div class="main-layout">
     
-    <!-- Groups Sidebar (Right - collapsible) -->
     <aside class="groups-sidebar" id="groupsSidebar">
         <div class="sidebar-header">
             <div class="title">
@@ -978,13 +933,10 @@ body {
                 <span>➕</span>
                 <span>اعمل مجموعة جديدة</span>
             </button>
-            <div id="sidebarGroupsList">
-                <!-- Groups will be rendered here -->
-            </div>
+            <div id="sidebarGroupsList"></div>
         </div>
     </aside>
     
-    <!-- Center Panel -->
     <aside class="options-panel">
         <div class="options-panel-header">
             <div class="title">
@@ -996,12 +948,11 @@ body {
         <div class="options-panel-body" id="optionsPanelBody"></div>
     </aside>
     
-    <!-- Left - Chat -->
     <main style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
         <div class="chat-area" id="chatArea"></div>
         <div class="input-area" id="inputArea" style="display:none;">
             <div class="input-wrap">
-                <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off">
+                <input type="text" id="chatInput" placeholder="اكتب هنا..." autocomplete="off" inputmode="text">
             </div>
             <button class="send-btn" id="sendBtn">➤</button>
         </div>
@@ -1009,7 +960,6 @@ body {
     
 </div>
 
-<!-- Success overlay -->
 <div class="success-overlay" id="successOverlay">
     <div class="success-box">
         <div class="icon">🎉</div>
@@ -1019,7 +969,6 @@ body {
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -1121,16 +1070,56 @@ function formatTime(val) {
     return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
 }
 
+/* ============ ✅ إظهار وإخفاء حقل الإدخال (مُحسّن للكيبورد) ============ */
 function setInputMode(mode, placeholder = '') {
+    const inputAreaEl = document.getElementById('inputArea');
+    const chatInputEl = document.getElementById('chatInput');
+    const sendBtnEl = document.getElementById('sendBtn');
+    
     if (mode === 'hidden') {
-        inputArea.style.display = 'none';
-    } else {
-        inputArea.style.display = 'flex';
-        chatInput.placeholder = placeholder;
-        chatInput.value = '';
-        chatInput.type = mode === 'number' ? 'number' : 'text';
-        setTimeout(() => chatInput.focus(), 100);
+        inputAreaEl.style.display = 'none';
+        return;
     }
+    
+    // نظهر الحقل
+    inputAreaEl.style.display = 'flex';
+    inputAreaEl.style.visibility = 'visible';
+    inputAreaEl.style.opacity = '1';
+    
+    // نظبط الحقل
+    chatInputEl.disabled = false;
+    chatInputEl.readOnly = false;
+    chatInputEl.value = '';
+    chatInputEl.placeholder = placeholder || 'اكتب هنا...';
+    
+    if (mode === 'number') {
+        chatInputEl.type = 'number';
+        chatInputEl.setAttribute('inputmode', 'numeric');
+    } else {
+        chatInputEl.type = 'text';
+        chatInputEl.setAttribute('inputmode', 'text');
+    }
+    
+    // نظبط زرار الإرسال
+    sendBtnEl.disabled = false;
+    
+    // نركز على الحقل (مع scroll عشان الكيبورد يبان)
+    setTimeout(() => {
+        try {
+            chatInputEl.focus();
+        } catch(e) {
+            chatInputEl.focus();
+        }
+    }, 200);
+    
+    // محاولة إضافية بعد التأخير
+    setTimeout(() => {
+        try {
+            if (document.activeElement !== chatInputEl) {
+                chatInputEl.focus();
+            }
+        } catch(e) {}
+    }, 500);
 }
 
 function resetState() {
@@ -1262,7 +1251,7 @@ async function updateHeaderBadge() {
     sidebarCount.textContent = groups.length;
 }
 
-/* ============ Panel Build Steps ============ */
+/* ============ Panel Steps ============ */
 const BUILD_STEPS = [
     { key: 'groupName', icon: '📝', label: 'اسم المجموعة' },
     { key: 'teacherName', icon: '👤', label: 'اسم المستر' },
@@ -1847,11 +1836,16 @@ async function handleEditChoice(field) {
     if (field === 'groupName') {
         state.step = 1; renderPanel();
         await addBotMessage('تمام، <b>الاسم الجديد إيه؟</b>');
-        setInputMode('text', 'اكتب الاسم الجديد...');
+        // ✅ ننتظر وبعدين نظهر الحقل
+        setTimeout(() => {
+            setInputMode('text', 'اكتب الاسم الجديد...');
+        }, 200);
     } else if (field === 'teacherName') {
         state.step = 2; renderPanel();
         await addBotMessage('ماشي، <b>الاسم الجديد للمستر إيه؟</b>');
-        setInputMode('text', 'اكتب الاسم الجديد...');
+        setTimeout(() => {
+            setInputMode('text', 'اكتب الاسم الجديد...');
+        }, 200);
     } else if (field === 'location') {
         state.step = 3; renderPanel();
         await addBotMessage('اختار <b>المكان الجديد</b>:');
@@ -1867,7 +1861,9 @@ async function handleEditChoice(field) {
             if (opt.value === 'السنتر') {
                 state.step = 3.5; renderPanel();
                 await addBotMessage('و<b>اسم السنتر إيه؟</b>');
-                setInputMode('text', 'اسم السنتر...');
+                setTimeout(() => {
+                    setInputMode('text', 'اسم السنتر...');
+                }, 200);
             } else {
                 await returnToEditMenu();
             }
@@ -1957,6 +1953,7 @@ async function handleEditChoice(field) {
 
 async function returnToEditMenu() {
     setProgress(50); state.step = 12; renderPanel();
+    setInputMode('hidden');
     await addBotMessage('✅ اتعدل! عايز تعدل حاجة تانية؟');
     showEditMenu();
 }
@@ -2029,27 +2026,31 @@ async function saveEditChanges() {
 
 /* ============ الإدخال ============ */
 sendBtn.onclick = handleSend;
-chatInput.onkeydown = e => { if (e.key === 'Enter') handleSend(); };
+chatInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); handleSend(); } };
 
 async function handleSend() {
     const val = chatInput.value.trim();
     if (!val) return;
     
+    // نعطل مؤقتاً عشان ما يبعتش مرتين
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
+    
+    // إخفاء الحقل مؤقتاً
+    setInputMode('hidden');
+    
     if (state.step === 1) {
         state.data.groupName = val;
-        chatInput.value = '';
         addTeacherMessage(val);
         if (state.isEditing) await returnToEditMenu();
         else await stepTeacherName();
     } else if (state.step === 2) {
         state.data.teacherName = val;
-        chatInput.value = '';
         addTeacherMessage(val);
         if (state.isEditing) await returnToEditMenu();
         else await stepLocation();
     } else if (state.step === 3.5) {
         state.data.centerName = val;
-        chatInput.value = '';
         addTeacherMessage(val);
         if (state.isEditing) await returnToEditMenu();
         else await stepStudentsCount();
@@ -2057,11 +2058,14 @@ async function handleSend() {
         const num = parseInt(val);
         if (num > 0) {
             state.data.studentsCount = num;
-            chatInput.value = '';
             addTeacherMessage(`${num} طالب`);
             await stepGender();
         }
     }
+    
+    // إعادة تنشيط الحقل بعد المعالجة
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
 }
 
 /* ============ ابدأ من جديد ============ */
@@ -2071,7 +2075,6 @@ async function startFresh() {
     setProgress(0);
     await stepGroupName();
 }
-
 window.startFresh = startFresh;
 
 /* ============ الانتقال ============ */
