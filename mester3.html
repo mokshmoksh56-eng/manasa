@@ -1376,9 +1376,9 @@
                 localStorage.removeItem('last_selected_gender');
                 localStorage.removeItem('last_selected_location');
                 closeLogoutModal();
-                setTimeout(() => { window.location.href = 'teacher-login.html'; }, 250);
+                setTimeout(() => { window.location.replace('teacher-login.html'); }, 250);
             } catch(e) {
-                window.location.href = 'teacher-login.html';
+                window.location.replace('teacher-login.html');
             }
         };
 
@@ -1434,6 +1434,38 @@
         }
 
         scheduleMidnightRefresh();
+
+    })();
+    </script>
+
+    <!-- 🔒 منع الرجوع للصفحات السابقة (mester1 / mester2) -->
+    <script>
+    (function() {
+        'use strict';
+
+        // نضيف حالة جديدة في التاريخ عشان نمنع الرجوع
+        try {
+            history.pushState({ page: 'mester3' }, '', location.href);
+        } catch(e) {}
+
+        // منع الرجوع
+        window.addEventListener('popstate', function(e) {
+            // نحاول نضيف الحالة تاني
+            try {
+                history.pushState({ page: 'mester3' }, '', location.href);
+            } catch(err) {}
+            
+            console.log('🔒 محاولة رجوع — توجيه لتسجيل الدخول');
+            window.location.replace('teacher-login.html');
+        });
+
+        // لو الصفحة رجعت من الـ bfcache (Back-Forward Cache)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                console.log('🔒 الصفحة رجعت من cache — توجيه لتسجيل الدخول');
+                window.location.replace('teacher-login.html');
+            }
+        });
 
     })();
     </script>
