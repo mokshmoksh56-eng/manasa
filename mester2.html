@@ -102,7 +102,7 @@ body {
     flex-shrink: 0;
 }
 
-.toggle-sidebar-btn, .ai-toggle-btn {
+.toggle-sidebar-btn, .ai-toggle-btn, .key-btn {
     background: rgba(255,255,255,0.2);
     border: 1.5px solid rgba(255,255,255,0.4);
     color: #fff;
@@ -119,7 +119,9 @@ body {
     backdrop-filter: blur(6px);
     flex-shrink: 0;
 }
-.toggle-sidebar-btn:hover, .ai-toggle-btn:hover { background: rgba(255,255,255,0.35); }
+.toggle-sidebar-btn:hover, .ai-toggle-btn:hover, .key-btn:hover { background: rgba(255,255,255,0.35); }
+
+.key-btn { padding: 8px 10px; font-size: 14px; }
 
 .ai-toggle-btn.active {
     background: var(--ai-glow);
@@ -596,6 +598,7 @@ body {
     font-size: 14px; font-weight: 800;
     opacity: 0; transition: all 0.3s;
     z-index: 9998; pointer-events: none;
+    max-width: 90%; text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: #10b981; }
@@ -608,7 +611,7 @@ body {
     .chat-area { height: 60%; }
     .chat-time-grid { grid-template-columns: repeat(3, 1fr); }
     .header-actions { gap: 4px; }
-    .toggle-sidebar-btn, .ai-toggle-btn { padding: 6px 10px; font-size: 11px; }
+    .toggle-sidebar-btn, .ai-toggle-btn, .key-btn { padding: 6px 10px; font-size: 11px; }
 }
 </style>
 </head>
@@ -621,6 +624,9 @@ body {
         <p><span class="dot"></span> <span id="botStatus">معاك على طول</span></p>
     </div>
     <div class="header-actions">
+        <button class="key-btn" id="keyBtn" onclick="manageGroqKey()" title="إدارة مفتاح Groq">
+            <span>🔑</span>
+        </button>
         <button class="ai-toggle-btn" id="aiToggleBtn" onclick="toggleAIMode()">
             <span>⚡</span>
             <span>AI</span>
@@ -697,6 +703,10 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<!-- Eruda للكونسول على الموبايل -->
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>try { eruda.init({ tool: ['console', 'elements'], autoScale: true }); } catch(e) {}</script>
+
 <script type="module">
 import { 
     publishGroup, 
@@ -707,11 +717,113 @@ import {
     subscribeGroups
 } from './firebase-config.js';
 
-/* ============ Groq AI Config ============ */
-const GROQ_API_KEY = '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';
+/* ============================================================ */
+/* ============ 🔑 إدارة مفتاح Groq ============ */
+/* ============================================================ */
+
+// المفتاح القديم كـ fallback (لازم تجيب واحد جديد)
+const FALLBACK_KEY = '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';
+
+// أولوية: localStorage > fallback
+let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
+
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 let aiModeActive = false;
+
+/* دالة إدارة المفتاح - تفتح prompt لإدخال/تغيير المفتاح */
+window.manageGroqKey = function() {
+    const current = localStorage.getItem('groq_api_key') || '';
+    const currentPreview = current ? current.slice(0, 12) + '...' + current.slice(-6) : 'مش محفوظ';
+    
+    const choice = prompt(
+        `🔑 إدارة مفتاح Groq\n\n` +
+        `المفتاح الحالي: ${currentPreview}\n` +
+        `الطول: ${current.length} حرف\n\n` +
+        `اكتب الأمر:\n` +
+        `• الصق مفتاح جديد (يبدأ بـ gsk_) عشان تحفظه\n` +
+        `• أو اكتب "حذف" عشان تمسح المفتاح\n` +
+        `• أو "اختبار" عشان تختبر المفتاح الحالي`,
+        current
+    );
+    
+    if (!choice) return;
+    const trimmed = choice.trim();
+    
+    if (trimmed === 'حذف' || trimmed.toLowerCase() === 'delete') {
+        localStorage.removeItem('groq_api_key');
+        GROQ_API_KEY = FALLBACK_KEY;
+        showToast('🗑️ اتمسح المفتاح المحفوظ');
+        return;
+    }
+    
+    if (trimmed === 'اختبار' || trimmed.toLowerCase() === 'test') {
+        testGroqKey(GROQ_API_KEY);
+        return;
+    }
+    
+    if (trimmed.startsWith('gsk_')) {
+        // التحقق من الطول
+        if (trimmed.length < 40) {
+            alert('⚠️ المفتاح قصير أوي!\n\nالمفتاح الكامل بيبقى حوالي 56 حرف بعد gsk_\n\nالطول الحالي: ' + trimmed.length);
+            return;
+        }
+        
+        localStorage.setItem('groq_api_key', trimmed);
+        GROQ_API_KEY = trimmed;
+        showToast('✅ تم حفظ المفتاح', true);
+        
+        // اختبره تلقائياً
+        testGroqKey(trimmed);
+    } else {
+        alert('⚠️ المفتاح لازم يبدأ بـ gsk_');
+    }
+};
+
+/* اختبار المفتاح */
+async function testGroqKey(key) {
+    if (!key) {
+        showToast('❌ مفيش مفتاح');
+        return;
+    }
+    
+    showToast('⏳ جاري اختبار المفتاح...');
+    
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/models', {
+            headers: { 'Authorization': 'Bearer ' + key }
+        });
+        
+        if (res.ok) {
+            const data = await res.json();
+            showToast('✅ المفتاح شغال! ' + (data.data?.length || 0) + ' موديل', true);
+            addBotMessage(
+                `✅ <b>المفتاح شغال!</b><br><br>` +
+                `عدد الموديلات المتاحة: <b>${data.data?.length || 0}</b><br>` +
+                `المفتاح بيبدأ بـ: <code>${key.slice(0, 15)}...</code><br>` +
+                `الطول: <b>${key.length}</b> حرف<br><br>` +
+                `تقدر تستخدم الـ AI عادي دلوقتي 🚀`
+            );
+        } else if (res.status === 401) {
+            showToast('❌ المفتاح غلط (401)');
+            addBotMessage(
+                `❌ <b>المفتاح غلط أو اتلغى (401)</b><br><br>` +
+                `الخطوات:<br>` +
+                `1. روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a><br>` +
+                `2. اعمل مفتاح جديد<br>` +
+                `3. انسخه <b>كامل</b> (بيبقى ~56 حرف)<br>` +
+                `4. دوس على زر 🔑 فوق في الهيدر والصقه`
+            );
+        } else {
+            showToast('❌ فشل: ' + res.status);
+            addBotMessage(`❌ فشل الاتصال (${res.status})`);
+        }
+    } catch(e) {
+        console.error(e);
+        showToast('❌ مشكلة في الاتصال');
+        addBotMessage(`❌ <b>مشكلة في الاتصال</b><br>${e.message}`);
+    }
+}
 
 /* ============ الحالة ============ */
 const state = {
@@ -729,7 +841,7 @@ const state = {
 
 let cachedGroups = [];
 let map, marker;
-let chatHistory = []; // سجل المحادثة مع AI
+let chatHistory = [];
 
 /* ============ DOM ============ */
 const chatArea = document.getElementById('chatArea');
@@ -780,7 +892,6 @@ function addBotMessage(text, showTyping = true) {
 function _addMessage(who, text, isAI = false) {
     const msg = document.createElement('div');
     msg.className = `msg ${who}${isAI ? ' ai-msg' : ''}`;
-    // نسمح بأسطر جديدة
     const formatted = text.replace(/\n/g, '<br>');
     msg.innerHTML = formatted + `<div class="time">${currentTime()} ${who === 'bot' ? '✓✓' : ''}</div>`;
     chatArea.appendChild(msg);
@@ -832,12 +943,8 @@ function setInputMode(mode, placeholder = '') {
     
     sendBtnEl.disabled = false;
     
-    setTimeout(() => {
-        try { chatInputEl.focus(); } catch(e) {}
-    }, 200);
-    setTimeout(() => {
-        try { if (document.activeElement !== chatInputEl) chatInputEl.focus(); } catch(e) {}
-    }, 500);
+    setTimeout(() => { try { chatInputEl.focus(); } catch(e) {} }, 200);
+    setTimeout(() => { try { if (document.activeElement !== chatInputEl) chatInputEl.focus(); } catch(e) {} }, 500);
 }
 
 function resetState() {
@@ -885,7 +992,6 @@ window.toggleAIMode = function() {
         
         showToast('⚡ تم تفعيل الوضع الذكي', true);
         
-        // رسالة ترحيب من AI
         addBotMessage(
             '⚡ <b>أهلاً! الوضع الذكي شغال</b><br><br>' +
             'أنا دلوقتي متصل بـ AI (Groq) وعارف كل مجموعاتك.<br><br>' +
@@ -911,7 +1017,6 @@ window.toggleAIMode = function() {
         addBotMessage('تم إيقاف الوضع الذكي. رجعنا للوضع العادي 🤖', false);
     }
     
-    // نظهر حقل الإدخال
     if (inputAreaEl.style.display === 'none') {
         setInputMode('text', chatInput.placeholder);
     }
@@ -919,7 +1024,6 @@ window.toggleAIMode = function() {
     chatInput.focus();
 };
 
-/* اجهز معلومات المجموعات عشان نبعتهم للـ AI */
 async function buildGroupsContext() {
     const groups = await loadSavedGroups();
     if (groups.length === 0) {
@@ -956,9 +1060,16 @@ async function buildGroupsContext() {
     return ctx;
 }
 
-/* أبعت رسالة للـ Groq AI */
 async function askGroq(userMessage) {
-    // نعرض رسالة التفكير
+    // ✅ التحقق من المفتاح الأول
+    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
+        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>دوس على الزر 🔑 في الهيدر فوق، والصق مفتاحك.<br><br>لو مش عندك:<br>روح على <a href="https://console.groq.com/keys" target="_blank" style="color:#25968b;">console.groq.com/keys</a> واعمل واحد جديد.';
+    }
+    
+    if (GROQ_API_KEY.length < 40) {
+        return '⚠️ <b>المفتاح قصير أوي!</b><br><br>المفتاح الكامل بيبقى ~56 حرف.<br>دوس على 🔑 فوق وصحح المفتاح.';
+    }
+    
     const typing = document.createElement('div');
     typing.className = 'typing ai-typing';
     typing.innerHTML = '<span></span><span></span><span></span>';
@@ -984,18 +1095,8 @@ ${groupsContext}
 6. لو السؤال مش له علاقة بالمجموعات، قول للمستر بأدب
 7. لو البيانات ناقصة، قول للمستر بأدب`;
         
-        // نبني سجل المحادثة
-        const messages = [
-            { role: 'system', content: systemPrompt }
-        ];
-        
-        // نضيف آخر 6 رسايل من التاريخ
-        const recentHistory = chatHistory.slice(-6);
-        recentHistory.forEach(h => {
-            messages.push(h);
-        });
-        
-        // نضيف رسالة المستر الحالية
+        const messages = [{ role: 'system', content: systemPrompt }];
+        chatHistory.slice(-6).forEach(h => messages.push(h));
         messages.push({ role: 'user', content: userMessage });
         
         const response = await fetch(GROQ_API_URL, {
@@ -1017,35 +1118,35 @@ ${groupsContext}
         
         if (!response.ok) {
             const errText = await response.text();
-            console.error('Groq error:', errText);
+            console.error('Groq error:', response.status, errText);
+            
+            if (response.status === 401) {
+                return '❌ <b>المفتاح غلط (401)</b><br><br>دوس على 🔑 فوق وجيب مفتاح جديد من console.groq.com/keys';
+            }
+            if (response.status === 429) {
+                return '⏳ <b>وصلت للحد المجاني</b><br><br>استنى شوية وجرب تاني.';
+            }
             throw new Error(`HTTP ${response.status}`);
         }
         
         const data = await response.json();
         const botReply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد دلوقتي.';
         
-        // نحفظ في التاريخ
         chatHistory.push({ role: 'user', content: userMessage });
         chatHistory.push({ role: 'assistant', content: botReply });
-        
-        // نحتفظ بآخر 20 رسالة بس
-        if (chatHistory.length > 20) {
-            chatHistory = chatHistory.slice(-20);
-        }
+        if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
         
         return botReply;
         
     } catch (error) {
         typing.remove();
         console.error('AI Error:', error);
-        return `⚠️ <b>في مشكلة في الاتصال بالـ AI</b><br><br>جرب:<br>• تتأكد من النت<br>• لو المشكلة استمرت، يمكن مفتاح API مش شغال<br><br>تقدر تستخدم الأزرار السريعة تحت 👇`;
+        return `⚠️ <b>مشكلة في الاتصال بالـ AI</b><br><br>${error.message}<br><br>جرب:<br>• تتأكد من النت<br>• تدوس على 🔑 فوق و تختبر المفتاح`;
     }
 }
 
-/* أسأل AI سؤال سريع */
 window.aiQuickAsk = async function(question) {
     if (!aiModeActive) {
-        // نشغل AI mode لو مش شغال
         toggleAIMode();
         await new Promise(r => setTimeout(r, 800));
     }
@@ -1054,7 +1155,6 @@ window.aiQuickAsk = async function(question) {
     const reply = await askGroq(question);
     _addMessage('bot', reply, true);
     
-    // نظهر حقل الإدخال تاني
     setInputMode('text', 'اسألني أي حاجة... 🤖');
 };
 
@@ -1262,7 +1362,6 @@ function renderPanel() {
     }
 }
 
-/* ============ خيارات ============ */
 function showOptions(options, onSelect) {
     const container = document.createElement('div');
     container.className = 'options-container';
@@ -1671,7 +1770,6 @@ async function finishSetup() {
             addBotMessage(`🎉 خلصنا! مجموعة <b>"${state.data.groupName}"</b> اتحفظت.`);
         }
         
-        // نحدّث الـ AI بالبيانات الجديدة
         chatHistory = [];
         
         await updateHeaderBadge();
@@ -1918,7 +2016,6 @@ async function saveEditChanges() {
         showToast('✅ اتحدثت المجموعة', true);
         await addBotMessage(`✏️ اتعدلت مجموعة <b>"${state.data.groupName}"</b> خلاص! ✅`);
         
-        // نحدّث AI
         chatHistory = [];
         
         await updateHeaderBadge();
@@ -1961,7 +2058,6 @@ async function handleSend() {
     sendBtn.disabled = true;
     setInputMode('hidden');
     
-    // 🔥 في وضع AI - نروح لـ Groq
     if (aiModeActive) {
         addTeacherMessage(val);
         const reply = await askGroq(val);
@@ -1972,7 +2068,6 @@ async function handleSend() {
         return;
     }
     
-    // الوضع العادي - خطوات بناء المجموعة
     if (state.step === 1) {
         state.data.groupName = val;
         addTeacherMessage(val);
@@ -2001,7 +2096,6 @@ async function handleSend() {
     sendBtn.disabled = false;
 }
 
-/* ============ ابدأ من جديد ============ */
 async function startFresh() {
     resetState();
     chatArea.innerHTML = '';
@@ -2012,10 +2106,8 @@ async function startFresh() {
 }
 window.startFresh = startFresh;
 
-/* ============ الانتقال ============ */
 window.goToNext = function() { window.location.href = 'mester3.html'; };
 
-/* ============ التحقق ============ */
 function checkSubject() {
     const saved = localStorage.getItem('teacherSelections');
     if (!saved || saved === '{}') {
@@ -2026,18 +2118,14 @@ function checkSubject() {
     return true;
 }
 
-/* ============================================================ */
 /* ============ الأزرار السريعة ============ */
-/* ============================================================ */
 
 window.showNextClass = async function() {
     chatArea.querySelectorAll('.schedule-widget').forEach(el => el.remove());
     await addBotMessage('⏭️ ثانية بشوف الحصة الجاية...');
     
     const groups = await loadSavedGroups();
-    if (groups.length === 0) {
-        await addBotMessage('لسه مفيش مجموعات محفوظة 😕'); return;
-    }
+    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات محفوظة 😕'); return; }
     
     const now = new Date();
     const todayDow = now.getDay();
@@ -2104,35 +2192,6 @@ window.showTodayClasses = async function() {
     await addBotMessage(text);
 };
 
-window.showWeekSchedule = async function() {
-    await addBotMessage('🗓️ ثانية بجهزلك الجدول الأسبوعي...');
-    const groups = await loadSavedGroups();
-    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
-    
-    const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
-    const grouped = {};
-    weekOrder.forEach(d => grouped[d] = []);
-    groups.filter(g => g.isActive !== false).forEach(g => {
-        const day = g.daysNames?.[0] || 'غير محدد';
-        if (!grouped[day]) grouped[day] = [];
-        grouped[day].push(g);
-    });
-    
-    let text = `🗓️ <b>الجدول الأسبوعي:</b><br><br>`;
-    weekOrder.forEach(day => {
-        const dayGroups = grouped[day] || [];
-        if (dayGroups.length === 0) return;
-        text += `<b>━━━ ${day} (${dayGroups.length}) ━━━</b><br>`;
-        dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')).forEach(g => {
-            text += `• ${g.groupName} — 🕐 ${formatTime(g.startTime)}<br>`;
-            const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
-            if (addr) text += `  📍 ${addr}<br>`;
-        });
-        text += `<br>`;
-    });
-    await addBotMessage(text);
-};
-
 window.showAllAddresses = async function() {
     await addBotMessage('📍 ثانية بجيبلك عناوين مجموعاتك...');
     const groups = await loadSavedGroups();
@@ -2178,6 +2237,35 @@ window.showQuestionMenu = async function() {
             setInputMode('text', 'اسأل AI أي حاجة...');
         }
     });
+};
+
+window.showWeekSchedule = async function() {
+    await addBotMessage('🗓️ ثانية بجهزلك الجدول الأسبوعي...');
+    const groups = await loadSavedGroups();
+    if (groups.length === 0) { await addBotMessage('لسه مفيش مجموعات 😕'); return; }
+    
+    const weekOrder = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+    const grouped = {};
+    weekOrder.forEach(d => grouped[d] = []);
+    groups.filter(g => g.isActive !== false).forEach(g => {
+        const day = g.daysNames?.[0] || 'غير محدد';
+        if (!grouped[day]) grouped[day] = [];
+        grouped[day].push(g);
+    });
+    
+    let text = `🗓️ <b>الجدول الأسبوعي:</b><br><br>`;
+    weekOrder.forEach(day => {
+        const dayGroups = grouped[day] || [];
+        if (dayGroups.length === 0) return;
+        text += `<b>━━━ ${day} (${dayGroups.length}) ━━━</b><br>`;
+        dayGroups.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')).forEach(g => {
+            text += `• ${g.groupName} — 🕐 ${formatTime(g.startTime)}<br>`;
+            const addr = [g.address, g.detailedAddress].filter(Boolean).join(' - ');
+            if (addr) text += `  📍 ${addr}<br>`;
+        });
+        text += `<br>`;
+    });
+    await addBotMessage(text);
 };
 
 window.showTomorrowClasses = async function() {
@@ -2227,7 +2315,22 @@ async function init() {
     if (!checkSubject()) return;
     
     hideQuickActions();
-    await addBotMessage('إزيك يا مستر 👋<br>تعالى نعمل مجموعة.<br><br>💡 <b>نصيحة:</b> دوس على زرار <b>⚡ AI</b> فوق عشان تكلم المساعد الذكي في أي وقت!');
+    
+    // ✅ تحقق من مفتاح Groq
+    const key = localStorage.getItem('groq_api_key');
+    let keyMsg = '';
+    
+    if (!key) {
+        keyMsg = `<br><br>🔑 <b>مفيش مفتاح Groq محفوظ</b><br>دوس على الزر 🔑 في الهيدر عشان تضيف مفتاح وتستخدم المساعد الذكي.`;
+    } else if (key.length < 40) {
+        keyMsg = `<br><br>⚠️ <b>مفتاح Groq قصير أوي (${key.length} حرف)</b><br>دوس على الزر 🔑 وصححه.`;
+    }
+    
+    await addBotMessage(
+        'إزيك يا مستر 👋<br>تعالى نعمل مجموعة.<br><br>' +
+        '💡 <b>نصيحة:</b> دوس على زرار <b>⚡ AI</b> فوق عشان تكلم المساعد الذكي في أي وقت!' +
+        keyMsg
+    );
     await stepGroupName();
     await updateHeaderBadge();
     await refreshSidebarGroups();
