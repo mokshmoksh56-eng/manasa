@@ -286,10 +286,8 @@ export async function isTeacherLocked(phone) {
         const teacher = await getTeacher(phone);
         if (!teacher) return false;
 
-        // ✅ فحص الحظر الصريح
         if (teacher.isLocked === true) return true;
 
-        // ✅ فحص انتهاء مدة التفعيل المؤقت
         if (teacher.unlockUntil) {
             const until = typeof teacher.unlockUntil === 'number'
                 ? teacher.unlockUntil
@@ -614,7 +612,6 @@ export async function approveSubscription(requestId, adminNote = '') {
         subscriptionStatus: 'active',
         subscriptionEnd: endDate.toISOString(),
         isPremium: true,
-        // ✅ نضيف كمان تحديث الـ unlockUntil للتناسق مع باقي النظام
         isLocked: false,
         unlockedAt: now.getTime(),
         unlockUntil: endDate.getTime(),
@@ -703,24 +700,18 @@ export async function getTeacherSubscription(phone) {
 // ==========================================================
 export async function isSubscriptionActive(phone) {
     try {
-        // ============================================
-        // ✅ 1) فحص أولاً: هل التفعيل من الإدارة اليدوية (teachers.unlockUntil)؟
-        // ============================================
         const teacher = await getTeacher(phone);
         if (teacher) {
-            // 🚫 الحساب محظور يدوياً → مش نشط
             if (teacher.isLocked === true) {
                 console.log('🚫 الاشتراك غير نشط — المعلم محظور يدوياً');
                 return false;
             }
 
-            // ♾️ فتح دائم من الإدارة → نشط
             if (teacher.lockType === 'permanent_open') {
                 console.log('♾️ الاشتراك نشط — فتح دائم من الإدارة');
                 return true;
             }
 
-            // ⏰ تفعيل مؤقت (3 شهور / 6 شهور / سنة) من الإدارة
             if (teacher.unlockUntil) {
                 const until = typeof teacher.unlockUntil === 'number'
                     ? teacher.unlockUntil
@@ -732,14 +723,10 @@ export async function isSubscriptionActive(phone) {
                     return true;
                 } else if (until && until <= Date.now()) {
                     console.log('⏰ الاشتراك منتهي — انتهت مدة التفعيل من الإدارة');
-                    // نكمل للفحص التالي بدل ما نرجع false مباشرة
                 }
             }
         }
 
-        // ============================================
-        // ✅ 2) فحص ثانياً: الاشتراك من نظام الاشتراكات (subscriptions collection)
-        // ============================================
         const sub = await getTeacherSubscription(phone);
 
         if (!sub) {
@@ -747,25 +734,21 @@ export async function isSubscriptionActive(phone) {
             return false;
         }
 
-        // 🆓 الباقة المجانية → نشطة دائماً
         if (sub.planId === 'free') {
             console.log('🆓 الباقة المجانية نشطة');
             return true;
         }
 
-        // ❌ لو الحالة مش active
         if (sub.status !== 'active') {
             console.log(`❌ الاشتراك غير نشط — الحالة: ${sub.status}`);
             return false;
         }
 
-        // ✅ لو مفيش endDate → نشط
         if (!sub.endDate) {
             console.log('✅ الاشتراك نشط — بدون تاريخ انتهاء');
             return true;
         }
 
-        // ✅ فحص التاريخ
         const isActive = new Date(sub.endDate) > new Date();
         if (isActive) {
             const daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
@@ -875,6 +858,144 @@ export function subscribePricing(callback) {
         console.error('خطأ في subscription الأسعار:', error);
         callback(null);
     });
+}
+
+// ==========================================================
+// 💾 دوال مزامنة بيانات المعلم (localStorage ↔ Firestore)
+// ==========================================================
+
+const TEACHER_DATA_COLLECTION = "teacher_data";
+
+/**
+ * حفظ كل بيانات المعلم في Firestore
+ */
+export async function saveTeacherData(phone, data) {
+    if (!phone) throw new Error('رقم الهاتف مطلوب');
+    
+    const ref = doc(db, TEACHER_DATA_COLLECTION, phone);
+    await setDoc(ref, {
+        phone: phone,
+        teacherSelections: data.teacherSelections || null,
+        mester1_selections: data.mester1_selections || null,
+        mester1_is_locked: data.mester1_is_locked || false,
+        teacher_appointments_summary: data.teacher_appointments_summary || null,
+        teacher_groups_count: data.teacher_groups_count || 0,
+        last_selected_gender: data.last_selected_gender || null,
+        last_selected_location: data.last_selected_location || null,
+        updatedAt: serverTimestamp()
+    }, { merge: true });
+    
+    console.log('☁️ تم حفظ بيانات المعلم في السحابة');
+    return true;
+}
+
+/**
+ * جلب بيانات المعلم من Firestore
+ */
+export async function getTeacherData(phone) {
+    if (!phone) return null;
+    
+    try {
+        const snap = await getDoc(doc(db, TEACHER_DATA_COLLECTION, phone));
+        if (snap.exists()) {
+            console.log('☁️ تم جلب بيانات المعلم من السحابة');
+            return snap.data();
+        }
+        return null;
+    } catch (e) {
+        console.error('خطأ في جلب بيانات المعلم:', e);
+        return null;
+    }
+}
+
+/**
+ * مزامنة البيانات من Firestore إلى localStorage
+ */
+export async function syncTeacherDataToLocal(phone) {
+    if (!phone) return false;
+    
+    try {
+        const cloudData = await getTeacherData(phone);
+        if (!cloudData) {
+            console.log('⚠️ لا توجد بيانات سحابية لهذا المعلم');
+            return false;
+        }
+        
+        let hasAnyData = false;
+
+        if (cloudData.teacherSelections) {
+            localStorage.setItem('teacherSelections', 
+                typeof cloudData.teacherSelections === 'string' 
+                    ? cloudData.teacherSelections 
+                    : JSON.stringify(cloudData.teacherSelections));
+            hasAnyData = true;
+        }
+        
+        if (cloudData.mester1_selections) {
+            localStorage.setItem('mester1_selections', 
+                typeof cloudData.mester1_selections === 'string'
+                    ? cloudData.mester1_selections
+                    : JSON.stringify(cloudData.mester1_selections));
+            hasAnyData = true;
+        }
+        
+        if (cloudData.mester1_is_locked) {
+            localStorage.setItem('mester1_is_locked', 'true');
+        }
+        
+        if (cloudData.teacher_appointments_summary) {
+            localStorage.setItem('teacher_appointments_summary',
+                typeof cloudData.teacher_appointments_summary === 'string'
+                    ? cloudData.teacher_appointments_summary
+                    : JSON.stringify(cloudData.teacher_appointments_summary));
+            hasAnyData = true;
+        }
+        
+        if (cloudData.teacher_groups_count !== undefined && cloudData.teacher_groups_count !== null) {
+            localStorage.setItem('teacher_groups_count', String(cloudData.teacher_groups_count));
+            hasAnyData = true;
+        }
+        
+        if (cloudData.last_selected_gender) {
+            localStorage.setItem('last_selected_gender', cloudData.last_selected_gender);
+        }
+        
+        if (cloudData.last_selected_location) {
+            localStorage.setItem('last_selected_location', cloudData.last_selected_location);
+        }
+        
+        console.log('✅ تمت مزامنة البيانات من السحابة للجهاز الجديد');
+        return hasAnyData;
+    } catch (e) {
+        console.error('فشل المزامنة:', e);
+        return false;
+    }
+}
+
+/**
+ * مزامنة البيانات من localStorage إلى Firestore
+ */
+export async function syncLocalDataToCloud(phone) {
+    if (!phone) return false;
+    
+    try {
+        const data = {
+            teacherSelections: localStorage.getItem('teacherSelections'),
+            mester1_selections: localStorage.getItem('mester1_selections'),
+            mester1_is_locked: localStorage.getItem('mester1_is_locked') === 'true',
+            teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
+            teacher_groups_count: parseInt(localStorage.getItem('teacher_groups_count') || '0'),
+            last_selected_gender: localStorage.getItem('last_selected_gender'),
+            last_selected_location: localStorage.getItem('last_selected_location')
+        };
+        
+        await saveTeacherData(phone, data);
+        console.log('☁️ تم رفع البيانات المحلية للسحابة');
+        return true;
+    } catch (e) {
+        console.error('فشل رفع البيانات:', e);
+        return false;
+    }
 }
 
 // ==========================================================
