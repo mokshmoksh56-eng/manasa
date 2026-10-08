@@ -1675,6 +1675,480 @@ tr.locked td{background:#FEF2F2}
   .top-teacher-amount { font-size: 15px; }
   .top-teacher-name { font-size: 12.5px; }
 }
+
+/* ========================================================== */
+/* 🤖 AI Code Assistant */
+/* ========================================================== */
+
+.ai-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  color: #fff;
+  border: 3px solid #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+  z-index: 99997;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: aiFabPulse 2.5s infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+.ai-fab:hover { transform: scale(1.1) rotate(-8deg); }
+.ai-fab.active {
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  animation: none;
+}
+@keyframes aiFabPulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5); }
+  50% { box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5), 0 0 0 14px rgba(124, 58, 237, 0.15); }
+}
+.ai-fab .ai-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #10B981;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 7px;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.ai-panel {
+  position: fixed;
+  bottom: 100px;
+  left: 24px;
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  height: 640px;
+  max-height: calc(100vh - 140px);
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(124, 58, 237, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 99996;
+  opacity: 0;
+  transform: translateY(30px) scale(0.92);
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.ai-panel.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.ai-panel-header {
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.ai-panel-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #F59E0B, #FBBF24, #F59E0B);
+}
+.ai-panel-header .ai-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 2px solid rgba(255,255,255,0.4);
+  flex-shrink: 0;
+  backdrop-filter: blur(6px);
+}
+.ai-panel-header .ai-info { flex: 1; min-width: 0; }
+.ai-panel-header .ai-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-panel-header .ai-info p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  opacity: 0.85;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ai-panel-header .ai-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 8px #22C55E;
+  animation: aiDotPulse 1.5s infinite;
+}
+@keyframes aiDotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.ai-header-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.ai-header-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ai-header-btn:hover {
+  background: rgba(255,255,255,0.35);
+  transform: scale(1.08);
+}
+
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 12px;
+  background: #F8FAFC;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(124,58,237,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(16,185,129,0.04) 0%, transparent 40%);
+  scroll-behavior: smooth;
+}
+.ai-messages::-webkit-scrollbar { width: 6px; }
+.ai-messages::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 10px; }
+
+.ai-msg {
+  max-width: 92%;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  word-wrap: break-word;
+  animation: aiMsgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  position: relative;
+  font-weight: 800;
+  white-space: pre-wrap;
+}
+@keyframes aiMsgIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ai-msg.user {
+  background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+  color: #1E40AF;
+  border-bottom-left-radius: 4px;
+  margin-right: auto;
+  margin-left: 0;
+  direction: rtl;
+  text-align: right;
+}
+.ai-msg.bot {
+  background: #fff;
+  color: #0F172A;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+  margin-right: 0;
+  border: 2px solid #EDE9FE;
+  direction: rtl;
+  text-align: right;
+}
+.ai-msg.bot::before {
+  content: '🤖 AI';
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.ai-msg.user::before {
+  content: '👤 أنت';
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.ai-msg b, .ai-msg strong { color: #5B21B6; font-weight: 900; }
+.ai-msg code {
+  background: #F1F5F9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #DC2626;
+  direction: ltr;
+  display: inline-block;
+  font-weight: 900;
+}
+.ai-msg pre {
+  background: #0F172A;
+  color: #E2E8F0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 10px 0;
+  overflow-x: auto;
+  direction: ltr;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  border-left: 4px solid #7C3AED;
+  position: relative;
+}
+.ai-msg pre code {
+  background: transparent;
+  color: #E2E8F0;
+  padding: 0;
+  font-size: 12px;
+}
+.ai-msg ul, .ai-msg ol {
+  margin: 8px 0;
+  padding-right: 22px;
+}
+.ai-msg li { margin-bottom: 5px; }
+
+.ai-msg .ai-copy-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(124,58,237,0.9);
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: 'Cairo';
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+.ai-msg.bot:hover .ai-copy-btn { opacity: 1; }
+.ai-msg .ai-copy-btn:hover { background: #5B21B6; }
+
+.ai-time {
+  font-size: 10px;
+  color: #94A3B8;
+  margin-top: 6px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.ai-welcome {
+  background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+  border: 2px solid #7C3AED;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  animation: aiMsgIn 0.4s ease;
+}
+.ai-welcome h4 {
+  margin: 0 0 8px;
+  color: #5B21B6;
+  font-size: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-welcome p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #6D28D9;
+  line-height: 1.7;
+  font-weight: 800;
+}
+.ai-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.ai-quick-btn {
+  background: #fff;
+  border: 2px solid #7C3AED;
+  color: #5B21B6;
+  padding: 6px 12px;
+  border-radius: 18px;
+  font-family: 'Cairo';
+  font-size: 11.5px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ai-quick-btn:hover {
+  background: #7C3AED;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.ai-typing {
+  display: inline-flex;
+  gap: 5px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 12px;
+  width: fit-content;
+  border: 2px solid #EDE9FE;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.ai-typing span {
+  width: 8px;
+  height: 8px;
+  background: #7C3AED;
+  border-radius: 50%;
+  animation: aiTyping 1.4s infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aiTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.ai-input-area {
+  background: #fff;
+  padding: 10px 12px;
+  border-top: 2px solid #F1F5F9;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.ai-input-wrap {
+  flex: 1;
+  background: #F8FAFC;
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: flex-end;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+.ai-input-wrap:focus-within {
+  border-color: #7C3AED;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.12);
+}
+.ai-input-wrap textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: 'Cairo';
+  font-weight: 800;
+  font-size: 13px;
+  color: #0F172A;
+  background: transparent;
+  padding: 8px 0;
+  resize: none;
+  max-height: 120px;
+  line-height: 1.5;
+  -webkit-appearance: none;
+}
+.ai-input-wrap textarea::placeholder { color: #94A3B8; }
+
+.ai-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(124,58,237,0.35);
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ai-send-btn:hover:not(:disabled) { transform: scale(1.08); }
+.ai-send-btn:active { transform: scale(0.92); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ai-hint {
+  font-size: 10px;
+  color: #94A3B8;
+  text-align: center;
+  padding: 4px 12px 8px;
+  font-weight: 800;
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .ai-fab {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+    bottom: 16px;
+    left: 16px;
+  }
+  .ai-panel {
+    bottom: 84px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: none;
+    height: calc(100vh - 110px);
+    max-height: calc(100vh - 110px);
+    border-radius: 18px;
+  }
+  .ai-msg { font-size: 13px; padding: 10px 14px; }
+  .ai-msg pre { font-size: 11px; padding: 10px 12px; }
+}
 </style>
 </head>
 <body>
@@ -2333,6 +2807,42 @@ tr.locked td{background:#FEF2F2}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 🤖 AI Floating Button -->
+<button class="ai-fab" id="aiFab" onclick="window.toggleAIPanel()" title="المساعد البرمجي الذكي">
+  <span id="aiFabIcon">🤖</span>
+  <span class="ai-badge" id="aiFabBadge">AI</span>
+</button>
+
+<!-- 🤖 AI Panel -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-header">
+    <div class="ai-avatar">🤖</div>
+    <div class="ai-info">
+      <h3>المساعد البرمجي الذكي</h3>
+      <p><span class="ai-dot"></span> جاهز لمراجعة وتطوير الأكواد</p>
+    </div>
+    <div class="ai-header-actions">
+      <button class="ai-header-btn" onclick="window.clearAIChat()" title="محادثة جديدة">🔄</button>
+      <button class="ai-header-btn" onclick="window.toggleAIPanel()" title="إغلاق">✕</button>
+    </div>
+  </div>
+
+  <div class="ai-messages" id="aiMessages"></div>
+
+  <div class="ai-input-area">
+    <div class="ai-input-wrap">
+      <textarea 
+        id="aiInput" 
+        rows="1" 
+        placeholder="اسأل عن كود، الصق كود للتعديل، اطلب شرح..."
+        onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); window.sendAIMessage();}"
+        oninput="window.autoResizeAIInput(this)"></textarea>
+    </div>
+    <button class="ai-send-btn" id="aiSendBtn" onclick="window.sendAIMessage()">➤</button>
+  </div>
+  <div class="ai-hint">Shift + Enter لسطر جديد • Enter للإرسال</div>
+</div>
 
 <script type="module">
 import { 
@@ -4577,6 +5087,388 @@ window.addEventListener('beforeunload', () => {
 });
 
 init();
+</script>
+
+<!-- ========================================================== -->
+<!-- 🤖 AI Code Assistant Script -->
+<!-- ========================================================== -->
+<script>
+(function() {
+  'use strict';
+
+  // 🔑 Groq Configuration
+  const FALLBACK_KEY = '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';
+  const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+  const GROQ_MODELS = [
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.8-27b',
+    'allam-2-7b'
+  ];
+
+  function getApiKey() {
+    return localStorage.getItem('groq_api_key') || FALLBACK_KEY;
+  }
+
+  const aiState = {
+    isOpen: false,
+    isTyping: false,
+    history: JSON.parse(localStorage.getItem('ai_code_chat_history') || '[]')
+  };
+
+  const SYSTEM_PROMPT = `أنت مساعد برمجي ذكي محترف متخصص في منصة "احجزلي" التعليمية.
+
+🎯 **معلومات المشروع الكاملة:**
+
+**الملفات الأساسية:**
+1. **school.html** — لوحة تحكم الإدارة الكاملة:
+   - إدارة المعلمين والطلاب (إضافة/حظر/حذف)
+   - إدارة المناهج والصفوف والمواد
+   - طلبات الاشتراك (3 شهور/6 شهور/سنة)
+   - إدارة الباقات والأسعار
+   - إحصائيات الأرباح والرسوم البيانية
+   - خرائط Leaflet لمواقع المعلمين والطلاب
+   - مزامنة لحظية مع Firestore
+
+2. **ai.html** — المساعد التعليمي الذكي:
+   - يستخدم Groq API (نماذج: gpt-oss-120b, gpt-oss-20b, qwen, allam)
+   - أوضاع: طالب/مستر
+   - مراحل: ابتدائي/إعدادي/ثانوي/جامعة
+
+3. **firebase-config.js** — دوال Firebase:
+   - getAllTeachers, getAllStudents, getAllGroups
+   - subscribeTeachers, subscribeStudents, subscribeGroups
+   - getCurriculumSettings, saveCurriculumSettings
+   - approveSubscription, rejectSubscription
+   - getPricingSettings, savePricingSettings
+   - setTeacherLock, setStudentLock
+   - deleteTeacherAccount, deleteStudentAccount
+
+**التقنيات:**
+- HTML5 + CSS3 + JavaScript (Vanilla ES6 Modules)
+- Firebase Firestore (قاعدة بيانات سحابية)
+- Tailwind CSS (CDN)
+- Leaflet + MarkerCluster (خرائط)
+- Groq API (ذكاء اصطناعي)
+- خط Cairo
+
+**الألوان الأساسية:**
+- primary: #047857 (أخضر)
+- primary-dark: #064E3B
+- danger: #DC2626
+- warning: #D97706
+- info: #2563EB
+- gold: #F59E0B
+
+---
+
+📋 **مهامك:**
+
+1. **شرح الأكواد**: اشرح أي دالة أو كود بالتفصيل خطوة بخطوة
+2. **تصحيح الأخطاء**: لو الكود فيه bug، اكشفه وصلحه واشرح السبب
+3. **التطوير**: اقترح تحسينات على الأداء، الأمان، تجربة المستخدم
+4. **كتابة أكواد جديدة**: لو طلب منك المستخدم ميزة، اكتبها كاملة وجاهزة
+5. **مراجعة كود ملصوق**: لو بعتلك كود، اعمله مراجعة كاملة (نقاط القوة/الضعف/التحسينات)
+6. **شرح الممارسات الأفضل**: Best Practices في HTML/CSS/JS/Firebase
+
+⚙️ **قواعد مهمة:**
+- اتكلم بالعربي المصري الواضح والودود
+- استخدم \\\`\\\`\\\`code blocks\\\`\\\`\\\` لكل كود
+- حدد اسم الملف اللي الكود فيه
+- اشرح خطوات الحل بالترتيب
+- لو الكود طويل، قسمه لأجزاء
+- اقترح دائماً بدائل وحلول أفضل
+- تحقق من التوافق مع الكود الموجود
+- ركز على الجانب العملي والتطبيق
+- لو ما عندكش معلومات كافية، اسأل المستخدم للتوضيح
+
+⚠️ **لا تحاول**: اختراق الموقع، كسر الأمان، حذف بيانات المستخدمين`;
+
+  const aiPanel = document.getElementById('aiPanel');
+  const aiFab = document.getElementById('aiFab');
+  const aiFabIcon = document.getElementById('aiFabIcon');
+  const aiMessages = document.getElementById('aiMessages');
+  const aiInput = document.getElementById('aiInput');
+  const aiSendBtn = document.getElementById('aiSendBtn');
+
+  function now() {
+    const d = new Date();
+    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function formatMarkdown(text) {
+    let html = escapeHtml(text);
+    
+    html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (m, lang, code) => {
+      return `<pre><code>${code.trim()}</code></pre>`;
+    });
+    
+    html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+    html = html.replace(/^### (.+)$/gm, '<b>▸ $1</b>');
+    html = html.replace(/^## (.+)$/gm, '<b>◆ $1</b>');
+    html = html.replace(/^# (.+)$/gm, '<b>● $1</b>');
+    html = html.replace(/^- (.+)$/gm, '• $1');
+    html = html.replace(/^\* (.+)$/gm, '• $1');
+    html = html.replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`);
+    html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px dashed #C4B5FD;margin:10px 0">');
+    html = html.replace(/\n/g, '<br>');
+    
+    return html;
+  }
+
+  function addMessage(role, text, saveToHistory = true) {
+    const msg = document.createElement('div');
+    msg.className = `ai-msg ${role}`;
+    msg.innerHTML = formatMarkdown(text) + `<div class="ai-time">${now()}</div>`;
+    
+    if (role === 'bot') {
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'ai-copy-btn';
+      copyBtn.textContent = '📋 نسخ';
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.textContent = '✅ تم';
+          setTimeout(() => copyBtn.textContent = '📋 نسخ', 1500);
+        });
+      };
+      msg.appendChild(copyBtn);
+    }
+    
+    aiMessages.appendChild(msg);
+    scrollAIBottom();
+    
+    if (saveToHistory) {
+      aiState.history.push({ role: role === 'bot' ? 'assistant' : 'user', content: text });
+      if (aiState.history.length > 30) {
+        aiState.history = aiState.history.slice(-30);
+      }
+      localStorage.setItem('ai_code_chat_history', JSON.stringify(aiState.history));
+    }
+  }
+
+  function scrollAIBottom() {
+    setTimeout(() => {
+      aiMessages.scrollTo({ top: aiMessages.scrollHeight, behavior: 'smooth' });
+    }, 80);
+  }
+
+  function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'ai-typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    aiMessages.appendChild(typing);
+    scrollAIBottom();
+    return typing;
+  }
+
+  function showWelcome() {
+    const w = document.createElement('div');
+    w.className = 'ai-welcome';
+    w.innerHTML = `
+      <h4>🤖 أهلاً بك في المساعد البرمجي الذكي</h4>
+      <p>
+        أنا مساعدك الشخصي لتطوير ومراجعة أكواد منصة <b>احجزلي</b>.<br>
+        عندك 3 ملفات أساسية: <code>school.html</code>، <code>ai.html</code>، <code>firebase-config.js</code>.<br>
+        ابعتلي أي كود وهيتم مراجعته وتطويره فوراً! 🚀
+      </p>
+      <div class="ai-quick-actions">
+        <button class="ai-quick-btn" onclick="window.quickAsk('اشرحلي كل ملفات المشروع بالتفصيل')">📚 شرح المشروع</button>
+        <button class="ai-quick-btn" onclick="window.quickAsk('اقترح 5 تحسينات على لوحة التحكم school.html')">🚀 تحسينات</button>
+        <button class="ai-quick-btn" onclick="window.quickAsk('ازاي أصلح أي bug في الكود؟')">🐛 إصلاح أخطاء</button>
+        <button class="ai-quick-btn" onclick="window.quickAsk('اقترح ميزات جديدة تزود من قوة المشروع')">✨ ميزات جديدة</button>
+        <button class="ai-quick-btn" onclick="window.quickAsk('اشرحلي ازاي Firebase شغالة في المشروع')">☁️ Firebase</button>
+        <button class="ai-quick-btn" onclick="window.quickAsk('اقترح تحسينات على الـ UI/UX')">🎨 تحسين الواجهة</button>
+      </div>
+    `;
+    aiMessages.appendChild(w);
+    scrollAIBottom();
+  }
+
+  window.toggleAIPanel = function() {
+    aiState.isOpen = !aiState.isOpen;
+    if (aiState.isOpen) {
+      aiPanel.classList.add('show');
+      aiFab.classList.add('active');
+      aiFabIcon.textContent = '✕';
+      setTimeout(() => aiInput.focus(), 350);
+      
+      const badge = document.getElementById('aiFabBadge');
+      if (badge) badge.style.display = 'none';
+    } else {
+      aiPanel.classList.remove('show');
+      aiFab.classList.remove('active');
+      aiFabIcon.textContent = '🤖';
+    }
+    try { window.playClick && window.playClick(1500, 0.05, 0.1); } catch(e) {}
+  };
+
+  window.autoResizeAIInput = function(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  };
+
+  window.sendAIMessage = async function() {
+    const text = aiInput.value.trim();
+    if (!text || aiState.isTyping) return;
+
+    aiState.isTyping = true;
+    aiInput.value = '';
+    aiInput.style.height = 'auto';
+    aiSendBtn.disabled = true;
+    aiInput.disabled = true;
+
+    addMessage('user', text, true);
+
+    const typing = showTyping();
+
+    try {
+      const reply = await askGroq(text);
+      typing.remove();
+      addMessage('bot', reply, true);
+    } catch (err) {
+      typing.remove();
+      addMessage('bot', `❌ حصل خطأ: ${err.message}`, false);
+    } finally {
+      aiState.isTyping = false;
+      aiSendBtn.disabled = false;
+      aiInput.disabled = false;
+      aiInput.focus();
+    }
+  };
+
+  window.quickAsk = function(text) {
+    aiInput.value = text;
+    window.sendAIMessage();
+  };
+
+  async function askGroq(userMessage) {
+    const apiKey = getApiKey();
+    if (!apiKey || !apiKey.startsWith('gsk_')) {
+      return '❌ **مفتاح Groq غير موجود.**\n\nافتح Console والصق:\n```\nlocalStorage.setItem("groq_api_key", "gsk_المفتاح_بتاعك")\n```';
+    }
+
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPT }
+    ];
+
+    aiState.history.slice(-8).forEach(h => {
+      messages.push(h);
+    });
+
+    messages.push({ role: 'user', content: userMessage });
+
+    const savedModel = localStorage.getItem('groq_working_model_ai');
+    let modelsToTry = [...GROQ_MODELS];
+    if (savedModel && modelsToTry.includes(savedModel)) {
+      modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
+    }
+
+    let lastError = null;
+
+    for (const model of modelsToTry) {
+      try {
+        console.log(`🤖 Trying model: ${model}`);
+        const response = await fetch(GROQ_API_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: messages,
+            temperature: 0.5,
+            max_tokens: 4000,
+            top_p: 0.9
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('groq_working_model_ai', model);
+          console.log(`✅ Success: ${model}`);
+          return data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد.';
+        }
+
+        if (response.status === 401) {
+          return '❌ **المفتاح غلط أو ملغي.**\n\nاعمل مفتاح جديد من: console.groq.com/keys';
+        }
+        if (response.status === 429) {
+          return '⏳ **وصلت للحد المجاني.**\n\nاستنى شوية وجرب تاني.';
+        }
+        if (response.status === 404) {
+          lastError = 'الموديل غير متاح';
+          continue;
+        }
+        lastError = `HTTP ${response.status}`;
+        continue;
+      } catch (e) {
+        lastError = e.message;
+        continue;
+      }
+    }
+
+    return `❌ **فشل الاتصال بكل الموديلات.**\n\nآخر خطأ: ${lastError}\n\nتأكد من الشبكة، أو جرب تحدّث الصفحة.`;
+  }
+
+  window.clearAIChat = function() {
+    if (!confirm('هل تريد بدء محادثة جديدة؟ سيتم مسح كل الرسائل الحالية.')) return;
+    aiState.history = [];
+    localStorage.removeItem('ai_code_chat_history');
+    aiMessages.innerHTML = '';
+    showWelcome();
+    try { window.playClick && window.playClick(1200, 0.06, 0.12); } catch(e) {}
+  };
+
+  function initAI() {
+    if (aiState.history.length > 0) {
+      aiState.history.forEach(h => {
+        const role = h.role === 'assistant' ? 'bot' : 'user';
+        const msg = document.createElement('div');
+        msg.className = `ai-msg ${role}`;
+        msg.innerHTML = formatMarkdown(h.content) + `<div class="ai-time">📅 سابقاً</div>`;
+        if (role === 'bot') {
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'ai-copy-btn';
+          copyBtn.textContent = '📋 نسخ';
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(h.content).then(() => {
+              copyBtn.textContent = '✅ تم';
+              setTimeout(() => copyBtn.textContent = '📋 نسخ', 1500);
+            });
+          };
+          msg.appendChild(copyBtn);
+        }
+        aiMessages.appendChild(msg);
+      });
+      scrollAIBottom();
+    } else {
+      showWelcome();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAI);
+  } else {
+    initAI();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && aiState.isOpen) {
+      window.toggleAIPanel();
+    }
+  });
+
+})();
 </script>
 
 <script>
