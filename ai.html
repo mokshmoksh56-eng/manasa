@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>⚡ المساعد البرمجي الفائق</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -22,7 +25,6 @@
     --text: #0f172a;
     --text-dim: #64748b;
     --success: #10b981;
-    --success-bg: #d1fae5;
     --warning: #f59e0b;
     --danger: #ef4444;
     --code-bg: #1e293b;
@@ -965,12 +967,12 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key_code') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-/* ✅ موديلات Groq الرسمية المضمونة */
+/* ✅ موديلات Groq الرسمية المضمونة (محدّثة 2025) */
 const GROQ_MODELS = [
     'llama-3.3-70b-versatile',
     'llama-3.1-8b-instant',
-    'mixtral-8x7b-32768',
-    'gemma2-9b-it'
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b'
 ];
 
 /* ============ حالة التطبيق ============ */
@@ -1334,7 +1336,6 @@ async function askGroq(userMessage) {
                 lastErrorDetails = 'وصلت للحد المجاني';
                 break;
             } else {
-                // نجيب تفاصيل الخطأ من Groq
                 try {
                     const errData = await response.clone().json();
                     const errMsg = errData.error?.message || `HTTP ${response.status}`;
@@ -1345,7 +1346,7 @@ async function askGroq(userMessage) {
                     lastError = `HTTP ${response.status}`;
                     lastErrorDetails = response.statusText || 'unknown';
                 }
-                continue;  // نكمل للموديل التالي
+                continue;
             }
         } catch(e) {
             lastError = e.message;
@@ -1514,7 +1515,6 @@ window.saveApiKey = async function() {
     status.className = 'key-modal-status loading';
 
     try {
-        // نجرب مع كل الموديلات لحد ما واحد يشتغل
         let isValid = false;
         let lastTestError = '';
 
