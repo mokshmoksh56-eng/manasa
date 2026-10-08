@@ -14,17 +14,19 @@
     --primary-dark: #4f46e5;
     --primary-light: #e0e7ff;
     --accent: #8b5cf6;
-    --bg: #0a0a0f;
-    --bg-light: #13131f;
-    --bg-card: #1a1a2e;
-    --border: #2a2a40;
-    --text: #e2e8f0;
-    --text-dim: #94a3b8;
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-light: #f1f5f9;
+    --border: #e2e8f0;
+    --border-dark: #cbd5e1;
+    --text: #0f172a;
+    --text-dim: #64748b;
     --success: #10b981;
+    --success-bg: #d1fae5;
     --warning: #f59e0b;
     --danger: #ef4444;
-    --code-bg: #0d1117;
-    --code-border: #30363d;
+    --code-bg: #1e293b;
+    --code-border: #334155;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -37,20 +39,20 @@ body {
     flex-direction: column;
     overflow: hidden;
     background-image:
-        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
+        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
 }
 
 /* ============ Header ============ */
 .code-header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-bottom: 2px solid var(--border);
-    color: #fff;
+    color: var(--text);
     padding: 12px 16px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
     z-index: 100;
     flex-shrink: 0;
     position: relative;
@@ -77,10 +79,10 @@ body {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     display: flex; align-items: center; justify-content: center;
     font-size: 24px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
     flex-shrink: 0;
     position: relative;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(99, 102, 241, 0.2);
 }
 .code-header .avatar::after {
     content: '';
@@ -91,7 +93,7 @@ body {
     height: 14px;
     background: #22C55E;
     border-radius: 50%;
-    border: 2px solid var(--bg-card);
+    border: 2px solid #fff;
     box-shadow: 0 0 8px #22C55E;
     animation: pulse 1.5s infinite;
 }
@@ -101,7 +103,8 @@ body {
 .code-header .info h2 {
     font-size: 16px;
     font-weight: 900;
-    background: linear-gradient(90deg, #fff, #a5b4fc);
+    color: var(--text);
+    background: linear-gradient(90deg, var(--primary-dark), var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -116,12 +119,12 @@ body {
     margin-top: 2px;
 }
 
-.header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.header-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
 
 .action-btn {
-    background: rgba(99, 102, 241, 0.15);
-    border: 1.5px solid rgba(99, 102, 241, 0.35);
-    color: #a5b4fc;
+    background: var(--primary-light);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    color: var(--primary-dark);
     padding: 8px 12px;
     border-radius: 10px;
     font-family: inherit;
@@ -136,23 +139,41 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 .action-btn:hover {
-    background: rgba(99, 102, 241, 0.3);
+    background: #c7d2fe;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 .action-btn.danger {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
+    background: #fee2e2;
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #991b1b;
 }
 .action-btn.danger:hover {
-    background: rgba(239, 68, 68, 0.3);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    background: #fecaca;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
+
+/* 🔑 حالة المفتاح */
+.action-btn.key-ok {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+    animation: keySuccess 0.6s ease;
+}
+.action-btn.key-ok:hover {
+    background: #a7f3d0;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+@keyframes keySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.3); }
+    100% { transform: scale(1); }
+}
+
 .action-btn.key-missing {
-    background: rgba(239, 68, 68, 0.2);
+    background: #fee2e2;
     border-color: #ef4444;
-    color: #fca5a5;
+    color: #991b1b;
     animation: keyAlert 1.5s infinite;
 }
 @keyframes keyAlert {
@@ -171,7 +192,8 @@ body {
 
 /* ============ Quick Actions Bar ============ */
 .quick-bar {
-    background: rgba(26, 26, 46, 0.6);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     padding: 10px 12px;
     display: flex;
@@ -184,9 +206,9 @@ body {
 .quick-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
 .quick-chip {
-    background: rgba(99, 102, 241, 0.1);
+    background: #fff;
     border: 1.5px solid rgba(99, 102, 241, 0.3);
-    color: #a5b4fc;
+    color: var(--primary-dark);
     padding: 7px 14px;
     border-radius: 18px;
     font-family: inherit;
@@ -199,12 +221,13 @@ body {
     align-items: center;
     gap: 5px;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .quick-chip:hover {
-    background: rgba(99, 102, 241, 0.25);
+    background: var(--primary-light);
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 .quick-chip:active { transform: translateY(0) scale(0.96); }
 
@@ -236,7 +259,7 @@ body {
     position: relative;
     word-wrap: break-word;
     animation: msgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 @keyframes msgIn {
     from { opacity: 0; transform: translateY(12px) scale(0.96); }
@@ -244,15 +267,15 @@ body {
 }
 
 .msg.user {
-    background: linear-gradient(135deg, #1e3a5f, #1e40af);
-    color: #e0f2fe;
-    border: 1px solid rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e3a8a;
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-bottom-left-radius: 4px;
     margin-right: auto;
     margin-left: 0;
 }
 .msg.ai {
-    background: var(--bg-card);
+    background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
     border-bottom-right-radius: 4px;
@@ -270,7 +293,7 @@ body {
     font-weight: 900;
     padding: 3px 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
     letter-spacing: 0.5px;
 }
 .msg.user::before {
@@ -297,17 +320,17 @@ body {
 .msg.user .time { text-align: right; }
 
 /* ============ Code Blocks ============ */
-.msg.ai b, .msg.ai strong { color: #a5b4fc; font-weight: 900; }
+.msg.ai b, .msg.ai strong { color: var(--primary-dark); font-weight: 900; }
 .msg.ai code {
-    background: var(--code-bg);
+    background: #f1f5f9;
     padding: 3px 8px;
     border-radius: 5px;
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     font-size: 13px;
-    color: #f472b6;
+    color: #dc2626;
     direction: ltr;
     display: inline-block;
-    border: 1px solid var(--code-border);
+    border: 1px solid #e2e8f0;
 }
 
 .msg pre {
@@ -317,26 +340,28 @@ body {
     margin: 12px 0;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .msg pre::before {
     content: attr(data-lang);
     position: absolute;
     top: 0;
     left: 0;
-    background: rgba(99, 102, 241, 0.2);
-    color: #a5b4fc;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
     font-size: 10px;
     font-weight: 900;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-bottom-right-radius: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    z-index: 3;
 }
 .msg pre code {
     display: block;
     background: transparent;
-    padding: 32px 16px 16px;
-    color: #e6edf3;
+    padding: 36px 16px 16px;
+    color: #e2e8f0;
     font-size: 12.5px;
     line-height: 1.7;
     overflow-x: auto;
@@ -347,14 +372,14 @@ body {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 .msg pre code::-webkit-scrollbar { height: 6px; }
-.msg pre code::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 10px; }
+.msg pre code::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 10px; }
 
 .copy-code-btn {
     position: absolute;
     top: 6px;
     right: 8px;
-    background: rgba(99, 102, 241, 0.85);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-dark);
     border: none;
     padding: 5px 12px;
     border-radius: 6px;
@@ -364,14 +389,16 @@ body {
     font-family: 'Cairo', sans-serif;
     transition: all 0.2s;
     z-index: 5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 .copy-code-btn:hover {
-    background: var(--primary);
+    background: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4);
 }
 .copy-code-btn.copied {
     background: var(--success);
+    color: #fff;
 }
 
 .msg.ai ul, .msg.ai ol {
@@ -381,11 +408,11 @@ body {
 .msg.ai li { margin-bottom: 6px; }
 .msg.ai hr {
     border: none;
-    border-top: 1px dashed var(--border);
+    border-top: 1px dashed var(--border-dark);
     margin: 12px 0;
 }
 .msg.ai h1, .msg.ai h2, .msg.ai h3 {
-    color: #a5b4fc;
+    color: var(--primary-dark);
     margin: 12px 0 8px;
     font-size: 15px;
 }
@@ -399,9 +426,9 @@ body {
     animation: msgIn 0.3s ease;
 }
 .suggestion-chip {
-    background: var(--bg-card);
+    background: #fff;
     border: 1.5px solid rgba(99, 102, 241, 0.4);
-    color: #a5b4fc;
+    color: var(--primary-dark);
     padding: 10px 16px;
     border-radius: 20px;
     font-family: inherit;
@@ -414,30 +441,113 @@ body {
     gap: 6px;
     text-align: right;
     direction: rtl;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .suggestion-chip:hover {
-    background: rgba(99, 102, 241, 0.2);
+    background: var(--primary-light);
     border-color: var(--primary);
-    color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
 }
 .suggestion-chip:active { transform: translateY(0) scale(0.96); }
 
+/* ============ Attachments Preview ============ */
+.attachments-preview {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 12px 0;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.attachments-preview.show { display: flex; }
+
+.attachment-chip {
+    background: #fff;
+    border: 1.5px solid var(--primary);
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 900;
+    color: var(--primary-dark);
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.15);
+    animation: chipIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes chipIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+.attachment-chip .att-icon { font-size: 14px; }
+.attachment-chip .att-name {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    direction: ltr;
+}
+.attachment-chip .att-remove {
+    background: #fee2e2;
+    border: none;
+    color: #dc2626;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+}
+.attachment-chip .att-remove:hover {
+    background: #dc2626;
+    color: #fff;
+    transform: scale(1.1);
+}
+
 /* ============ Input Area ============ */
 .input-area {
-    background: var(--bg-light);
+    background: #ffffff;
     border-top: 1px solid var(--border);
     padding: 12px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: flex-end;
     flex-shrink: 0;
 }
+
+.attach-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    color: var(--primary-dark);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+.attach-btn:hover {
+    background: #c7d2fe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.attach-btn:active { transform: scale(0.92); }
+
 .input-area .input-wrap {
     flex: 1;
-    background: var(--bg-card);
+    background: var(--bg-light);
     border-radius: 14px;
     padding: 10px 14px;
     display: flex;
@@ -447,7 +557,8 @@ body {
 }
 .input-area .input-wrap:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 .input-area textarea {
     flex: 1;
@@ -464,7 +575,7 @@ body {
     line-height: 1.5;
     -webkit-appearance: none;
 }
-.input-area textarea::placeholder { color: #64748b; }
+.input-area textarea::placeholder { color: #94a3b8; }
 
 .send-btn {
     width: 48px;
@@ -479,12 +590,12 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
     transition: all 0.2s;
 }
 .send-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.7);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
 }
 .send-btn:active { transform: scale(0.92); }
 .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -494,14 +605,14 @@ body {
     display: inline-flex;
     gap: 5px;
     padding: 14px 18px;
-    background: var(--bg-card);
+    background: #ffffff;
     border-radius: 16px;
     border-bottom-right-radius: 4px;
     margin-left: auto;
     margin-bottom: 14px;
     width: fit-content;
     border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 .typing span {
     width: 9px;
@@ -535,7 +646,7 @@ body {
     pointer-events: none;
     max-width: 90%;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { background: var(--success); }
@@ -543,12 +654,12 @@ body {
 
 /* ============ Welcome Card ============ */
 .welcome-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.1));
-    border: 1.5px solid rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 16px;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
     animation: msgIn 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -560,11 +671,11 @@ body {
     right: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
     pointer-events: none;
 }
 .welcome-card h3 {
-    color: #a5b4fc;
+    color: var(--primary-dark);
     font-size: 16px;
     margin-bottom: 10px;
     display: flex;
@@ -587,8 +698,8 @@ body {
     position: relative;
 }
 .welcome-card .feature-item {
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.25);
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: 10px;
     padding: 10px;
     font-size: 12px;
@@ -603,7 +714,7 @@ body {
 .key-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(15, 23, 42, 0.5);
     backdrop-filter: blur(8px);
     z-index: 99999;
     display: none;
@@ -620,13 +731,13 @@ body {
 }
 
 .key-modal-box {
-    background: var(--bg-card);
+    background: #ffffff;
     border: 1.5px solid var(--border);
     border-radius: 20px;
     padding: 26px 22px;
     max-width: 440px;
     width: 100%;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 0 1px rgba(99, 102, 241, 0.1);
     animation: slideUpKey 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     direction: rtl;
     text-align: right;
@@ -654,7 +765,7 @@ body {
     margin: 0 0 8px;
     font-size: 18px;
     font-weight: 900;
-    color: #a5b4fc;
+    color: var(--primary-dark);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -686,8 +797,8 @@ body {
 
 .key-modal-box input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
-    background: var(--bg);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
 .key-modal-status {
@@ -726,14 +837,14 @@ body {
     color: var(--text);
     border: 1px solid var(--border) !important;
 }
-.key-btn-cancel:hover { background: #232338; }
+.key-btn-cancel:hover { background: #e2e8f0; }
 
 .key-btn-save {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     color: #fff;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
-.key-btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.7); }
+.key-btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.6); }
 
 .key-modal-link {
     display: block;
@@ -741,7 +852,7 @@ body {
     margin-top: 14px;
     font-size: 12px;
     font-weight: 900;
-    color: #a5b4fc;
+    color: var(--primary);
     text-decoration: none;
 }
 .key-modal-link:hover { text-decoration: underline; }
@@ -749,13 +860,16 @@ body {
 /* ============ Mobile ============ */
 @media (max-width: 768px) {
     .header-actions { gap: 4px; }
-    .action-btn { padding: 7px 10px; font-size: 11px; }
+    .action-btn { padding: 7px 9px; font-size: 11px; }
     .quick-chip { font-size: 11px; padding: 6px 12px; }
     .msg { font-size: 13.5px; padding: 12px 14px; }
-    .msg pre code { font-size: 11.5px; padding: 30px 12px 12px; }
+    .msg pre code { font-size: 11.5px; padding: 34px 12px 12px; }
     .welcome-card .features { grid-template-columns: 1fr; }
     .chat-area { padding: 12px 8px 16px; }
-    .input-area { padding: 10px 8px; }
+    .input-area { padding: 10px 8px; gap: 6px; }
+    .attach-btn { width: 40px; height: 40px; font-size: 18px; }
+    .send-btn { width: 44px; height: 44px; }
+    .attachment-chip .att-name { max-width: 100px; }
 }
 </style>
 </head>
@@ -768,7 +882,10 @@ body {
         <p><span id="statusText">جاهز لمراجعة وتطوير الأكواد — ذكاء فائق</span></p>
     </div>
     <div class="header-actions">
-        <button class="action-btn" onclick="openKeyModal()" title="تغيير مفتاح Groq">🔑</button>
+        <button class="action-btn key-missing" id="keyBtn" onclick="openKeyModal()" title="مفتاح Groq">
+            <span id="keyIcon">🔑</span>
+            <span id="keyLabel">المفتاح</span>
+        </button>
         <button class="action-btn danger" onclick="clearChat()" title="محادثة جديدة">🗑️</button>
     </div>
 </div>
@@ -787,9 +904,14 @@ body {
     
     <!-- Chat Area -->
     <div class="chat-area" id="chatArea"></div>
+
+    <!-- Attachments Preview -->
+    <div class="attachments-preview" id="attachmentsPreview"></div>
     
     <!-- Input Area -->
     <div class="input-area" id="inputArea">
+        <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="رفع ملف كود">📎</button>
+        <input type="file" id="fileInput" multiple accept=".txt,.js,.html,.css,.json,.py,.php,.java,.cpp,.c,.cs,.ts,.jsx,.tsx,.vue,.sql,.xml,.md,.yml,.yaml,.sh,.rb,.go,.rs,.kt,.swift,.dart" style="display:none" onchange="handleFiles(event)">
         <div class="input-wrap">
             <textarea 
                 id="chatInput" 
@@ -797,7 +919,8 @@ body {
                 placeholder="الصق كودك أو اكتب طلبك البرمجي... (Shift+Enter لسطر جديد)"
                 autocomplete="off"
                 spellcheck="false"
-                oninput="autoResize(this)"></textarea>
+                oninput="autoResize(this)"
+                onpaste="handlePaste(event)"></textarea>
         </div>
         <button class="send-btn" id="sendBtn">➤</button>
     </div>
@@ -853,7 +976,8 @@ const GROQ_MODELS = [
 
 /* ============ حالة التطبيق ============ */
 const appState = {
-    chatHistory: JSON.parse(localStorage.getItem('code_chat_history') || '[]')
+    chatHistory: JSON.parse(localStorage.getItem('code_chat_history') || '[]'),
+    attachments: []  // { name, content, size }
 };
 
 /* ============ DOM ============ */
@@ -861,6 +985,8 @@ const chatArea = document.getElementById('chatArea');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const toastEl = document.getElementById('toast');
+const fileInput = document.getElementById('fileInput');
+const attachmentsPreview = document.getElementById('attachmentsPreview');
 
 /* ============ System Prompt الفائق ============ */
 const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء** بخبرة 20 سنة في جميع لغات البرمجة والتقنيات.
@@ -941,15 +1067,17 @@ function autoResize(el) {
     el.style.height = Math.min(el.scrollHeight, 140) + 'px';
 }
 
-/* ============ تحويل النص لـ HTML آمن مع دعم الأكواد ============ */
-function formatMessage(text) {
-    // 1. HTML escape
-    let html = text
+/* ============ تحويل النص لـ HTML آمن ============ */
+function escapeHtml(text) {
+    return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
+}
 
-    // 2. Code blocks مع حفظ اللغة (قبل أي تحويل تاني)
+function formatMessage(text) {
+    let html = escapeHtml(text);
+
     const codeBlocks = [];
     html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, lang, code) => {
         const id = `__CODE_BLOCK_${codeBlocks.length}__`;
@@ -961,29 +1089,17 @@ function formatMessage(text) {
         return id;
     });
 
-    // 3. Inline code
     html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
-
-    // 4. Bold
     html = html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-
-    // 5. Headers
     html = html.replace(/^### (.+)$/gm, '<h3>▸ $1</h3>');
     html = html.replace(/^## (.+)$/gm, '<h3>◆ $1</h3>');
     html = html.replace(/^# (.+)$/gm, '<h3>● $1</h3>');
-
-    // 6. Lists
     html = html.replace(/^- (.+)$/gm, '• $1');
     html = html.replace(/^\* (.+)$/gm, '• $1');
     html = html.replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`);
-
-    // 7. HR
     html = html.replace(/^---$/gm, '<hr>');
-
-    // 8. New lines
     html = html.replace(/\n/g, '<br>');
 
-    // 9. رجّع الـ code blocks
     codeBlocks.forEach((block, i) => {
         html = html.replace(`__CODE_BLOCK_${i}__`, block);
     });
@@ -1042,12 +1158,134 @@ window.copyCode = function(btn) {
     });
 };
 
+/* ============================================================ */
+/* ============ 📎 رفع ومعالجة الملفات ============ */
+/* ============================================================ */
+
+function getFileIcon(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    const icons = {
+        js: '🟨', html: '🌐', css: '🎨', json: '📋', py: '🐍',
+        php: '🐘', java: '☕', cpp: '⚙️', c: '⚙️', cs: '🎯',
+        ts: '💙', jsx: '⚛️', tsx: '⚛️', vue: '💚', sql: '🗄️',
+        xml: '📄', md: '📝', yml: '⚙️', yaml: '⚙️', sh: '🐚',
+        rb: '💎', go: '🐹', rs: '🦀', kt: '🎯', swift: '🦅',
+        dart: '🎯', txt: '📄'
+    };
+    return icons[ext] || '📄';
+}
+
+window.handleFiles = async function(event) {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
+
+    const MAX_SIZE = 500 * 1024; // 500KB
+    let added = 0;
+
+    for (const file of files) {
+        if (file.size > MAX_SIZE) {
+            showToast(`⚠️ ${file.name} أكبر من 500KB`, 'error');
+            continue;
+        }
+
+        try {
+            const content = await file.text();
+            appState.attachments.push({
+                name: file.name,
+                content: content,
+                size: file.size
+            });
+            added++;
+        } catch (e) {
+            showToast(`❌ فشل قراءة ${file.name}`, 'error');
+        }
+    }
+
+    if (added > 0) {
+        renderAttachments();
+        showToast(`✅ تم إضافة ${added} ملف`, 'success');
+    }
+
+    // نمسح المدخلات عشان نقدر نرفع نفس الملف تاني
+    fileInput.value = '';
+};
+
+window.renderAttachments = function() {
+    if (appState.attachments.length === 0) {
+        attachmentsPreview.classList.remove('show');
+        attachmentsPreview.innerHTML = '';
+        return;
+    }
+
+    attachmentsPreview.classList.add('show');
+    attachmentsPreview.innerHTML = appState.attachments.map((att, i) => `
+        <div class="attachment-chip">
+            <span class="att-icon">${getFileIcon(att.name)}</span>
+            <span class="att-name" title="${att.name}">${att.name}</span>
+            <button class="att-remove" onclick="removeAttachment(${i})" title="حذف">✕</button>
+        </div>
+    `).join('');
+};
+
+window.removeAttachment = function(index) {
+    appState.attachments.splice(index, 1);
+    renderAttachments();
+};
+
+/* ============ معالجة اللصق ============ */
+window.handlePaste = function(event) {
+    // لو المستخدم لصق كود طويل (أكثر من 500 حرف) → نضيفه كـ attachment
+    const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+    if (pastedText && pastedText.length > 500) {
+        event.preventDefault();
+
+        // نحاول نكتشف اللغة
+        let fileName = 'pasted-code.txt';
+        if (/<!DOCTYPE|<html/i.test(pastedText)) fileName = 'pasted-code.html';
+        else if (/^\s*[.#][\w-]+\s*{/m.test(pastedText)) fileName = 'pasted-code.css';
+        else if (/function|const|let|var|=>/.test(pastedText)) fileName = 'pasted-code.js';
+        else if (/def |import |print\(/i.test(pastedText)) fileName = 'pasted-code.py';
+        else if (/<\?php/.test(pastedText)) fileName = 'pasted-code.php';
+        else if (/class.*{/.test(pastedText) && /public|private|void/.test(pastedText)) fileName = 'pasted-code.java';
+
+        appState.attachments.push({
+            name: fileName,
+            content: pastedText,
+            size: pastedText.length
+        });
+        renderAttachments();
+        showToast(`📎 تم إضافة الكود الملصوق كملف (${pastedText.length} حرف)`, 'info');
+    }
+};
+
 /* ============ السؤال السريع ============ */
 window.quickAsk = function(text) {
     chatInput.value = text;
     autoResize(chatInput);
     handleSend();
 };
+
+/* ============ بناء الرسالة النهائية ============ */
+function buildFinalMessage(userMessage) {
+    if (appState.attachments.length === 0) {
+        return userMessage;
+    }
+
+    let finalMsg = userMessage || 'اقرأ الملفات المرفقة وحللها:';
+    finalMsg += '\n\n---\n**📎 الملفات المرفقة:**\n\n';
+
+    appState.attachments.forEach(att => {
+        const ext = att.name.split('.').pop().toLowerCase();
+        let lang = ext === 'txt' ? 'text' : ext;
+        if (ext === 'js') lang = 'javascript';
+        if (ext === 'py') lang = 'python';
+        if (ext === 'ts') lang = 'typescript';
+
+        finalMsg += `### 📄 ${att.name}\n\`\`\`${lang}\n${att.content}\n\`\`\`\n\n`;
+    });
+
+    return finalMsg;
+}
 
 /* ============ إرسال للـ Groq ============ */
 async function askGroq(userMessage) {
@@ -1060,14 +1298,11 @@ async function askGroq(userMessage) {
         { role: 'system', content: SYSTEM_PROMPT }
     ];
 
-    // آخر 10 رسائل من التاريخ
-    const recentHistory = appState.chatHistory.slice(-10);
+    // آخر 6 رسائل (بناخد أقل عشان الملفات بتاخد مساحة)
+    const recentHistory = appState.chatHistory.slice(-6);
     recentHistory.forEach(h => messages.push({ role: h.role, content: h.content }));
-    
-    // نتأكد إن آخر رسالة مش مكررة
-    if (recentHistory.length === 0 || recentHistory[recentHistory.length - 1].content !== userMessage) {
-        messages.push({ role: 'user', content: userMessage });
-    }
+
+    messages.push({ role: 'user', content: userMessage });
 
     let response = null;
     let lastError = null;
@@ -1081,7 +1316,7 @@ async function askGroq(userMessage) {
     for (const model of modelsToTry) {
         try {
             console.log(`⚡ Trying: ${model}`);
-            
+
             response = await fetch(GROQ_API_URL, {
                 method: 'POST',
                 headers: {
@@ -1091,11 +1326,9 @@ async function askGroq(userMessage) {
                 body: JSON.stringify({
                     model: model,
                     messages: messages,
-                    temperature: 0.3,       // أقل إبداع، أدق في البرمجة
-                    max_tokens: 8000,        // مساحة كبيرة للكود الطويل
-                    top_p: 0.9,
-                    frequency_penalty: 0.1,
-                    presence_penalty: 0.1
+                    temperature: 0.3,
+                    max_tokens: 8000,
+                    top_p: 0.9
                 })
             });
 
@@ -1148,17 +1381,32 @@ chatInput.onkeydown = e => {
 
 async function handleSend() {
     const val = chatInput.value.trim();
-    if (!val) return;
+
+    // لو مفيش نص ومفيش مرفقات، مفيش إرسال
+    if (!val && appState.attachments.length === 0) return;
 
     chatInput.disabled = true;
     sendBtn.disabled = true;
     chatInput.value = '';
     chatInput.style.height = 'auto';
 
-    addUserMessage(val);
+    // نعرض للمستخدم النص + إشارة للمرفقات
+    let displayMsg = val;
+    if (appState.attachments.length > 0) {
+        const attNames = appState.attachments.map(a => `📎 ${a.name}`).join('\n');
+        displayMsg = (val ? val + '\n\n' : '') + attNames;
+    }
+    addUserMessage(displayMsg);
+
+    // نبني الرسالة النهائية (النص + محتوى الملفات)
+    const finalMsg = buildFinalMessage(val);
+
+    // نمسح المرفقات بعد الإرسال
+    appState.attachments = [];
+    renderAttachments();
 
     const typing = showTyping();
-    const reply = await askGroq(val);
+    const reply = await askGroq(finalMsg);
     typing.remove();
     addAIMessage(reply);
 
@@ -1171,13 +1419,15 @@ async function handleSend() {
 window.clearChat = function() {
     if (!confirm('هل تريد بدء محادثة جديدة؟ سيتم مسح كل الرسائل.')) return;
     appState.chatHistory = [];
+    appState.attachments = [];
     localStorage.removeItem('code_chat_history');
     chatArea.innerHTML = '';
+    renderAttachments();
     showWelcome();
     showToast('تم مسح المحادثة', 'success');
 };
 
-/* ============ Welcome + Suggestions ============ */
+/* ============ Welcome ============ */
 function showWelcome() {
     const welcome = document.createElement('div');
     welcome.className = 'welcome-card';
@@ -1185,13 +1435,13 @@ function showWelcome() {
         <h3>⚡ أهلاً في المساعد البرمجي الفائق</h3>
         <p>
             أنا مهندس برمجيات بخبرة 20 سنة، متخصص في كتابة ومراجعة وتطوير الأكواد بدقة فائقة.
-            <br>الصق أي كود عندك، واطلب أي تعديل — هيديك نسخة كاملة بدون أخطاء أو نقصان.
+            <br>الصق كودك، أو ارفع ملف، أو اطلب أي حاجة برمجية — هيديك نسخة كاملة بدون أخطاء.
         </p>
         <div class="features">
             <div class="feature-item">📝 أكواد كاملة بدون اختصار</div>
             <div class="feature-item">🐛 تصحيح كل الأخطاء</div>
-            <div class="feature-item">⚡ تحسين الأداء والأمان</div>
-            <div class="feature-item">🚀 تحديث للـ Best Practices</div>
+            <div class="feature-item">📎 رفع ملفات كود متعددة</div>
+            <div class="feature-item">📋 نسخ ولصق سهل</div>
         </div>
     `;
     chatArea.appendChild(welcome);
@@ -1203,9 +1453,9 @@ function showSuggestions() {
     const suggestions = [
         { icon: '📄', text: 'اكتب لي صفحة HTML كاملة فيها نموذج تسجيل دخول أنيق' },
         { icon: '⚡', text: 'اقترح تحسينات على كود JavaScript لزيادة السرعة' },
-        { icon: '🔍', text: 'راجع هذا الكود واذكر كل الأخطاء (سألصقه)' },
+        { icon: '🔍', text: 'راجع هذا الكود واذكر كل الأخطاء' },
         { icon: '🎨', text: 'صمم لي واجهة CSS حديثة لكارت منتج' },
-        { icon: '🚀', text: 'حوّل الكود التالي لـ ES6+ (سألصقه)' },
+        { icon: '🚀', text: 'حوّل الكود التالي لـ ES6+' },
         { icon: '🔥', text: 'اكتب دالة JavaScript للتعامل مع API بشكل احترافي' }
     ];
 
@@ -1218,11 +1468,7 @@ function showSuggestions() {
         chip.className = 'suggestion-chip';
         chip.innerHTML = `${s.icon} ${s.text}`;
         chip.onclick = () => {
-            if (s.text.includes('سألصقه')) {
-                chatInput.value = s.text.replace('سألصقه', '') + '\n\n```\n// الصق كودك هنا\n```';
-            } else {
-                chatInput.value = s.text;
-            }
+            chatInput.value = s.text;
             autoResize(chatInput);
             container.remove();
             chatInput.focus();
@@ -1320,12 +1566,26 @@ window.saveApiKey = async function() {
 };
 
 function updateKeyButtonState() {
-    const btn = document.querySelector('.action-btn[title="تغيير مفتاح Groq"]');
+    const btn = document.getElementById('keyBtn');
+    const icon = document.getElementById('keyIcon');
+    const label = document.getElementById('keyLabel');
     if (!btn) return;
 
     const ok = GROQ_API_KEY && GROQ_API_KEY.startsWith('gsk_');
-    btn.classList.toggle('key-missing', !ok);
-    btn.title = ok ? 'تغيير مفتاح Groq ✅' : '⚠️ اضغط لإدخال مفتاح Groq';
+
+    if (ok) {
+        btn.classList.remove('key-missing');
+        btn.classList.add('key-ok');
+        btn.title = '✅ المفتاح شغال — اضغط للتغيير';
+        if (icon) icon.textContent = '✅';
+        if (label) label.textContent = 'المفتاح شغال';
+    } else {
+        btn.classList.remove('key-ok');
+        btn.classList.add('key-missing');
+        btn.title = '⚠️ اضغط لإدخال مفتاح Groq';
+        if (icon) icon.textContent = '🔑';
+        if (label) label.textContent = 'المفتاح';
+    }
 }
 
 // إغلاق المودال لو ضغط برة
