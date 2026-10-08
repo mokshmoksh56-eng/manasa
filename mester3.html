@@ -20,10 +20,6 @@
         --orange: #F59E0B;
         --dark-orange: #D97706;
         --red: #DC2626;
-        --ai-purple: #7C3AED;
-        --ai-dark: #5B21B6;
-        --ai-light: #EDE9FE;
-        --ai-border: #C4B5FD;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -698,135 +694,6 @@
         position: relative; z-index: 10;
     }
 
-    /* ============ AI Floating Button ============ */
-    .ai-float-btn {
-        position: fixed;
-        bottom: 24px;
-        left: 24px;
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        box-shadow: 
-            0 8px 24px -4px rgba(124,58,237,0.6),
-            0 4px 12px -2px rgba(124,58,237,0.4),
-            inset 0 2px 4px rgba(255,255,255,0.2);
-        z-index: 9999;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        animation: aiFloatBounce 3s ease-in-out infinite;
-        border: 3px solid rgba(255,255,255,0.25);
-    }
-
-    .ai-float-btn:hover {
-        transform: scale(1.12) translateY(-4px);
-        box-shadow: 
-            0 16px 32px -4px rgba(124,58,237,0.8),
-            0 8px 20px -2px rgba(124,58,237,0.6),
-            inset 0 2px 4px rgba(255,255,255,0.3);
-        animation-play-state: paused;
-    }
-
-    .ai-float-btn:active {
-        transform: scale(0.95);
-    }
-
-    .ai-float-icon {
-        font-size: 32px;
-        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
-        animation: aiIconWiggle 2.5s ease-in-out infinite;
-        z-index: 2;
-        position: relative;
-    }
-
-    @keyframes aiFloatBounce {
-        0%, 100% { 
-            transform: translateY(0);
-            box-shadow: 
-                0 8px 24px -4px rgba(124,58,237,0.6),
-                0 4px 12px -2px rgba(124,58,237,0.4),
-                inset 0 2px 4px rgba(255,255,255,0.2);
-        }
-        50% { 
-            transform: translateY(-8px);
-            box-shadow: 
-                0 16px 32px -4px rgba(124,58,237,0.8),
-                0 8px 20px -2px rgba(124,58,237,0.5),
-                inset 0 2px 4px rgba(255,255,255,0.3);
-        }
-    }
-
-    @keyframes aiIconWiggle {
-        0%, 100% { transform: rotate(0deg) scale(1); }
-        25% { transform: rotate(-8deg) scale(1.05); }
-        75% { transform: rotate(8deg) scale(1.05); }
-    }
-
-    .ai-float-sparkle {
-        position: absolute;
-        top: -4px;
-        right: -4px;
-        font-size: 16px;
-        animation: aiSparkle 2s ease-in-out infinite;
-        z-index: 3;
-        filter: drop-shadow(0 0 6px #FCD34D);
-        pointer-events: none;
-    }
-
-    @keyframes aiSparkle {
-        0%, 100% { 
-            opacity: 0; 
-            transform: scale(0.5) rotate(0deg); 
-        }
-        50% { 
-            opacity: 1; 
-            transform: scale(1.3) rotate(180deg); 
-        }
-    }
-
-    .ai-float-pulse {
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        border: 2px solid #A78BFA;
-        animation: aiPulseRing 2s ease-out infinite;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    @keyframes aiPulseRing {
-        0% {
-            transform: scale(1);
-            opacity: 0.8;
-        }
-        100% {
-            transform: scale(1.8);
-            opacity: 0;
-        }
-    }
-
-    .ai-float-label {
-        position: absolute;
-        bottom: -22px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #7C3AED, #5B21B6);
-        color: #fff;
-        font-size: 9.5px;
-        font-weight: 900;
-        padding: 3px 10px;
-        border-radius: 10px;
-        white-space: nowrap;
-        box-shadow: 0 3px 8px rgba(124,58,237,0.5);
-        border: 1.5px solid rgba(255,255,255,0.3);
-        opacity: 0.95;
-        letter-spacing: 0.3px;
-    }
-
     @media (max-width: 480px) {
         .header-3d { padding: 26px 15px 36px; }
         .header-3d h1 { font-size: 22px; }
@@ -850,18 +717,6 @@
         .lesson-chip .chip-time { font-size: 9px; }
         .lesson-modal-box { max-width: 95%; }
         .cloud-badge, .sync-badge { font-size: 9.5px; padding: 5px 9px; }
-        
-        /* AI Floating Button موبايل */
-        .ai-float-btn {
-            bottom: 20px;
-            left: 20px;
-            width: 58px;
-            height: 58px;
-            border-width: 2.5px;
-        }
-        .ai-float-icon { font-size: 28px; }
-        .ai-float-sparkle { font-size: 14px; }
-        .ai-float-label { font-size: 9px; padding: 2px 8px; bottom: -20px; }
     }
 </style>
 </head>
@@ -974,14 +829,6 @@
             <div>منصة احجزلي — بوابة المعلم</div>
         </div>
     </div>
-
-    <!-- 🤖 أيقونة AI العائمة -->
-    <a href="ai.html" class="ai-float-btn" id="aiFloatBtn" title="المساعد الذكي">
-        <span class="ai-float-icon">🤖</span>
-        <span class="ai-float-sparkle">✨</span>
-        <span class="ai-float-pulse"></span>
-        <span class="ai-float-label">مساعد ذكي</span>
-    </a>
 
     <script>
     (function() {
@@ -1739,7 +1586,6 @@
 
     <!-- ==========================================================
          🔒 زر الرجوع من mester3 → teacher-login.html
-         ✅ ملاحظة مهمة: شيلنا pushState عشان التنقل يشتغل صح
          ========================================================== -->
     <script>
     (function() {
