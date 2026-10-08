@@ -239,6 +239,7 @@ body {
     scroll-behavior: smooth;
     min-width: 0;
     background: var(--bg);
+    overscroll-behavior-y: contain;
 }
 .chat-area::-webkit-scrollbar { width: 8px; }
 .chat-area::-webkit-scrollbar-track { background: transparent; }
@@ -857,6 +858,60 @@ body {
 }
 .key-modal-link:hover { text-decoration: underline; }
 
+/* ============ Pull to Refresh ============ */
+.pull-to-refresh {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.15), transparent);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 900;
+    transform: translateY(-60px);
+    transition: transform 0.2s ease-out;
+    z-index: 9999;
+    pointer-events: none;
+    font-family: 'Cairo', sans-serif;
+}
+
+.pull-to-refresh.visible {
+    transform: translateY(0);
+}
+
+.pull-to-refresh.refreshing {
+    transform: translateY(0);
+}
+
+.pull-to-refresh .ptr-spinner {
+    font-size: 20px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.pull-to-refresh.refreshing .ptr-spinner {
+    animation: ptrSpin 0.8s linear infinite;
+}
+
+@keyframes ptrSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.pull-to-refresh .ptr-text {
+    font-weight: 900;
+    color: var(--primary-dark);
+}
+
+.pull-to-refresh.ready .ptr-spinner {
+    transform: rotate(180deg);
+}
+
 /* ============ Mobile ============ */
 @media (max-width: 768px) {
     .header-actions { gap: 4px; }
@@ -875,6 +930,12 @@ body {
 </head>
 <body>
 
+<!-- Pull to Refresh Indicator -->
+<div class="pull-to-refresh" id="pullToRefresh">
+    <div class="ptr-spinner" id="ptrSpinner">🔄</div>
+    <span class="ptr-text" id="ptrText">اسحب للأسفل للتحديث</span>
+</div>
+
 <div class="code-header">
     <div class="avatar">⚡</div>
     <div class="info">
@@ -882,6 +943,7 @@ body {
         <p><span id="statusText">جاهز لمراجعة وتطوير الأكواد — ذكاء فائق</span></p>
     </div>
     <div class="header-actions">
+        <button class="action-btn" onclick="refreshApp()" title="تحديث الصفحة" style="font-size:16px;padding:8px 10px">🔄</button>
         <button class="action-btn key-missing" id="keyBtn" onclick="openKeyModal()" title="مفتاح Groq">
             <span id="keyIcon">🔑</span>
             <span id="keyLabel">المفتاح</span>
@@ -967,7 +1029,7 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key_code') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-/* ✅ موديلات Groq الرسمية المضمونة (محدّثة 2025) */
+/* ✅ موديلات Groq الرسمية المضمونة (محدّثة أكتوبر 2025) */
 const GROQ_MODELS = [
     'llama-3.3-70b-versatile',
     'llama-3.1-8b-instant',
@@ -1366,7 +1428,7 @@ async function askGroq(userMessage) {
             return '⏳ **وصلت للحد المجاني**\n\nاستنى شوية وجرب تاني.';
         }
 
-        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول المقترحة:**\n- تأكد إن المفتاح صالح من [console.groq.com/keys](https://console.groq.com/keys)\n- جرب تعمل Refresh للصفحة\n- جرب تمسح الـ cache: اضغط زرار 🗑️ واضغط Refresh\n- لو الخطأ استمر، ابعتلي التفاصيل دي`;
+        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول المقترحة:**\n- تأكد إن المفتاح صالح من [console.groq.com/keys](https://console.groq.com/keys)\n- جرب تعمل Refresh للصفحة\n- جرب تمسح الـ cache\n- لو الخطأ استمر، ابعتلي التفاصيل دي`;
     }
 
     const data = await response.json();
@@ -1424,6 +1486,23 @@ window.clearChat = function() {
     renderAttachments();
     showWelcome();
     showToast('تم مسح المحادثة', 'success');
+};
+
+/* ============ تحديث الصفحة ============ */
+window.refreshApp = function() {
+    showToast('🔄 جاري التحديث...', 'info');
+    
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            names.forEach(n => caches.delete(n));
+        });
+    }
+    
+    setTimeout(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('_t', Date.now());
+        window.location.href = url.toString();
+    }, 400);
 };
 
 /* ============ Welcome ============ */
@@ -1627,6 +1706,155 @@ document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
         saveApiKey();
     }
 });
+
+/* ============================================================ */
+/* ============ 📱 Pull to Refresh ============ */
+/* ============================================================ */
+
+(function initPullToRefresh() {
+    const ptr = document.getElementById('pullToRefresh');
+    const spinner = document.getElementById('ptrSpinner');
+    const text = document.getElementById('ptrText');
+
+    if (!ptr || !chatArea) return;
+
+    const THRESHOLD = 40;       // الحد الأدنى للتفعيل
+    const MAX_PULL = 100;       // أقصى مسافة
+
+    let startY = 0;
+    let currentY = 0;
+    let isPulling = false;
+    let isRefreshing = false;
+
+    /* ============ Touch Events ============ */
+    chatArea.addEventListener('touchstart', (e) => {
+        if (chatArea.scrollTop <= 0 && !isRefreshing) {
+            startY = e.touches[0].clientY;
+            isPulling = true;
+        }
+    }, { passive: true });
+
+    chatArea.addEventListener('touchmove', (e) => {
+        if (!isPulling || isRefreshing) return;
+
+        currentY = e.touches[0].clientY;
+        const distance = currentY - startY;
+
+        if (distance > 0 && chatArea.scrollTop <= 0) {
+            const pullDistance = Math.min(distance * 0.5, MAX_PULL);
+
+            ptr.classList.add('visible');
+            ptr.style.transform = `translateY(-60px) translateY(${pullDistance}px)`;
+
+            spinner.style.transform = `rotate(${pullDistance * 3}deg)`;
+
+            if (pullDistance >= THRESHOLD) {
+                ptr.classList.add('ready');
+                text.textContent = '✨ اترك للتحديث';
+            } else {
+                ptr.classList.remove('ready');
+                text.textContent = '⬇️ اسحب للأسفل للتحديث';
+            }
+        }
+    }, { passive: true });
+
+    chatArea.addEventListener('touchend', () => {
+        if (!isPulling || isRefreshing) return;
+
+        const distance = currentY - startY;
+        const pullDistance = Math.min(distance * 0.5, MAX_PULL);
+
+        if (pullDistance >= THRESHOLD && chatArea.scrollTop <= 0) {
+            triggerRefresh();
+        } else {
+            resetPTR();
+        }
+
+        isPulling = false;
+        startY = 0;
+        currentY = 0;
+    }, { passive: true });
+
+    /* ============ Mouse Events (كمبيوتر) ============ */
+    let mouseStartY = 0;
+    let mouseIsPulling = false;
+
+    chatArea.addEventListener('mousedown', (e) => {
+        if (chatArea.scrollTop <= 0 && !isRefreshing && e.button === 0) {
+            mouseStartY = e.clientY;
+            mouseIsPulling = true;
+        }
+    });
+
+    chatArea.addEventListener('mousemove', (e) => {
+        if (!mouseIsPulling || isRefreshing) return;
+        const distance = e.clientY - mouseStartY;
+
+        if (distance > 0 && chatArea.scrollTop <= 0) {
+            const pullDistance = Math.min(distance * 0.5, MAX_PULL);
+            ptr.classList.add('visible');
+            ptr.style.transform = `translateY(-60px) translateY(${pullDistance}px)`;
+            spinner.style.transform = `rotate(${pullDistance * 3}deg)`;
+
+            if (pullDistance >= THRESHOLD) {
+                ptr.classList.add('ready');
+                text.textContent = '✨ اترك للتحديث';
+            } else {
+                ptr.classList.remove('ready');
+                text.textContent = '⬇️ اسحب للأسفل للتحديث';
+            }
+        }
+    });
+
+    chatArea.addEventListener('mouseup', () => {
+        if (!mouseIsPulling || isRefreshing) return;
+        const distance = currentY - startY;
+
+        if (chatArea.scrollTop <= 0 && distance > THRESHOLD * 2) {
+            triggerRefresh();
+        } else {
+            resetPTR();
+        }
+        mouseIsPulling = false;
+    });
+
+    chatArea.addEventListener('mouseleave', () => {
+        if (mouseIsPulling) {
+            resetPTR();
+            mouseIsPulling = false;
+        }
+    });
+
+    /* ============ Functions ============ */
+    function resetPTR() {
+        ptr.style.transform = 'translateY(-60px)';
+        ptr.classList.remove('ready');
+        setTimeout(() => {
+            ptr.classList.remove('visible');
+        }, 200);
+    }
+
+    function triggerRefresh() {
+        isRefreshing = true;
+        ptr.classList.add('refreshing', 'visible');
+        ptr.classList.remove('ready');
+        text.textContent = '🔄 جاري التحديث...';
+        ptr.style.transform = 'translateY(0)';
+        spinner.style.transform = 'rotate(0deg)';
+
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(n => caches.delete(n));
+            });
+        }
+
+        setTimeout(() => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('_t', Date.now());
+            window.location.href = url.toString();
+        }, 700);
+    }
+})();
 
 /* ============ استرجاع المحادثة السابقة ============ */
 function restoreHistory() {
