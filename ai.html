@@ -39,20 +39,20 @@ body {
     flex-direction: column;
     overflow: hidden;
     background-image:
-        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
+        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
 }
 
 /* ============ Header ============ */
 .code-header {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border-bottom: 2px solid var(--border);
     color: var(--text);
     padding: 12px 16px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.06);
     z-index: 100;
     flex-shrink: 0;
     position: relative;
@@ -79,10 +79,10 @@ body {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     display: flex; align-items: center; justify-content: center;
     font-size: 24px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
     flex-shrink: 0;
     position: relative;
-    border: 2px solid rgba(99, 102, 241, 0.2);
+    border: 2px solid rgba(99, 102, 241, 0.15);
 }
 .code-header .avatar::after {
     content: '';
@@ -103,7 +103,6 @@ body {
 .code-header .info h2 {
     font-size: 16px;
     font-weight: 900;
-    color: var(--text);
     background: linear-gradient(90deg, var(--primary-dark), var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -153,7 +152,6 @@ body {
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-/* 🔑 حالة المفتاح */
 .action-btn.key-ok {
     background: #d1fae5;
     border-color: #10b981;
@@ -192,7 +190,7 @@ body {
 
 /* ============ Quick Actions Bar ============ */
 .quick-bar {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     padding: 10px 12px;
@@ -451,7 +449,7 @@ body {
 }
 .suggestion-chip:active { transform: translateY(0) scale(0.96); }
 
-/* ============ Attachments Preview ============ */
+/* ============ Attachments ============ */
 .attachments-preview {
     display: none;
     flex-wrap: wrap;
@@ -967,17 +965,18 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key_code') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
+/* ✅ موديلات Groq الرسمية المضمونة */
 const GROQ_MODELS = [
-    'openai/gpt-oss-120b',
-    'openai/gpt-oss-20b',
-    'qwen/qwen3.8-27b',
-    'allam-2-7b'
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'mixtral-8x7b-32768',
+    'gemma2-9b-it'
 ];
 
 /* ============ حالة التطبيق ============ */
 const appState = {
     chatHistory: JSON.parse(localStorage.getItem('code_chat_history') || '[]'),
-    attachments: []  // { name, content, size }
+    attachments: []
 };
 
 /* ============ DOM ============ */
@@ -1007,18 +1006,12 @@ const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء*
 - اكتب الكود جوه \`\`\`language ... \`\`\` (حدد اللغة صح)
 - ضيف تعليقات توضيحية قصيرة بالعربي في الأماكن المهمة
 - اتبع Best Practices للغة المستخدمة
-- لو الكود طويل، قسمه لأجزاء واضحة بأسماء ملفات
 
 **عند مراجعة كود:**
 - اقرأ الكود **بتركيز كامل** قبل الرد
 - اذكر **كل** الأخطاء (Syntax, Logic, Performance, Security)
 - لكل خطأ: اذكر رقم السطر + السبب + الحل
 - اكتب **الكود المصحح كاملاً** بعد المراجعة
-
-**عند التحسين:**
-- اشرح **لماذا** ده تحسين (مش بس "أحسن")
-- قارن قبل/بعد لو أمكن
-- اقترح أكثر من طريقة لو موجودة
 
 **التنسيق:**
 - استخدم \`\`\`language للكود
@@ -1029,12 +1022,11 @@ const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء*
 **القواعد الذهبية:**
 ✅ لا تختصر أبداً — الكود الكامل دائماً
 ✅ لا تفترض — لو محتاج توضيح، اسأل
-✅ لا تخترع مكتبات — استخدم المعروف فقط
 ✅ اختبر ذهنياً كل سطر قبل كتابته
 ✅ اتكلم بالعربي الواضح والمهني
 
 **لغات وتقنيات أنت خبير فيها:**
-HTML5, CSS3, JavaScript (ES6+), TypeScript, React, Vue, Angular, Node.js, Express, MongoDB, MySQL, PostgreSQL, Firebase, Python, PHP, Laravel, Java, C++, C#, Dart, Flutter, React Native, Swift, Kotlin, Git, Docker, Linux, REST APIs, GraphQL, Tailwind, Bootstrap, jQuery.
+HTML5, CSS3, JavaScript (ES6+), TypeScript, React, Vue, Angular, Node.js, Express, MongoDB, MySQL, PostgreSQL, Firebase, Python, PHP, Laravel, Java, C++, C#, Dart, Flutter, React Native, Swift, Kotlin, Git, Docker, Linux, REST APIs, GraphQL, Tailwind, Bootstrap.
 
 **لو السؤال مش برمجي:**
 اعتذر بأدب وقل إنك مساعد برمجي فقط.
@@ -1179,7 +1171,7 @@ window.handleFiles = async function(event) {
     const files = Array.from(event.target.files);
     if (!files.length) return;
 
-    const MAX_SIZE = 500 * 1024; // 500KB
+    const MAX_SIZE = 500 * 1024;
     let added = 0;
 
     for (const file of files) {
@@ -1206,7 +1198,6 @@ window.handleFiles = async function(event) {
         showToast(`✅ تم إضافة ${added} ملف`, 'success');
     }
 
-    // نمسح المدخلات عشان نقدر نرفع نفس الملف تاني
     fileInput.value = '';
 };
 
@@ -1234,12 +1225,10 @@ window.removeAttachment = function(index) {
 
 /* ============ معالجة اللصق ============ */
 window.handlePaste = function(event) {
-    // لو المستخدم لصق كود طويل (أكثر من 500 حرف) → نضيفه كـ attachment
     const pastedText = (event.clipboardData || window.clipboardData).getData('text');
     if (pastedText && pastedText.length > 500) {
         event.preventDefault();
 
-        // نحاول نكتشف اللغة
         let fileName = 'pasted-code.txt';
         if (/<!DOCTYPE|<html/i.test(pastedText)) fileName = 'pasted-code.html';
         else if (/^\s*[.#][\w-]+\s*{/m.test(pastedText)) fileName = 'pasted-code.css';
@@ -1298,7 +1287,6 @@ async function askGroq(userMessage) {
         { role: 'system', content: SYSTEM_PROMPT }
     ];
 
-    // آخر 6 رسائل (بناخد أقل عشان الملفات بتاخد مساحة)
     const recentHistory = appState.chatHistory.slice(-6);
     recentHistory.forEach(h => messages.push({ role: h.role, content: h.content }));
 
@@ -1306,6 +1294,7 @@ async function askGroq(userMessage) {
 
     let response = null;
     let lastError = null;
+    let lastErrorDetails = '';
 
     const savedModel = localStorage.getItem('groq_working_model_code');
     let modelsToTry = [...GROQ_MODELS];
@@ -1315,7 +1304,7 @@ async function askGroq(userMessage) {
 
     for (const model of modelsToTry) {
         try {
-            console.log(`⚡ Trying: ${model}`);
+            console.log(`⚡ Trying model: ${model}`);
 
             response = await fetch(GROQ_API_URL, {
                 method: 'POST',
@@ -1338,32 +1327,45 @@ async function askGroq(userMessage) {
                 break;
             } else if (response.status === 401) {
                 lastError = '401';
+                lastErrorDetails = 'المفتاح غلط أو ملغي';
                 break;
             } else if (response.status === 429) {
                 lastError = '429';
+                lastErrorDetails = 'وصلت للحد المجاني';
                 break;
-            } else if (response.status === 404) {
-                lastError = '404: model not found';
-                continue;
             } else {
-                lastError = `HTTP ${response.status}`;
-                continue;
+                // نجيب تفاصيل الخطأ من Groq
+                try {
+                    const errData = await response.clone().json();
+                    const errMsg = errData.error?.message || `HTTP ${response.status}`;
+                    lastError = `HTTP ${response.status}`;
+                    lastErrorDetails = errMsg;
+                    console.warn(`❌ ${model}:`, errMsg);
+                } catch(e) {
+                    lastError = `HTTP ${response.status}`;
+                    lastErrorDetails = response.statusText || 'unknown';
+                }
+                continue;  // نكمل للموديل التالي
             }
         } catch(e) {
             lastError = e.message;
+            lastErrorDetails = e.message;
+            console.warn(`💥 ${model}:`, e.message);
             continue;
         }
     }
 
     if (!response || !response.ok) {
         updateKeyButtonState();
+
         if (lastError === '401') {
             return '❌ **المفتاح غلط أو اتلغى**\n\nدوس على زرار 🔑 فوق واكتب مفتاح جديد من console.groq.com/keys';
         }
         if (lastError === '429') {
             return '⏳ **وصلت للحد المجاني**\n\nاستنى شوية وجرب تاني.';
         }
-        return `❌ **فشل الاتصال**\n\n${lastError}\n\nتأكد من الشبكة، أو جرب تحدّث الصفحة.`;
+
+        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول المقترحة:**\n- تأكد إن المفتاح صالح من [console.groq.com/keys](https://console.groq.com/keys)\n- جرب تعمل Refresh للصفحة\n- جرب تمسح الـ cache: اضغط زرار 🗑️ واضغط Refresh\n- لو الخطأ استمر، ابعتلي التفاصيل دي`;
     }
 
     const data = await response.json();
@@ -1382,7 +1384,6 @@ chatInput.onkeydown = e => {
 async function handleSend() {
     const val = chatInput.value.trim();
 
-    // لو مفيش نص ومفيش مرفقات، مفيش إرسال
     if (!val && appState.attachments.length === 0) return;
 
     chatInput.disabled = true;
@@ -1390,7 +1391,6 @@ async function handleSend() {
     chatInput.value = '';
     chatInput.style.height = 'auto';
 
-    // نعرض للمستخدم النص + إشارة للمرفقات
     let displayMsg = val;
     if (appState.attachments.length > 0) {
         const attNames = appState.attachments.map(a => `📎 ${a.name}`).join('\n');
@@ -1398,10 +1398,8 @@ async function handleSend() {
     }
     addUserMessage(displayMsg);
 
-    // نبني الرسالة النهائية (النص + محتوى الملفات)
     const finalMsg = buildFinalMessage(val);
 
-    // نمسح المرفقات بعد الإرسال
     appState.attachments = [];
     renderAttachments();
 
@@ -1516,34 +1514,59 @@ window.saveApiKey = async function() {
     status.className = 'key-modal-status loading';
 
     try {
-        const testRes = await fetch(GROQ_API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${newKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: GROQ_MODELS[0],
-                messages: [{ role: 'user', content: 'say ok' }],
-                max_tokens: 5
-            })
-        });
+        // نجرب مع كل الموديلات لحد ما واحد يشتغل
+        let isValid = false;
+        let lastTestError = '';
 
-        if (testRes.status === 401) {
-            status.textContent = '❌ المفتاح غلط أو ملغي';
-            status.className = 'key-modal-status err';
-            return;
+        for (const testModel of GROQ_MODELS) {
+            try {
+                const testRes = await fetch(GROQ_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${newKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: testModel,
+                        messages: [{ role: 'user', content: 'hi' }],
+                        max_tokens: 5
+                    })
+                });
+
+                if (testRes.ok) {
+                    isValid = true;
+                    console.log(`✅ Key works with: ${testModel}`);
+                    break;
+                } else if (testRes.status === 401) {
+                    status.textContent = '❌ المفتاح غلط أو ملغي';
+                    status.className = 'key-modal-status err';
+                    return;
+                } else if (testRes.status === 429) {
+                    status.textContent = '⚠️ المفتاح سليم بس وصل للحد المجاني';
+                    status.className = 'key-modal-status loading';
+                    isValid = true;
+                    break;
+                } else {
+                    try {
+                        const errData = await testRes.json();
+                        lastTestError = errData.error?.message || `HTTP ${testRes.status}`;
+                    } catch(e) {
+                        lastTestError = `HTTP ${testRes.status}`;
+                    }
+                    continue;
+                }
+            } catch(e) {
+                lastTestError = e.message;
+                continue;
+            }
         }
 
-        if (testRes.status === 429) {
-            status.textContent = '⚠️ المفتاح سليم بس وصل للحد المجاني';
-            status.className = 'key-modal-status loading';
-        } else if (!testRes.ok) {
-            status.textContent = `⚠️ المفتاح سليم بس فيه مشكلة (${testRes.status})`;
-            status.className = 'key-modal-status loading';
-        } else {
+        if (isValid) {
             status.textContent = '✅ المفتاح شغال تمام!';
             status.className = 'key-modal-status ok';
+        } else {
+            status.textContent = `⚠️ المفتاح موجود بس مش اشتغل مع أي موديل\n${lastTestError}`;
+            status.className = 'key-modal-status loading';
         }
 
         GROQ_API_KEY = newKey;
@@ -1556,7 +1579,7 @@ window.saveApiKey = async function() {
             closeKeyModal();
             showToast('✅ تم حفظ المفتاح بنجاح', 'success');
             addAIMessage('✅ **تم تحديث المفتاح بنجاح**\n\nجاهز أستقبل أي كود أو طلب برمجي! 🚀');
-        }, 700);
+        }, 800);
 
     } catch (e) {
         console.error(e);
@@ -1588,19 +1611,16 @@ function updateKeyButtonState() {
     }
 }
 
-// إغلاق المودال لو ضغط برة
 document.getElementById('keyModal')?.addEventListener('click', (e) => {
     if (e.target.id === 'keyModal') closeKeyModal();
 });
 
-// Escape
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.getElementById('keyModal')?.classList.contains('show')) {
         closeKeyModal();
     }
 });
 
-// Enter في حقل المفتاح
 document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
@@ -1630,7 +1650,6 @@ function init() {
     updateKeyButtonState();
     autoResize(chatInput);
 
-    // لو مفيش مفتاح، نفتحله المودال أوتوماتيك
     if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
         setTimeout(() => {
             openKeyModal();
