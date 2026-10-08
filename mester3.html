@@ -3,1632 +3,697 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>منصة احجزلي - بوابة المعلم</title>
+<title>منصة احجزلي - الرئيسية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
     :root {
-        --primary-teal: #009688;
-        --dark-teal: #00695c;
+        --primary-teal: #25968b;
+        --dark-teal: #1b736a;
         --light-teal: #e0f2f0;
         --border-teal: #b2dfdb;
         --bg-color: #f7f9fa;
-        --text-dark: #1e293b;
+        --text-dark: #2c3e50;
         --text-gray: #64748b;
         --white: #ffffff;
-        --orange: #F59E0B;
-        --dark-orange: #D97706;
-        --red: #DC2626;
+        --shadow-color: rgba(37, 150, 139, 0.15);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
-
-    body {
-        background: var(--bg-color);
-        color: var(--text-dark);
+    * { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+        font-family: 'Cairo', sans-serif; 
+        font-weight: 700; 
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    body { 
+        background: var(--bg-color); 
+        padding-bottom: 50px; 
+        color: var(--text-dark); 
+        font-size: 14px;
         min-height: 100vh;
-        padding-bottom: 30px;
-        overflow-x: hidden;
+    }
+
+    /* ====== HEADER ====== */
+    .header-3d { 
+        width: 100%; 
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.65) 100%), 
+                    url('teacher2.png') center/cover no-repeat; 
+        padding: 30px 16px 45px; 
+        text-align: center; 
+        position: relative; 
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    }
+    
+    .header-3d h1 { 
+        font-size: 24px; 
+        font-weight: 900; 
+        color: var(--white); 
+        margin-bottom: 8px; 
+        letter-spacing: 0.5px; 
+        text-shadow: 0 3px 8px rgba(0,0,0,0.8); 
+    }
+    
+    .header-3d p {
+        font-size: 14px;
+        color: #e2e8f0;
+        font-weight: 700;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+
+    /* ====== MAIN CONTAINER ====== */
+    .main-container { 
+        width: 100%; 
+        max-width: 650px; 
+        margin: -25px auto 0; 
+        padding: 0 12px; 
+        position: relative; 
+        z-index: 10; 
+    }
+
+    /* ====== MENU CARD ====== */
+    .menu-card {
+        background: var(--white);
+        border-radius: 18px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px var(--shadow-color);
+        overflow: hidden;
+        border-top: 5px solid var(--primary-teal);
+        padding: 12px;
+    }
+
+    /* ====== SECTION (Accordion Item) ====== */
+    .section {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section.open {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    /* ====== SECTION HEADER ====== */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        background: var(--white);
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.3s ease;
         position: relative;
     }
 
-    .animated-bg {
-        position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-        background: linear-gradient(135deg, #f7f9fa 0%, #e0f2f0 25%, #f7f9fa 50%, #fef3c7 75%, #f7f9fa 100%);
-        background-size: 400% 400%;
-        animation: gradientMove 18s ease infinite;
-    }
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    .floating-shape { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; will-change: transform; }
-    .shape-1 { width: 380px; height: 380px; background: radial-gradient(circle, #009688, transparent 70%); top: -100px; right: -100px; animation: floatShape1 20s ease-in-out infinite; }
-    .shape-2 { width: 320px; height: 320px; background: radial-gradient(circle, #F59E0B, transparent 70%); bottom: -80px; left: -80px; animation: floatShape2 25s ease-in-out infinite; }
-    .shape-3 { width: 260px; height: 260px; background: radial-gradient(circle, #7C3AED, transparent 70%); top: 40%; left: 50%; animation: floatShape3 22s ease-in-out infinite; }
-    .shape-4 { width: 220px; height: 220px; background: radial-gradient(circle, #10B981, transparent 70%); top: 20%; left: 10%; animation: floatShape4 28s ease-in-out infinite; }
-    @keyframes floatShape1 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-80px,100px) scale(1.15); } 66% { transform: translate(50px,50px) scale(0.9); } }
-    @keyframes floatShape2 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(100px,-80px) scale(1.2); } 66% { transform: translate(-40px,-120px) scale(0.95); } }
-    @keyframes floatShape3 { 0%,100% { transform: translate(-50%,0) scale(1); } 50% { transform: translate(-30%,-60px) scale(1.25); } }
-    @keyframes floatShape4 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,80px) scale(1.1); } }
-
-    .decorative-lines { position: absolute; inset: 0; overflow: hidden; }
-    .decorative-lines::before, .decorative-lines::after {
-        content: ''; position: absolute; border-radius: 50%; border: 2px dashed rgba(0,150,136,0.15);
-    }
-    .decorative-lines::before { width: 500px; height: 500px; top: -200px; left: -200px; animation: rotateSlow 60s linear infinite; }
-    .decorative-lines::after { width: 700px; height: 700px; bottom: -300px; right: -300px; border-color: rgba(245,158,11,0.12); animation: rotateSlow 80s linear infinite reverse; }
-    @keyframes rotateSlow { to { transform: rotate(360deg); } }
-
-    .header-3d {
-        width: 100%;
-        background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%), url('teacher2.png') center/cover no-repeat;
-        padding: 30px 15px 40px;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-        z-index: 5;
-    }
-    .header-3d h1 { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 6px; text-shadow: 0 3px 8px rgba(0,0,0,0.7); }
-    .header-3d p { font-size: 13.5px; color: #e2e8f0; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
-
-    .cloud-badge {
-        position: absolute; top: 12px; left: 12px;
-        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-        color: #fff; padding: 6px 12px; border-radius: 20px;
-        font-size: 11px; font-weight: 900;
-        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
-    }
-    .cloud-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulseDot 1.5s infinite; }
-    .cloud-badge.offline .dot { background: #DC2626; box-shadow: 0 0 8px #DC2626; animation: none; }
-    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    .sync-badge {
-        position: absolute; top: 12px; right: 12px;
-        background: linear-gradient(135deg, #10B981, #047857);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff; padding: 6px 12px; border-radius: 20px;
-        font-size: 11px; font-weight: 900;
-        display: flex; align-items: center; gap: 6px; backdrop-filter: blur(6px);
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.4s ease;
-        pointer-events: none;
-        z-index: 100;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
-    }
-    .sync-badge.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    .sync-badge .sync-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #fff;
-        animation: syncPulse 1.2s infinite;
-    }
-    @keyframes syncPulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(0.7); }
+    .section-header:hover {
+        background: #f1f5f9;
     }
 
-    .user-bar {
+    .section-header:active {
+        transform: scale(0.99);
+    }
+
+    .section-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        margin-top: 14px;
-        flex-wrap: wrap;
-    }
-
-    .user-badge {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        backdrop-filter: blur(6px);
-        max-width: 220px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .logout-btn {
-        background: rgba(220,38,38,0.85);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: #fff;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        backdrop-filter: blur(6px);
-        cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: inherit;
-        box-shadow: 0 3px 10px rgba(220,38,38,0.35);
-    }
-    .logout-btn:hover { background: rgba(220,38,38,1); transform: translateY(-2px); }
-    .logout-btn:active { transform: translateY(0) scale(0.96); }
-
-    .main-container { width: 100%; max-width: 720px; margin: -20px auto 0; padding: 0 15px; position: relative; z-index: 10; }
-
-    .page-title {
-        text-align: center; font-size: 17px; font-weight: 900;
-        color: var(--dark-teal); background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(8px); border: 2px solid var(--primary-teal);
-        border-radius: 14px; padding: 14px 18px; margin-bottom: 18px;
-        box-shadow: 0 8px 20px -6px rgba(0,150,136,0.3);
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-
-    .cards-grid { display: flex; flex-direction: column; gap: 16px; }
-
-    .launcher-card {
-        background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-        border-radius: 18px; padding: 22px 20px;
-        display: flex; align-items: center; gap: 16px;
-        cursor: pointer; text-decoration: none; color: inherit;
-        border: 2px solid #e2e8f0;
-        box-shadow: 0 8px 25px -10px rgba(0,0,0,0.15);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative; overflow: hidden;
-    }
-    .launcher-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--primary-teal); transition: width 0.3s ease; }
-    .launcher-card:hover { transform: translateY(-4px); border-color: var(--primary-teal); }
-    .launcher-card:active { transform: translateY(-1px) scale(0.99); }
-
-    .launcher-card.specialty-card.completed,
-    .launcher-card.schedule-card.completed {
-        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
-        border-color: #10B981;
-        box-shadow: 0 10px 30px -8px rgba(16,185,129,0.5), 0 4px 12px rgba(16,185,129,0.2);
-    }
-    .launcher-card.specialty-card.completed::before,
-    .launcher-card.schedule-card.completed::before {
-        background: linear-gradient(180deg, #10B981, #047857);
-        width: 8px;
-    }
-    .launcher-card.specialty-card.completed .card-icon,
-    .launcher-card.schedule-card.completed .card-icon {
-        background: linear-gradient(135deg, #10B981, #047857);
-        border-color: #047857;
-        color: #fff;
-        animation: iconPulseGreen 2s ease-in-out infinite;
-    }
-    @keyframes iconPulseGreen {
-        0%, 100% { box-shadow: 0 6px 18px -4px rgba(16,185,129,0.6); }
-        50% { box-shadow: 0 8px 25px -2px rgba(16,185,129,0.9); }
-    }
-    .launcher-card.specialty-card.completed .card-title,
-    .launcher-card.schedule-card.completed .card-title { color: #065F46; }
-    .launcher-card.specialty-card.completed .card-arrow,
-    .launcher-card.schedule-card.completed .card-arrow {
-        background: #10B981;
-        color: #fff;
-    }
-
-    .launcher-card.specialty-card.incomplete,
-    .launcher-card.schedule-card.incomplete {
-        background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-        border-color: #F59E0B;
-        box-shadow: 0 10px 30px -8px rgba(245,158,11,0.4);
-    }
-    .launcher-card.specialty-card.incomplete::before,
-    .launcher-card.schedule-card.incomplete::before {
-        background: linear-gradient(180deg, #F59E0B, #D97706);
-        width: 8px;
-    }
-    .launcher-card.specialty-card.incomplete .card-icon,
-    .launcher-card.schedule-card.incomplete .card-icon {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border-color: #FCD34D;
-        animation: iconPulseOrange 1.5s ease-in-out infinite;
-    }
-    @keyframes iconPulseOrange {
-        0%, 100% { box-shadow: 0 4px 12px -4px rgba(245,158,11,0.4); }
-        50% { box-shadow: 0 8px 20px -2px rgba(245,158,11,0.8); }
-    }
-    .launcher-card.specialty-card.incomplete .card-title,
-    .launcher-card.schedule-card.incomplete .card-title { color: #92400E; }
-    .launcher-card.specialty-card.incomplete .card-arrow,
-    .launcher-card.schedule-card.incomplete .card-arrow {
-        background: #F59E0B;
-        color: #fff;
-    }
-
-    .card-icon {
-        width: 64px; height: 64px; border-radius: 16px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 32px; flex-shrink: 0;
-        background: linear-gradient(135deg, var(--light-teal), var(--border-teal));
-        border: 2px solid var(--border-teal);
-        box-shadow: 0 4px 12px -4px rgba(0,150,136,0.3);
-        transition: transform 0.3s ease;
-    }
-    .launcher-card:hover .card-icon { transform: scale(1.08) rotate(-3deg); }
-
-    .card-content { flex: 1; min-width: 0; }
-    .card-title { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
-    .card-subtitle { font-size: 12.5px; font-weight: 700; color: var(--text-gray); line-height: 1.5; }
-
-    .card-state-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 10.5px;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 20px;
-        margin-top: 6px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .card-state-badge.completed {
-        background: linear-gradient(135deg, #10B981, #047857);
-        color: #fff;
-    }
-    .card-state-badge.incomplete {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        animation: stateBadgePulse 1.5s ease-in-out infinite;
-    }
-    @keyframes stateBadgePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.06); }
-    }
-    .card-state-badge .badge-icon { font-size: 12px; }
-
-    .card-specialty-summary,
-    .card-schedule-summary {
-        display: none;
-        margin-top: 6px;
-        font-size: 11px;
-        font-weight: 800;
-        color: #065F46;
-        background: rgba(255,255,255,0.7);
-        border: 1px solid #6EE7B7;
-        border-radius: 8px;
-        padding: 5px 9px;
-        line-height: 1.5;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-    .card-specialty-summary.show,
-    .card-schedule-summary.show { display: block; }
-
-    .card-arrow {
-        width: 36px; height: 36px; border-radius: 50%;
-        background: #f1f5f9; display: flex; align-items: center; justify-content: center;
-        color: var(--text-gray); font-size: 18px; font-weight: 900;
-        flex-shrink: 0; transition: all 0.3s ease;
-    }
-    .launcher-card:hover .card-arrow { transform: translateX(-4px); }
-
-    .reminder-table {
-        margin-top: 24px;
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border: 1.5px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 14px;
-        box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
-    }
-    .reminder-table .rt-title {
-        font-size: 13px;
-        font-weight: 900;
-        color: var(--dark-teal);
-        margin-bottom: 10px;
-        padding-bottom: 8px;
-        border-bottom: 1.5px dashed #cbd5e1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-    .reminder-table .rt-title .rt-title-left {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .reminder-table .rt-title .rt-date-info {
-        font-size: 10px;
-        color: var(--text-gray);
-        font-weight: 800;
-        background: #f1f5f9;
-        padding: 3px 8px;
-        border-radius: 12px;
-    }
-    .reminder-table .rt-title .rt-count-badge {
-        background: linear-gradient(135deg, #10B981, #047857);
-        color: #fff;
-        font-size: 10.5px;
-        font-weight: 900;
-        padding: 3px 10px;
-        border-radius: 20px;
-        box-shadow: 0 2px 6px rgba(16,185,129,0.4);
-    }
-
-    .lesson-chips-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 2px 0;
-    }
-
-    .lesson-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
-        border: 1.5px solid #10B981;
-        border-radius: 20px;
-        padding: 7px 13px;
-        font-size: 11px;
-        font-weight: 900;
-        color: #065F46;
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-        box-shadow: 0 2px 6px -2px rgba(16,185,129,0.35);
-        white-space: nowrap;
-        font-family: inherit;
-        position: relative;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        user-select: none;
-    }
-    .lesson-chip:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 6px 14px -2px rgba(16,185,129,0.6);
-    }
-    .lesson-chip:active { transform: scale(0.96); }
-
-    .lesson-chip .chip-num {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 18px; height: 18px;
-        background: #10B981; color: #fff;
-        border-radius: 50%;
-        font-size: 10px; font-weight: 900;
+        font-size: 24px;
         flex-shrink: 0;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .lesson-chip .chip-subject {
-        max-width: 80px;
+
+    .section.open .section-icon {
+        transform: scale(1.08) rotate(-5deg);
+    }
+
+    .section-content-text {
+        flex: 1;
+    }
+
+    .section-title {
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--text-dark);
+        margin-bottom: 3px;
+    }
+
+    .section-desc {
+        font-size: 11px;
+        color: var(--text-gray);
+        font-weight: 700;
+    }
+
+    /* ====== ARROW (لتحت دائماً) ====== */
+    .section-arrow {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(37, 150, 139, 0.1);
+        color: var(--primary-teal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    background 0.3s ease;
+    }
+
+    .section.open .section-arrow {
+        transform: rotate(180deg);
+        background: var(--primary-teal);
+        color: var(--white);
+    }
+
+    /* ====== SECTION BODY (الروابط الفرعية) ====== */
+    .section-body {
+        max-height: 0;
         overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .lesson-chip .chip-time {
-        font-size: 9.5px;
-        opacity: 0.85;
-        background: rgba(255,255,255,0.5);
-        padding: 1px 6px;
-        border-radius: 8px;
-    }
-
-    .lesson-chip.chip-soon {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border-color: #F59E0B;
-        color: #92400E;
-        animation: chipSoonPulse 1.2s ease-in-out infinite;
-    }
-    .lesson-chip.chip-soon .chip-num {
-        background: #F59E0B;
-    }
-    @keyframes chipSoonPulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(245,158,11,0.7);
-            transform: scale(1);
-        }
-        50% {
-            box-shadow: 0 0 0 10px rgba(245,158,11,0);
-            transform: scale(1.06);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(245,158,11,0);
-            transform: scale(1);
-        }
-    }
-
-    .lesson-chip.chip-active {
-        background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
-        border-color: #3B82F6;
-        color: #1E3A8A;
-        animation: chipActivePulse 1.5s ease-in-out infinite;
-    }
-    .lesson-chip.chip-active .chip-num {
-        background: #3B82F6;
-    }
-    @keyframes chipActivePulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(59,130,246,0.7);
-            transform: scale(1);
-        }
-        50% {
-            box-shadow: 0 0 0 10px rgba(59,130,246,0);
-            transform: scale(1.06);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(59,130,246,0);
-            transform: scale(1);
-        }
-    }
-
-    .lesson-modal-overlay {
-        display: none;
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,0.55);
-        z-index: 100000;
-        justify-content: center; align-items: center;
-        padding: 16px;
-    }
-    .lesson-modal-overlay.active { display: flex; }
-
-    .lesson-modal-box {
-        background: #fff;
-        border-radius: 18px;
-        width: 100%; max-width: 400px; max-height: 85vh;
-        display: flex; flex-direction: column; overflow: hidden;
-        box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-        animation: lessonModalPop 0.15s ease-out;
-        will-change: transform, opacity;
-    }
-    @keyframes lessonModalPop {
-        from { transform: scale(0.96); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    .lesson-modal-header {
-        background: linear-gradient(135deg, #10B981, #047857);
-        color: #fff;
-        padding: 14px 18px;
-        display: flex; justify-content: space-between; align-items: center;
-        box-shadow: 0 2px 10px rgba(16,185,129,0.4);
-        transition: background 0.3s;
-    }
-    .lesson-modal-header.soon-header {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        box-shadow: 0 2px 10px rgba(245,158,11,0.4);
-    }
-    .lesson-modal-header.active-header {
-        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-        box-shadow: 0 2px 10px rgba(59,130,246,0.4);
-    }
-    .lesson-modal-header h3 {
-        font-size: 15px; font-weight: 900; margin: 0;
-        display: flex; align-items: center; gap: 6px;
-    }
-    .lesson-close-btn {
-        background: none; border: none; color: #fff;
-        font-size: 20px; cursor: pointer;
-        transition: transform 0.2s;
-        padding: 0; line-height: 1;
-        font-family: inherit;
-    }
-    .lesson-close-btn:hover { transform: scale(1.2); }
-
-    .lesson-modal-content {
-        padding: 16px; overflow-y: auto;
-        font-size: 13px; color: var(--text-dark);
-        font-weight: 800; line-height: 1.6;
-    }
-
-    .lesson-detail-row {
-        display: flex; align-items: flex-start; gap: 8px;
-        padding: 9px 11px;
+        transition: max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    opacity 0.4s ease,
+                    padding 0.35s ease;
+        opacity: 0;
+        padding: 0 14px;
         background: #f8fafc;
-        border: 1px solid #e2e8f0;
+    }
+
+    .section.open .section-body {
+        max-height: 800px;
+        opacity: 1;
+        padding: 12px 14px 14px;
+    }
+
+    /* ====== SUB-LINK ====== */
+    .sub-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 15px;
+        background: var(--white);
+        border: 1.5px solid #e2e8f0;
         border-radius: 10px;
         margin-bottom: 8px;
-        font-size: 12.5px;
-    }
-    .lesson-detail-row:last-child { margin-bottom: 0; }
-
-    .lesson-detail-row .ld-icon { font-size: 16px; flex-shrink: 0; line-height: 1.3; }
-    .lesson-detail-row .ld-label {
-        font-size: 10.5px; color: var(--text-gray);
-        font-weight: 800; display: block; margin-bottom: 2px;
-    }
-    .lesson-detail-row .ld-value {
-        color: var(--text-dark); font-weight: 900;
-        font-size: 12.5px; line-height: 1.4; word-break: break-word;
-    }
-    .lesson-detail-row.highlight {
-        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
-        border-color: #6EE7B7;
-    }
-    .lesson-detail-row.highlight .ld-value { color: #065F46; }
-
-    .lesson-detail-row.time-row {
-        background: linear-gradient(135deg, #1e293b, #334155);
-        border-color: #1e293b;
-    }
-    .lesson-detail-row.time-row .ld-label { color: #cbd5e1; }
-    .lesson-detail-row.time-row .ld-value { color: #fff; }
-
-    .lesson-detail-row.location-row {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border-color: #FCD34D;
-    }
-    .lesson-detail-row.location-row .ld-value {
-        color: #92400E;
-        font-size: 12px;
-        line-height: 1.5;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
     }
 
-    .lesson-status-banner {
-        padding: 10px 14px;
+    .sub-link:last-child {
+        margin-bottom: 0;
+    }
+
+    .sub-link::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--primary-teal);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .sub-link:hover {
+        border-color: var(--border-teal);
+        background: var(--light-teal);
+        transform: translateX(-6px);
+        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.15);
+    }
+
+    .sub-link:hover::before {
+        transform: scaleY(1);
+    }
+
+    .sub-link:active {
+        transform: translateX(-3px) scale(0.98);
+    }
+
+    .sub-link .sub-icon {
+        width: 38px;
+        height: 38px;
         border-radius: 10px;
-        margin-bottom: 12px;
-        font-size: 12px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        line-height: 1.4;
-    }
-    .lesson-status-banner.soon {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        color: #92400E;
-        border: 2px solid #F59E0B;
-        animation: bannerSoonPulse 1.5s ease-in-out infinite;
-    }
-    @keyframes bannerSoonPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-    .lesson-status-banner.active {
-        background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
-        color: #1E3A8A;
-        border: 2px solid #3B82F6;
-    }
-    .lesson-status-banner.upcoming {
-        background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
-        color: #065F46;
-        border: 2px solid #10B981;
-    }
-
-    .lesson-actions-row {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 6px;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 2px dashed #e2e8f0;
-    }
-
-    .lesson-action-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        padding: 12px;
-        border: none;
-        border-radius: 10px;
-        font-family: 'Cairo', sans-serif;
+        font-size: 18px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--light-teal), #b2dfdb);
+        transition: transform 0.3s ease;
+    }
+
+    .sub-link:hover .sub-icon {
+        transform: scale(1.1) rotate(-5deg);
+    }
+
+    .sub-link .sub-text {
+        flex: 1;
+        font-size: 14px;
         font-weight: 900;
-        font-size: 13px;
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        user-select: none;
-        color: #fff;
-        box-shadow: 0 3px 8px -2px rgba(0,0,0,0.2);
-    }
-    .lesson-action-btn:hover { transform: translateY(-2px); }
-    .lesson-action-btn:active { transform: scale(0.96); }
-    .lesson-action-btn .btn-icon { font-size: 16px; }
-
-    .lesson-action-btn.btn-close-action {
-        background: linear-gradient(135deg, #64748B, #475569);
+        color: var(--text-dark);
     }
 
-    .logout-modal-overlay {
-        display: none; position: fixed; inset: 0;
-        background: rgba(0,0,0,0.55); z-index: 100001;
-        justify-content: center; align-items: center;
-        padding: 20px;
+    /* ====== سهم الرابط الفرعي (لتحت دائماً) ====== */
+    .sub-link .sub-arrow {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(37, 150, 139, 0.1);
+        color: var(--primary-teal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        flex-shrink: 0;
+        transition: transform 0.3s ease, background 0.3s ease;
+        opacity: 0.85;
     }
-    .logout-modal-overlay.active { display: flex; }
-    .logout-modal-box {
-        background: #fff; border-radius: 20px;
-        width: 100%; max-width: 380px;
-        padding: 26px 22px; text-align: center;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        animation: modalPopIn 0.2s ease-out;
-    }
-    @keyframes modalPopIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .logout-icon-wrap {
-        width: 70px; height: 70px; border-radius: 50%;
-        background: linear-gradient(135deg, #FEE2E2, #FECACA);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 34px; margin: 0 auto 16px;
-    }
-    .logout-modal-box h3 { font-size: 18px; font-weight: 900; color: #7F1D1D; margin-bottom: 8px; }
-    .logout-modal-box p { font-size: 13.5px; font-weight: 700; color: #64748B; line-height: 1.6; margin-bottom: 22px; }
-    .logout-modal-actions { display: flex; gap: 10px; }
-    .logout-btn-confirm, .logout-btn-cancel {
-        flex: 1; padding: 12px 16px; border-radius: 12px;
-        font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 14px;
-        cursor: pointer; border: none; transition: all 0.2s;
-    }
-    .logout-btn-confirm { background: linear-gradient(135deg, #DC2626, #991B1B); color: #fff; }
-    .logout-btn-confirm:hover { transform: translateY(-2px); }
-    .logout-btn-cancel { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
-    .logout-btn-cancel:hover { background: #e2e8f0; transform: translateY(-2px); }
 
-    .empty-lessons {
+    .sub-link:hover .sub-arrow {
+        transform: translateY(4px);
+        background: var(--primary-teal);
+        color: var(--white);
+        opacity: 1;
+    }
+
+    /* ====== COLOR VARIANTS ====== */
+    .section.section-teal .section-icon { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); }
+    .section.section-teal .section-arrow { background: rgba(37, 150, 139, 0.1); color: #25968b; }
+    .section.section-teal.open .section-arrow { background: #25968b; color: #fff; }
+
+    .section.section-blue .section-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .section.section-blue .section-arrow { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .section.section-blue.open .section-arrow { background: #3b82f6; color: #fff; }
+    .section.section-blue .sub-link:hover { background: #eff6ff; border-color: #bfdbfe; }
+    .section.section-blue .sub-link::before { background: #3b82f6; }
+    .section.section-blue .sub-link .sub-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+    .section.section-blue .sub-link .sub-arrow { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+    .section.section-blue .sub-link:hover .sub-arrow { background: #3b82f6; color: #fff; }
+
+    .section.section-purple .section-icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+    .section.section-purple .section-arrow { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+    .section.section-purple.open .section-arrow { background: #8b5cf6; color: #fff; }
+    .section.section-purple .sub-link:hover { background: #faf5ff; border-color: #ddd6fe; }
+    .section.section-purple .sub-link::before { background: #8b5cf6; }
+    .section.section-purple .sub-link .sub-icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+    .section.section-purple .sub-link .sub-arrow { color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
+    .section.section-purple .sub-link:hover .sub-arrow { background: #8b5cf6; color: #fff; }
+
+    .section.section-green .section-icon { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+    .section.section-green .section-arrow { background: rgba(22, 163, 74, 0.1); color: #16a34a; }
+    .section.section-green.open .section-arrow { background: #16a34a; color: #fff; }
+    .section.section-green .sub-link:hover { background: #f0fdf4; border-color: #bbf7d0; }
+    .section.section-green .sub-link::before { background: #16a34a; }
+    .section.section-green .sub-link .sub-icon { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+    .section.section-green .sub-link .sub-arrow { color: #16a34a; background: rgba(22, 163, 74, 0.1); }
+    .section.section-green .sub-link:hover .sub-arrow { background: #16a34a; color: #fff; }
+
+    .section.section-orange .section-icon { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+    .section.section-orange .section-arrow { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
+    .section.section-orange.open .section-arrow { background: #ea580c; color: #fff; }
+    .section.section-orange .sub-link:hover { background: #fff7ed; border-color: #fed7aa; }
+    .section.section-orange .sub-link::before { background: #ea580c; }
+    .section.section-orange .sub-link .sub-icon { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+    .section.section-orange .sub-link .sub-arrow { color: #ea580c; background: rgba(234, 88, 12, 0.1); }
+    .section.section-orange .sub-link:hover .sub-arrow { background: #ea580c; color: #fff; }
+
+    /* ====== FOOTER ====== */
+    .footer-info {
         text-align: center;
-        padding: 22px 10px;
+        margin-top: 25px;
+        padding: 15px;
         color: var(--text-gray);
         font-size: 12px;
         font-weight: 800;
-        background: #f8fafc;
-        border: 1.5px dashed #cbd5e1;
-        border-radius: 10px;
-    }
-    .empty-lessons .empty-icon {
-        font-size: 26px;
-        margin-bottom: 6px;
-        display: block;
-    }
-    .empty-lessons .empty-sub {
-        font-size: 10px;
-        opacity: 0.7;
-        margin-top: 4px;
-        display: block;
     }
 
-    .footer-note {
-        text-align: center; margin-top: 20px;
-        font-size: 11px; color: var(--text-gray); font-weight: 700;
-        line-height: 1.6; padding: 0 20px;
-        position: relative; z-index: 10;
+    .footer-info .heart {
+        color: #ef4444;
+        animation: heartbeat 1.5s infinite;
+        display: inline-block;
     }
 
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+
+    /* ====== RESPONSIVE ====== */
     @media (max-width: 480px) {
-        .header-3d { padding: 26px 15px 36px; }
-        .header-3d h1 { font-size: 22px; }
+        .header-3d { padding: 25px 12px 40px; }
+        .header-3d h1 { font-size: 20px; }
         .header-3d p { font-size: 12px; }
-        .launcher-card { padding: 18px 16px; gap: 12px; }
-        .card-icon { width: 54px; height: 54px; font-size: 26px; border-radius: 14px; }
-        .card-title { font-size: 15.5px; }
-        .card-subtitle { font-size: 11.5px; }
-        .card-arrow { width: 32px; height: 32px; font-size: 16px; }
-        .page-title { font-size: 15px; padding: 12px 15px; }
-        .user-bar { gap: 6px; margin-top: 12px; }
-        .user-badge { font-size: 11px; padding: 5px 10px; max-width: 140px; }
-        .logout-btn { font-size: 11px; padding: 5px 10px; }
-        .card-specialty-summary,
-        .card-schedule-summary { font-size: 10px; padding: 4px 7px; }
-        .card-state-badge { font-size: 9.5px; padding: 3px 8px; }
-        .reminder-table { padding: 11px; }
-        .reminder-table .rt-title { font-size: 12px; }
-        .lesson-chip { font-size: 10px; padding: 6px 10px; }
-        .lesson-chip .chip-subject { max-width: 65px; }
-        .lesson-chip .chip-time { font-size: 9px; }
-        .lesson-modal-box { max-width: 95%; }
-        .cloud-badge, .sync-badge { font-size: 9.5px; padding: 5px 9px; }
+        .menu-card { padding: 10px; }
+        .section-header { padding: 14px 14px; gap: 12px; }
+        .section-icon { width: 44px; height: 44px; font-size: 20px; }
+        .section-title { font-size: 14px; }
+        .section-desc { font-size: 10px; }
+        .section-arrow { width: 30px; height: 30px; font-size: 12px; }
+        .sub-link { padding: 12px 12px; gap: 10px; }
+        .sub-link .sub-icon { width: 34px; height: 34px; font-size: 16px; }
+        .sub-link .sub-text { font-size: 13px; }
+        .sub-link .sub-arrow { width: 26px; height: 26px; font-size: 11px; }
+    }
+
+    @media (max-width: 360px) {
+        .section-icon { width: 40px; height: 40px; font-size: 18px; }
+        .section-title { font-size: 13px; }
+        .sub-link .sub-text { font-size: 12px; }
     }
 </style>
 </head>
 <body>
 
-    <div class="animated-bg">
-        <div class="floating-shape shape-1"></div>
-        <div class="floating-shape shape-2"></div>
-        <div class="floating-shape shape-3"></div>
-        <div class="floating-shape shape-4"></div>
-        <div class="decorative-lines"></div>
+<header class="header-3d">
+    <h1>منصة احجزلي</h1>
+    <p>بوابة المعلم - اختر ما تريد</p>
+</header>
+
+<div class="main-container">
+    <div class="menu-card">
+
+        <!-- ====== قسم 1: إعداد التخصص ====== -->
+        <div class="section section-teal" id="section-teal">
+            <div class="section-header" onclick="toggleSection('section-teal', event)">
+                <div class="section-icon">📚</div>
+                <div class="section-content-text">
+                    <div class="section-title">إعداد التخصص</div>
+                    <div class="section-desc">اختر المواد والصفوف التي تدرسها</div>
+                </div>
+                <div class="section-arrow">▼</div>
+            </div>
+            <div class="section-body">
+                <a href="mester1.html" class="sub-link" onclick="navigateToPage(event, 'mester1.html')">
+                    <div class="sub-icon">✏️</div>
+                    <div class="sub-text">تعديل التخصص</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="mester1.html" class="sub-link" onclick="navigateToPage(event, 'mester1.html')">
+                    <div class="sub-icon">📖</div>
+                    <div class="sub-text">عرض المواد المختارة</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ====== قسم 2: إعداد المجموعة والمواعيد ====== -->
+        <div class="section section-blue" id="section-blue">
+            <div class="section-header" onclick="toggleSection('section-blue', event)">
+                <div class="section-icon">📅</div>
+                <div class="section-content-text">
+                    <div class="section-title">إعداد المجموعة والمواعيد</div>
+                    <div class="section-desc">حدد المواعيد والأماكن والسعة</div>
+                </div>
+                <div class="section-arrow">▼</div>
+            </div>
+            <div class="section-body">
+                <a href="mester2.html" class="sub-link" onclick="navigateToPage(event, 'mester2.html')">
+                    <div class="sub-icon">➕</div>
+                    <div class="sub-text">إضافة موعد جديد</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="mester2.html" class="sub-link" onclick="navigateToPage(event, 'mester2.html')">
+                    <div class="sub-icon">📋</div>
+                    <div class="sub-text">عرض المواعيد المسجلة</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ====== قسم 3: متابعة الطلاب ====== -->
+        <div class="section section-purple" id="section-purple">
+            <div class="section-header" onclick="toggleSection('section-purple', event)">
+                <div class="section-icon">👥</div>
+                <div class="section-content-text">
+                    <div class="section-title">متابعة الطلاب</div>
+                    <div class="section-desc">عرض وإدارة الطلاب المسجلين</div>
+                </div>
+                <div class="section-arrow">▼</div>
+            </div>
+            <div class="section-body">
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">📊</div>
+                    <div class="sub-text">قائمة الطلاب</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">✅</div>
+                    <div class="sub-text">الحضور والغياب</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ====== قسم 4: المدفوعات والحسابات ====== -->
+        <div class="section section-green" id="section-green">
+            <div class="section-header" onclick="toggleSection('section-green', event)">
+                <div class="section-icon">💰</div>
+                <div class="section-content-text">
+                    <div class="section-title">المدفوعات والحسابات</div>
+                    <div class="section-desc">إدارة المدفوعات والمستحقات</div>
+                </div>
+                <div class="section-arrow">▼</div>
+            </div>
+            <div class="section-body">
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">💵</div>
+                    <div class="sub-text">المدفوعات المستلمة</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">📈</div>
+                    <div class="sub-text">التقارير المالية</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ====== قسم 5: الإعدادات ====== -->
+        <div class="section section-orange" id="section-orange">
+            <div class="section-header" onclick="toggleSection('section-orange', event)">
+                <div class="section-icon">⚙️</div>
+                <div class="section-content-text">
+                    <div class="section-title">الإعدادات</div>
+                    <div class="section-desc">تعديل بيانات الحساب والإعدادات</div>
+                </div>
+                <div class="section-arrow">▼</div>
+            </div>
+            <div class="section-body">
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">👤</div>
+                    <div class="sub-text">الملف الشخصي</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">🔔</div>
+                    <div class="sub-text">الإشعارات</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">🚪</div>
+                    <div class="sub-text">تسجيل الخروج</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
+            </div>
+        </div>
+
     </div>
 
-    <div class="logout-modal-overlay" id="logoutModalOverlay">
-        <div class="logout-modal-box">
-            <div class="logout-icon-wrap">🚪</div>
-            <h3>تسجيل الخروج؟</h3>
-            <p>هل أنت متأكد من رغبتك في تسجيل الخروج؟<br>
-                <small style="color:#16A34A; font-size:11.5px; font-weight:900;">✅ بياناتك محفوظة — تقدر ترجع من غير ما تسجل دخول</small>
-            </p>
-            <div class="logout-modal-actions">
-                <button class="logout-btn-cancel" onclick="closeLogoutModal()">إلغاء</button>
-                <button class="logout-btn-confirm" onclick="confirmLogout()">نعم، خروج</button>
-            </div>
-        </div>
+    <div class="footer-info">
+        <p>صُنع بـ <span class="heart">❤️</span> لمنصة احجزلي</p>
     </div>
+</div>
 
-    <div class="lesson-modal-overlay" id="lessonModalOverlay" onclick="closeLessonModal(event)">
-        <div class="lesson-modal-box">
-            <div class="lesson-modal-header" id="lessonModalHeader">
-                <h3 id="lessonModalTitle">تفاصيل الحصة</h3>
-                <button class="lesson-close-btn" onclick="closeLessonModal(event, true)">✖</button>
-            </div>
-            <div class="lesson-modal-content" id="lessonModalContent"></div>
-        </div>
-    </div>
+<script>
+// ============ نظام الصوت ============
+let audioCtx = null;
 
-    <header class="header-3d">
-        <div class="cloud-badge" id="cloudBadge">
-            <span class="dot"></span>
-            <span id="cloudText">متصل</span>
-        </div>
-
-        <div class="sync-badge" id="syncBadge">
-            <span class="sync-dot"></span>
-            <span>تمت المزامنة من جهاز آخر</span>
-        </div>
-
-        <h1>منصة احجزلي</h1>
-        <p>بوابة المعلم - اختر القسم للبدء</p>
-
-        <div class="user-bar">
-            <div class="user-badge" id="userBadge" style="display:none;">
-                <span>👤</span>
-                <span id="userName">المعلم</span>
-            </div>
-            <button class="logout-btn" onclick="openLogoutModal()" title="تسجيل الخروج">
-                <span>🚪</span>
-                <span>تسجيل الخروج</span>
-            </button>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <div class="page-title">
-            <span>🏠</span>
-            <span>اختر القسم الذي تريد فتحه</span>
-        </div>
-
-        <div class="cards-grid">
-            <a href="mester1.html" class="launcher-card specialty-card" id="specialtyCard">
-                <div class="card-icon">📚</div>
-                <div class="card-content">
-                    <div class="card-title"><span>التخصص</span></div>
-                    <div class="card-subtitle">اختر الصف والمواد التي تدرسها</div>
-                    <div id="specialtyStateWrap"></div>
-                </div>
-                <div class="card-arrow">‹</div>
-            </a>
-
-            <a href="mester2.html" class="launcher-card schedule-card" id="scheduleCard">
-                <div class="card-icon">📅</div>
-                <div class="card-content">
-                    <div class="card-title"><span>المواعيد والمجموعات</span></div>
-                    <div class="card-subtitle">أضف المجموعات وحدد المواعيد والأماكن</div>
-                    <div id="scheduleStateWrap"></div>
-                </div>
-                <div class="card-arrow">‹</div>
-            </a>
-        </div>
-
-        <div class="reminder-table" id="reminderTable">
-            <div class="rt-title">
-                <div class="rt-title-left">
-                    <span>📅</span>
-                    <span>حصص النهاردة</span>
-                </div>
-                <span class="rt-date-info" id="rtDateInfo">--</span>
-                <span class="rt-count-badge" id="rtCountBadge">0 حصة</span>
-            </div>
-            <div class="lesson-chips-list" id="lessonsList">
-                <div class="empty-lessons">
-                    <span class="empty-icon">🎉</span>
-                    <div>لا توجد حصص النهاردة</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-note">
-            <div>منصة احجزلي — بوابة المعلم</div>
-        </div>
-    </div>
-
-    <script>
-    (function() {
-        'use strict';
-
-        function savePersistentData() {
-            try {
-                const phone = localStorage.getItem('current_teacher_phone');
-                const profile = localStorage.getItem('current_teacher_profile');
-                
-                if (phone) localStorage.setItem('teacher_saved_phone', phone);
-                if (profile) localStorage.setItem('teacher_saved_profile', profile);
-
-                const backup = {
-                    teacherSelections: localStorage.getItem('teacherSelections'),
-                    mester1_selections: localStorage.getItem('mester1_selections'),
-                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
-                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
-                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
-                    last_selected_gender: localStorage.getItem('last_selected_gender'),
-                    last_selected_location: localStorage.getItem('last_selected_location')
-                };
-                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
-                
-                console.log('💾 تم حفظ البيانات بشكل دائم');
-            } catch(e) {
-                console.warn('⚠️ فشل الحفظ الدائم:', e);
-            }
+function getAudioContext() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+            console.warn('Web Audio API غير مدعوم');
+            return null;
         }
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+}
 
-        function formatTime12(timeStr) {
-            if (!timeStr) return '';
-            try {
-                const [h, m] = timeStr.split(':').map(Number);
-                if (isNaN(h) || isNaN(m)) return timeStr;
-                
-                const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
-                const period = h < 12 ? 'ص' : 'م';
-                const mm = String(m).padStart(2, '0');
-                
-                return `${hour12}:${mm} ${period}`;
-            } catch(e) {
-                return timeStr;
-            }
+// صوت فتح القسم
+function playOpenSound() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(600, now);
+    osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+
+    const gain1 = ctx.createGain();
+    gain1.gain.setValueAtTime(0, now);
+    gain1.gain.linearRampToValueAtTime(0.12, now + 0.02);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.22);
+
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(900, now + 0.05);
+    osc2.frequency.exponentialRampToValueAtTime(1400, now + 0.18);
+
+    const gain2 = ctx.createGain();
+    gain2.gain.setValueAtTime(0, now + 0.05);
+    gain2.gain.linearRampToValueAtTime(0.08, now + 0.07);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.05);
+    osc2.stop(now + 0.25);
+}
+
+// صوت إغلاق القسم
+function playCloseSound() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(500, now + 0.18);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+}
+
+// صوت التنقل
+function playNavigationSound() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const notes = [800, 1000, 1200];
+    
+    notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.06);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.2, now + i * 0.06 + 0.08);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0, now + i * 0.06);
+        gain.gain.linearRampToValueAtTime(0.08, now + i * 0.06 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.06 + 0.1);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.06);
+        osc.stop(now + i * 0.06 + 0.12);
+    });
+}
+
+// ============ فتح/إغلاق الأقسام ============
+function toggleSection(sectionId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    const isOpen = section.classList.contains('open');
+    
+    // إغلاق باقي الأقسام
+    document.querySelectorAll('.section').forEach(sec => {
+        if (sec.id !== sectionId && sec.classList.contains('open')) {
+            sec.classList.remove('open');
         }
+    });
+    
+    if (isOpen) {
+        section.classList.remove('open');
+        playCloseSound();
+        if (navigator.vibrate) navigator.vibrate(15);
+    } else {
+        section.classList.add('open');
+        playOpenSound();
+        if (navigator.vibrate) navigator.vibrate(30);
+    }
+}
 
-        function parseLessonDateTime(appt) {
-            try {
-                const now = new Date();
+// ============ التنقل للصفحات ============
+function navigateToPage(event, url) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!url || url === '#') {
+        playNavigationSound();
+        if (navigator.vibrate) navigator.vibrate(20);
+        return;
+    }
+    
+    playNavigationSound();
+    
+    document.body.style.opacity = '0.7';
+    document.body.style.transition = 'opacity 0.2s ease';
+    
+    setTimeout(() => {
+        window.location.href = url;
+    }, 250);
+}
 
-                let dateStr = appt.date;
-                if (!dateStr && appt.daysNames && appt.daysNames.length > 0) {
-                    const daysMap = {
-                        'الأحد': 0, 'الاثنين': 1, 'الثلاثاء': 2, 'الأربعاء': 3,
-                        'الخميس': 4, 'الجمعة': 5, 'السبت': 6
-                    };
-                    const targetDay = daysMap[appt.daysNames[0]];
-                    if (targetDay !== undefined) {
-                        const diff = (targetDay - now.getDay() + 7) % 7;
-                        const targetDate = new Date(now);
-                        targetDate.setDate(now.getDate() + diff);
-                        const y = targetDate.getFullYear();
-                        const m = String(targetDate.getMonth() + 1).padStart(2, '0');
-                        const d = String(targetDate.getDate()).padStart(2, '0');
-                        dateStr = `${y}-${m}-${d}`;
-                    }
-                }
+// ============ تهيئة ============
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('touchstart', () => getAudioContext(), { once: true, passive: true });
+    document.addEventListener('click', () => getAudioContext(), { once: true, passive: true });
+});
 
-                if (!dateStr) return null;
-
-                const startTimeStr = appt.startTime || appt.start || '';
-                const endTimeStr = appt.endTime || appt.end || '';
-
-                if (!startTimeStr || !endTimeStr) return null;
-
-                const [y, m, d] = dateStr.split('-').map(Number);
-                const [sh, sm] = startTimeStr.split(':').map(Number);
-                const [eh, em] = endTimeStr.split(':').map(Number);
-
-                const startDate = new Date(y, m - 1, d, sh, sm, 0);
-                const endDate = new Date(y, m - 1, d, eh, em, 0);
-
-                const nowMs = now.getTime();
-                const startMs = startDate.getTime();
-                const endMs = endDate.getTime();
-
-                const minutesToStart = Math.round((startMs - nowMs) / 60000);
-                const minutesToEnd = Math.round((endMs - nowMs) / 60000);
-
-                let status = 'upcoming';
-
-                if (minutesToEnd < 0) {
-                    status = 'ended';
-                } else if (minutesToStart <= 0 && minutesToEnd >= 0) {
-                    status = 'active';
-                } else if (minutesToStart <= 30 && minutesToStart > 0) {
-                    status = 'soon';
-                } else {
-                    status = 'upcoming';
-                }
-
-                return {
-                    startDate, endDate, startMs, endMs, nowMs,
-                    minutesToStart, minutesToEnd,
-                    status, dateStr, startTimeStr, endTimeStr
-                };
-            } catch(e) {
-                console.warn('⚠️ خطأ في تحليل الوقت:', e);
-                return null;
-            }
+// ============ دعم لوحة المفاتيح ============
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        const activeEl = document.activeElement;
+        if (activeEl && activeEl.classList.contains('section-header')) {
+            e.preventDefault();
+            activeEl.click();
         }
-
-        function getTodayName() {
-            const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-            return days[new Date().getDay()];
-        }
-
-        function updateLessonsList() {
-            try {
-                const lessonsList = document.getElementById('lessonsList');
-                const rtCountBadge = document.getElementById('rtCountBadge');
-                const rtDateInfo = document.getElementById('rtDateInfo');
-                if (!lessonsList) return;
-
-                const now = new Date();
-                const todayName = getTodayName();
-                const dateStr = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
-                if (rtDateInfo) rtDateInfo.textContent = `${todayName} ${dateStr}`;
-
-                let savedAppts = [];
-                try {
-                    const apptRaw = localStorage.getItem('teacher_appointments_summary');
-                    if (apptRaw) savedAppts = JSON.parse(apptRaw);
-                } catch(e) {}
-
-                const todayLessons = [];
-                savedAppts.forEach((appt, originalIndex) => {
-                    const apptType = appt.apptType || 'normal';
-                    let isToday = false;
-
-                    if (appt.date && apptType === 'normal') {
-                        const [y, m, d] = appt.date.split('-').map(Number);
-                        const apptDate = new Date(y, m - 1, d);
-                        const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                        if (apptDate.getTime() === nowDate.getTime()) isToday = true;
-                    }
-                    else if (apptType === 'recurring' && appt.daysNames && appt.daysNames.length > 0) {
-                        if (appt.daysNames.includes(todayName)) isToday = true;
-                    }
-
-                    if (!isToday) return;
-
-                    const timeInfo = parseLessonDateTime(appt);
-                    if (timeInfo && timeInfo.status === 'ended') return;
-
-                    todayLessons.push({ appt, originalIndex, timeInfo });
-                });
-
-                todayLessons.sort((a, b) => {
-                    const aT = a.appt.startTime || a.appt.start || '00:00';
-                    const bT = b.appt.startTime || b.appt.start || '00:00';
-                    return aT.localeCompare(bT);
-                });
-
-                const count = todayLessons.length;
-
-                if (rtCountBadge) {
-                    rtCountBadge.textContent = `${count} حصة`;
-                    if (count === 0) {
-                        rtCountBadge.style.background = 'linear-gradient(135deg, #94A3B8, #64748B)';
-                        rtCountBadge.style.boxShadow = 'none';
-                    } else {
-                        rtCountBadge.style.background = 'linear-gradient(135deg, #10B981, #047857)';
-                        rtCountBadge.style.boxShadow = '0 2px 6px rgba(16,185,129,0.4)';
-                    }
-                }
-
-                if (count === 0) {
-                    lessonsList.innerHTML = `
-                        <div class="empty-lessons">
-                            <span class="empty-icon">🎉</span>
-                            <div>لا توجد حصص النهاردة</div>
-                            <span class="empty-sub">${todayName}</span>
-                        </div>
-                    `;
-                    return;
-                }
-
-                let chipsHtml = '';
-                todayLessons.forEach((item, displayIdx) => {
-                    const { appt, originalIndex, timeInfo } = item;
-                    let extraClass = '';
-                    let timeDisplay = '';
-
-                    if (timeInfo) {
-                        timeDisplay = formatTime12(timeInfo.startTimeStr);
-                        if (timeInfo.status === 'active') {
-                            extraClass = 'chip-active';
-                        } else if (timeInfo.status === 'soon') {
-                            extraClass = 'chip-soon';
-                        }
-                    } else {
-                        timeDisplay = formatTime12(appt.startTime || appt.start || '');
-                    }
-
-                    const subjectShort = (appt.subject || 'حصة').substring(0, 12);
-
-                    chipsHtml += `
-                        <button class="lesson-chip ${extraClass}" onclick="showLessonDetails(${originalIndex})">
-                            <span class="chip-num">${displayIdx + 1}</span>
-                            <span class="chip-subject">${subjectShort}${subjectShort.length >= 12 ? '..' : ''}</span>
-                            ${timeDisplay ? `<span class="chip-time">${timeDisplay}</span>` : ''}
-                        </button>
-                    `;
-                });
-
-                lessonsList.innerHTML = chipsHtml;
-            } catch(e) {
-                console.warn('⚠️ فشل تحديث قائمة الحصص:', e);
-            }
-        }
-
-        function updateSpecialtyCard() {
-            try {
-                const card = document.getElementById('specialtyCard');
-                const stateWrap = document.getElementById('specialtyStateWrap');
-                if (!card || !stateWrap) return;
-
-                const saved = localStorage.getItem('mester1_selections') 
-                           || localStorage.getItem('teacherSelections');
-                
-                let data = null;
-                try { data = saved ? JSON.parse(saved) : null; } catch(e) { data = null; }
-
-                let isComplete = false;
-                let lines = [];
-                let totalSubjects = 0;
-
-                if (data && Object.keys(data).length > 0) {
-                    const stageNames = {
-                        'kg': 'رياض الأطفال',
-                        'primary': 'الابتدائية',
-                        'prep': 'الإعدادية',
-                        'secondary': 'الثانوية',
-                        'azhar': 'الأزهرية',
-                        'azhar_secondary': 'الأزهرية الثانوية'
-                    };
-
-                    for (const stageId in data) {
-                        const sel = data[stageId];
-                        if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
-                        if (!sel.grade || sel.grade.trim() === '') continue;
-
-                        const stageName = stageNames[stageId] || stageId;
-                        lines.push(`${stageName} - ${sel.grade} (${sel.subjects.length} مادة)`);
-                        totalSubjects += sel.subjects.length;
-                        isComplete = true;
-                    }
-                }
-
-                card.classList.remove('completed', 'incomplete');
-                stateWrap.innerHTML = '';
-
-                if (isComplete) {
-                    card.classList.add('completed');
-                    stateWrap.innerHTML = `
-                        <span class="card-state-badge completed">
-                            <span class="badge-icon">✅</span>
-                            <span>مكتمل — ${totalSubjects} مادة</span>
-                        </span>
-                        <div class="card-specialty-summary show">
-                            <span class="s-icon">📖</span>
-                            ${lines.join(' • ')}
-                        </div>
-                    `;
-                } else {
-                    card.classList.add('incomplete');
-                    stateWrap.innerHTML = `
-                        <span class="card-state-badge incomplete">
-                            <span class="badge-icon">⚠️</span>
-                            <span>لم يكتمل — اضغط لإكمال التخصص</span>
-                        </span>
-                    `;
-                }
-            } catch(e) {
-                console.warn('⚠️ فشل تحديث كارت التخصص:', e);
-            }
-        }
-
-        function updateScheduleCard() {
-            try {
-                const card = document.getElementById('scheduleCard');
-                const stateWrap = document.getElementById('scheduleStateWrap');
-                if (!card || !stateWrap) return;
-
-                const saved = localStorage.getItem('mester1_selections') 
-                           || localStorage.getItem('teacherSelections');
-                
-                const countStr = localStorage.getItem('teacher_groups_count') || '0';
-                const count = parseInt(countStr) || 0;
-
-                let hasSpecialty = false;
-                try {
-                    const data = saved ? JSON.parse(saved) : null;
-                    if (data) {
-                        for (const sid in data) {
-                            if (data[sid]?.subjects?.length > 0 && data[sid]?.grade) {
-                                hasSpecialty = true;
-                                break;
-                            }
-                        }
-                    }
-                } catch(e) {}
-
-                const isComplete = hasSpecialty && count > 0;
-
-                card.classList.remove('completed', 'incomplete');
-                stateWrap.innerHTML = '';
-
-                if (isComplete) {
-                    card.classList.add('completed');
-                    stateWrap.innerHTML = `
-                        <span class="card-state-badge completed">
-                            <span class="badge-icon">✅</span>
-                            <span>مكتمل — ${count} حصة</span>
-                        </span>
-                        <div class="card-schedule-summary show">
-                            <span class="s-icon">📆</span>
-                            عدد الحصص: ${count} — إدارة المجموعات والمواعيد
-                        </div>
-                    `;
-                } else {
-                    card.classList.add('incomplete');
-                    let msg = '';
-                    if (!hasSpecialty) msg = 'أكمل التخصص أولاً';
-                    else if (count === 0) msg = 'لم تضيف أي حصة بعد';
-                    else msg = 'اضغط لإضافة مواعيد';
-                    stateWrap.innerHTML = `
-                        <span class="card-state-badge incomplete">
-                            <span class="badge-icon">⚠️</span>
-                            <span>${msg}</span>
-                        </span>
-                    `;
-                }
-            } catch(e) {
-                console.warn('⚠️ فشل تحديث كارت المواعيد:', e);
-            }
-        }
-
-        window.showLessonDetails = function(index) {
-            try {
-                const apptRaw = localStorage.getItem('teacher_appointments_summary');
-                if (!apptRaw) return;
-                const savedAppts = JSON.parse(apptRaw);
-                const appt = savedAppts[index];
-                if (!appt) return;
-
-                const overlay = document.getElementById('lessonModalOverlay');
-                const header = document.getElementById('lessonModalHeader');
-                const title = document.getElementById('lessonModalTitle');
-                const content = document.getElementById('lessonModalContent');
-
-                overlay.classList.add('active');
-
-                header.className = 'lesson-modal-header';
-                header.style.background = '';
-
-                const timeInfo = parseLessonDateTime(appt);
-                let headerClass = '';
-                let statusBanner = '';
-                let titleIcon = '📖';
-
-                if (timeInfo) {
-                    if (timeInfo.status === 'active') {
-                        headerClass = 'active-header';
-                        titleIcon = '🔵';
-                        statusBanner = `
-                            <div class="lesson-status-banner active">
-                                <span>🔵</span>
-                                <div>
-                                    <strong>الحصة جارية الآن</strong>
-                                    <br>
-                                    <small style="font-weight:700;">تنتهي بعد ${timeInfo.minutesToEnd} دقيقة</small>
-                                </div>
-                            </div>
-                        `;
-                    } else if (timeInfo.status === 'soon') {
-                        headerClass = 'soon-header';
-                        titleIcon = '⏰';
-                        statusBanner = `
-                            <div class="lesson-status-banner soon">
-                                <span>⏰</span>
-                                <div>
-                                    <strong>الحصة قريبة جداً</strong>
-                                    <br>
-                                    <small style="font-weight:700;">تبدأ بعد ${timeInfo.minutesToStart} دقيقة</small>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        statusBanner = `
-                            <div class="lesson-status-banner upcoming">
-                                <span>✅</span>
-                                <div>
-                                    <strong>الحصة قادمة</strong>
-                                    <br>
-                                    <small style="font-weight:700;">تبدأ بعد ${Math.floor(timeInfo.minutesToStart / 60)} ساعة و${timeInfo.minutesToStart % 60} دقيقة</small>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-
-                if (headerClass) header.classList.add(headerClass);
-
-                title.innerHTML = `<span>${titleIcon}</span> تفاصيل الحصة #${index + 1}`;
-
-                const genderLabels = {
-                    'boys': '👨‍🎓 أولاد فقط',
-                    'girls': '👩‍🎓 بنات فقط',
-                    'mixed': '👫 مختلط'
-                };
-                const locationLabels = {
-                    'center': '🏫 السنتر',
-                    'teacher_home': '🏠 بيت المستر',
-                    'student_home': '🚗 منزل الطالب'
-                };
-
-                const genderText = genderLabels[appt.gender] || appt.genderAllowed || 'مختلط';
-                const locationText = locationLabels[appt.type] || appt.location || 'غير محدد';
-
-                let timeText = 'غير محدد';
-                const startT = appt.startTime || appt.start || '';
-                const endT = appt.endTime || appt.end || '';
-                if (startT && endT) {
-                    timeText = `من ${formatTime12(startT)} إلى ${formatTime12(endT)}`;
-                }
-
-                let dayText = appt.dayName || 'غير محدد';
-                if (appt.daysNames && appt.daysNames.length > 0) dayText = appt.daysNames[0];
-                if (appt.date) dayText = `${dayText} (${appt.date})`;
-
-                let fullAddress = appt.fullAddress || appt.address || appt.street || '';
-                let detailedAddress = appt.detailedAddress || '';
-                let locationFullText = '';
-                if (fullAddress) locationFullText += `📍 ${fullAddress}`;
-                if (detailedAddress) {
-                    if (locationFullText) locationFullText += `<br>✨ ${detailedAddress}`;
-                    else locationFullText = `✨ ${detailedAddress}`;
-                }
-                if (!locationFullText) locationFullText = locationText;
-
-                content.innerHTML = `
-                    ${statusBanner}
-                    <div class="lesson-detail-row highlight">
-                        <span class="ld-icon">📖</span>
-                        <div>
-                            <span class="ld-label">المادة</span>
-                            <span class="ld-value">${appt.subject || 'غير محدد'}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row highlight">
-                        <span class="ld-icon">👑</span>
-                        <div>
-                            <span class="ld-label">الصف</span>
-                            <span class="ld-value">${appt.grade || 'غير محدد'}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row time-row">
-                        <span class="ld-icon">🕐</span>
-                        <div>
-                            <span class="ld-label">الوقت</span>
-                            <span class="ld-value">${timeText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">📅</span>
-                        <div>
-                            <span class="ld-label">اليوم</span>
-                            <span class="ld-value">${dayText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">👥</span>
-                        <div>
-                            <span class="ld-label">الفئة</span>
-                            <span class="ld-value">${genderText}</span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail-row location-row">
-                        <span class="ld-icon">📍</span>
-                        <div>
-                            <span class="ld-label">المكان (${locationText})</span>
-                            <span class="ld-value">${locationFullText}</span>
-                        </div>
-                    </div>
-                    ${appt.capacity ? `
-                    <div class="lesson-detail-row">
-                        <span class="ld-icon">👨‍👩‍👧</span>
-                        <div>
-                            <span class="ld-label">السعة</span>
-                            <span class="ld-value">${appt.capacity} طالب</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                    <div class="lesson-actions-row">
-                        <button class="lesson-action-btn btn-close-action" onclick="closeLessonModal(event, true)">
-                            <span class="btn-icon">✖</span>
-                            <span class="btn-text">إغلاق</span>
-                        </button>
-                    </div>
-                `;
-            } catch(e) {
-                console.warn('⚠️ فشل عرض تفاصيل الحصة:', e);
-            }
-        };
-
-        window.closeLessonModal = function(e, force = false) {
-            if (force || (e && e.target.id === 'lessonModalOverlay')) {
-                const overlay = document.getElementById('lessonModalOverlay');
-                if (overlay) overlay.classList.remove('active');
-
-                const header = document.getElementById('lessonModalHeader');
-                if (header) {
-                    header.className = 'lesson-modal-header';
-                    header.style.background = '';
-                }
-            }
-        };
-
-        function showTeacherName() {
-            try {
-                const profile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
-                const name = profile.name || profile.teacherName || '';
-                const title = profile.title || '';
-                if (name) {
-                    const badge = document.getElementById('userBadge');
-                    const nameEl = document.getElementById('userName');
-                    if (badge && nameEl) {
-                        nameEl.textContent = `${title} ${name}`.trim();
-                        badge.style.display = 'flex';
-                    }
-                }
-            } catch(e) {}
-        }
-
-        function setCloudStatus(online, text) {
-            const badge = document.getElementById('cloudBadge');
-            const txt = document.getElementById('cloudText');
-            if (!badge || !txt) return;
-            
-            badge.classList.toggle('offline', !online);
-            txt.textContent = text || (online ? 'متصل' : 'غير متصل');
-        }
-
-        function showSyncBadge(message = 'تمت المزامنة من جهاز آخر') {
-            const badge = document.getElementById('syncBadge');
-            if (!badge) return;
-            
-            const textEl = badge.querySelector('span:last-child');
-            if (textEl) textEl.textContent = message;
-            
-            badge.classList.add('show');
-            
-            clearTimeout(window._syncBadgeTimer);
-            window._syncBadgeTimer = setTimeout(() => {
-                badge.classList.remove('show');
-            }, 3000);
-        }
-
-        window.openLogoutModal = function() {
-            document.getElementById('logoutModalOverlay')?.classList.add('active');
-        };
-        window.closeLogoutModal = function() {
-            document.getElementById('logoutModalOverlay')?.classList.remove('active');
-        };
-        window.confirmLogout = function() {
-            try {
-                savePersistentData();
-
-                localStorage.removeItem('current_teacher_phone');
-                localStorage.removeItem('current_teacher_profile');
-                localStorage.removeItem('teacher_is_blocked');
-
-                closeLogoutModal();
-                setTimeout(() => { window.location.href = 'teacher-login.html'; }, 250);
-            } catch(e) {
-                window.location.href = 'teacher-login.html';
-            }
-        };
-
-        document.addEventListener('click', (e) => {
-            const modal = document.getElementById('logoutModalOverlay');
-            if (modal && e.target === modal) closeLogoutModal();
-        });
-
-        function updateAll() {
-            updateSpecialtyCard();
-            updateScheduleCard();
-            updateLessonsList();
-        }
-
-        window.updateAll = updateAll;
-        window.updateSpecialtyCard = updateSpecialtyCard;
-        window.updateScheduleCard = updateScheduleCard;
-        window.updateLessonsList = updateLessonsList;
-        window.showSyncBadge = showSyncBadge;
-        window.setCloudStatus = setCloudStatus;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            showTeacherName();
-            updateAll();
-            
-            savePersistentData();
-            
-            console.log('✅ mester3 جاهز');
-        });
-
-        window.addEventListener('pageshow', () => {
-            updateAll();
-        });
-
-        setInterval(updateLessonsList, 30000);
-
-        setInterval(() => {
-            updateSpecialtyCard();
-            updateScheduleCard();
-        }, 3000);
-
-        function scheduleMidnightRefresh() {
-            const now = new Date();
-            const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0);
-            const msUntilMidnight = midnight.getTime() - now.getTime();
-
-            setTimeout(() => {
-                console.log('🌙 منتصف الليل — تحديث حصص اليوم الجديد');
-                updateAll();
-                scheduleMidnightRefresh();
-            }, msUntilMidnight);
-        }
-
-        scheduleMidnightRefresh();
-
-    })();
-    </script>
-
-    <!-- ==========================================================
-         ✅✅✅ المزامنة الفورية 100% بين الأجهزة ✅✅✅
-         ========================================================== -->
-    <script type="module">
-        (async function startRealtimeSync() {
-            const teacherPhone = localStorage.getItem('current_teacher_phone');
-            
-            if (!teacherPhone) {
-                console.log('⚠️ لا يوجد رقم معلم — تخطي المزامنة الفورية');
-                return;
-            }
-
-            console.log('🔄 تشغيل المزامنة الفورية في mester3...');
-
-            try {
-                const firebase = await import('./firebase-config.js');
-                
-                if (window.setCloudStatus) {
-                    window.setCloudStatus(true, 'متصل ☁️');
-                }
-
-                firebase.subscribeTeacherData(teacherPhone, (cloudData) => {
-                    console.log('🔄 استقبلت تحديث من جهاز آخر');
-                    
-                    let needUpdate = false;
-
-                    if (cloudData.teacher_appointments_summary) {
-                        const current = localStorage.getItem('teacher_appointments_summary');
-                        if (current !== cloudData.teacher_appointments_summary) {
-                            localStorage.setItem('teacher_appointments_summary', 
-                                cloudData.teacher_appointments_summary);
-                            needUpdate = true;
-                        }
-                    }
-
-                    if (cloudData.mester1_selections) {
-                        const current = localStorage.getItem('mester1_selections');
-                        if (current !== cloudData.mester1_selections) {
-                            localStorage.setItem('mester1_selections', 
-                                cloudData.mester1_selections);
-                            needUpdate = true;
-                        }
-                    }
-
-                    if (cloudData.teacherSelections) {
-                        const current = localStorage.getItem('teacherSelections');
-                        if (current !== cloudData.teacherSelections) {
-                            localStorage.setItem('teacherSelections', 
-                                cloudData.teacherSelections);
-                            needUpdate = true;
-                        }
-                    }
-
-                    if (cloudData.teacher_groups_count !== undefined && 
-                        cloudData.teacher_groups_count !== null) {
-                        const current = localStorage.getItem('teacher_groups_count');
-                        if (current !== String(cloudData.teacher_groups_count)) {
-                            localStorage.setItem('teacher_groups_count', 
-                                String(cloudData.teacher_groups_count));
-                            needUpdate = true;
-                        }
-                    }
-
-                    if (needUpdate) {
-                        console.log('✅ تم تحديث البيانات من السحابة');
-                        if (window.showSyncBadge) {
-                            window.showSyncBadge('تمت المزامنة من جهاز آخر');
-                        }
-                        if (window.updateAll) {
-                            window.updateAll();
-                        }
-                    }
-                });
-
-                firebase.subscribeGroups((allGroups) => {
-                    const myGroups = allGroups.filter(g => g.phone === teacherPhone);
-                    const currentCount = parseInt(localStorage.getItem('teacher_groups_count') || '0');
-                    
-                    if (myGroups.length !== currentCount) {
-                        console.log(`🔄 عدد المجموعات اتغير: ${currentCount} → ${myGroups.length}`);
-                        localStorage.setItem('teacher_groups_count', String(myGroups.length));
-                        
-                        if (window.showSyncBadge) {
-                            window.showSyncBadge(`تم تحديث المجموعات (${myGroups.length})`);
-                        }
-                        
-                        if (window.updateScheduleCard) {
-                            window.updateScheduleCard();
-                        }
-                    }
-                });
-
-                if (window.setCloudStatus) {
-                    window.setCloudStatus(true, 'متصل ☁️');
-                }
-
-                console.log('✅ المزامنة الفورية مفعّلة في mester3');
-
-            } catch(e) {
-                console.warn('⚠️ فشل تشغيل المزامنة الفورية:', e);
-                
-                if (window.setCloudStatus) {
-                    window.setCloudStatus(false, 'غير متصل');
-                }
-            }
-        })();
-    </script>
-
-    <!-- ==========================================================
-         🔒 زر الرجوع من mester3 → teacher-login.html
-         ========================================================== -->
-    <script>
-    (function() {
-        'use strict';
-
-        function saveDataBeforeExit() {
-            try {
-                const phone = localStorage.getItem('current_teacher_phone');
-                const profile = localStorage.getItem('current_teacher_profile');
-                
-                if (phone) localStorage.setItem('teacher_saved_phone', phone);
-                if (profile) localStorage.setItem('teacher_saved_profile', profile);
-
-                const backup = {
-                    teacherSelections: localStorage.getItem('teacherSelections'),
-                    mester1_selections: localStorage.getItem('mester1_selections'),
-                    mester1_is_locked: localStorage.getItem('mester1_is_locked'),
-                    teacher_appointments_summary: localStorage.getItem('teacher_appointments_summary'),
-                    teacher_groups_count: localStorage.getItem('teacher_groups_count'),
-                    last_selected_gender: localStorage.getItem('last_selected_gender'),
-                    last_selected_location: localStorage.getItem('last_selected_location')
-                };
-                localStorage.setItem('teacher_data_backup', JSON.stringify(backup));
-            } catch(err) {}
-        }
-
-        // ✅ زر الرجوع من mester3 → يروح teacher-login.html
-        window.addEventListener('popstate', function(e) {
-            console.log('🔒 رجوع من mester3 → teacher-login');
-            
-            saveDataBeforeExit();
-            
-            try {
-                localStorage.removeItem('current_teacher_phone');
-                localStorage.removeItem('current_teacher_profile');
-                localStorage.removeItem('teacher_is_blocked');
-            } catch(err) {}
-            
-            window.location.href = 'teacher-login.html';
-        });
-
-    })();
-    </script>
+    }
+});
+</script>
 
 </body>
 </html>
