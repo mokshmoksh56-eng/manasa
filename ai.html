@@ -512,6 +512,35 @@ body {
     transform: scale(1.1);
 }
 
+/* ============ Token Counter ============ */
+.token-counter {
+    display: none;
+    padding: 6px 14px;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--primary-dark);
+    text-align: center;
+    flex-shrink: 0;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+.token-counter.show { display: flex; }
+.token-counter.warn {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+    color: #92400e;
+}
+.token-counter.danger {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+    color: #991b1b;
+}
+.token-counter .tc-icon { font-size: 14px; }
+.token-counter .tc-value { color: var(--primary); font-size: 12px; }
+.token-counter.warn .tc-value { color: #d97706; }
+.token-counter.danger .tc-value { color: #dc2626; }
+
 /* ============ Input Area ============ */
 .input-area {
     background: #ffffff;
@@ -879,35 +908,24 @@ body {
     pointer-events: none;
     font-family: 'Cairo', sans-serif;
 }
-
-.pull-to-refresh.visible {
-    transform: translateY(0);
-}
-
-.pull-to-refresh.refreshing {
-    transform: translateY(0);
-}
-
+.pull-to-refresh.visible { transform: translateY(0); }
+.pull-to-refresh.refreshing { transform: translateY(0); }
 .pull-to-refresh .ptr-spinner {
     font-size: 20px;
     display: inline-block;
     transition: transform 0.3s ease;
 }
-
 .pull-to-refresh.refreshing .ptr-spinner {
     animation: ptrSpin 0.8s linear infinite;
 }
-
 @keyframes ptrSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-
 .pull-to-refresh .ptr-text {
     font-weight: 900;
     color: var(--primary-dark);
 }
-
 .pull-to-refresh.ready .ptr-spinner {
     transform: rotate(180deg);
 }
@@ -969,6 +987,12 @@ body {
 
     <!-- Attachments Preview -->
     <div class="attachments-preview" id="attachmentsPreview"></div>
+
+    <!-- Token Counter -->
+    <div class="token-counter" id="tokenCounter">
+        <span class="tc-icon">📊</span>
+        <span>حجم الرسالة: <span class="tc-value" id="tokenCount">0</span> توكن من <span class="tc-value">8000</span> متاح</span>
+    </div>
     
     <!-- Input Area -->
     <div class="input-area" id="inputArea">
@@ -981,7 +1005,7 @@ body {
                 placeholder="الصق كودك أو اكتب طلبك البرمجي... (Shift+Enter لسطر جديد)"
                 autocomplete="off"
                 spellcheck="false"
-                oninput="autoResize(this)"
+                oninput="handleInput(this)"
                 onpaste="handlePaste(event)"></textarea>
         </div>
         <button class="send-btn" id="sendBtn">➤</button>
@@ -1029,13 +1053,19 @@ let GROQ_API_KEY = localStorage.getItem('groq_api_key_code') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-/* ✅ موديلات Groq الرسمية المضمونة (محدّثة أكتوبر 2025) */
+/* ✅ موديلات Groq محدّثة (أكتوبر 2025) — مرتبة بالأولوية */
 const GROQ_MODELS = [
-    'llama-3.3-70b-versatile',
-    'llama-3.1-8b-instant',
-    'openai/gpt-oss-120b',
-    'openai/gpt-oss-20b'
+    'llama-3.3-70b-versatile',   // 12K TPM — الأفضل للأكواد الكبيرة
+    'openai/gpt-oss-120b',        // 8K TPM
+    'llama-3.1-8b-instant',       // 6K TPM — أسرع
+    'openai/gpt-oss-20b'          // 8K TPM — أخف
 ];
+
+/* ✅ الحد الأقصى للتوكنز في الطلب الواحد */
+const MAX_TOKENS_LIMIT = 7000;
+
+/* ✅ الحد الأقصى للملف الواحد */
+const MAX_FILE_SIZE = 100 * 1024; // 100KB
 
 /* ============ حالة التطبيق ============ */
 const appState = {
@@ -1050,6 +1080,8 @@ const sendBtn = document.getElementById('sendBtn');
 const toastEl = document.getElementById('toast');
 const fileInput = document.getElementById('fileInput');
 const attachmentsPreview = document.getElementById('attachmentsPreview');
+const tokenCounter = document.getElementById('tokenCounter');
+const tokenCount = document.getElementById('tokenCount');
 
 /* ============ System Prompt الفائق ============ */
 const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء** بخبرة 20 سنة في جميع لغات البرمجة والتقنيات.
@@ -1089,13 +1121,8 @@ const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء*
 ✅ اختبر ذهنياً كل سطر قبل كتابته
 ✅ اتكلم بالعربي الواضح والمهني
 
-**لغات وتقنيات أنت خبير فيها:**
-HTML5, CSS3, JavaScript (ES6+), TypeScript, React, Vue, Angular, Node.js, Express, MongoDB, MySQL, PostgreSQL, Firebase, Python, PHP, Laravel, Java, C++, C#, Dart, Flutter, React Native, Swift, Kotlin, Git, Docker, Linux, REST APIs, GraphQL, Tailwind, Bootstrap.
-
 **لو السؤال مش برمجي:**
-اعتذر بأدب وقل إنك مساعد برمجي فقط.
-
-⚠️ **لا تحاول**: اختراق أنظمة، كسر أمان، كتابة كود ضار.`;
+اعتذر بأدب وقل إنك مساعد برمجي فقط.`;
 
 /* ============ أدوات ============ */
 function scrollBottom() {
@@ -1121,6 +1148,37 @@ function showToast(text, type = 'error') {
 function autoResize(el) {
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+/* ============ عدّاد التوكنز التقريبي ============ */
+function estimateTokens(text) {
+    if (!text) return 0;
+    // تقدير تقريبي: كل 4 أحرف ≈ 1 توكن
+    return Math.ceil(text.length / 4);
+}
+
+function handleInput(el) {
+    autoResize(el);
+    updateTokenCounter();
+}
+
+function updateTokenCounter() {
+    const inputText = chatInput.value || '';
+    const attText = appState.attachments.map(a => a.content).join('\n');
+    const totalText = inputText + '\n' + attText;
+    
+    const tokens = estimateTokens(totalText);
+
+    tokenCount.textContent = tokens.toLocaleString('en-US');
+    tokenCounter.classList.add('show');
+
+    // تغيير لون العدّاد حسب الحجم
+    tokenCounter.classList.remove('warn', 'danger');
+    if (tokens > MAX_TOKENS_LIMIT) {
+        tokenCounter.classList.add('danger');
+    } else if (tokens > MAX_TOKENS_LIMIT * 0.7) {
+        tokenCounter.classList.add('warn');
+    }
 }
 
 /* ============ تحويل النص لـ HTML آمن ============ */
@@ -1235,12 +1293,11 @@ window.handleFiles = async function(event) {
     const files = Array.from(event.target.files);
     if (!files.length) return;
 
-    const MAX_SIZE = 500 * 1024;
     let added = 0;
 
     for (const file of files) {
-        if (file.size > MAX_SIZE) {
-            showToast(`⚠️ ${file.name} أكبر من 500KB`, 'error');
+        if (file.size > MAX_FILE_SIZE) {
+            showToast(`⚠️ ${file.name} أكبر من 100KB — قسّمه لأجزاء`, 'error');
             continue;
         }
 
@@ -1259,6 +1316,7 @@ window.handleFiles = async function(event) {
 
     if (added > 0) {
         renderAttachments();
+        updateTokenCounter();
         showToast(`✅ تم إضافة ${added} ملف`, 'success');
     }
 
@@ -1285,12 +1343,13 @@ window.renderAttachments = function() {
 window.removeAttachment = function(index) {
     appState.attachments.splice(index, 1);
     renderAttachments();
+    updateTokenCounter();
 };
 
 /* ============ معالجة اللصق ============ */
 window.handlePaste = function(event) {
     const pastedText = (event.clipboardData || window.clipboardData).getData('text');
-    if (pastedText && pastedText.length > 500) {
+    if (pastedText && pastedText.length > 1500) {
         event.preventDefault();
 
         let fileName = 'pasted-code.txt';
@@ -1307,6 +1366,7 @@ window.handlePaste = function(event) {
             size: pastedText.length
         });
         renderAttachments();
+        updateTokenCounter();
         showToast(`📎 تم إضافة الكود الملصوق كملف (${pastedText.length} حرف)`, 'info');
     }
 };
@@ -1315,6 +1375,7 @@ window.handlePaste = function(event) {
 window.quickAsk = function(text) {
     chatInput.value = text;
     autoResize(chatInput);
+    updateTokenCounter();
     handleSend();
 };
 
@@ -1351,7 +1412,8 @@ async function askGroq(userMessage) {
         { role: 'system', content: SYSTEM_PROMPT }
     ];
 
-    const recentHistory = appState.chatHistory.slice(-6);
+    // ✅ آخر رسالتين فقط (لتقليل التوكنز)
+    const recentHistory = appState.chatHistory.slice(-2);
     recentHistory.forEach(h => messages.push({ role: h.role, content: h.content }));
 
     messages.push({ role: 'user', content: userMessage });
@@ -1380,7 +1442,7 @@ async function askGroq(userMessage) {
                     model: model,
                     messages: messages,
                     temperature: 0.3,
-                    max_tokens: 8000,
+                    max_tokens: 4000,
                     top_p: 0.9
                 })
             });
@@ -1397,6 +1459,15 @@ async function askGroq(userMessage) {
                 lastError = '429';
                 lastErrorDetails = 'وصلت للحد المجاني';
                 break;
+            } else if (response.status === 413) {
+                lastError = '413';
+                try {
+                    const errData = await response.clone().json();
+                    lastErrorDetails = errData.error?.message || 'الطلب كبير جداً';
+                } catch(e) {
+                    lastErrorDetails = 'الطلب كبير جداً — الملف تجاوز الحد المسموح';
+                }
+                continue;
             } else {
                 try {
                     const errData = await response.clone().json();
@@ -1427,8 +1498,11 @@ async function askGroq(userMessage) {
         if (lastError === '429') {
             return '⏳ **وصلت للحد المجاني**\n\nاستنى شوية وجرب تاني.';
         }
+        if (lastError === '413') {
+            return `📦 **الملف كبير جداً!**\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول:**\n1. **قسّم الملف** لأجزاء صغيرة (2000 كلمة لكل جزء)\n2. **امسح المحادثة** (زرار 🗑️ فوق) لو التاريخ كبير\n3. **جرب موديل `llama-3.3-70b-versatile`** بيدعم 12K توكن\n4. **ابعت الأجزاء واحدة واحدة** وطلب في الآخر دمجها`;
+        }
 
-        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول المقترحة:**\n- تأكد إن المفتاح صالح من [console.groq.com/keys](https://console.groq.com/keys)\n- جرب تعمل Refresh للصفحة\n- جرب تمسح الـ cache\n- لو الخطأ استمر، ابعتلي التفاصيل دي`;
+        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}`;
     }
 
     const data = await response.json();
@@ -1449,6 +1523,22 @@ async function handleSend() {
 
     if (!val && appState.attachments.length === 0) return;
 
+    // ✅ تحقق من حجم الرسالة قبل الإرسال
+    const inputText = val || '';
+    const attText = appState.attachments.map(a => a.content).join('\n');
+    const totalTokens = estimateTokens(inputText + '\n' + attText);
+
+    if (totalTokens > MAX_TOKENS_LIMIT) {
+        const confirmed = confirm(
+            `⚠️ الرسالة كبيرة جداً!\n\n` +
+            `📊 الحجم الحالي: ~${totalTokens.toLocaleString('en-US')} توكن\n` +
+            `📏 الحد الأقصى: ${MAX_TOKENS_LIMIT.toLocaleString('en-US')} توكن\n\n` +
+            `هل تريد المتابعة؟ (قد يفشل الطلب)\n\n` +
+            `💡 الأفضل: قسّم الكود لأجزاء صغيرة`
+        );
+        if (!confirmed) return;
+    }
+
     chatInput.disabled = true;
     sendBtn.disabled = true;
     chatInput.value = '';
@@ -1465,6 +1555,7 @@ async function handleSend() {
 
     appState.attachments = [];
     renderAttachments();
+    updateTokenCounter();
 
     const typing = showTyping();
     const reply = await askGroq(finalMsg);
@@ -1484,6 +1575,7 @@ window.clearChat = function() {
     localStorage.removeItem('code_chat_history');
     chatArea.innerHTML = '';
     renderAttachments();
+    updateTokenCounter();
     showWelcome();
     showToast('تم مسح المحادثة', 'success');
 };
@@ -1519,7 +1611,7 @@ function showWelcome() {
             <div class="feature-item">📝 أكواد كاملة بدون اختصار</div>
             <div class="feature-item">🐛 تصحيح كل الأخطاء</div>
             <div class="feature-item">📎 رفع ملفات كود متعددة</div>
-            <div class="feature-item">📋 نسخ ولصق سهل</div>
+            <div class="feature-item">📊 عدّاد التوكنز</div>
         </div>
     `;
     chatArea.appendChild(welcome);
@@ -1548,6 +1640,7 @@ function showSuggestions() {
         chip.onclick = () => {
             chatInput.value = s.text;
             autoResize(chatInput);
+            updateTokenCounter();
             container.remove();
             chatInput.focus();
         };
@@ -1718,15 +1811,14 @@ document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
 
     if (!ptr || !chatArea) return;
 
-    const THRESHOLD = 40;       // الحد الأدنى للتفعيل
-    const MAX_PULL = 100;       // أقصى مسافة
+    const THRESHOLD = 40;
+    const MAX_PULL = 100;
 
     let startY = 0;
     let currentY = 0;
     let isPulling = false;
     let isRefreshing = false;
 
-    /* ============ Touch Events ============ */
     chatArea.addEventListener('touchstart', (e) => {
         if (chatArea.scrollTop <= 0 && !isRefreshing) {
             startY = e.touches[0].clientY;
@@ -1745,7 +1837,6 @@ document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
 
             ptr.classList.add('visible');
             ptr.style.transform = `translateY(-60px) translateY(${pullDistance}px)`;
-
             spinner.style.transform = `rotate(${pullDistance * 3}deg)`;
 
             if (pullDistance >= THRESHOLD) {
@@ -1775,57 +1866,6 @@ document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
         currentY = 0;
     }, { passive: true });
 
-    /* ============ Mouse Events (كمبيوتر) ============ */
-    let mouseStartY = 0;
-    let mouseIsPulling = false;
-
-    chatArea.addEventListener('mousedown', (e) => {
-        if (chatArea.scrollTop <= 0 && !isRefreshing && e.button === 0) {
-            mouseStartY = e.clientY;
-            mouseIsPulling = true;
-        }
-    });
-
-    chatArea.addEventListener('mousemove', (e) => {
-        if (!mouseIsPulling || isRefreshing) return;
-        const distance = e.clientY - mouseStartY;
-
-        if (distance > 0 && chatArea.scrollTop <= 0) {
-            const pullDistance = Math.min(distance * 0.5, MAX_PULL);
-            ptr.classList.add('visible');
-            ptr.style.transform = `translateY(-60px) translateY(${pullDistance}px)`;
-            spinner.style.transform = `rotate(${pullDistance * 3}deg)`;
-
-            if (pullDistance >= THRESHOLD) {
-                ptr.classList.add('ready');
-                text.textContent = '✨ اترك للتحديث';
-            } else {
-                ptr.classList.remove('ready');
-                text.textContent = '⬇️ اسحب للأسفل للتحديث';
-            }
-        }
-    });
-
-    chatArea.addEventListener('mouseup', () => {
-        if (!mouseIsPulling || isRefreshing) return;
-        const distance = currentY - startY;
-
-        if (chatArea.scrollTop <= 0 && distance > THRESHOLD * 2) {
-            triggerRefresh();
-        } else {
-            resetPTR();
-        }
-        mouseIsPulling = false;
-    });
-
-    chatArea.addEventListener('mouseleave', () => {
-        if (mouseIsPulling) {
-            resetPTR();
-            mouseIsPulling = false;
-        }
-    });
-
-    /* ============ Functions ============ */
     function resetPTR() {
         ptr.style.transform = 'translateY(-60px)';
         ptr.classList.remove('ready');
@@ -1877,6 +1917,7 @@ function init() {
     restoreHistory();
     updateKeyButtonState();
     autoResize(chatInput);
+    updateTokenCounter();
 
     if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
         setTimeout(() => {
