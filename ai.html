@@ -830,10 +830,13 @@ body {
 /* ============ إعدادات Groq ============ */
 /* ============================================================ */
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+/* ✅ قائمة الموديلات المحدّثة (أكتوبر 2025) */
 const GROQ_MODELS = [
     'llama-3.3-70b-versatile',
     'llama-3.1-8b-instant',
-    'openai/gpt-oss-120b'
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b'
 ];
 
 let GROQ_API_KEY = localStorage.getItem('groq_api_key_school') || '';
@@ -1052,13 +1055,28 @@ async function loadSchoolContext() {
         appState.schoolMap = map;
 
         // حدّث الـ prompt
-        SYSTEM_PROMPT = SYSTEM_PROMPT.replace(
-            /\*\*⚠️ لو السؤال مش عن school\.html:\*\*\nاعتذر بلطف وقل إنك مساعد اللوحة فقط\./,
-            `**⚠️ لو السؤال مش عن school.html:**\nاعتذر بلطف وقل إنك مساعد اللوحة فقط.\n\n============================================================\n📊 **تم قراءة school.html بنجاح (${Math.round(html.length/1024)}KB)**\n============================================================\n\n**التبويبات المكتشفة (${map.tabs.length}):**\n${map.tabs.map(t => `- ${t.label} → \\\`${t.id}\\\``).join('\n')}\n\n**الدوال المكتشفة (${map.functions.length}):**\n${map.functions.slice(0, 60).map(f => `- \\\`${f}()\\\``).join('\n')}\n\n**دوال Firebase المستوردة:**\n${map.firebaseFunctions.map(f => `- \\\`${f}\\\``).join('\n')}\n\n**الجداول:** ${map.tables.map(t => `\\\`${t}\\\``).join(', ') || 'لا يوجد'}\n**المودالات:** ${map.modals.map(m => `\\\`${m}\\\``).join(', ') || 'لا يوجد'}\n\n**⚠️ المستخدم بيسأل عن school.html — ركّز على الإجابة من المعلومات اللي فوق.**`
-        );
+        SYSTEM_PROMPT += `
+
+============================================================
+📊 **تم قراءة school.html بنجاح (${Math.round(html.length/1024)}KB)**
+============================================================
+
+**التبويبات المكتشفة (${map.tabs.length}):**
+${map.tabs.map(t => `- ${t.label} → \`${t.id}\``).join('\n')}
+
+**الدوال المكتشفة (${map.functions.length}):**
+${map.functions.slice(0, 60).map(f => `- \`${f}()\``).join('\n')}
+
+**دوال Firebase المستوردة:**
+${map.firebaseFunctions.map(f => `- \`${f}\``).join('\n')}
+
+**الجداول:** ${map.tables.map(t => `\`${t}\``).join(', ') || 'لا يوجد'}
+**المودالات:** ${map.modals.map(m => `\`${m}\``).join(', ') || 'لا يوجد'}
+
+**⚠️ المستخدم بيسأل عن school.html — ركّز على الإجابة من المعلومات اللي فوق.**
+`;
 
         statusText.textContent = `✅ متصل — ${map.functions.length} دالة · ${map.tabs.length} تبويب`;
-
         console.log('✅ تم تحميل سياق school.html:', map);
 
     } catch (e) {
@@ -1422,7 +1440,9 @@ window.closeKeyModal = function() {
 window.saveApiKey = async function() {
     const input = document.getElementById('apiKeyInput');
     const status = document.getElementById('keyStatus');
-    const newKey = input.value.trim();
+
+    // ✅ تنظيف المفتاح من أي رموز زيادة (نقطة، فاصلة، مسافة...)
+    const newKey = input.value.trim().replace(/[.\s,;:'"`]+$/g, '').replace(/[\s]/g, '');
 
     if (!newKey || !newKey.startsWith('gsk_')) {
         status.textContent = '❌ المفتاح لازم يبدأ بـ gsk_';
@@ -1430,45 +1450,97 @@ window.saveApiKey = async function() {
         return;
     }
 
-    status.textContent = '⏳ جاري التحقق...';
+    // ✅ تحقق إن المفتاح مش فيه رموز غريبة
+    if (!/^gsk_[A-Za-z0-9]+$/.test(newKey)) {
+        status.textContent = '⚠️ المفتاح فيه رموز غريبة — تأكد من نسخه كامل';
+        status.className = 'key-modal-status err';
+        return;
+    }
+
+    status.textContent = '⏳ جاري التحقق من المفتاح...';
     status.className = 'key-modal-status loading';
 
     try {
-        const testRes = await fetch(GROQ_API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${newKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: GROQ_MODELS[0],
-                messages: [{ role: 'user', content: 'hi' }],
-                max_tokens: 5
-            })
-        });
+        let validModel = null;
+        let lastError = '';
 
-        if (testRes.ok || testRes.status === 429) {
-            status.textContent = '✅ المفتاح شغال!';
+        // ✅ جرّب كل الموديلات لحد ما واحد يشتغل
+        for (const testModel of GROQ_MODELS) {
+            try {
+                console.log(`🔍 Testing: ${testModel}`);
+
+                const testRes = await fetch(GROQ_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${newKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: testModel,
+                        messages: [{ role: 'user', content: 'hi' }],
+                        max_tokens: 5
+                    })
+                });
+
+                if (testRes.ok) {
+                    validModel = testModel;
+                    console.log(`✅ Works: ${testModel}`);
+                    break;
+                }
+
+                if (testRes.status === 429) {
+                    validModel = testModel;
+                    console.log(`✅ Works (rate limit): ${testModel}`);
+                    break;
+                }
+
+                if (testRes.status === 401) {
+                    status.textContent = '❌ المفتاح غلط أو ملغي';
+                    status.className = 'key-modal-status err';
+                    return;
+                }
+
+                // 404 = الموديل مش موجود، جرّب اللي بعده
+                if (testRes.status === 404) {
+                    lastError = `${testModel} غير متاح`;
+                    console.log(`❌ ${testModel}: 404`);
+                    continue;
+                }
+
+                const errData = await testRes.json().catch(() => ({}));
+                lastError = errData.error?.message || `HTTP ${testRes.status}`;
+                console.log(`❌ ${testModel}:`, lastError);
+
+            } catch (e) {
+                lastError = e.message;
+                console.log(`💥 ${testModel}:`, e.message);
+                continue;
+            }
+        }
+
+        if (validModel) {
+            status.textContent = `✅ المفتاح شغال مع ${validModel.split('/').pop()}`;
             status.className = 'key-modal-status ok';
 
             GROQ_API_KEY = newKey;
             localStorage.setItem('groq_api_key_school', newKey);
-            localStorage.removeItem('groq_working_model_school');
+            localStorage.setItem('groq_working_model_school', validModel);
+
             updateKeyButtonState();
 
             setTimeout(() => {
                 closeKeyModal();
                 showToast('✅ تم حفظ المفتاح', 'success');
+                addMessage('ai', `✅ **تم حفظ المفتاح بنجاح**\n\n🤖 الموديل الشغال: \`${validModel}\`\n\nاسألني أي حاجة عن school.html!`);
             }, 800);
-        } else if (testRes.status === 401) {
-            status.textContent = '❌ المفتاح غلط أو ملغي';
-            status.className = 'key-modal-status err';
         } else {
-            status.textContent = `⚠️ HTTP ${testRes.status}`;
+            status.textContent = `⚠️ المفتاح موجود بس مش شغال مع أي موديل\n${lastError}`;
             status.className = 'key-modal-status err';
         }
+
     } catch (e) {
-        status.textContent = '❌ فشل الاتصال';
+        console.error(e);
+        status.textContent = '❌ فشل الاتصال بالإنترنت';
         status.className = 'key-modal-status err';
     }
 };
