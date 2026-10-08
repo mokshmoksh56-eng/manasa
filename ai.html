@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>⚡ المساعد البرمجي الفائق</title>
+<title>🎓 المساعد الذكي — منصة احجزلي</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -13,22 +13,18 @@
 
 <style>
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #e0e7ff;
-    --accent: #8b5cf6;
+    --primary: #047857;
+    --primary-dark: #064E3B;
+    --primary-light: #D1FAE5;
+    --accent: #10B981;
     --bg: #f8fafc;
-    --bg-card: #ffffff;
-    --bg-light: #f1f5f9;
     --border: #e2e8f0;
-    --border-dark: #cbd5e1;
     --text: #0f172a;
     --text-dim: #64748b;
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
     --code-bg: #1e293b;
-    --code-border: #334155;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent; }
@@ -41,25 +37,24 @@ body {
     flex-direction: column;
     overflow: hidden;
     background-image:
-        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
-        radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 20% 0%, rgba(4, 120, 87, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
 }
 
-/* ============ Header ============ */
-.code-header {
+/* Header */
+.header {
     background: #ffffff;
     border-bottom: 2px solid var(--border);
-    color: var(--text);
     padding: 12px 16px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.06);
+    box-shadow: 0 4px 20px rgba(4, 120, 87, 0.06);
     z-index: 100;
     flex-shrink: 0;
     position: relative;
 }
-.code-header::after {
+.header::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -75,18 +70,18 @@ body {
     100% { background-position: 200% 0%; }
 }
 
-.code-header .avatar {
+.header .avatar {
     width: 46px; height: 46px;
     border-radius: 12px;
     background: linear-gradient(135deg, var(--primary), var(--accent));
     display: flex; align-items: center; justify-content: center;
     font-size: 24px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 15px rgba(4, 120, 87, 0.35);
     flex-shrink: 0;
     position: relative;
-    border: 2px solid rgba(99, 102, 241, 0.15);
+    border: 2px solid rgba(4, 120, 87, 0.15);
 }
-.code-header .avatar::after {
+.header .avatar::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -101,22 +96,16 @@ body {
 }
 @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
 
-.code-header .info { flex: 1; min-width: 0; }
-.code-header .info h2 {
+.header .info { flex: 1; min-width: 0; }
+.header .info h2 {
     font-size: 16px;
     font-weight: 900;
-    background: linear-gradient(90deg, var(--primary-dark), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-dark);
 }
-.code-header .info p {
+.header .info p {
     font-size: 11.5px;
     color: var(--text-dim);
     font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 5px;
     margin-top: 2px;
 }
 
@@ -124,7 +113,7 @@ body {
 
 .action-btn {
     background: var(--primary-light);
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    border: 1.5px solid rgba(4, 120, 87, 0.3);
     color: var(--primary-dark);
     padding: 8px 12px;
     border-radius: 10px;
@@ -137,12 +126,11 @@ body {
     gap: 5px;
     transition: all 0.25s;
     flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
 }
 .action-btn:hover {
-    background: #c7d2fe;
+    background: #A7F3D0;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
 }
 .action-btn.danger {
     background: #fee2e2;
@@ -153,23 +141,11 @@ body {
     background: #fecaca;
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
-
 .action-btn.key-ok {
     background: #d1fae5;
     border-color: #10b981;
     color: #065f46;
-    animation: keySuccess 0.6s ease;
 }
-.action-btn.key-ok:hover {
-    background: #a7f3d0;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-}
-@keyframes keySuccess {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.3); }
-    100% { transform: scale(1); }
-}
-
 .action-btn.key-missing {
     background: #fee2e2;
     border-color: #ef4444;
@@ -181,16 +157,7 @@ body {
     50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
 }
 
-/* ============ Main Layout ============ */
-.main-layout {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-}
-
-/* ============ Quick Actions Bar ============ */
+/* Quick Bar */
 .quick-bar {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
@@ -207,7 +174,7 @@ body {
 
 .quick-chip {
     background: #fff;
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    border: 1.5px solid rgba(4, 120, 87, 0.3);
     color: var(--primary-dark);
     padding: 7px 14px;
     border-radius: 18px;
@@ -220,18 +187,17 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    -webkit-tap-highlight-color: transparent;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .quick-chip:hover {
     background: var(--primary-light);
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.2);
 }
 .quick-chip:active { transform: translateY(0) scale(0.96); }
 
-/* ============ Chat Area ============ */
+/* Chat Area */
 .chat-area {
     flex: 1;
     overflow-y: auto;
@@ -239,17 +205,14 @@ body {
     scroll-behavior: smooth;
     min-width: 0;
     background: var(--bg);
-    overscroll-behavior-y: contain;
 }
 .chat-area::-webkit-scrollbar { width: 8px; }
-.chat-area::-webkit-scrollbar-track { background: transparent; }
 .chat-area::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.3);
+    background: rgba(4, 120, 87, 0.3);
     border-radius: 10px;
 }
-.chat-area::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
 
-/* ============ Messages ============ */
+/* Messages */
 .msg {
     max-width: 92%;
     margin-bottom: 14px;
@@ -268,9 +231,9 @@ body {
 }
 
 .msg.user {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: #1e3a8a;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #064E3B;
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-bottom-left-radius: 4px;
     margin-right: auto;
     margin-left: 0;
@@ -284,7 +247,7 @@ body {
     margin-right: 0;
 }
 .msg.ai::before {
-    content: '⚡ CODE AI';
+    content: '🎓 المساعد الذكي';
     position: absolute;
     top: -10px;
     right: 10px;
@@ -294,15 +257,14 @@ body {
     font-weight: 900;
     padding: 3px 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
-    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(4, 120, 87, 0.4);
 }
 .msg.user::before {
     content: '👤 أنت';
     position: absolute;
     top: -10px;
     right: 10px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    background: linear-gradient(135deg, #10B981, #047857);
     color: #fff;
     font-size: 9px;
     font-weight: 900;
@@ -320,13 +282,12 @@ body {
 }
 .msg.user .time { text-align: right; }
 
-/* ============ Code Blocks ============ */
 .msg.ai b, .msg.ai strong { color: var(--primary-dark); font-weight: 900; }
 .msg.ai code {
     background: #f1f5f9;
     padding: 3px 8px;
     border-radius: 5px;
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-family: 'Consolas', 'Monaco', monospace;
     font-size: 13px;
     color: #dc2626;
     direction: ltr;
@@ -336,7 +297,7 @@ body {
 
 .msg pre {
     background: var(--code-bg);
-    border: 1px solid var(--code-border);
+    border: 1px solid #334155;
     border-radius: 10px;
     margin: 12px 0;
     position: relative;
@@ -355,8 +316,6 @@ body {
     padding: 4px 12px;
     border-bottom-right-radius: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 3;
 }
 .msg pre code {
     display: block;
@@ -370,10 +329,8 @@ body {
     direction: ltr;
     text-align: left;
     white-space: pre;
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-family: 'Consolas', 'Monaco', monospace;
 }
-.msg pre code::-webkit-scrollbar { height: 6px; }
-.msg pre code::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 10px; }
 
 .copy-code-btn {
     position: absolute;
@@ -388,37 +345,26 @@ body {
     font-weight: 900;
     cursor: pointer;
     font-family: 'Cairo', sans-serif;
-    transition: all 0.2s;
     z-index: 5;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-.copy-code-btn:hover {
-    background: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4);
 }
 .copy-code-btn.copied {
     background: var(--success);
     color: #fff;
 }
 
-.msg.ai ul, .msg.ai ol {
-    margin: 10px 0;
-    padding-right: 22px;
-}
-.msg.ai li { margin-bottom: 6px; }
-.msg.ai hr {
-    border: none;
-    border-top: 1px dashed var(--border-dark);
-    margin: 12px 0;
-}
-.msg.ai h1, .msg.ai h2, .msg.ai h3 {
+.msg.ai h3 {
     color: var(--primary-dark);
     margin: 12px 0 8px;
     font-size: 15px;
 }
+.msg.ai hr {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 12px 0;
+}
 
-/* ============ Suggestions ============ */
+/* Suggestions */
 .suggestions {
     display: flex;
     flex-wrap: wrap;
@@ -428,7 +374,7 @@ body {
 }
 .suggestion-chip {
     background: #fff;
-    border: 1.5px solid rgba(99, 102, 241, 0.4);
+    border: 1.5px solid rgba(4, 120, 87, 0.4);
     color: var(--primary-dark);
     padding: 10px 16px;
     border-radius: 20px;
@@ -441,24 +387,23 @@ body {
     align-items: center;
     gap: 6px;
     text-align: right;
-    direction: rtl;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .suggestion-chip:hover {
     background: var(--primary-light);
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 6px 16px rgba(4, 120, 87, 0.2);
 }
 .suggestion-chip:active { transform: translateY(0) scale(0.96); }
 
-/* ============ Attachments ============ */
+/* Attachments */
 .attachments-preview {
     display: none;
     flex-wrap: wrap;
     gap: 6px;
     padding: 10px 12px 0;
-    background: var(--bg-light);
+    background: #f1f5f9;
     border-top: 1px solid var(--border);
     flex-shrink: 0;
 }
@@ -475,20 +420,7 @@ body {
     font-size: 11.5px;
     font-weight: 900;
     color: var(--primary-dark);
-    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.15);
-    animation: chipIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes chipIn {
-    from { opacity: 0; transform: scale(0.85); }
-    to { opacity: 1; transform: scale(1); }
-}
-.attachment-chip .att-icon { font-size: 14px; }
-.attachment-chip .att-name {
-    max-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    direction: ltr;
+    box-shadow: 0 2px 6px rgba(4, 120, 87, 0.15);
 }
 .attachment-chip .att-remove {
     background: #fee2e2;
@@ -503,45 +435,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s;
     padding: 0;
 }
-.attachment-chip .att-remove:hover {
-    background: #dc2626;
-    color: #fff;
-    transform: scale(1.1);
-}
 
-/* ============ Token Counter ============ */
-.token-counter {
-    display: none;
-    padding: 6px 14px;
-    background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    font-weight: 900;
-    color: var(--primary-dark);
-    text-align: center;
-    flex-shrink: 0;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-}
-.token-counter.show { display: flex; }
-.token-counter.warn {
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
-    color: #92400e;
-}
-.token-counter.danger {
-    background: linear-gradient(90deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
-    color: #991b1b;
-}
-.token-counter .tc-icon { font-size: 14px; }
-.token-counter .tc-value { color: var(--primary); font-size: 12px; }
-.token-counter.warn .tc-value { color: #d97706; }
-.token-counter.danger .tc-value { color: #dc2626; }
-
-/* ============ Input Area ============ */
+/* Input Area */
 .input-area {
     background: #ffffff;
     border-top: 1px solid var(--border);
@@ -557,7 +454,7 @@ body {
     height: 44px;
     border-radius: 12px;
     background: var(--primary-light);
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    border: 1.5px solid rgba(4, 120, 87, 0.3);
     color: var(--primary-dark);
     font-size: 20px;
     cursor: pointer;
@@ -566,18 +463,16 @@ body {
     justify-content: center;
     flex-shrink: 0;
     transition: all 0.2s;
-    -webkit-tap-highlight-color: transparent;
 }
 .attach-btn:hover {
-    background: #c7d2fe;
+    background: #A7F3D0;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
 }
-.attach-btn:active { transform: scale(0.92); }
 
 .input-area .input-wrap {
     flex: 1;
-    background: var(--bg-light);
+    background: #f1f5f9;
     border-radius: 14px;
     padding: 10px 14px;
     display: flex;
@@ -588,7 +483,7 @@ body {
 .input-area .input-wrap:focus-within {
     border-color: var(--primary);
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    box-shadow: 0 0 0 4px rgba(4, 120, 87, 0.12);
 }
 .input-area textarea {
     flex: 1;
@@ -603,7 +498,6 @@ body {
     resize: none;
     max-height: 140px;
     line-height: 1.5;
-    -webkit-appearance: none;
 }
 .input-area textarea::placeholder { color: #94a3b8; }
 
@@ -620,17 +514,17 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 15px rgba(4, 120, 87, 0.4);
     transition: all 0.2s;
 }
 .send-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 6px 20px rgba(4, 120, 87, 0.6);
 }
 .send-btn:active { transform: scale(0.92); }
 .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ============ Typing ============ */
+/* Typing */
 .typing {
     display: inline-flex;
     gap: 5px;
@@ -658,7 +552,7 @@ body {
     30% { transform: translateY(-8px); opacity: 1; }
 }
 
-/* ============ Toast ============ */
+/* Toast */
 .toast {
     position: fixed;
     bottom: 100px;
@@ -682,27 +576,15 @@ body {
 .toast.success { background: var(--success); }
 .toast.info { background: var(--primary); }
 
-/* ============ Welcome Card ============ */
+/* Welcome */
 .welcome-card {
-    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+    border: 1.5px solid rgba(4, 120, 87, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 16px;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 4px 20px rgba(4, 120, 87, 0.1);
     animation: msgIn 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-.welcome-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
-    pointer-events: none;
 }
 .welcome-card h3 {
     color: var(--primary-dark);
@@ -711,25 +593,22 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    position: relative;
 }
 .welcome-card p {
     font-size: 13px;
     color: var(--text);
     line-height: 1.7;
     margin-bottom: 12px;
-    position: relative;
 }
 .welcome-card .features {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-top: 12px;
-    position: relative;
 }
 .welcome-card .feature-item {
     background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(4, 120, 87, 0.2);
     border-radius: 10px;
     padding: 10px;
     font-size: 12px;
@@ -740,7 +619,7 @@ body {
     gap: 7px;
 }
 
-/* ============ Key Modal ============ */
+/* Key Modal */
 .key-modal-overlay {
     position: fixed;
     inset: 0;
@@ -751,24 +630,17 @@ body {
     align-items: center;
     justify-content: center;
     padding: 16px;
-    animation: fadeInKey 0.2s ease;
 }
 .key-modal-overlay.show { display: flex; }
 
-@keyframes fadeInKey {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 .key-modal-box {
     background: #ffffff;
-    border: 1.5px solid var(--border);
     border-radius: 20px;
     padding: 26px 22px;
     max-width: 440px;
     width: 100%;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 0 1px rgba(99, 102, 241, 0.1);
-    animation: slideUpKey 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     direction: rtl;
     text-align: right;
     position: relative;
@@ -786,7 +658,7 @@ body {
     animation: headerShine 3s linear infinite;
 }
 
-@keyframes slideUpKey {
+@keyframes slideUp {
     from { transform: translateY(30px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
@@ -800,14 +672,12 @@ body {
     align-items: center;
     gap: 8px;
 }
-
 .key-modal-box p {
     margin: 0 0 18px;
     font-size: 12.5px;
     color: var(--text-dim);
     line-height: 1.6;
 }
-
 .key-modal-box input {
     width: 100%;
     padding: 14px 16px;
@@ -818,17 +688,14 @@ body {
     font-size: 13px;
     outline: none;
     box-sizing: border-box;
-    background: var(--bg-light);
+    background: #f1f5f9;
     color: var(--text);
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
     direction: ltr;
 }
-
 .key-modal-box input:focus {
     border-color: var(--primary);
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 4px rgba(4, 120, 87, 0.15);
 }
 
 .key-modal-status {
@@ -847,7 +714,6 @@ body {
     gap: 10px;
     margin-top: 18px;
 }
-
 .key-modal-buttons button {
     flex: 1;
     padding: 12px;
@@ -858,24 +724,17 @@ body {
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
-    -webkit-tap-highlight-color: transparent;
 }
-.key-modal-buttons button:active { transform: scale(0.97); }
-
 .key-btn-cancel {
-    background: var(--bg-light);
+    background: #f1f5f9;
     color: var(--text);
     border: 1px solid var(--border) !important;
 }
-.key-btn-cancel:hover { background: #e2e8f0; }
-
 .key-btn-save {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     color: #fff;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.4);
 }
-.key-btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.6); }
-
 .key-modal-link {
     display: block;
     text-align: center;
@@ -885,83 +744,32 @@ body {
     color: var(--primary);
     text-decoration: none;
 }
-.key-modal-link:hover { text-decoration: underline; }
 
-/* ============ Pull to Refresh ============ */
-.pull-to-refresh {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: linear-gradient(180deg, rgba(99, 102, 241, 0.15), transparent);
-    color: var(--primary-dark);
-    font-size: 12px;
-    font-weight: 900;
-    transform: translateY(-60px);
-    transition: transform 0.2s ease-out;
-    z-index: 9999;
-    pointer-events: none;
-    font-family: 'Cairo', sans-serif;
-}
-.pull-to-refresh.visible { transform: translateY(0); }
-.pull-to-refresh.refreshing { transform: translateY(0); }
-.pull-to-refresh .ptr-spinner {
-    font-size: 20px;
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-.pull-to-refresh.refreshing .ptr-spinner {
-    animation: ptrSpin 0.8s linear infinite;
-}
-@keyframes ptrSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-.pull-to-refresh .ptr-text {
-    font-weight: 900;
-    color: var(--primary-dark);
-}
-.pull-to-refresh.ready .ptr-spinner {
-    transform: rotate(180deg);
-}
-
-/* ============ Mobile ============ */
+/* Mobile */
 @media (max-width: 768px) {
     .header-actions { gap: 4px; }
     .action-btn { padding: 7px 9px; font-size: 11px; }
     .quick-chip { font-size: 11px; padding: 6px 12px; }
     .msg { font-size: 13.5px; padding: 12px 14px; }
-    .msg pre code { font-size: 11.5px; padding: 34px 12px 12px; }
+    .msg pre code { font-size: 11.5px; }
     .welcome-card .features { grid-template-columns: 1fr; }
     .chat-area { padding: 12px 8px 16px; }
     .input-area { padding: 10px 8px; gap: 6px; }
     .attach-btn { width: 40px; height: 40px; font-size: 18px; }
     .send-btn { width: 44px; height: 44px; }
-    .attachment-chip .att-name { max-width: 100px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Pull to Refresh Indicator -->
-<div class="pull-to-refresh" id="pullToRefresh">
-    <div class="ptr-spinner" id="ptrSpinner">🔄</div>
-    <span class="ptr-text" id="ptrText">اسحب للأسفل للتحديث</span>
-</div>
-
-<div class="code-header">
-    <div class="avatar">⚡</div>
+<div class="header">
+    <div class="avatar">🎓</div>
     <div class="info">
-        <h2>المساعد البرمجي الفائق</h2>
-        <p><span id="statusText">جاهز لمراجعة وتطوير الأكواد — ذكاء فائق</span></p>
+        <h2 id="headerTitle">المساعد الذكي — منصة احجزلي</h2>
+        <p id="statusText">جاري قراءة school.html...</p>
     </div>
     <div class="header-actions">
-        <button class="action-btn" onclick="refreshApp()" title="تحديث الصفحة" style="font-size:16px;padding:8px 10px">🔄</button>
+        <button class="action-btn" onclick="reloadContext()" title="إعادة قراءة school.html">🔄</button>
         <button class="action-btn key-missing" id="keyBtn" onclick="openKeyModal()" title="مفتاح Groq">
             <span id="keyIcon">🔑</span>
             <span id="keyLabel">المفتاح</span>
@@ -970,172 +778,159 @@ body {
     </div>
 </div>
 
-<div class="main-layout">
-    
-    <!-- Quick Actions Bar -->
-    <div class="quick-bar" id="quickBar">
-        <button class="quick-chip" onclick="quickAsk('اقرأ الكود المرفق واكتب نسخة كاملة محسّنة بدون أي خطأ أو نقصان')">📄 كود كامل بدون أخطاء</button>
-        <button class="quick-chip" onclick="quickAsk('افحص الكود المرفق واذكر كل الأخطاء والتحسينات الممكنة')">🔍 فحص وتحليل</button>
-        <button class="quick-chip" onclick="quickAsk('اقترح تحسينات على الأداء والسرعة للكود المرفق')">⚡ تحسين الأداء</button>
-        <button class="quick-chip" onclick="quickAsk('أضف تعليقات توضيحية بالعربي على الكود المرفق')">💬 تعليقات عربية</button>
-        <button class="quick-chip" onclick="quickAsk('حوّل الكود المرفق لنسخة حديثة ES6+ مع best practices')">🚀 تحديث للحديث</button>
-        <button class="quick-chip" onclick="quickAsk('اقترح ميزات جديدة ممكنة إضافتها للكود المرفق')">✨ أفكار إضافية</button>
-    </div>
-    
-    <!-- Chat Area -->
-    <div class="chat-area" id="chatArea"></div>
+<div class="quick-bar">
+    <button class="quick-chip" onclick="quickAsk('اشرح لي بنية school.html بالكامل')">🏫 بنية اللوحة</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أحظر معلم من لوحة التحكم؟')">🔒 حظر معلم</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أضيف مرحلة جديدة في إدارة المواد؟')">📚 إضافة مرحلة</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أعدل أسعار الباقات؟')">💰 تعديل الأسعار</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أشوف إحصائيات الأرباح؟')">📊 إحصائيات الأرباح</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أوافق على طلب اشتراك؟')">💎 موافقة اشتراك</button>
+    <button class="quick-chip" onclick="quickAsk('إزاي أفتح معلم لمدة 6 شهور؟')">📅 فتح 6 شهور</button>
+    <button class="quick-chip" onclick="quickAsk('أضف ميزة جديدة: تصدير بيانات Excel')">✨ ميزة جديدة</button>
+    <button class="quick-chip" onclick="quickAsk('راجع كود school.html واذكر أي مشاكل')">🐛 مراجعة الكود</button>
+</div>
 
-    <!-- Attachments Preview -->
-    <div class="attachments-preview" id="attachmentsPreview"></div>
+<div class="chat-area" id="chatArea"></div>
 
-    <!-- Token Counter -->
-    <div class="token-counter" id="tokenCounter">
-        <span class="tc-icon">📊</span>
-        <span>حجم الرسالة: <span class="tc-value" id="tokenCount">0</span> توكن من <span class="tc-value">8000</span> متاح</span>
+<div class="attachments-preview" id="attachmentsPreview"></div>
+
+<div class="input-area">
+    <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="رفع ملف">📎</button>
+    <input type="file" id="fileInput" multiple accept=".txt,.js,.html,.css,.json,.py,.php,.java,.ts,.md" style="display:none" onchange="handleFiles(event)">
+    <div class="input-wrap">
+        <textarea 
+            id="chatInput" 
+            rows="1"
+            placeholder="اسألني أي حاجة عن لوحة التحكم..."
+            autocomplete="off"
+            oninput="autoResize(this)"></textarea>
     </div>
-    
-    <!-- Input Area -->
-    <div class="input-area" id="inputArea">
-        <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="رفع ملف كود">📎</button>
-        <input type="file" id="fileInput" multiple accept=".txt,.js,.html,.css,.json,.py,.php,.java,.cpp,.c,.cs,.ts,.jsx,.tsx,.vue,.sql,.xml,.md,.yml,.yaml,.sh,.rb,.go,.rs,.kt,.swift,.dart" style="display:none" onchange="handleFiles(event)">
-        <div class="input-wrap">
-            <textarea 
-                id="chatInput" 
-                rows="1"
-                placeholder="الصق كودك أو اكتب طلبك البرمجي... (Shift+Enter لسطر جديد)"
-                autocomplete="off"
-                spellcheck="false"
-                oninput="handleInput(this)"
-                onpaste="handlePaste(event)"></textarea>
-        </div>
-        <button class="send-btn" id="sendBtn">➤</button>
-    </div>
-    
+    <button class="send-btn" id="sendBtn">➤</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ============ Modal إدخال مفتاح Groq ============ -->
+<!-- Key Modal -->
 <div class="key-modal-overlay" id="keyModal">
     <div class="key-modal-box">
         <h3>🔑 مفتاح Groq API</h3>
-        <p>الصق المفتاح الجديد اللي عملته من console.groq.com/keys</p>
-
-        <input 
-            type="text" 
-            id="apiKeyInput" 
-            placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" 
-            autocomplete="off"
-            spellcheck="false"
-            dir="ltr"
-        >
-
+        <p>الصق المفتاح من console.groq.com/keys</p>
+        <input type="text" id="apiKeyInput" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" dir="ltr">
         <div class="key-modal-status" id="keyStatus"></div>
-
         <div class="key-modal-buttons">
             <button class="key-btn-cancel" onclick="closeKeyModal()">إلغاء</button>
             <button class="key-btn-save" onclick="saveApiKey()">💾 حفظ</button>
         </div>
-
-        <a class="key-modal-link" href="https://console.groq.com/keys" target="_blank">
-            🔗 افتح صفحة عمل المفاتيح
-        </a>
+        <a class="key-modal-link" href="https://console.groq.com/keys" target="_blank">🔗 افتح صفحة المفاتيح</a>
     </div>
 </div>
 
 <script>
 /* ============================================================ */
-/* ============ 🔑 Groq Configuration ============ */
+/* ============ إعدادات Groq ============ */
 /* ============================================================ */
-
-const FALLBACK_KEY = '';
-let GROQ_API_KEY = localStorage.getItem('groq_api_key_code') || FALLBACK_KEY;
-
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-
-/* ✅ موديلات Groq محدّثة (أكتوبر 2025) — مرتبة بالأولوية */
 const GROQ_MODELS = [
-    'llama-3.3-70b-versatile',   // 12K TPM — الأفضل للأكواد الكبيرة
-    'openai/gpt-oss-120b',        // 8K TPM
-    'llama-3.1-8b-instant',       // 6K TPM — أسرع
-    'openai/gpt-oss-20b'          // 8K TPM — أخف
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'openai/gpt-oss-120b'
 ];
 
-/* ✅ الحد الأقصى للتوكنز في الطلب الواحد */
-const MAX_TOKENS_LIMIT = 7000;
+let GROQ_API_KEY = localStorage.getItem('groq_api_key_school') || '';
 
-/* ✅ الحد الأقصى للملف الواحد */
-const MAX_FILE_SIZE = 100 * 1024; // 100KB
-
+/* ============================================================ */
 /* ============ حالة التطبيق ============ */
+/* ============================================================ */
 const appState = {
-    chatHistory: JSON.parse(localStorage.getItem('code_chat_history') || '[]'),
-    attachments: []
+    chatHistory: JSON.parse(localStorage.getItem('school_chat_history') || '[]'),
+    attachments: [],
+    schoolHTML: null,
+    schoolMap: null
 };
 
-/* ============ DOM ============ */
 const chatArea = document.getElementById('chatArea');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const toastEl = document.getElementById('toast');
 const fileInput = document.getElementById('fileInput');
 const attachmentsPreview = document.getElementById('attachmentsPreview');
-const tokenCounter = document.getElementById('tokenCounter');
-const tokenCount = document.getElementById('tokenCount');
 
-/* ============ System Prompt الفائق ============ */
-const SYSTEM_PROMPT = `أنت **مهندس برمجيات فائق الذكاء** بخبرة 20 سنة في جميع لغات البرمجة والتقنيات.
+/* ============================================================ */
+/* ============ System Prompt ============ */
+/* ============================================================ */
+let SYSTEM_PROMPT = `أنت **المساعد الذكي** الخاص بلوحة تحكم **منصة احجزلي** (school.html).
 
-🎯 **مهمتك الأساسية:**
-أنت متخصص في:
-1. **كتابة أكواد كاملة** بدون أي خطأ أو نقصان — من أول سطر لآخر سطر
-2. **مراجعة وتصحيح الأكواد** المرفقة مع شرح كل خطأ
-3. **تحسين الأداء والأمان** للكود
-4. **شرح الأكواد** خطوة بخطوة بالعربي الواضح
-5. **إعادة كتابة الأكواد** بأحدث المعايير (ES6+, Best Practices)
+🎯 **مهمتك:**
+- الإجابة على أي سؤال عن لوحة التحكم (school.html)
+- شرح الدوال والأزرار والتبويبات
+- كتابة أكواد جديدة أو تعديل موجود
+- مراجعة الأكواد وذكر الأخطاء
 
-⚙️ **قواعد صارمة لا يمكن تجاوزها:**
+⚙️ **قواعد صارمة:**
+1. اتكلم بالعربي الواضح والمهني
+2. اكتب الكود كاملاً 100% بدون "..." أو اختصار
+3. استخدم \`\`\`language للكود
+4. استخدم **bold** للعناوين و - للنقاط
+5. لأي سؤال عن مكان ميزة، حدد التبويب + اسم الدالة
+6. لو المستخدم طلب تعديل، اكتب الكود المعدّل كامل
 
-**عند طلب كتابة كود:**
-- اكتب الكود **كاملاً 100%** من أول سطر لآخر سطر — بدون "..." أو "// باقي الكود"
-- تأكد إن الكود **يشتغل فوراً** بدون تعديل
-- اكتب الكود جوه \`\`\`language ... \`\`\` (حدد اللغة صح)
-- ضيف تعليقات توضيحية قصيرة بالعربي في الأماكن المهمة
-- اتبع Best Practices للغة المستخدمة
+📚 **معلومات school.html الأساسية:**
+- **5 تبويبات:**
+  1. 👥 إدارة المستخدمين (page-users) — جداول المعلمين والطلاب + خريطتين
+  2. 📚 إدارة المواد والصفوف (page-curriculum) — مراحل وصفوف ومواد
+  3. 💎 طلبات الاشتراك (page-subscriptions) — طلبات + إدارة اشتراكات المعلمين
+  4. 💰 إدارة الباقات والأسعار (page-pricing) — 3 باقات (3 شهور، 6 شهور، سنة)
+  5. 📊 إحصائيات الأرباح (page-analytics) — رسوم بيانية + أفضل معلمين
 
-**عند مراجعة كود:**
-- اقرأ الكود **بتركيز كامل** قبل الرد
-- اذكر **كل** الأخطاء (Syntax, Logic, Performance, Security)
-- لكل خطأ: اذكر رقم السطر + السبب + الحل
-- اكتب **الكود المصحح كاملاً** بعد المراجعة
+- **التقنيات:**
+  - Firebase Firestore (مزامنة لحظية)
+  - Leaflet.js (خرائط)
+  - TailwindCSS
+  - خط Cairo
 
-**التنسيق:**
-- استخدم \`\`\`language للكود
-- استخدم **bold** للعناوين
-- استخدم - للنقاط
-- استخدم 1. 2. 3. للخطوات المرقمة
+- **الدوال الرئيسية:**
+  - \`renderTeachersTable()\` / \`renderStudentsTable()\`
+  - \`toggleLockTeacher(phone, lock)\` / \`toggleLockStudent(id, lock)\`
+  - \`deleteTeacher(phone, name)\` / \`deleteStudent(id, name)\`
+  - \`renderCurriculum()\` / \`addStage()\` / \`addGrade()\` / \`addSubject()\`
+  - \`saveCurriculum()\` — حفظ المنهج سحابياً
+  - \`approveReq(reqId)\` / \`rejectReq(reqId)\` — موافقة/رفض اشتراك
+  - \`lockTeacherPermanent(phone)\` — حظر دائم
+  - \`unlockTeacherPermanent(phone)\` — فتح دائم
+  - \`unlockTeacherForMonths(phone, months)\` — فتح مؤقت
+  - \`savePricing(event)\` — حفظ الأسعار
+  - \`renderAnalytics()\` — الإحصائيات
+  - \`filterAnalytics(range)\` — فلتر زمني
+  - \`renderMap()\` — رسم الخرائط
+  - \`focusOnMap(key, mapType)\` — التركيز على موقع
 
-**القواعد الذهبية:**
-✅ لا تختصر أبداً — الكود الكامل دائماً
-✅ لا تفترض — لو محتاج توضيح، اسأل
-✅ اختبر ذهنياً كل سطر قبل كتابته
-✅ اتكلم بالعربي الواضح والمهني
+- **دوال Firebase (من firebase-config.js):**
+  - \`setTeacherLock\` / \`setStudentLock\`
+  - \`deleteTeacherAccount\` / \`deleteStudentAccount\`
+  - \`saveCurriculumSettings\` / \`savePricingSettings\`
+  - \`approveSubscription\` / \`rejectSubscription\`
+  - \`subscribeTeachers\` / \`subscribeStudents\` / \`subscribeGroups\`
+  - \`subscribeCurriculum\` / \`subscribePricing\` / \`subscribeSubscriptionRequests\`
 
-**لو السؤال مش برمجي:**
-اعتذر بأدب وقل إنك مساعد برمجي فقط.`;
+- **البنية في Firestore:**
+  - \`teachers/{phone}\` — بيانات المعلم (isLocked, unlockUntil, lockType, waClicks, bookingsCount)
+  - \`students/{id}\` — بيانات الطالب
+  - \`groups/{id}\` — المجموعات (phone, subject, grade, lat, lng)
+  - \`settings/curriculum\` — المراحل والصفوف والمواد
+  - \`settings/pricing\` — أسعار الباقات
+  - \`subscriptionRequests/{id}\` — طلبات الاشتراك
 
-/* ============ أدوات ============ */
-function scrollBottom() {
-    setTimeout(() => {
-        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: 'smooth' });
-    }, 100);
-}
+**🎯 عند استقبال سؤال:**
+- حدد التبويب + ابحث عن الدالة المناسبة
+- اشرح الخطوات بالتفصيل
+- لو محتاج كود، اكتبه كامل
 
-function currentTime() {
-    const d = new Date();
-    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
+**⚠️ لو السؤال مش عن school.html:**
+اعتذر بلطف وقل إنك مساعد اللوحة فقط.`;
 
+/* ============================================================ */
+/* ============ أدوات مساعدة ============ */
+/* ============================================================ */
 function showToast(text, type = 'error') {
     toastEl.textContent = text;
     toastEl.className = 'toast';
@@ -1145,53 +940,28 @@ function showToast(text, type = 'error') {
     setTimeout(() => toastEl.classList.remove('show'), 2500);
 }
 
+function scrollBottom() {
+    setTimeout(() => {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: 'smooth' });
+    }, 100);
+}
+
 function autoResize(el) {
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 140) + 'px';
 }
 
-/* ============ عدّاد التوكنز التقريبي ============ */
-function estimateTokens(text) {
-    if (!text) return 0;
-    // تقدير تقريبي: كل 4 أحرف ≈ 1 توكن
-    return Math.ceil(text.length / 4);
+function currentTime() {
+    const d = new Date();
+    return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-function handleInput(el) {
-    autoResize(el);
-    updateTokenCounter();
-}
-
-function updateTokenCounter() {
-    const inputText = chatInput.value || '';
-    const attText = appState.attachments.map(a => a.content).join('\n');
-    const totalText = inputText + '\n' + attText;
-    
-    const tokens = estimateTokens(totalText);
-
-    tokenCount.textContent = tokens.toLocaleString('en-US');
-    tokenCounter.classList.add('show');
-
-    // تغيير لون العدّاد حسب الحجم
-    tokenCounter.classList.remove('warn', 'danger');
-    if (tokens > MAX_TOKENS_LIMIT) {
-        tokenCounter.classList.add('danger');
-    } else if (tokens > MAX_TOKENS_LIMIT * 0.7) {
-        tokenCounter.classList.add('warn');
-    }
-}
-
-/* ============ تحويل النص لـ HTML آمن ============ */
 function escapeHtml(text) {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function formatMessage(text) {
     let html = escapeHtml(text);
-
     const codeBlocks = [];
     html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, lang, code) => {
         const id = `__CODE_BLOCK_${codeBlocks.length}__`;
@@ -1221,30 +991,38 @@ function formatMessage(text) {
     return html;
 }
 
-function _addMessage(who, text, saveToHistory = true) {
+window.copyCode = function(btn) {
+    const codeEl = btn.parentElement.querySelector('code');
+    if (!codeEl) return;
+    navigator.clipboard.writeText(codeEl.innerText).then(() => {
+        btn.textContent = '✅ تم النسخ';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 نسخ';
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+};
+
+function addMessage(who, text, save = true) {
     const msg = document.createElement('div');
     msg.className = `msg ${who}`;
-
-    const formatted = formatMessage(text);
-    msg.innerHTML = formatted + `<div class="time">${currentTime()}</div>`;
+    msg.innerHTML = formatMessage(text) + `<div class="time">${currentTime()}</div>`;
     chatArea.appendChild(msg);
     scrollBottom();
 
-    if (saveToHistory) {
+    if (save) {
         appState.chatHistory.push({
             role: who === 'ai' ? 'assistant' : 'user',
             content: text,
             time: Date.now()
         });
-        if (appState.chatHistory.length > 40) {
-            appState.chatHistory = appState.chatHistory.slice(-40);
+        if (appState.chatHistory.length > 30) {
+            appState.chatHistory = appState.chatHistory.slice(-30);
         }
-        localStorage.setItem('code_chat_history', JSON.stringify(appState.chatHistory));
+        localStorage.setItem('school_chat_history', JSON.stringify(appState.chatHistory));
     }
 }
-
-function addUserMessage(text) { _addMessage('user', text); }
-function addAIMessage(text) { _addMessage('ai', text); }
 
 function showTyping() {
     const typing = document.createElement('div');
@@ -1255,174 +1033,235 @@ function showTyping() {
     return typing;
 }
 
-/* ============ نسخ الكود ============ */
-window.copyCode = function(btn) {
-    const codeEl = btn.parentElement.querySelector('code');
-    if (!codeEl) return;
-    const text = codeEl.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        btn.textContent = '✅ تم النسخ';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '📋 نسخ';
-            btn.classList.remove('copied');
-        }, 1500);
-    }).catch(() => {
-        showToast('فشل النسخ', 'error');
-    });
-};
-
 /* ============================================================ */
-/* ============ 📎 رفع ومعالجة الملفات ============ */
+/* ============ قراءة school.html ============ */
 /* ============================================================ */
+async function loadSchoolContext() {
+    const statusText = document.getElementById('statusText');
+    statusText.textContent = '📡 جاري قراءة school.html...';
 
-function getFileIcon(name) {
-    const ext = name.split('.').pop().toLowerCase();
-    const icons = {
-        js: '🟨', html: '🌐', css: '🎨', json: '📋', py: '🐍',
-        php: '🐘', java: '☕', cpp: '⚙️', c: '⚙️', cs: '🎯',
-        ts: '💙', jsx: '⚛️', tsx: '⚛️', vue: '💚', sql: '🗄️',
-        xml: '📄', md: '📝', yml: '⚙️', yaml: '⚙️', sh: '🐚',
-        rb: '💎', go: '🐹', rs: '🦀', kt: '🎯', swift: '🦅',
-        dart: '🎯', txt: '📄'
-    };
-    return icons[ext] || '📄';
+    try {
+        const response = await fetch('school.html?_t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        const html = await response.text();
+        appState.schoolHTML = html;
+
+        // ابنِ خريطة ذكية
+        const map = buildSchoolMap(html);
+        appState.schoolMap = map;
+
+        // حدّث الـ prompt
+        SYSTEM_PROMPT = SYSTEM_PROMPT.replace(
+            /\*\*⚠️ لو السؤال مش عن school\.html:\*\*\nاعتذر بلطف وقل إنك مساعد اللوحة فقط\./,
+            `**⚠️ لو السؤال مش عن school.html:**\nاعتذر بلطف وقل إنك مساعد اللوحة فقط.\n\n============================================================\n📊 **تم قراءة school.html بنجاح (${Math.round(html.length/1024)}KB)**\n============================================================\n\n**التبويبات المكتشفة (${map.tabs.length}):**\n${map.tabs.map(t => `- ${t.label} → \\\`${t.id}\\\``).join('\n')}\n\n**الدوال المكتشفة (${map.functions.length}):**\n${map.functions.slice(0, 60).map(f => `- \\\`${f}()\\\``).join('\n')}\n\n**دوال Firebase المستوردة:**\n${map.firebaseFunctions.map(f => `- \\\`${f}\\\``).join('\n')}\n\n**الجداول:** ${map.tables.map(t => `\\\`${t}\\\``).join(', ') || 'لا يوجد'}\n**المودالات:** ${map.modals.map(m => `\\\`${m}\\\``).join(', ') || 'لا يوجد'}\n\n**⚠️ المستخدم بيسأل عن school.html — ركّز على الإجابة من المعلومات اللي فوق.**`
+        );
+
+        statusText.textContent = `✅ متصل — ${map.functions.length} دالة · ${map.tabs.length} تبويب`;
+
+        console.log('✅ تم تحميل سياق school.html:', map);
+
+    } catch (e) {
+        console.warn('⚠️ فشل تحميل school.html:', e.message);
+        document.getElementById('statusText').textContent = '⚠️ ارفع school.html كمرفق';
+        showToast('⚠️ مقدرتش أحمّل school.html — ارفعه كمرفق 📎', 'error');
+
+        SYSTEM_PROMPT += `\n\n⚠️ **تنبيه:** مقدرتش أحمّل school.html تلقائياً (مشكلة سيرفر). اطلب من المستخدم يرفع الملف كمرفق 📎.`;
+    }
 }
 
+/* ============================================================ */
+/* ============ بناء خريطة school.html ============ */
+/* ============================================================ */
+function buildSchoolMap(html) {
+    const map = {
+        tabs: [],
+        functions: [],
+        firebaseFunctions: [],
+        tables: [],
+        modals: [],
+        pages: []
+    };
+
+    let m;
+
+    // التبويبات
+    const tabRegex = /data-page="([^"]+)"[^>]*>([\s\S]*?)<\/button>/g;
+    while ((m = tabRegex.exec(html)) !== null) {
+        const label = m[2].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        map.tabs.push({ id: m[1], label });
+    }
+
+    // الدوال
+    const funcRegex = /window\.(\w+)\s*=\s*(?:async\s+)?function/g;
+    const funcs = new Set();
+    while ((m = funcRegex.exec(html)) !== null) funcs.add(m[1]);
+    map.functions = Array.from(funcs).sort();
+
+    // Firebase
+    const importMatch = html.match(/import\s*{([\s\S]*?)}\s*from\s*['"]\.\/firebase-config\.js['"]/);
+    if (importMatch) {
+        map.firebaseFunctions = importMatch[1]
+            .split(',')
+            .map(s => s.trim().split(/\s+as\s+/).pop().trim())
+            .filter(s => s && !s.startsWith('//'))
+            .sort();
+    }
+
+    // الجداول
+    const tableRegex = /<table\s+id="([^"]+)"/g;
+    while ((m = tableRegex.exec(html)) !== null) map.tables.push(m[1]);
+
+    // المودالات
+    const modalRegex = /class="modal-overlay"\s+id="([^"]+)"/g;
+    while ((m = modalRegex.exec(html)) !== null) map.modals.push(m[1]);
+
+    // الصفحات
+    const pageRegex = /id="(page-[a-z]+)"/g;
+    while ((m = pageRegex.exec(html)) !== null) {
+        if (!map.pages.includes(m[1])) map.pages.push(m[1]);
+    }
+
+    return map;
+}
+
+/* ============================================================ */
+/* ============ إدارة الملفات ============ */
+/* ============================================================ */
 window.handleFiles = async function(event) {
     const files = Array.from(event.target.files);
     if (!files.length) return;
 
-    let added = 0;
-
     for (const file of files) {
-        if (file.size > MAX_FILE_SIZE) {
-            showToast(`⚠️ ${file.name} أكبر من 100KB — قسّمه لأجزاء`, 'error');
+        if (file.size > 200 * 1024) {
+            showToast(`⚠️ ${file.name} أكبر من 200KB`, 'error');
             continue;
         }
-
         try {
             const content = await file.text();
-            appState.attachments.push({
-                name: file.name,
-                content: content,
-                size: file.size
-            });
-            added++;
+            appState.attachments.push({ name: file.name, content });
+
+            // لو school.html اترفع يدوياً
+            if (file.name.toLowerCase() === 'school.html') {
+                appState.schoolHTML = content;
+                const map = buildSchoolMap(content);
+                appState.schoolMap = map;
+                document.getElementById('statusText').textContent = `✅ متصل (مرفوع) — ${map.functions.length} دالة`;
+                showToast('✅ تم قراءة school.html المرفوع', 'success');
+            }
         } catch (e) {
             showToast(`❌ فشل قراءة ${file.name}`, 'error');
         }
     }
 
-    if (added > 0) {
-        renderAttachments();
-        updateTokenCounter();
-        showToast(`✅ تم إضافة ${added} ملف`, 'success');
-    }
-
+    renderAttachments();
     fileInput.value = '';
 };
 
-window.renderAttachments = function() {
+function renderAttachments() {
     if (appState.attachments.length === 0) {
         attachmentsPreview.classList.remove('show');
         attachmentsPreview.innerHTML = '';
         return;
     }
-
     attachmentsPreview.classList.add('show');
     attachmentsPreview.innerHTML = appState.attachments.map((att, i) => `
         <div class="attachment-chip">
-            <span class="att-icon">${getFileIcon(att.name)}</span>
-            <span class="att-name" title="${att.name}">${att.name}</span>
-            <button class="att-remove" onclick="removeAttachment(${i})" title="حذف">✕</button>
+            <span>📎</span>
+            <span>${att.name}</span>
+            <button class="att-remove" onclick="removeAttachment(${i})">✕</button>
         </div>
     `).join('');
-};
+}
 
-window.removeAttachment = function(index) {
-    appState.attachments.splice(index, 1);
+window.removeAttachment = function(i) {
+    appState.attachments.splice(i, 1);
     renderAttachments();
-    updateTokenCounter();
 };
 
-/* ============ معالجة اللصق ============ */
-window.handlePaste = function(event) {
-    const pastedText = (event.clipboardData || window.clipboardData).getData('text');
-    if (pastedText && pastedText.length > 1500) {
-        event.preventDefault();
-
-        let fileName = 'pasted-code.txt';
-        if (/<!DOCTYPE|<html/i.test(pastedText)) fileName = 'pasted-code.html';
-        else if (/^\s*[.#][\w-]+\s*{/m.test(pastedText)) fileName = 'pasted-code.css';
-        else if (/function|const|let|var|=>/.test(pastedText)) fileName = 'pasted-code.js';
-        else if (/def |import |print\(/i.test(pastedText)) fileName = 'pasted-code.py';
-        else if (/<\?php/.test(pastedText)) fileName = 'pasted-code.php';
-        else if (/class.*{/.test(pastedText) && /public|private|void/.test(pastedText)) fileName = 'pasted-code.java';
-
-        appState.attachments.push({
-            name: fileName,
-            content: pastedText,
-            size: pastedText.length
-        });
-        renderAttachments();
-        updateTokenCounter();
-        showToast(`📎 تم إضافة الكود الملصوق كملف (${pastedText.length} حرف)`, 'info');
-    }
-};
-
-/* ============ السؤال السريع ============ */
+/* ============================================================ */
+/* ============ إرسال ============ */
+/* ============================================================ */
 window.quickAsk = function(text) {
     chatInput.value = text;
     autoResize(chatInput);
-    updateTokenCounter();
-    handleSend();
+    sendMessage();
 };
 
-/* ============ بناء الرسالة النهائية ============ */
-function buildFinalMessage(userMessage) {
-    if (appState.attachments.length === 0) {
-        return userMessage;
+async function sendMessage() {
+    const val = chatInput.value.trim();
+    if (!val && appState.attachments.length === 0) return;
+
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+
+    let displayMsg = val;
+    if (appState.attachments.length > 0) {
+        const attNames = appState.attachments.map(a => `📎 ${a.name}`).join('\n');
+        displayMsg = (val ? val + '\n\n' : '') + attNames;
+    }
+    addMessage('user', displayMsg);
+
+    // ابني الرسالة
+    let finalMsg = val || 'حلل الملفات المرفقة';
+    if (appState.attachments.length > 0) {
+        finalMsg += '\n\n---\n**📎 الملفات المرفقة:**\n\n';
+        appState.attachments.forEach(att => {
+            const ext = att.name.split('.').pop().toLowerCase();
+            let lang = ext === 'txt' ? 'text' : ext;
+            if (ext === 'js') lang = 'javascript';
+            if (ext === 'py') lang = 'python';
+            finalMsg += `### ${att.name}\n\`\`\`${lang}\n${att.content}\n\`\`\`\n\n`;
+        });
     }
 
-    let finalMsg = userMessage || 'اقرأ الملفات المرفقة وحللها:';
-    finalMsg += '\n\n---\n**📎 الملفات المرفقة:**\n\n';
+    appState.attachments = [];
+    renderAttachments();
 
-    appState.attachments.forEach(att => {
-        const ext = att.name.split('.').pop().toLowerCase();
-        let lang = ext === 'txt' ? 'text' : ext;
-        if (ext === 'js') lang = 'javascript';
-        if (ext === 'py') lang = 'python';
-        if (ext === 'ts') lang = 'typescript';
+    const typing = showTyping();
+    const reply = await askGroq(finalMsg);
+    typing.remove();
+    addMessage('ai', reply);
 
-        finalMsg += `### 📄 ${att.name}\n\`\`\`${lang}\n${att.content}\n\`\`\`\n\n`;
-    });
-
-    return finalMsg;
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    chatInput.focus();
 }
 
-/* ============ إرسال للـ Groq ============ */
+sendBtn.onclick = sendMessage;
+chatInput.onkeydown = e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+};
+
+/* ============================================================ */
+/* ============ الاتصال بـ Groq ============ */
+/* ============================================================ */
 async function askGroq(userMessage) {
     if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
         updateKeyButtonState();
-        return '❌ **مفيش مفتاح Groq محفوظ**\n\nدوس على زرار 🔑 فوق واكتب المفتاح الجديد.';
+        return '❌ **مفيش مفتاح Groq**\n\nدوس على 🔑 فوق واكتب المفتاح من console.groq.com/keys';
     }
 
     const messages = [
         { role: 'system', content: SYSTEM_PROMPT }
     ];
 
-    // ✅ آخر رسالتين فقط (لتقليل التوكنز)
-    const recentHistory = appState.chatHistory.slice(-2);
-    recentHistory.forEach(h => messages.push({ role: h.role, content: h.content }));
+    // آخر رسالتين فقط
+    appState.chatHistory.slice(-2).forEach(h => {
+        messages.push({ role: h.role, content: h.content });
+    });
 
     messages.push({ role: 'user', content: userMessage });
 
     let response = null;
-    let lastError = null;
-    let lastErrorDetails = '';
+    let lastError = '';
 
-    const savedModel = localStorage.getItem('groq_working_model_code');
+    const savedModel = localStorage.getItem('groq_working_model_school');
     let modelsToTry = [...GROQ_MODELS];
     if (savedModel && modelsToTry.includes(savedModel)) {
         modelsToTry = [savedModel, ...modelsToTry.filter(m => m !== savedModel)];
@@ -1430,7 +1269,7 @@ async function askGroq(userMessage) {
 
     for (const model of modelsToTry) {
         try {
-            console.log(`⚡ Trying model: ${model}`);
+            console.log(`⚡ Trying: ${model}`);
 
             response = await fetch(GROQ_API_URL, {
                 method: 'POST',
@@ -1448,170 +1287,55 @@ async function askGroq(userMessage) {
             });
 
             if (response.ok) {
-                localStorage.setItem('groq_working_model_code', model);
+                localStorage.setItem('groq_working_model_school', model);
                 console.log(`✅ Success: ${model}`);
                 break;
             } else if (response.status === 401) {
-                lastError = '401';
-                lastErrorDetails = 'المفتاح غلط أو ملغي';
-                break;
+                return '❌ **المفتاح غلط أو ملغي**\n\nدوس على 🔑 فوق واكتب مفتاح جديد.';
             } else if (response.status === 429) {
-                lastError = '429';
-                lastErrorDetails = 'وصلت للحد المجاني';
-                break;
-            } else if (response.status === 413) {
-                lastError = '413';
-                try {
-                    const errData = await response.clone().json();
-                    lastErrorDetails = errData.error?.message || 'الطلب كبير جداً';
-                } catch(e) {
-                    lastErrorDetails = 'الطلب كبير جداً — الملف تجاوز الحد المسموح';
-                }
-                continue;
+                return '⏳ **وصلت للحد المجاني**\n\nاستنى دقيقة وجرب تاني.';
             } else {
-                try {
-                    const errData = await response.clone().json();
-                    const errMsg = errData.error?.message || `HTTP ${response.status}`;
-                    lastError = `HTTP ${response.status}`;
-                    lastErrorDetails = errMsg;
-                    console.warn(`❌ ${model}:`, errMsg);
-                } catch(e) {
-                    lastError = `HTTP ${response.status}`;
-                    lastErrorDetails = response.statusText || 'unknown';
-                }
+                const err = await response.json().catch(() => ({}));
+                lastError = err.error?.message || `HTTP ${response.status}`;
                 continue;
             }
-        } catch(e) {
+        } catch (e) {
             lastError = e.message;
-            lastErrorDetails = e.message;
-            console.warn(`💥 ${model}:`, e.message);
             continue;
         }
     }
 
     if (!response || !response.ok) {
         updateKeyButtonState();
-
-        if (lastError === '401') {
-            return '❌ **المفتاح غلط أو اتلغى**\n\nدوس على زرار 🔑 فوق واكتب مفتاح جديد من console.groq.com/keys';
-        }
-        if (lastError === '429') {
-            return '⏳ **وصلت للحد المجاني**\n\nاستنى شوية وجرب تاني.';
-        }
-        if (lastError === '413') {
-            return `📦 **الملف كبير جداً!**\n\n**التفاصيل:** ${lastErrorDetails}\n\n**الحلول:**\n1. **قسّم الملف** لأجزاء صغيرة (2000 كلمة لكل جزء)\n2. **امسح المحادثة** (زرار 🗑️ فوق) لو التاريخ كبير\n3. **جرب موديل `llama-3.3-70b-versatile`** بيدعم 12K توكن\n4. **ابعت الأجزاء واحدة واحدة** وطلب في الآخر دمجها`;
-        }
-
-        return `❌ **فشل الاتصال**\n\n**الخطأ:** \`${lastError}\`\n\n**التفاصيل:** ${lastErrorDetails}`;
+        return `❌ **فشل الاتصال**\n\n${lastError}`;
     }
 
     const data = await response.json();
     return data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد.';
 }
 
-/* ============ إرسال ============ */
-sendBtn.onclick = handleSend;
-chatInput.onkeydown = e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSend();
-    }
-};
-
-async function handleSend() {
-    const val = chatInput.value.trim();
-
-    if (!val && appState.attachments.length === 0) return;
-
-    // ✅ تحقق من حجم الرسالة قبل الإرسال
-    const inputText = val || '';
-    const attText = appState.attachments.map(a => a.content).join('\n');
-    const totalTokens = estimateTokens(inputText + '\n' + attText);
-
-    if (totalTokens > MAX_TOKENS_LIMIT) {
-        const confirmed = confirm(
-            `⚠️ الرسالة كبيرة جداً!\n\n` +
-            `📊 الحجم الحالي: ~${totalTokens.toLocaleString('en-US')} توكن\n` +
-            `📏 الحد الأقصى: ${MAX_TOKENS_LIMIT.toLocaleString('en-US')} توكن\n\n` +
-            `هل تريد المتابعة؟ (قد يفشل الطلب)\n\n` +
-            `💡 الأفضل: قسّم الكود لأجزاء صغيرة`
-        );
-        if (!confirmed) return;
-    }
-
-    chatInput.disabled = true;
-    sendBtn.disabled = true;
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
-
-    let displayMsg = val;
-    if (appState.attachments.length > 0) {
-        const attNames = appState.attachments.map(a => `📎 ${a.name}`).join('\n');
-        displayMsg = (val ? val + '\n\n' : '') + attNames;
-    }
-    addUserMessage(displayMsg);
-
-    const finalMsg = buildFinalMessage(val);
-
-    appState.attachments = [];
-    renderAttachments();
-    updateTokenCounter();
-
-    const typing = showTyping();
-    const reply = await askGroq(finalMsg);
-    typing.remove();
-    addAIMessage(reply);
-
-    chatInput.disabled = false;
-    sendBtn.disabled = false;
-    chatInput.focus();
-}
-
-/* ============ مسح المحادثة ============ */
-window.clearChat = function() {
-    if (!confirm('هل تريد بدء محادثة جديدة؟ سيتم مسح كل الرسائل.')) return;
-    appState.chatHistory = [];
-    appState.attachments = [];
-    localStorage.removeItem('code_chat_history');
-    chatArea.innerHTML = '';
-    renderAttachments();
-    updateTokenCounter();
-    showWelcome();
-    showToast('تم مسح المحادثة', 'success');
-};
-
-/* ============ تحديث الصفحة ============ */
-window.refreshApp = function() {
-    showToast('🔄 جاري التحديث...', 'info');
-    
-    if ('caches' in window) {
-        caches.keys().then(names => {
-            names.forEach(n => caches.delete(n));
-        });
-    }
-    
-    setTimeout(() => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('_t', Date.now());
-        window.location.href = url.toString();
-    }, 400);
-};
-
-/* ============ Welcome ============ */
+/* ============================================================ */
+/* ============ الترحيب ============ */
+/* ============================================================ */
 function showWelcome() {
     const welcome = document.createElement('div');
     welcome.className = 'welcome-card';
+
+    const sizeKB = appState.schoolHTML ? Math.round(appState.schoolHTML.length/1024) : '—';
+    const funcsCount = appState.schoolMap?.functions.length || 0;
+    const tabsCount = appState.schoolMap?.tabs.length || 0;
+
     welcome.innerHTML = `
-        <h3>⚡ أهلاً في المساعد البرمجي الفائق</h3>
+        <h3>🎓 أهلاً في المساعد الذكي</h3>
         <p>
-            أنا مهندس برمجيات بخبرة 20 سنة، متخصص في كتابة ومراجعة وتطوير الأكواد بدقة فائقة.
-            <br>الصق كودك، أو ارفع ملف، أو اطلب أي حاجة برمجية — هيديك نسخة كاملة بدون أخطاء.
+            أنا قريت ملف <b>school.html</b> وحفظت خريطته كاملة ✅
+            <br>اسألني أي سؤال عن لوحة تحكم منصة احجزلي.
         </p>
         <div class="features">
-            <div class="feature-item">📝 أكواد كاملة بدون اختصار</div>
-            <div class="feature-item">🐛 تصحيح كل الأخطاء</div>
-            <div class="feature-item">📎 رفع ملفات كود متعددة</div>
-            <div class="feature-item">📊 عدّاد التوكنز</div>
+            <div class="feature-item">📖 قريت ${sizeKB}KB</div>
+            <div class="feature-item">🔧 ${funcsCount} دالة</div>
+            <div class="feature-item">📑 ${tabsCount} تبويب</div>
+            <div class="feature-item">📎 ارفع ملف لأدق إجابة</div>
         </div>
     `;
     chatArea.appendChild(welcome);
@@ -1621,17 +1345,19 @@ function showWelcome() {
 
 function showSuggestions() {
     const suggestions = [
-        { icon: '📄', text: 'اكتب لي صفحة HTML كاملة فيها نموذج تسجيل دخول أنيق' },
-        { icon: '⚡', text: 'اقترح تحسينات على كود JavaScript لزيادة السرعة' },
-        { icon: '🔍', text: 'راجع هذا الكود واذكر كل الأخطاء' },
-        { icon: '🎨', text: 'صمم لي واجهة CSS حديثة لكارت منتج' },
-        { icon: '🚀', text: 'حوّل الكود التالي لـ ES6+' },
-        { icon: '🔥', text: 'اكتب دالة JavaScript للتعامل مع API بشكل احترافي' }
+        { icon: '🏫', text: 'اشرح لي بنية school.html بالكامل' },
+        { icon: '🔒', text: 'إزاي أحظر معلم؟' },
+        { icon: '📚', text: 'إزاي أضيف مرحلة جديدة؟' },
+        { icon: '💰', text: 'إزاي أعدل أسعار الباقات؟' },
+        { icon: '📊', text: 'إزاي أشوف إحصائيات الأرباح؟' },
+        { icon: '💎', text: 'إزاي أوافق على طلب اشتراك؟' },
+        { icon: '📅', text: 'إزاي أفتح معلم 6 شهور؟' },
+        { icon: '🔧', text: 'أضف ميزة: تصدير بيانات Excel' },
+        { icon: '🐛', text: 'راجع كود school.html واذكر المشاكل' }
     ];
 
     const container = document.createElement('div');
     container.className = 'suggestions';
-    container.id = 'suggestionsBox';
 
     suggestions.forEach(s => {
         const chip = document.createElement('button');
@@ -1640,7 +1366,6 @@ function showSuggestions() {
         chip.onclick = () => {
             chatInput.value = s.text;
             autoResize(chatInput);
-            updateTokenCounter();
             container.remove();
             chatInput.focus();
         };
@@ -1652,9 +1377,32 @@ function showSuggestions() {
 }
 
 /* ============================================================ */
-/* ============ 🔑 إدارة المفتاح ============ */
+/* ============ محادثة جديدة ============ */
 /* ============================================================ */
+window.clearChat = function() {
+    if (!confirm('هل تريد بدء محادثة جديدة؟')) return;
+    appState.chatHistory = [];
+    appState.attachments = [];
+    localStorage.removeItem('school_chat_history');
+    chatArea.innerHTML = '';
+    renderAttachments();
+    showWelcome();
+    showToast('تم مسح المحادثة', 'success');
+};
 
+/* ============================================================ */
+/* ============ إعادة تحميل السياق ============ */
+/* ============================================================ */
+window.reloadContext = async function() {
+    if (!confirm('سيتم إعادة قراءة school.html. متأكد؟')) return;
+    showToast('🔄 جاري إعادة القراءة...', 'info');
+    await loadSchoolContext();
+    showToast('✅ تم التحديث', 'success');
+};
+
+/* ============================================================ */
+/* ============ إدارة المفتاح ============ */
+/* ============================================================ */
 window.openKeyModal = function() {
     const modal = document.getElementById('keyModal');
     const input = document.getElementById('apiKeyInput');
@@ -1663,7 +1411,6 @@ window.openKeyModal = function() {
     input.value = GROQ_API_KEY && GROQ_API_KEY.startsWith('gsk_') ? GROQ_API_KEY : '';
     status.textContent = '';
     status.className = 'key-modal-status';
-
     modal.classList.add('show');
     setTimeout(() => input.focus(), 150);
 };
@@ -1683,79 +1430,45 @@ window.saveApiKey = async function() {
         return;
     }
 
-    status.textContent = '⏳ جاري التحقق من المفتاح...';
+    status.textContent = '⏳ جاري التحقق...';
     status.className = 'key-modal-status loading';
 
     try {
-        let isValid = false;
-        let lastTestError = '';
+        const testRes = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${newKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: GROQ_MODELS[0],
+                messages: [{ role: 'user', content: 'hi' }],
+                max_tokens: 5
+            })
+        });
 
-        for (const testModel of GROQ_MODELS) {
-            try {
-                const testRes = await fetch(GROQ_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${newKey}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: testModel,
-                        messages: [{ role: 'user', content: 'hi' }],
-                        max_tokens: 5
-                    })
-                });
-
-                if (testRes.ok) {
-                    isValid = true;
-                    console.log(`✅ Key works with: ${testModel}`);
-                    break;
-                } else if (testRes.status === 401) {
-                    status.textContent = '❌ المفتاح غلط أو ملغي';
-                    status.className = 'key-modal-status err';
-                    return;
-                } else if (testRes.status === 429) {
-                    status.textContent = '⚠️ المفتاح سليم بس وصل للحد المجاني';
-                    status.className = 'key-modal-status loading';
-                    isValid = true;
-                    break;
-                } else {
-                    try {
-                        const errData = await testRes.json();
-                        lastTestError = errData.error?.message || `HTTP ${testRes.status}`;
-                    } catch(e) {
-                        lastTestError = `HTTP ${testRes.status}`;
-                    }
-                    continue;
-                }
-            } catch(e) {
-                lastTestError = e.message;
-                continue;
-            }
-        }
-
-        if (isValid) {
-            status.textContent = '✅ المفتاح شغال تمام!';
+        if (testRes.ok || testRes.status === 429) {
+            status.textContent = '✅ المفتاح شغال!';
             status.className = 'key-modal-status ok';
+
+            GROQ_API_KEY = newKey;
+            localStorage.setItem('groq_api_key_school', newKey);
+            localStorage.removeItem('groq_working_model_school');
+            updateKeyButtonState();
+
+            setTimeout(() => {
+                closeKeyModal();
+                showToast('✅ تم حفظ المفتاح', 'success');
+            }, 800);
+        } else if (testRes.status === 401) {
+            status.textContent = '❌ المفتاح غلط أو ملغي';
+            status.className = 'key-modal-status err';
         } else {
-            status.textContent = `⚠️ المفتاح موجود بس مش اشتغل مع أي موديل\n${lastTestError}`;
-            status.className = 'key-modal-status loading';
+            status.textContent = `⚠️ HTTP ${testRes.status}`;
+            status.className = 'key-modal-status err';
         }
-
-        GROQ_API_KEY = newKey;
-        localStorage.setItem('groq_api_key_code', newKey);
-        localStorage.removeItem('groq_working_model_code');
-
-        updateKeyButtonState();
-
-        setTimeout(() => {
-            closeKeyModal();
-            showToast('✅ تم حفظ المفتاح بنجاح', 'success');
-            addAIMessage('✅ **تم تحديث المفتاح بنجاح**\n\nجاهز أستقبل أي كود أو طلب برمجي! 🚀');
-        }, 800);
-
     } catch (e) {
-        console.error(e);
-        status.textContent = '❌ فشل الاتصال بالإنترنت';
+        status.textContent = '❌ فشل الاتصال';
         status.className = 'key-modal-status err';
     }
 };
@@ -1771,132 +1484,27 @@ function updateKeyButtonState() {
     if (ok) {
         btn.classList.remove('key-missing');
         btn.classList.add('key-ok');
-        btn.title = '✅ المفتاح شغال — اضغط للتغيير';
         if (icon) icon.textContent = '✅';
-        if (label) label.textContent = 'المفتاح شغال';
+        if (label) label.textContent = 'شغال';
     } else {
         btn.classList.remove('key-ok');
         btn.classList.add('key-missing');
-        btn.title = '⚠️ اضغط لإدخال مفتاح Groq';
         if (icon) icon.textContent = '🔑';
         if (label) label.textContent = 'المفتاح';
     }
 }
 
-document.getElementById('keyModal')?.addEventListener('click', (e) => {
+document.getElementById('keyModal')?.addEventListener('click', e => {
     if (e.target.id === 'keyModal') closeKeyModal();
 });
 
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.getElementById('keyModal')?.classList.contains('show')) {
-        closeKeyModal();
-    }
-});
-
-document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        saveApiKey();
-    }
+document.getElementById('apiKeyInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); saveApiKey(); }
 });
 
 /* ============================================================ */
-/* ============ 📱 Pull to Refresh ============ */
+/* ============ استرجاع المحادثة ============ */
 /* ============================================================ */
-
-(function initPullToRefresh() {
-    const ptr = document.getElementById('pullToRefresh');
-    const spinner = document.getElementById('ptrSpinner');
-    const text = document.getElementById('ptrText');
-
-    if (!ptr || !chatArea) return;
-
-    const THRESHOLD = 40;
-    const MAX_PULL = 100;
-
-    let startY = 0;
-    let currentY = 0;
-    let isPulling = false;
-    let isRefreshing = false;
-
-    chatArea.addEventListener('touchstart', (e) => {
-        if (chatArea.scrollTop <= 0 && !isRefreshing) {
-            startY = e.touches[0].clientY;
-            isPulling = true;
-        }
-    }, { passive: true });
-
-    chatArea.addEventListener('touchmove', (e) => {
-        if (!isPulling || isRefreshing) return;
-
-        currentY = e.touches[0].clientY;
-        const distance = currentY - startY;
-
-        if (distance > 0 && chatArea.scrollTop <= 0) {
-            const pullDistance = Math.min(distance * 0.5, MAX_PULL);
-
-            ptr.classList.add('visible');
-            ptr.style.transform = `translateY(-60px) translateY(${pullDistance}px)`;
-            spinner.style.transform = `rotate(${pullDistance * 3}deg)`;
-
-            if (pullDistance >= THRESHOLD) {
-                ptr.classList.add('ready');
-                text.textContent = '✨ اترك للتحديث';
-            } else {
-                ptr.classList.remove('ready');
-                text.textContent = '⬇️ اسحب للأسفل للتحديث';
-            }
-        }
-    }, { passive: true });
-
-    chatArea.addEventListener('touchend', () => {
-        if (!isPulling || isRefreshing) return;
-
-        const distance = currentY - startY;
-        const pullDistance = Math.min(distance * 0.5, MAX_PULL);
-
-        if (pullDistance >= THRESHOLD && chatArea.scrollTop <= 0) {
-            triggerRefresh();
-        } else {
-            resetPTR();
-        }
-
-        isPulling = false;
-        startY = 0;
-        currentY = 0;
-    }, { passive: true });
-
-    function resetPTR() {
-        ptr.style.transform = 'translateY(-60px)';
-        ptr.classList.remove('ready');
-        setTimeout(() => {
-            ptr.classList.remove('visible');
-        }, 200);
-    }
-
-    function triggerRefresh() {
-        isRefreshing = true;
-        ptr.classList.add('refreshing', 'visible');
-        ptr.classList.remove('ready');
-        text.textContent = '🔄 جاري التحديث...';
-        ptr.style.transform = 'translateY(0)';
-        spinner.style.transform = 'rotate(0deg)';
-
-        if ('caches' in window) {
-            caches.keys().then(names => {
-                names.forEach(n => caches.delete(n));
-            });
-        }
-
-        setTimeout(() => {
-            const url = new URL(window.location.href);
-            url.searchParams.set('_t', Date.now());
-            window.location.href = url.toString();
-        }, 700);
-    }
-})();
-
-/* ============ استرجاع المحادثة السابقة ============ */
 function restoreHistory() {
     if (appState.chatHistory.length > 0) {
         appState.chatHistory.forEach(h => {
@@ -1912,22 +1520,23 @@ function restoreHistory() {
     }
 }
 
+/* ============================================================ */
 /* ============ التهيئة ============ */
-function init() {
+/* ============================================================ */
+async function init() {
+    // اقرأ السياق أولاً
+    await loadSchoolContext();
+
     restoreHistory();
     updateKeyButtonState();
     autoResize(chatInput);
-    updateTokenCounter();
 
     if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
-        setTimeout(() => {
-            openKeyModal();
-        }, 800);
+        setTimeout(() => openKeyModal(), 1000);
     }
 }
 
 init();
-
 </script>
 
 </body>
