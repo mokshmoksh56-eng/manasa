@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>🎓 المساعد الذكي للمستر</title>
+<title>🎓 المساعد التعليمي الذكي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,7 +17,8 @@
     --bg: #f5f3ff;
     --success: #10b981;
     --warning: #f59e0b;
-    --teal: #25968b;
+    --student-color: #3b82f6;
+    --teacher-color: #f59e0b;
     --text: #2c3e50;
     --gray: #64748b;
 }
@@ -55,12 +56,12 @@ body {
     position: relative;
 }
 .tutor-header .avatar::after {
-    content: '👨‍🏫';
+    content: '🎓';
     position: absolute;
     bottom: -2px;
     left: -2px;
-    background: var(--warning);
-    width: 22px; height: 22px;
+    background: var(--primary);
+    width: 20px; height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -69,8 +70,8 @@ body {
     border: 2px solid #fff;
 }
 .tutor-header .info { flex: 1; min-width: 0; }
-.tutor-header .info h2 { font-size: 15px; font-weight: 900; }
-.tutor-header .info p { font-size: 11.5px; opacity: 0.85; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.tutor-header .info h2 { font-size: 16px; font-weight: 900; }
+.tutor-header .info p { font-size: 12px; opacity: 0.85; font-weight: 700; display: flex; align-items: center; gap: 5px; }
 .tutor-header .info .dot {
     width: 8px; height: 8px;
     border-radius: 50%;
@@ -81,83 +82,100 @@ body {
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+.header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.mode-btn, .action-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.25s;
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+}
+.mode-btn:hover, .action-btn:hover { background: rgba(255,255,255,0.35); }
+
+.mode-btn.student-mode { background: var(--student-color); border-color: #93c5fd; }
+.mode-btn.teacher-mode { background: var(--teacher-color); border-color: #fcd34d; }
+.mode-btn { font-size: 12px; padding: 6px 10px; }
+
 /* ============ Main Layout ============ */
 .main-layout {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
 }
 
-/* ============ Context Bar ============ */
-.context-bar {
+/* ============ Quick Category Bar ============ */
+.category-bar {
     background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
     border-bottom: 2px solid var(--border);
-    padding: 8px 12px;
+    padding: 10px 12px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(124,58,237,0.08);
-    max-height: 120px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.1);
+    max-height: 130px;
     overflow-y: auto;
 }
-.context-bar::-webkit-scrollbar { width: 4px; }
-.context-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+.category-bar::-webkit-scrollbar { width: 4px; }
+.category-bar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-.ctx-header {
+.cat-header {
     width: 100%;
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--dark);
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
     margin-bottom: 2px;
 }
-.ctx-header .refresh-btn {
+.cat-header .level-badge {
     background: var(--primary);
     color: #fff;
-    border: none;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 10.5px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
 }
 
-.ctx-chip {
+.cat-chip {
     background: #fff;
-    border: 1.5px solid var(--border);
+    border: 2px solid var(--border);
     color: var(--dark);
-    padding: 5px 10px;
-    border-radius: 14px;
-    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 12px;
     font-weight: 900;
-    display: inline-flex;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
     align-items: center;
     gap: 4px;
     box-shadow: 0 1px 3px rgba(124,58,237,0.1);
 }
-.ctx-chip.subjects {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    border-color: #3b82f6;
-    color: #1e40af;
+.cat-chip:hover {
+    background: var(--light);
+    border-color: var(--primary);
+    transform: translateY(-2px);
 }
-.ctx-chip.groups {
-    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-    border-color: #10b981;
-    color: #065f46;
-}
-.ctx-chip.empty {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-    color: #64748b;
+.cat-chip.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--dark);
 }
 
 /* ============ Chat Area ============ */
@@ -174,16 +192,16 @@ body {
 .chat-area::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.2); border-radius: 10px; }
 
 .msg {
-    max-width: 92%;
+    max-width: 88%;
     margin-bottom: 12px;
-    padding: 14px 18px;
-    border-radius: 18px;
+    padding: 12px 16px;
+    border-radius: 16px;
     font-size: 14.5px;
-    line-height: 1.7;
+    line-height: 1.65;
     position: relative;
     word-wrap: break-word;
     animation: msgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 @keyframes msgIn {
     from { opacity: 0; transform: translateY(10px) scale(0.95); }
@@ -197,49 +215,42 @@ body {
     margin-right: auto;
     margin-left: 0;
 }
-
 .msg.ai {
-    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    background: #fff;
     color: var(--text);
     border-bottom-right-radius: 4px;
     margin-left: auto;
     margin-right: 0;
     border: 2px solid var(--light);
-    box-shadow: 0 4px 16px -4px rgba(124,58,237,0.2);
 }
 .msg.ai::before {
-    content: '👨‍🏫 المساعد';
+    content: '🎓 AI';
     position: absolute;
-    top: -12px;
-    left: 14px;
-    background: linear-gradient(135deg, var(--primary), var(--dark));
+    top: -10px;
+    left: 10px;
+    background: var(--primary);
     color: #fff;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
-    padding: 3px 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(124,58,237,0.4);
+    padding: 2px 8px;
+    border-radius: 8px;
 }
 .msg.user .time, .msg.ai .time {
     font-size: 10px;
     color: var(--gray);
     text-align: left;
-    margin-top: 8px;
+    margin-top: 6px;
     font-weight: 700;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 .msg.user .time { text-align: right; }
 
-/* ============ AI Message Styling ============ */
-.msg.ai b { 
-    color: var(--dark); 
-    font-weight: 900;
-    display: inline;
-}
+/* Message styling */
+.msg.ai b { color: var(--dark); font-weight: 900; }
 .msg.ai code {
     background: #f1f5f9;
-    padding: 2px 8px;
-    border-radius: 6px;
+    padding: 2px 6px;
+    border-radius: 4px;
     font-family: 'Courier New', monospace;
     font-size: 13px;
     color: #dc2626;
@@ -248,109 +259,13 @@ body {
 }
 .msg.ai ul, .msg.ai ol {
     margin: 8px 0;
-    padding-right: 22px;
+    padding-right: 20px;
 }
-.msg.ai li { 
-    margin-bottom: 6px;
-    line-height: 1.7;
-}
+.msg.ai li { margin-bottom: 4px; }
 .msg.ai hr {
     border: none;
-    border-top: 2px dashed var(--border);
-    margin: 12px 0;
-}
-
-/* Section headers */
-.msg.ai h3 {
-    color: var(--dark);
-    margin: 14px 0 8px;
-    font-size: 16px;
-    font-weight: 900;
-    padding-right: 10px;
-    border-right: 4px solid var(--primary);
-    padding-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.msg.ai h3:first-child { margin-top: 0; }
-
-.msg.ai h4 {
-    color: var(--dark);
-    margin: 12px 0 6px;
-    font-size: 14.5px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Info boxes */
-.msg.ai .info-box {
-    background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    border: 2px solid #3b82f6;
-    border-radius: 12px;
-    padding: 12px 14px;
+    border-top: 1px dashed var(--border);
     margin: 10px 0;
-    color: #1e40af;
-    font-size: 13.5px;
-    line-height: 1.6;
-}
-
-.msg.ai .warning-box {
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    border: 2px solid #f59e0b;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin: 10px 0;
-    color: #92400e;
-    font-size: 13.5px;
-    line-height: 1.6;
-}
-
-.msg.ai .success-box {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid #10b981;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin: 10px 0;
-    color: #065f46;
-    font-size: 13.5px;
-    line-height: 1.6;
-}
-
-.msg.ai .step-box {
-    background: #f8fafc;
-    border-right: 4px solid var(--primary);
-    border-radius: 0 10px 10px 0;
-    padding: 10px 14px;
-    margin: 8px 0;
-    font-size: 13.5px;
-    line-height: 1.6;
-}
-
-.msg.ai .answer-box {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid #10b981;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin: 12px 0;
-    font-weight: 900;
-    color: #065f46;
-    font-size: 14.5px;
-    text-align: center;
-    box-shadow: 0 4px 12px -4px rgba(16,185,129,0.4);
-}
-
-.msg.ai .quote-box {
-    background: linear-gradient(135deg, #faf5ff, #ede9fe);
-    border-right: 4px solid var(--primary);
-    padding: 10px 14px;
-    margin: 8px 0;
-    border-radius: 0 10px 10px 0;
-    font-style: italic;
-    color: var(--dark);
-    font-size: 13.5px;
 }
 
 /* ============ Suggested questions ============ */
@@ -358,15 +273,8 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     animation: msgIn 0.3s ease;
-}
-.suggestions-title {
-    width: 100%;
-    font-size: 11.5px;
-    color: var(--gray);
-    font-weight: 900;
-    margin-bottom: 2px;
 }
 .suggestion-chip {
     background: #fff;
@@ -390,9 +298,7 @@ body {
     background: var(--primary);
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(124,58,237,0.3);
 }
-.suggestion-chip:active { transform: scale(0.96); }
 
 /* ============ Input area ============ */
 .input-area {
@@ -435,7 +341,7 @@ body {
 .send-btn {
     width: 46px; height: 46px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--dark));
+    background: var(--primary);
     border: none;
     color: #fff;
     font-size: 20px;
@@ -449,16 +355,30 @@ body {
 .send-btn:disabled { opacity: 0.5; }
 
 .typing {
-    display: inline-flex; gap: 4px; padding: 14px 18px;
-    background: #fff; border-radius: 18px; border-bottom-right-radius: 4px;
+    display: inline-flex; gap: 4px; padding: 12px 16px;
+    background: #fff; border-radius: 16px; border-bottom-right-radius: 4px;
     margin-left: auto; margin-bottom: 12px; width: fit-content;
     border: 2px solid var(--light);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 .typing span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: typing 1.4s infinite; }
 .typing span:nth-child(2) { animation-delay: 0.2s; }
 .typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+/* ============ Toast ============ */
+.toast {
+    position: fixed; bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #dc2626; color: #fff;
+    padding: 12px 20px; border-radius: 22px;
+    font-size: 14px; font-weight: 800;
+    opacity: 0; transition: all 0.3s;
+    z-index: 9998; pointer-events: none;
+    max-width: 90%; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; }
 
 /* ============ Welcome Card ============ */
 .welcome-card {
@@ -469,219 +389,355 @@ body {
     margin-bottom: 16px;
     box-shadow: 0 4px 12px rgba(124,58,237,0.15);
     animation: msgIn 0.3s ease;
-    max-width: 92%;
-    margin-left: auto;
-    margin-right: 0;
-    border-bottom-right-radius: 4px;
 }
 .welcome-card h3 {
     color: var(--dark);
     font-size: 15px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 6px;
 }
-.welcome-card p {
-    font-size: 13px;
-    color: #6d28d9;
-    line-height: 1.7;
+.welcome-card .levels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+.welcome-card .level-item {
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--dark);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border);
+}
+
+/* ============ Key Modal ============ */
+.key-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 20, 80, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: fadeInKey 0.2s ease;
+}
+.key-modal-overlay.show { display: flex; }
+
+@keyframes fadeInKey {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.key-modal-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 20px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    animation: slideUpKey 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    direction: rtl;
+    text-align: right;
+}
+
+@keyframes slideUpKey {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.key-modal-box h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.key-modal-box p {
+    margin: 0 0 16px;
+    font-size: 12.5px;
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+.key-modal-box input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    font-family: 'Cairo', monospace;
+    font-weight: 800;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    background: #faf5ff;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+.key-modal-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    background: #fff;
+}
+
+.key-modal-status {
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 10px;
+    min-height: 18px;
+    text-align: center;
+}
+.key-modal-status.ok { color: #10B981; }
+.key-modal-status.err { color: #DC2626; }
+.key-modal-status.loading { color: #F59E0B; }
+
+.key-modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.key-modal-buttons button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.key-modal-buttons button:active { transform: scale(0.97); }
+
+.key-btn-cancel {
+    background: #f1f5f9;
+    color: var(--text);
+}
+.key-btn-cancel:hover { background: #e2e8f0; }
+
+.key-btn-save {
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+.key-btn-save:hover { transform: translateY(-2px); }
+
+.key-modal-link {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--primary);
+    text-decoration: none;
+}
+.key-modal-link:hover { text-decoration: underline; }
+
+/* الحالة في الهيدر لو المفتاح غلط */
+.action-btn.key-missing {
+    background: #DC2626;
+    border-color: #FCA5A5;
+    animation: keyAlert 1.5s infinite;
+}
+@keyframes keyAlert {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.7); }
+    50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
 }
 
 /* ============ Mobile ============ */
 @media (max-width: 768px) {
-    .tutor-header .info h2 { font-size: 14px; }
-    .tutor-header .info p { font-size: 10.5px; }
-    .msg { font-size: 14px; padding: 12px 15px; }
-    .msg.ai h3 { font-size: 15px; }
-    .msg.ai h4 { font-size: 14px; }
-    .suggestion-chip { font-size: 11.5px; padding: 7px 12px; }
-    .ctx-chip { font-size: 10.5px; padding: 4px 9px; }
+    .header-actions { gap: 4px; }
+    .mode-btn, .action-btn { padding: 6px 8px; font-size: 11px; }
+    .cat-chip { font-size: 11px; padding: 5px 10px; }
+    .msg { font-size: 14px; }
+    .welcome-card .levels { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
 <div class="tutor-header">
-    <div class="avatar">👨‍🏫</div>
+    <div class="avatar">🎓</div>
     <div class="info">
-        <h2>المساعد الذكي للمستر</h2>
-        <p><span class="dot"></span> <span id="statusText">جاهز لمساعدتك في التخصص والمواعيد</span></p>
+        <h2>المساعد التعليمي الذكي</h2>
+        <p><span class="dot"></span> <span id="statusText">جاهز يجاوب على أي سؤال</span></p>
+    </div>
+    <div class="header-actions">
+        <button class="action-btn" onclick="openKeyModal()" title="تغيير مفتاح Groq">🔑</button>
+        <button class="mode-btn student-mode" id="modeBtn" onclick="toggleMode()">
+            <span id="modeIcon">🎒</span>
+            <span id="modeText">طالب</span>
+        </button>
     </div>
 </div>
 
 <div class="main-layout">
     
-    <!-- Context Bar -->
-    <div class="context-bar" id="contextBar">
-        <div class="ctx-header">
-            <span>📋 سياقك الحالي</span>
-            <button class="refresh-btn" onclick="refreshContext()">
-                <span>🔄</span>
-                <span>تحديث</span>
-            </button>
+    <!-- Category Bar -->
+    <div class="category-bar" id="categoryBar">
+        <div class="cat-header">
+            <span>📚 اختر المرحلة والمادة</span>
+            <span class="level-badge" id="currentLevel">عام</span>
         </div>
-        <div id="contextContent"></div>
+        <!-- Categories will be generated -->
     </div>
     
     <!-- Chat Area -->
     <div class="chat-area" id="chatArea"></div>
     
     <!-- Input Area -->
-    <div class="input-area">
+    <div class="input-area" id="inputArea">
         <div class="input-wrap">
-            <input type="text" id="chatInput" placeholder="اسأل عن أي حاجة في التخصص أو المواعيد..." autocomplete="off" inputmode="text">
+            <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off" inputmode="text">
         </div>
         <button class="send-btn" id="sendBtn">➤</button>
     </div>
     
 </div>
 
+<div class="toast" id="toast"></div>
+
+<!-- ============ Modal إدخال مفتاح Groq ============ -->
+<div class="key-modal-overlay" id="keyModal">
+    <div class="key-modal-box">
+        <h3>🔑 مفتاح Groq API</h3>
+        <p>الصق المفتاح الجديد اللي عملته من console.groq.com/keys</p>
+
+        <input 
+            type="text" 
+            id="apiKeyInput" 
+            placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" 
+            autocomplete="off"
+            spellcheck="false"
+            dir="ltr"
+        >
+
+        <div class="key-modal-status" id="keyStatus"></div>
+
+        <div class="key-modal-buttons">
+            <button class="key-btn-cancel" onclick="closeKeyModal()">إلغاء</button>
+            <button class="key-btn-save" onclick="saveApiKey()">💾 حفظ</button>
+        </div>
+
+        <a class="key-modal-link" href="https://console.groq.com/keys" target="_blank">
+            🔗 افتح صفحة عمل المفاتيح
+        </a>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>try { eruda.init({ tool: ['console'], autoScale: true }); } catch(e) {}</script>
 
 <script type="module">
+import { saveTeacherData } from './firebase-config.js';
+
 /* ============================================================ */
 /* ============ 🔑 Groq Configuration ============ */
 /* ============================================================ */
 
-const FALLBACK_KEY = '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';
+const FALLBACK_KEY = '';
 let GROQ_API_KEY = localStorage.getItem('groq_api_key') || FALLBACK_KEY;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const GROQ_MODELS = [
-    'openai/gpt-oss-120b',
     'openai/gpt-oss-20b',
-    'qwen/qwen3.8-27b',
-    'allam-2-7b'
+    'openai/gpt-oss-120b',
+    'allam-2-7b',
+    'qwen/qwen3.8-27b'
 ];
+
+/* ============ حالة التطبيق ============ */
+const appState = {
+    mode: 'student', // student | teacher
+    level: 'general', // primary | preparatory | secondary | university | general
+    subject: '', // math | arabic | english | science | physics | chemistry | biology | history | philosophy | programming | general
+    chatHistory: []
+};
 
 /* ============ DOM ============ */
 const chatArea = document.getElementById('chatArea');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
-const contextBar = document.getElementById('contextBar');
-const contextContent = document.getElementById('contextContent');
+const toastEl = document.getElementById('toast');
+const categoryBar = document.getElementById('categoryBar');
+const inputArea = document.getElementById('inputArea');
 
-let chatHistory = [];
-
-/* ============================================================ */
-/* ============ 📋 قراءة السياق من mester1 + mester2 ============ */
-/* ============================================================ */
-
-function getSpecialtyContext() {
-    try {
-        const raw = localStorage.getItem('mester1_selections') 
-                 || localStorage.getItem('teacherSelections');
-        if (!raw) return null;
-        
-        const data = JSON.parse(raw);
-        if (!data || Object.keys(data).length === 0) return null;
-        
-        const stageNames = {
-            'kg': 'رياض الأطفال',
-            'primary': 'الابتدائية',
-            'prep': 'الإعدادية',
-            'secondary': 'الثانوية',
-            'azhar': 'الأزهرية'
-        };
-        
-        const result = [];
-        for (const stageId in data) {
-            const sel = data[stageId];
-            if (!sel || !sel.subjects || sel.subjects.length === 0) continue;
-            if (!sel.grade) continue;
-            
-            result.push({
-                stageId: stageId,
-                stageName: stageNames[stageId] || stageId,
-                grade: sel.grade,
-                subjects: sel.subjects
-            });
-        }
-        
-        return result.length > 0 ? result : null;
-    } catch(e) {
-        console.warn('⚠️ فشل قراءة التخصص:', e);
-        return null;
+/* ============ المراحل والمواد ============ */
+const LEVELS = {
+    primary: { 
+        name: 'ابتدائي', icon: '🎒', 
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'religion', name: 'تربية دينية', icon: '📿' }
+        ]
+    },
+    preparatory: { 
+        name: 'إعدادي', icon: '📗',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'science', name: 'علوم', icon: '🔬' },
+            { id: 'social', name: 'دراسات', icon: '🗺️' },
+            { id: 'computer', name: 'كمبيوتر', icon: '💻' }
+        ]
+    },
+    secondary: { 
+        name: 'ثانوي', icon: '📘',
+        subjects: [
+            { id: 'arabic', name: 'لغة عربية', icon: '📖' },
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'english', name: 'إنجليزي', icon: '🌍' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'geology', name: 'جيولوجيا', icon: '🪨' },
+            { id: 'history', name: 'تاريخ', icon: '📜' },
+            { id: 'philosophy', name: 'فلسفة', icon: '🤔' },
+            { id: 'psychology', name: 'علم نفس', icon: '🧠' }
+        ]
+    },
+    university: { 
+        name: 'جامعة', icon: '🎓',
+        subjects: [
+            { id: 'math', name: 'رياضيات', icon: '🔢' },
+            { id: 'physics', name: 'فيزياء', icon: '⚛️' },
+            { id: 'chemistry', name: 'كيمياء', icon: '🧪' },
+            { id: 'biology', name: 'أحياء', icon: '🧬' },
+            { id: 'programming', name: 'برمجة', icon: '💻' },
+            { id: 'engineering', name: 'هندسة', icon: '⚙️' },
+            { id: 'medicine', name: 'طب', icon: '🏥' },
+            { id: 'business', name: 'تجارة', icon: '💼' },
+            { id: 'law', name: 'حقوق', icon: '⚖️' },
+            { id: 'education', name: 'تربية', icon: '📚' }
+        ]
+    },
+    general: {
+        name: 'عام', icon: '📚',
+        subjects: []
     }
-}
-
-function getGroupsContext() {
-    try {
-        const raw = localStorage.getItem('teacher_appointments_summary');
-        if (!raw) return null;
-        
-        const data = JSON.parse(raw);
-        if (!Array.isArray(data) || data.length === 0) return null;
-        
-        return data;
-    } catch(e) {
-        console.warn('⚠️ فشل قراءة المجموعات:', e);
-        return null;
-    }
-}
-
-function getTeacherProfile() {
-    try {
-        const raw = localStorage.getItem('current_teacher_profile');
-        if (!raw) return null;
-        return JSON.parse(raw);
-    } catch(e) {
-        return null;
-    }
-}
-
-/* ============================================================ */
-/* ============ 🎨 عرض السياق في الشريط العلوي ============ */
-/* ============================================================ */
-
-function renderContext() {
-    const specialty = getSpecialtyContext();
-    const groups = getGroupsContext();
-    const profile = getTeacherProfile();
-    
-    let html = '';
-    
-    // اسم المستر
-    if (profile && (profile.name || profile.teacherName)) {
-        const name = profile.title ? `${profile.title} ${profile.name}` : profile.name || profile.teacherName;
-        html += `<span class="ctx-chip">👤 ${name}</span>`;
-    }
-    
-    // التخصص
-    if (specialty) {
-        let totalSubjects = 0;
-        let summary = [];
-        specialty.forEach(s => {
-            totalSubjects += s.subjects.length;
-            summary.push(`${s.grade} (${s.subjects.length})`);
-        });
-        html += `<span class="ctx-chip subjects">📚 ${totalSubjects} مادة — ${summary.join(' • ')}</span>`;
-    } else {
-        html += `<span class="ctx-chip empty">📚 لم تحدد تخصص بعد</span>`;
-    }
-    
-    // المجموعات
-    if (groups && groups.length > 0) {
-        html += `<span class="ctx-chip groups">📅 ${groups.length} مجموعة/موعد</span>`;
-    } else {
-        html += `<span class="ctx-chip empty">📅 لا توجد مجموعات بعد</span>`;
-    }
-    
-    contextContent.innerHTML = html;
-}
-
-window.refreshContext = function() {
-    renderContext();
-    addAIMessage(`🔄 <b>تم تحديث السياق</b><br>هبني إجاباتي على أحدث بيانات من ملفاتك.`);
 };
 
-/* ============================================================ */
-/* ============ 💬 نظام الرسائل ============ */
-/* ============================================================ */
-
+/* ============ أدوات ============ */
 function scrollBottom() {
     setTimeout(() => {
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: 'smooth' });
@@ -693,53 +749,34 @@ function currentTime() {
     return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-/* ============ تنسيق النص ============ */
-function formatMarkdown(text) {
-    let html = text;
-    
-    // Escape HTML
-    html = html
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    
-    // Bold
-    html = html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-    
-    // Code
-    html = html.replace(/`(.+?)`/g, '<code>$1</code>');
-    
-    // Headers
-    html = html.replace(/^### (.+)$/gm, '<h4>📌 $1</h4>');
-    html = html.replace(/^## (.+)$/gm, '<h3>🔷 $1</h3>');
-    html = html.replace(/^# (.+)$/gm, '<h3>🌟 $1</h3>');
-    
-    // Info boxes
-    html = html.replace(/^💡 (.+)$/gm, '<div class="info-box">💡 $1</div>');
-    html = html.replace(/^⚠️ (.+)$/gm, '<div class="warning-box">⚠️ $1</div>');
-    html = html.replace(/^✅ (.+)$/gm, '<div class="success-box">✅ $1</div>');
-    
-    // Blockquote
-    html = html.replace(/^&gt; (.+)$/gm, '<div class="quote-box">$1</div>');
-    
-    // Lists
-    html = html.replace(/^- (.+)$/gm, '• $1');
-    html = html.replace(/^\* (.+)$/gm, '• $1');
-    html = html.replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`);
-    
-    // HR
-    html = html.replace(/^---$/gm, '<hr>');
-    
-    // Newlines
-    html = html.replace(/\n/g, '<br>');
-    
-    return html;
+function showToast(text, isSuccess = false) {
+    toastEl.textContent = text;
+    toastEl.classList.toggle('success', isSuccess);
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 2500);
 }
 
 function _addMessage(who, text) {
     const msg = document.createElement('div');
     msg.className = `msg ${who}`;
-    msg.innerHTML = formatMarkdown(text) + `<div class="time">${currentTime()}</div>`;
+    // نحول النص لـ HTML آمن مع تحويل الأسطر
+    const formatted = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // نرجع الـ markdown
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^### (.+)$/gm, '<b>$1</b>')
+        .replace(/^## (.+)$/gm, '<b>$1</b>')
+        .replace(/^# (.+)$/gm, '<b>$1</b>')
+        .replace(/^- (.+)$/gm, '• $1')
+        .replace(/^\* (.+)$/gm, '• $1')
+        .replace(/^\d+\. (.+)$/gm, (m, p1) => `• ${p1}`)
+        .replace(/---/g, '<hr>')
+        .replace(/\n/g, '<br>');
+    
+    msg.innerHTML = formatted + `<div class="time">${currentTime()}</div>`;
     chatArea.appendChild(msg);
     scrollBottom();
 }
@@ -756,138 +793,174 @@ function showTyping() {
     return typing;
 }
 
-/* ============================================================ */
-/* ============ 🧠 بناء System Prompt ============ */
-/* ============================================================ */
-
-function buildSystemPrompt() {
-    const specialty = getSpecialtyContext();
-    const groups = getGroupsContext();
-    const profile = getTeacherProfile();
+/* ============ Category Bar ============ */
+function renderCategoryBar() {
+    categoryBar.innerHTML = '';
     
-    let specialtyText = 'لم يتم تحديد تخصص بعد.';
-    if (specialty) {
-        specialtyText = specialty.map(s => {
-            return `  • ${s.stageName} - ${s.grade}: ${s.subjects.join('، ')}`;
-        }).join('\n');
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML = `
+        <span>📚 اختر المرحلة والمادة</span>
+        <span class="level-badge" id="currentLevel">${LEVELS[appState.level]?.name || 'عام'}</span>
+    `;
+    categoryBar.appendChild(header);
+    
+    // أزرار المراحل
+    const levelChips = document.createElement('div');
+    levelChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-bottom:6px;';
+    Object.keys(LEVELS).forEach(key => {
+        const level = LEVELS[key];
+        const chip = document.createElement('button');
+        chip.className = 'cat-chip' + (appState.level === key ? ' active' : '');
+        chip.innerHTML = `${level.icon} ${level.name}`;
+        chip.onclick = () => {
+            appState.level = key;
+            appState.subject = '';
+            renderCategoryBar();
+            updateStatusText();
+        };
+        levelChips.appendChild(chip);
+    });
+    categoryBar.appendChild(levelChips);
+    
+    // أزرار المواد (لو المرحلة مش general)
+    if (appState.level !== 'general' && LEVELS[appState.level]) {
+        const subjectChips = document.createElement('div');
+        subjectChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%;';
+        LEVELS[appState.level].subjects.forEach(subj => {
+            const chip = document.createElement('button');
+            chip.className = 'cat-chip' + (appState.subject === subj.id ? ' active' : '');
+            chip.innerHTML = `${subj.icon} ${subj.name}`;
+            chip.onclick = () => {
+                appState.subject = appState.subject === subj.id ? '' : subj.id;
+                renderCategoryBar();
+                updateStatusText();
+            };
+            subjectChips.appendChild(chip);
+        });
+        categoryBar.appendChild(subjectChips);
     }
-    
-    let groupsText = 'لا توجد مجموعات أو مواعيد مسجلة بعد.';
-    if (groups && groups.length > 0) {
-        groupsText = groups.map((g, idx) => {
-            const time = g.startTime && g.endTime 
-                ? `${g.startTime} → ${g.endTime}` 
-                : 'غير محدد';
-            const day = g.dayName || (g.daysNames && g.daysNames[0]) || 'غير محدد';
-            const date = g.date || '';
-            const location = g.location || g.type || 'غير محدد';
-            const address = g.fullAddress || g.street || '';
-            const capacity = g.capacity || '؟';
-            const gender = g.genderAllowed || 'مختلط';
-            const apptType = g.apptType === 'recurring' ? 'أسبوعي' : 'لمرة واحدة';
-            
-            return `  ${idx + 1}) "${g.groupName || 'بدون اسم'}" — ${g.subject || ''} (${g.grade || ''})
-     • الوقت: ${day}${date ? ` (${date})` : ''} — ${time}
-     • المكان: ${location}${address ? ` (${address})` : ''}
-     • السعة: ${capacity} طالب — الفئة: ${gender}
-     • النوع: ${apptType}`;
-        }).join('\n');
-    }
-    
-    const teacherName = profile?.name || profile?.teacherName || 'المستر';
-    const teacherTitle = profile?.title || '';
-    
-    return `أنت مساعد ذكي مخصص لمساعدة المدرس "${teacherTitle} ${teacherName}". 
-
-📋 **بيانات المستر الحالية من ملفاته:**
-
-**🎓 التخصص (mester1):**
-${specialtyText}
-
-**📅 المجموعات والمواعيد (mester2):**
-${groupsText}
-
----
-
-🎯 **مهمتك:**
-
-إنت مساعد شخصي للمستر. جاوب على أي سؤال عن:
-1. **تخصصه** — المواد اللي بيدرسها، الصفوف، إعداد خطة دراسية
-2. **مجموعاته** — تنظيمها، توزيعها، ملاحظات على المواعيد
-3. **تحضير الدروس** — خطط، أنشطة، أسئلة، امتحانات
-4. **نصائح تربوية** — إدارة الفصل، التعامل مع الطلبة
-5. **حل مشاكل عملية** — تعارض مواعيد، سعة المجموعة، إلخ
-6. **أي حاجة تعليمية أو تنظيمية** تخص شغله
-
----
-
-📐 **قواعد الرد:**
-
-1. **اتكلم بالمصري العامي** بشكل محترم ومهني، كأنك مساعد شخصي
-2. **اربط الإجابة ببياناته** — استخدم معلوماته الفعلية اللي فوق
-3. **نسّق الرد بشكل جميل جداً** باستخدام:
-   - **## العناوين الرئيسية** (للمواضيع الكبيرة)
-   - **### العناوين الفرعية** (للنقاط الفرعية)
-   - **• النقاط** (للقوائم)
-   - **الإيموجي** بشكل مناسب (📚 📅 ✅ ⚠️ 💡 🎯)
-   - **الجداول** لما تحتاج مقارنة
-   - **الاقتباسات** باستخدام > للنقاط المهمة
-4. **قسّم الرد لأقسام واضحة** لو الإجابة طويلة
-5. **خلي الرد عملي** — خطوات قابلة للتنفيذ
-6. **لو السؤال عن التخصص أو المجموعات** — ارجع للبيانات الفعلية فوق
-7. **لو مفيش بيانات** — اقترح عليه يسجلها الأول في mester1 أو mester2
-8. **لو مش فاهم السؤال** — اسأل للتوضيح
-
----
-
-💡 **أمثلة على التنسيق الجميل:**
-
-**مثال 1:**
-## 📚 تخصصك الحالي
-- **الصف:** ...
-- **المواد:** ...
-
-**مثال 2:**
-## 📅 اقتراح توزيع المجموعات
-| اليوم | الوقت | المجموعة |
-|------|------|---------|
-| ... | ... | ... |
-
-**مثال 3:**
-## 🎯 خطة تحضير درس
-### 🔍 الأهداف
-### 📝 الخطوات
-### 💡 أنشطة تفاعلية
-
----
-
-🚫 **تجنب:**
-- الإجابات العامة اللي ملهاش علاقة ببياناته
-- الردود القصيرة جداً بدون تفاصيل مفيدة
-- الكلام الرسمي الجاف (اتكلم بشكل ودود)
-
-ابدأ الرد على سؤال المستر دلوقتي.`;
 }
 
-/* ============================================================ */
-/* ============ 📡 إرسال للـ Groq ============ */
-/* ============================================================ */
+function updateStatusText() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? (LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name || '')
+        : '';
+    
+    const mode = appState.mode === 'student' ? '🎒 طالب' : '👨‍🏫 مستر';
+    
+    let txt = mode;
+    if (level !== 'عام') txt += ` • ${level}`;
+    if (subject) txt += ` • ${subject}`;
+    
+    document.getElementById('statusText').textContent = txt;
+}
 
-async function askGroq(userMessage) {
-    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
-        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>افتح Console والصق:<br><code>localStorage.setItem("groq_api_key", "gsk_المفتاح_بتاعك")</code>';
+/* ============ Mode Toggle ============ */
+window.toggleMode = function() {
+    appState.mode = appState.mode === 'student' ? 'teacher' : 'student';
+    
+    const btn = document.getElementById('modeBtn');
+    const icon = document.getElementById('modeIcon');
+    const text = document.getElementById('modeText');
+    
+    if (appState.mode === 'student') {
+        btn.className = 'mode-btn student-mode';
+        icon.textContent = '🎒';
+        text.textContent = 'طالب';
+        chatInput.placeholder = 'اسأل أي سؤال يا بطل...';
+    } else {
+        btn.className = 'mode-btn teacher-mode';
+        icon.textContent = '👨‍🏫';
+        text.textContent = 'مستر';
+        chatInput.placeholder = 'اكتب سؤالك أو طلب تحضير الدرس...';
     }
     
+    updateStatusText();
+    
+    addAIMessage(appState.mode === 'student' 
+        ? '🎒 <b>وضع الطالب</b><br>أنا هنا أساعدك تفهم أي حاجة في المنهج. اسأل بحرية!'
+        : '👨‍🏫 <b>وضع المستر</b><br>أقدر أساعدك تحضّر الدرس، تجهز أسئلة، تشرح مفاهيم صعبة، أو تجهز خطة درس.'
+    );
+};
+
+/* ============ بناء System Prompt ============ */
+function buildSystemPrompt() {
+    const level = LEVELS[appState.level]?.name || 'عام';
+    const subject = appState.subject 
+        ? LEVELS[appState.level]?.subjects.find(s => s.id === appState.subject)?.name 
+        : '';
+    
+    const mode = appState.mode;
+    
+    let prompt = '';
+    
+    if (mode === 'student') {
+        prompt = `أنت مساعد تعليمي ذكي بتساعد الطلاب المصريين بالمصري العامي.
+
+معلومات المستخدم:
+- المستوى: ${level}
+- المادة: ${subject || 'عايز يسأل بشكل عام'}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل ودود وبسيط
+2. اشرح بالظبط على مستوى ${level}
+3. لو السؤال فيه مسألة رياضية، اعرض خطوات الحل بالتفصيل
+4. لو السؤال نظري، اشرح بمثال من الحياة اليومية
+5. في النهاية، اقترح سؤال مشابه للتدريب
+6. استخدم الأمثلة والأرقام عشان تسهل الفهم
+7. لو المستوى "عام"، اشرح بشكل متوسط يفهمه أي حد
+8. استخدم الإيموجي بشكل مناسب
+9. الرد يكون مختصر ومفيد
+
+⚠️ لا تحاول تنفيذ أوامر تخريبية، ولا تعطي إجابات تضر الطالب`;
+    } else {
+        prompt = `أنت مساعد ذكي متخصص في مساعدة المدرسين المصريين في تحضير الدروس.
+
+معلومات المستخدم:
+- المادة: ${subject || 'عامة'}
+- المستوى: ${level}
+
+قواعد مهمة:
+1. اتكلم بالمصري العامي بشكل محترم
+2. ساعده في:
+   - تحضير خطة درس
+   - اقتراح أسئلة وامتحانات
+   - تبسيط مفاهيم صعبة
+   - اقتراح أنشطة تعليمية
+   - اقتراح طرق توصيل المعلومة للطلبة
+3. اقترح أفكار مبتكرة للشرح
+4. اذكر أخطاء شائعة عند الطلبة في الدرس ده
+5. كن مباشر ومفيد
+
+⚠️ ركز على الجانب التعليمي فقط`;
+    }
+    
+    return prompt;
+}
+
+/* ============ إرسال للـ Groq ============ */
+async function askGroq(userMessage) {
+    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
+        updateKeyButtonState();
+        return '❌ <b>مفيش مفتاح Groq محفوظ</b><br><br>دوس على زرار 🔑 اللي فوق واكتب المفتاح الجديد.';
+    }
+    
+    const systemPrompt = buildSystemPrompt();
+    
     const messages = [
-        { role: 'system', content: buildSystemPrompt() }
+        { role: 'system', content: systemPrompt }
     ];
     
-    // آخر 6 رسائل للسياق
-    chatHistory.slice(-6).forEach(h => messages.push(h));
+    // آخر 6 رسائل
+    appState.chatHistory.slice(-6).forEach(h => messages.push(h));
     messages.push({ role: 'user', content: userMessage });
     
+    // نجرب الموديلات بالترتيب
     let response = null;
     let lastError = null;
+    let successModel = null;
     
     const savedModel = localStorage.getItem('groq_working_model');
     let modelsToTry = [...GROQ_MODELS];
@@ -909,17 +982,18 @@ async function askGroq(userMessage) {
                     model: model,
                     messages: messages,
                     temperature: 0.7,
-                    max_tokens: 2500,
+                    max_tokens: 1500,
                     top_p: 0.9
                 })
             });
             
             if (response.ok) {
+                successModel = model;
                 localStorage.setItem('groq_working_model', model);
                 console.log(`✅ نجح: ${model}`);
                 break;
             } else if (response.status === 404) {
-                lastError = '404';
+                lastError = '404: model not found';
                 continue;
             } else if (response.status === 401) {
                 lastError = '401';
@@ -938,35 +1012,70 @@ async function askGroq(userMessage) {
     }
     
     if (!response || !response.ok) {
-        if (lastError === '401') return '❌ <b>المفتاح غلط أو اتلغى</b>';
-        if (lastError === '429') return '⏳ <b>وصلت للحد المجاني</b><br>استنى شوية وجرب تاني.';
-        return `❌ <b>فشل الاتصال</b> (${lastError})`;
+        updateKeyButtonState();
+        if (lastError === '401') {
+            return '❌ <b>المفتاح غلط أو اتلغى</b><br><br>دوس على زرار 🔑 فوق واكتب مفتاح جديد من console.groq.com/keys';
+        }
+        if (lastError === '429') {
+            return '⏳ <b>وصلت للحد المجاني</b><br>استنى شوية وجرب تاني.';
+        }
+        return `❌ <b>فشل الاتصال</b><br>${lastError}<br><br>تأكد من الشبكة، أو جرب تحدّث الصفحة.`;
     }
     
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || 'معلش، مقدرتش أرد.';
     
-    // حفظ في التاريخ
-    chatHistory.push({ role: 'user', content: userMessage });
-    chatHistory.push({ role: 'assistant', content: reply });
-    if (chatHistory.length > 20) {
-        chatHistory = chatHistory.slice(-20);
+    // نحفظ في التاريخ
+    appState.chatHistory.push({ role: 'user', content: userMessage });
+    appState.chatHistory.push({ role: 'assistant', content: reply });
+    if (appState.chatHistory.length > 20) {
+        appState.chatHistory = appState.chatHistory.slice(-20);
     }
+    
+    // نحفظ في Firebase
+    saveToFirebase(userMessage, reply);
     
     return reply;
 }
 
-/* ============================================================ */
-/* ============ 🚀 الإرسال ============ */
-/* ============================================================ */
+/* ============ حفظ في Firebase ============ */
+async function saveToFirebase(question, answer) {
+    try {
+        const phone = localStorage.getItem('current_teacher_phone') || 'guest_' + Date.now();
+        const key = 'tutor_history_' + Date.now();
+        
+        const data = {
+            [key]: JSON.stringify({
+                question: question,
+                answer: answer.slice(0, 2000),
+                mode: appState.mode,
+                level: appState.level,
+                subject: appState.subject,
+                timestamp: new Date().toISOString()
+            })
+        };
+        
+        // نحفظ في localStorage كمان (احتياطي)
+        let history = JSON.parse(localStorage.getItem('tutor_history') || '[]');
+        history.push({
+            question: question,
+            answer: answer.slice(0, 2000),
+            mode: appState.mode,
+            level: appState.level,
+            subject: appState.subject,
+            timestamp: new Date().toISOString()
+        });
+        if (history.length > 100) history = history.slice(-100);
+        localStorage.setItem('tutor_history', JSON.stringify(history));
+        
+    } catch(e) {
+        console.warn('⚠️ فشل حفظ السؤال:', e);
+    }
+}
 
+/* ============ إرسال ============ */
 sendBtn.onclick = handleSend;
-chatInput.onkeydown = e => { 
-    if (e.key === 'Enter' && !e.shiftKey) { 
-        e.preventDefault(); 
-        handleSend(); 
-    } 
-};
+chatInput.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
 
 async function handleSend() {
     const val = chatInput.value.trim();
@@ -988,44 +1097,73 @@ async function handleSend() {
     chatInput.focus();
 }
 
-/* ============================================================ */
-/* ============ 💡 اقتراحات ذكية حسب السياق ============ */
-/* ============================================================ */
+/* ============ Welcome + Suggestions ============ */
+function showWelcome() {
+    // Welcome card
+    const welcome = document.createElement('div');
+    welcome.className = 'welcome-card';
+    welcome.innerHTML = `
+        <h3>🎓 أهلاً! أنا المساعد التعليمي الذكي</h3>
+        <p style="font-size:13px;color:#6d28d9;line-height:1.6;">
+            جاهز أساعدك في أي حاجة في المنهج المصري والعربي.<br>
+            اختار المرحلة والمادة فوق، أو اسألني مباشرة.
+        </p>
+        <div class="levels">
+            <div class="level-item">🎒 ابتدائي</div>
+            <div class="level-item">📗 إعدادي</div>
+            <div class="level-item">📘 ثانوي</div>
+            <div class="level-item">🎓 جامعة</div>
+        </div>
+    `;
+    chatArea.appendChild(welcome);
+    scrollBottom();
+    
+    // اقتراحات
+    showSuggestions('general');
+}
 
-function showSuggestions() {
-    const specialty = getSpecialtyContext();
-    const groups = getGroupsContext();
+function showSuggestions(type) {
+    const suggestions = {
+        general: [
+            'اشرحلي الضرب والقسمة بطريقة سهلة',
+            'إيه الفرق بين الحيض والنفاس؟',
+            'احكيلي عن الحضارة الفرعونية',
+            'اشرحلي قوانين نيوتن للحركة',
+            'إيه هي الدالة اللوغاريتمية؟',
+            'علمني إنجليزي بطريقة سهلة',
+            'احكيلي عن دورة الماء في الطبيعة',
+            'إيه هي الخوارزميات في البرمجة؟'
+        ],
+        student: [
+            '❤️ عايز أفهم الرياضيات',
+            '📖 اشرحلي درس من العربي',
+            '🔬 عايز أفهم علوم',
+            '🌍 عايز أتعلم إنجليزي',
+            '💻 عايز أتعلم برمجة',
+            '🎯 عايز حل مسألة رياضية',
+            '🤔 عندي سؤال صعب',
+            '📝 ساعدني أراجع للامتحان'
+        ],
+        teacher: [
+            '📝 جهزلي خطة درس',
+            '❓ اقترح أسئلة للامتحان',
+            '🎨 اقترح أنشطة تعليمية',
+            '💡 افكار لشرح درس صعب',
+            '📊 اعمل لي جدول مراجعة',
+            '🎯 اذكر أخطاء شائعة عند الطلبة',
+            '📚 اقترح مراجع إضافية',
+            '🏆 طرق تحفيز الطلبة'
+        ]
+    };
     
-    const suggestions = [];
-    
-    if (specialty && specialty.length > 0) {
-        const firstSubj = specialty[0].subjects[0] || 'المادة';
-        const firstGrade = specialty[0].grade || 'الصف';
-        
-        suggestions.push(`📝 اقترحلي خطة درس في ${firstSubj} لـ ${firstGrade}`);
-        suggestions.push(`❓ اعمللي أسئلة امتحان في ${firstSubj}`);
-        suggestions.push(`🎯 إيه الأخطاء الشائعة عند الطلبة في ${firstSubj}؟`);
-    } else {
-        suggestions.push('📚 اسألني عن المواد اللي بتدرسها');
-        suggestions.push('🎯 إيه أفضل طريقة لتحضير درس؟');
-    }
-    
-    if (groups && groups.length > 0) {
-        suggestions.push('📅 رتبلي مواعيد المجموعات بشكل أفضل');
-        suggestions.push('⚠️ في تعارض في مواعيدي؟');
-        suggestions.push('💡 اقترح لي أفكار لتنظيم المجموعات');
-    } else {
-        suggestions.push('📅 إزاي أنظم مجموعاتي؟');
-    }
-    
-    suggestions.push('🏆 نصائح لإدارة الفصل');
-    suggestions.push('💡 أفكار لتحفيز الطلبة');
+    const list = suggestions[type] || suggestions.general;
     
     const container = document.createElement('div');
     container.className = 'suggestions';
-    container.innerHTML = '<div class="suggestions-title">💡 اقتراحات سريعة:</div>';
+    container.id = 'suggestionsBox';
     
-    const shuffled = [...suggestions].sort(() => Math.random() - 0.5).slice(0, 5);
+    // ناخد 6 عشوائي
+    const shuffled = [...list].sort(() => Math.random() - 0.5).slice(0, 6);
     
     shuffled.forEach(text => {
         const chip = document.createElement('button');
@@ -1044,63 +1182,137 @@ function showSuggestions() {
 }
 
 /* ============================================================ */
-/* ============ 🎬 التهيئة ============ */
+/* ============ 🔑 إدارة المفتاح من الواجهة ============ */
 /* ============================================================ */
 
-function showWelcome() {
-    const specialty = getSpecialtyContext();
-    const groups = getGroupsContext();
-    
-    let welcomeMsg = `👨‍🏫 <b>أهلاً يا مستر!</b><br><br>`;
-    welcomeMsg += `أنا مساعدك الشخصي. هساعدك في:<br>`;
-    welcomeMsg += `• 📚 تخصصك والمواد اللي بتدرسها<br>`;
-    welcomeMsg += `• 📅 تنظيم مجموعاتك ومواعيدك<br>`;
-    welcomeMsg += `• 📝 تحضير الدروس والامتحانات<br>`;
-    welcomeMsg += `• 💡 نصائح تربوية وإدارية<br><br>`;
-    
-    if (specialty && specialty.length > 0) {
-        let totalSubjects = 0;
-        specialty.forEach(s => totalSubjects += s.subjects.length);
-        welcomeMsg += `✅ <b>عندي بياناتك:</b><br>`;
-        welcomeMsg += `• ${totalSubjects} مادة في تخصصك<br>`;
-        if (groups && groups.length > 0) {
-            welcomeMsg += `• ${groups.length} مجموعة/موعد مسجل<br>`;
-        }
-        welcomeMsg += `<br>اسأل براحتك — هجاوب من بياناتك الفعلية 🎯`;
-    } else {
-        welcomeMsg += `⚠️ <b>ملاحظة:</b><br>لسه مفيش تخصص محفوظ. ارجع لـ <b>mester1</b> وحدد تخصصك، وبعدين اسألني.`;
+window.openKeyModal = function() {
+    const modal = document.getElementById('keyModal');
+    const input = document.getElementById('apiKeyInput');
+    const status = document.getElementById('keyStatus');
+
+    input.value = GROQ_API_KEY && GROQ_API_KEY.startsWith('gsk_') ? GROQ_API_KEY : '';
+    status.textContent = '';
+    status.className = 'key-modal-status';
+
+    modal.classList.add('show');
+    setTimeout(() => input.focus(), 150);
+};
+
+window.closeKeyModal = function() {
+    document.getElementById('keyModal').classList.remove('show');
+};
+
+window.saveApiKey = async function() {
+    const input = document.getElementById('apiKeyInput');
+    const status = document.getElementById('keyStatus');
+    const newKey = input.value.trim();
+
+    if (!newKey || !newKey.startsWith('gsk_')) {
+        status.textContent = '❌ المفتاح لازم يبدأ بـ gsk_';
+        status.className = 'key-modal-status err';
+        return;
     }
-    
-    addAIMessage(welcomeMsg);
-}
 
-function init() {
-    renderContext();
-    showWelcome();
-    
-    setTimeout(() => {
-        showSuggestions();
-    }, 300);
-    
-    // تحديث السياق كل 30 ثانية
-    setInterval(renderContext, 30000);
-}
+    status.textContent = '⏳ جاري التحقق من المفتاح...';
+    status.className = 'key-modal-status loading';
 
-// مراقبة تغييرات localStorage
-const originalSetItem = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(key, value) {
-    originalSetItem(key, value);
-    
-    const watched = [
-        'mester1_selections',
-        'teacherSelections',
-        'teacher_appointments_summary'
-    ];
-    
-    if (watched.includes(key)) {
-        renderContext();
+    try {
+        const testRes = await fetch(GROQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${newKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: GROQ_MODELS[0],
+                messages: [{ role: 'user', content: 'hi' }],
+                max_tokens: 5
+            })
+        });
+
+        if (testRes.status === 401) {
+            status.textContent = '❌ المفتاح غلط أو ملغي';
+            status.className = 'key-modal-status err';
+            return;
+        }
+
+        if (testRes.status === 429) {
+            status.textContent = '⚠️ المفتاح سليم بس وصل للحد المجاني';
+            status.className = 'key-modal-status loading';
+        } else if (!testRes.ok) {
+            status.textContent = `⚠️ المفتاح سليم بس فيه مشكلة (${testRes.status})`;
+            status.className = 'key-modal-status loading';
+        } else {
+            status.textContent = '✅ المفتاح شغال تمام!';
+            status.className = 'key-modal-status ok';
+        }
+
+        // نحفظ المفتاح
+        GROQ_API_KEY = newKey;
+        localStorage.setItem('groq_api_key', newKey);
+
+        // نشيل الموديل القديم عشان نجرب من الأول
+        localStorage.removeItem('groq_working_model');
+
+        // نحدّث أيقونة الهيدر
+        updateKeyButtonState();
+
+        setTimeout(() => {
+            closeKeyModal();
+            showToast('✅ تم حفظ المفتاح بنجاح', true);
+            addAIMessage('✅ <b>تم تحديث المفتاح</b><br>تقدر تسألني دلوقتي عادي!');
+        }, 700);
+
+    } catch (e) {
+        console.error(e);
+        status.textContent = '❌ فشل الاتصال بالإنترنت';
+        status.className = 'key-modal-status err';
     }
 };
+
+function updateKeyButtonState() {
+    const btn = document.querySelector('.action-btn[title="تغيير مفتاح Groq"]');
+    if (!btn) return;
+
+    const ok = GROQ_API_KEY && GROQ_API_KEY.startsWith('gsk_');
+    btn.classList.toggle('key-missing', !ok);
+    btn.title = ok ? 'تغيير مفتاح Groq ✅' : '⚠️ اضغط لإدخال مفتاح Groq';
+}
+
+// إغلاق المودال لو ضغط برة
+document.getElementById('keyModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'keyModal') closeKeyModal();
+});
+
+// إغلاق بـ Escape
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('keyModal')?.classList.contains('show')) {
+        closeKeyModal();
+    }
+});
+
+// إرسال بـ Enter
+document.getElementById('apiKeyInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        saveApiKey();
+    }
+});
+
+/* ============ التهيئة ============ */
+function init() {
+    renderCategoryBar();
+    updateStatusText();
+    showWelcome();
+    updateKeyButtonState();
+    
+    // لو مفيش مفتاح، نفتحله المودال أوتوماتيك
+    if (!GROQ_API_KEY || !GROQ_API_KEY.startsWith('gsk_')) {
+        setTimeout(() => {
+            openKeyModal();
+        }, 800);
+    }
+}
 
 init();
 
