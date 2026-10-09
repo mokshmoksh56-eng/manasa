@@ -390,17 +390,18 @@
 <div class="main-container">
     <div class="menu-card">
 
-        <!-- ====== قسم 1: إعداد التخصص ====== -->
+        <!-- ====== الخانة الأولى: التخصص والمواعيد ====== -->
         <div class="section section-teal" id="section-teal">
             <div class="section-header" onclick="toggleSection('section-teal', event)">
                 <div class="section-icon">📚</div>
                 <div class="section-content-text">
-                    <div class="section-title">إعداد التخصص</div>
-                    <div class="section-desc">اختر المواد والصفوف التي تدرسها</div>
+                    <div class="section-title">التخصص والمواعيد</div>
+                    <div class="section-desc">اختر المواد والصفوف وحدد المواعيد</div>
                 </div>
                 <div class="section-arrow">▼</div>
             </div>
             <div class="section-body">
+                <!-- روابط التخصص -->
                 <a href="mester1.html" class="sub-link" onclick="navigateToPage(event, 'mester1.html')">
                     <div class="sub-icon">✏️</div>
                     <div class="sub-text">تعديل التخصص</div>
@@ -411,20 +412,7 @@
                     <div class="sub-text">عرض المواد المختارة</div>
                     <div class="sub-arrow">▼</div>
                 </a>
-            </div>
-        </div>
-
-        <!-- ====== قسم 2: إعداد المجموعة والمواعيد (تم إضافة كلمة التخصص) ====== -->
-        <div class="section section-blue" id="section-blue">
-            <div class="section-header" onclick="toggleSection('section-blue', event)">
-                <div class="section-icon">📅</div>
-                <div class="section-content-text">
-                    <div class="section-title">إعداد المجموعة والمواعيد</div>
-                    <div class="section-desc">التخصص</div>
-                </div>
-                <div class="section-arrow">▼</div>
-            </div>
-            <div class="section-body">
+                <!-- روابط المواعيد -->
                 <a href="mester2.html" class="sub-link" onclick="navigateToPage(event, 'mester2.html')">
                     <div class="sub-icon">➕</div>
                     <div class="sub-text">إضافة موعد جديد</div>
@@ -438,13 +426,13 @@
             </div>
         </div>
 
-        <!-- ====== قسم 3: متابعة الطلاب (تم إضافة كلمة التخصص) ====== -->
+        <!-- ====== الخانة الثانية: المجموعات ====== -->
         <div class="section section-purple" id="section-purple">
             <div class="section-header" onclick="toggleSection('section-purple', event)">
                 <div class="section-icon">👥</div>
                 <div class="section-content-text">
-                    <div class="section-title">متابعة الطلاب</div>
-                    <div class="section-desc">التخصص</div>
+                    <div class="section-title">المجموعات</div>
+                    <div class="section-desc">إدارة المجموعات والطلاب المسجلين</div>
                 </div>
                 <div class="section-arrow">▼</div>
             </div>
@@ -459,10 +447,15 @@
                     <div class="sub-text">الحضور والغياب</div>
                     <div class="sub-arrow">▼</div>
                 </a>
+                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
+                    <div class="sub-icon">📝</div>
+                    <div class="sub-text">تسجيل طالب جديد</div>
+                    <div class="sub-arrow">▼</div>
+                </a>
             </div>
         </div>
 
-        <!-- ====== قسم 4: المدفوعات والحسابات ====== -->
+        <!-- ====== قسم المدفوعات والحسابات ====== -->
         <div class="section section-green" id="section-green">
             <div class="section-header" onclick="toggleSection('section-green', event)">
                 <div class="section-icon">💰</div>
@@ -486,7 +479,7 @@
             </div>
         </div>
 
-        <!-- ====== قسم 5: الإعدادات ====== -->
+        <!-- ====== قسم الإعدادات ====== -->
         <div class="section section-orange" id="section-orange">
             <div class="section-header" onclick="toggleSection('section-orange', event)">
                 <div class="section-icon">⚙️</div>
