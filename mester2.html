@@ -620,19 +620,6 @@
         color: var(--text-dark) !important;
     }
 
-    /* ✅ خيارات ذكية في "إلى الساعة" */
-    .time-enhanced-select option.smart-valid {
-        background: linear-gradient(135deg, #D1FAE5, #A7F3D0) !important;
-        color: #065F46 !important;
-        font-weight: 900 !important;
-    }
-    .time-enhanced-select option.smart-recommended {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A) !important;
-        color: #78350F !important;
-        font-weight: 900 !important;
-        position: relative;
-    }
-
     /* ========================================== */
     /* 🕐 الوقت */
     /* ========================================== */
@@ -670,26 +657,6 @@
         cursor: pointer; 
         margin: 0; 
         line-height: 1.4;
-    }
-
-    /* ✅ تنبيه ذكي للمدة */
-    .smart-duration-hint {
-        background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
-        border: 1px solid #7DD3FC;
-        border-radius: 8px;
-        padding: 8px 10px;
-        margin-top: 8px;
-        font-size: 11.5px;
-        font-weight: 900;
-        color: #075985;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        animation: fadeSlideIn 0.3s ease;
-    }
-    @keyframes fadeSlideIn {
-        from { opacity: 0; transform: translateY(-5px); }
-        to { opacity: 1; transform: translateY(0); }
     }
 
     /* ========================================== */
@@ -2209,7 +2176,6 @@
           <select id="editEnd" class="time-enhanced-select"></select>
         </div>
       </div>
-      <div id="smartDurationHint" class="smart-duration-hint" style="display:none;"></div>
       <div class="repeat-option" style="margin-top: 5px; margin-bottom: 12px;">
         <input type="checkbox" id="editRepeatWeekly">
         <label for="editRepeatWeekly">🔁 تكرار أسبوعي</label>
@@ -2531,36 +2497,9 @@
       return { period, ...info[period] };
   }
 
-  // ==========================================
-  // 🧠 دالة ذكية لحساب المدة بين وقتين
-  // ==========================================
-  function calcMinutesDiff(startVal, endVal) {
-      if (!startVal || !endVal) return 0;
-      const [sh, sm] = startVal.split(':').map(Number);
-      const [eh, em] = endVal.split(':').map(Number);
-      return (eh * 60 + em) - (sh * 60 + sm);
-  }
-
-  function formatDurationFromMinutes(diff) {
-      if (diff <= 0) return '';
-      const hours = Math.floor(diff / 60);
-      const mins = diff % 60;
-      let txt = '';
-      if (hours > 0) txt += `${hours}س `;
-      if (mins > 0) txt += `${mins}د`;
-      return txt.trim();
-  }
-
-  // ==========================================
-  // 🧠 دالة ذكية جداً لبناء خيارات الوقت
-  // ==========================================
-  // المنطق:
-  // 1) للبداية: كل الخيارات متاحة، بدون تعطيل
-  // 2) للنهاية: 
-  //    - الأوقات الأصغر من أو تساوي البداية → معطلة ومخفية (disabled + hidden)
-  //    - الأوقات الأكبر من البداية → متاحة مع عرض المدة بجانبها
-  //    - أول وقت صالح → يُوسم كـ "موصى به" (Recommended)
-  // ==========================================
+  // ✅ دالة محسّنة لبناء خيارات الوقت
+  // - عند isEndTime: يتم تعطيل كل الأوقات الأصغر من أو تساوي وقت البداية
+  // - يتم استرجاع القيمة السابقة لو ما زالت صالحة
   function buildTimeOptions(selectEl, options = {}) {
       const { 
           isEndTime = false,
@@ -2568,28 +2507,12 @@
       } = options;
       
       const previousValue = selectEl.value;
-      selectEl.innerHTML = '';
-      
-      // ➕ placeholder
-      const placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = '-- اختر --';
-      selectEl.appendChild(placeholder);
+      selectEl.innerHTML = '<option value="">-- اختر --</option>';
       
       let minMinutes = -1;
       if (isEndTime && startTimeValue) {
           const [sh, sm] = startTimeValue.split(':').map(Number);
           minMinutes = sh * 60 + sm;
-      }
-      
-      // 🔍 تحديد أول وقت صالح (لوسمه كموصى به)
-      let firstValidValue = null;
-      if (isEndTime && minMinutes >= 0) {
-          const validSlot = TIME_SLOTS.find(slot => {
-              const [h, m] = slot.value.split(':').map(Number);
-              return (h * 60 + m) > minMinutes;
-          });
-          if (validSlot) firstValidValue = validSlot.value;
       }
       
       TIME_SLOTS.forEach(slot => {
@@ -2599,55 +2522,28 @@
           
           const opt = document.createElement('option');
           opt.value = slot.value;
-          
-          // 🧠 حساب المدة (لو هو وقت نهاية)
-          let durationText = '';
-          if (isEndTime && minMinutes >= 0) {
-              const diff = slotMinutes - minMinutes;
-              if (diff > 0) {
-                  durationText = ` (⏱ ${formatDurationFromMinutes(diff)})`;
-              }
-          }
-          
-          opt.textContent = `${periodInfo.emoji} ${slot.label}${durationText}`;
+          opt.textContent = `${periodInfo.emoji} ${slot.label}`;
           opt.classList.add(`period-${periodInfo.class}`);
           
-          // 🔒 ذكاء: تعطيل + إخفاء الأوقات غير الصالحة
+          // 🔒 تعطيل الأوقات الأصغر من أو تساوي وقت البداية لمنع اللخبطة
           if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
               opt.disabled = true;
-              opt.hidden = true; // 🎯 إخفاء تام بدلاً من مجرد تعطيل
-              opt.textContent = `🔒 ${slot.label} (غير صالح)`;
-              opt.style.display = 'none';
+              opt.textContent = `🔒 ${slot.label}`;
               opt.style.textDecoration = 'line-through';
-              opt.style.opacity = '0.4';
-          } else if (isEndTime && slot.value === firstValidValue) {
-              // ⭐ وسم أول وقت صالح كـ "موصى به"
-              opt.textContent = `⭐ ${slot.label}${durationText} — موصى به`;
-              opt.classList.add('smart-recommended');
-          } else if (isEndTime && minMinutes >= 0) {
-              opt.classList.add('smart-valid');
+              opt.style.opacity = '0.5';
+              opt.style.background = '#F1F5F9';
           }
           
           selectEl.appendChild(opt);
       });
       
-      // ✅ استرجاع القيمة السابقة لو ما زالت صالحة
+      // ✅ استرجاع القيمة السابقة لو ما زالت متاحة
       if (previousValue) {
-          const prevOpt = Array.from(selectEl.options).find(
-              o => o.value === previousValue && !o.disabled
-          );
-          if (prevOpt) {
-              selectEl.value = previousValue;
-          } else {
-              // 🧠 ذكاء: لو القيمة السابقة غير صالحة، اختر أول وقت صالح تلقائياً
-              if (isEndTime && firstValidValue) {
-                  selectEl.value = firstValidValue;
-              }
-          }
+          const prevOpt = Array.from(selectEl.options).find(o => o.value === previousValue && !o.disabled);
+          if (prevOpt) selectEl.value = previousValue;
       }
       
       updateSelectColor(selectEl);
-      updateSmartDurationHint(selectEl);
   }
 
   function updateSelectColor(selectEl) {
@@ -2661,53 +2557,14 @@
       selectEl.classList.add(`period-${period}`);
   }
 
-  // ✅ تحديث عرض المدة الذكية أسفل الـ select
-  function updateSmartDurationHint(selectEl) {
-      const hint = document.getElementById('smartDurationHint');
-      if (!hint) return;
-      
-      const editStart = document.getElementById('editStart');
-      const editEnd = document.getElementById('editEnd');
-      
-      if (!editStart || !editEnd) {
-          hint.style.display = 'none';
-          return;
-      }
-      
-      const s = editStart.value;
-      const e = editEnd.value;
-      
-      if (!s || !e) {
-          hint.style.display = 'none';
-          return;
-      }
-      
-      const diff = calcMinutesDiff(s, e);
-      if (diff <= 0) {
-          hint.innerHTML = `<span>⚠️</span><span>وقت النهاية يجب أن يكون بعد وقت البداية</span>`;
-          hint.style.background = 'linear-gradient(135deg, #FEE2E2, #FECACA)';
-          hint.style.borderColor = '#FCA5A5';
-          hint.style.color = '#7F1D1D';
-          hint.style.display = 'flex';
-          return;
-      }
-      
-      hint.innerHTML = `<span>✨</span><span>مدة الحصة: <b>${formatDurationFromMinutes(diff)}</b> — من ${formatTime(s)} إلى ${formatTime(e)}</span>`;
-      hint.style.background = 'linear-gradient(135deg, #E0F2FE, #BAE6FD)';
-      hint.style.borderColor = '#7DD3FC';
-      hint.style.color = '#075985';
-      hint.style.display = 'flex';
-  }
-
   function populateTimeSelects() {
       buildTimeOptions(document.getElementById('editStart'));
       buildTimeOptions(document.getElementById('editEnd'));
       setupTimeSelectEvents();
   }
 
-  // ==========================================
-  // 🧠 إعداد أحداث الوقت بذكاء
-  // ==========================================
+  // ✅ دالة محسّنة لإعداد أحداث الـ selects
+  // - عند تغيير وقت البداية: إعادة بناء خيارات النهاية + مسح وقت النهاية لو أصبح غير صالح
   function setupTimeSelectEvents() {
       const editStart = document.getElementById('editStart');
       const editEnd = document.getElementById('editEnd');
@@ -2725,20 +2582,36 @@
                       startTimeValue: this.value
                   });
                   
-                  // ✅ لو وقت النهاية الحالي أصبح غير صالح → اختر أول وقت صالح تلقائياً
+                  // ✅ لو وقت النهاية الحالي أصبح غير صالح (أصغر أو يساوي البداية) → امسحه
                   if (currentEndValue) {
-                      const diff = calcMinutesDiff(this.value, currentEndValue);
-                      if (diff <= 0) {
+                      const [sh, sm] = this.value.split(':').map(Number);
+                      const [eh, em] = currentEndValue.split(':').map(Number);
+                      const startMin = sh * 60 + sm;
+                      const endMin = eh * 60 + em;
+                      
+                      if (endMin <= startMin) {
+                          // وقت النهاية غير صالح → امسحه مع تنبيه
+                          editEnd.value = '';
+                          updateSelectColor(editEnd);
+                          
                           const errEl = document.getElementById('editErrorMsg');
                           if (errEl) {
-                              errEl.textContent = '⚠ تم تحديث وقت النهاية تلقائياً لأنه أصبح قبل وقت البداية';
+                              errEl.textContent = '⚠ تم مسح وقت النهاية لأنه أصبح قبل وقت البداية';
                               errEl.classList.add('show');
                               setTimeout(() => errEl.classList.remove('show'), 3000);
                           }
+                      } else {
+                          // وقت النهاية لا يزال صالحاً
+                          const opt = Array.from(editEnd.options).find(o => o.value === currentEndValue && !o.disabled);
+                          if (opt) {
+                              editEnd.value = currentEndValue;
+                              updateSelectColor(editEnd);
+                          } else {
+                              editEnd.value = '';
+                              updateSelectColor(editEnd);
+                          }
                       }
                   }
-                  
-                  updateSmartDurationHint(editEnd);
               }
           });
       }
@@ -2747,7 +2620,6 @@
           editEnd.dataset.eventsSetup = '1';
           editEnd.addEventListener('change', function() {
               updateSelectColor(this);
-              updateSmartDurationHint(this);
           });
       }
   }
@@ -3427,9 +3299,6 @@
     });
   }
 
-  // ==========================================
-  // 🧠 startEdit ذكي
-  // ==========================================
   window.startEdit = function(appt) {
     editingAppt = { ...appt };
     const startVal = appt.startTime || appt.start;
@@ -3437,10 +3306,11 @@
     
     const editStart = document.getElementById('editStart');
     const editEnd = document.getElementById('editEnd');
-    const hint = document.getElementById('smartDurationHint');
     
-    // ✅ بناء خيارات البداية
+    // ✅ بناء خيارات البداية أولاً
     buildTimeOptions(editStart);
+    
+    // ✅ تعيين قيمة البداية
     editStart.value = startVal;
     updateSelectColor(editStart);
     
@@ -3450,16 +3320,16 @@
         startTimeValue: startVal
     });
     
-    // ✅ تعيين قيمة النهاية لو ما زالت صالحة (وإلا سيتم اختيار أول وقت صالح تلقائياً)
+    // ✅ تعيين قيمة النهاية لو ما زالت صالحة
     if (endVal) {
         const endOpt = Array.from(editEnd.options).find(o => o.value === endVal && !o.disabled);
         if (endOpt) {
             editEnd.value = endVal;
+        } else {
+            editEnd.value = '';
         }
-        // لو غير صالح: buildTimeOptions ستختار أول وقت صالح تلقائياً
+        updateSelectColor(editEnd);
     }
-    updateSelectColor(editEnd);
-    updateSmartDurationHint(editEnd);
     
     const isRec = appt.appointment ? appt.appointment.type === 'recurring' : appt.type === 'recurring';
     document.getElementById('editRepeatWeekly').checked = isRec;
@@ -3470,8 +3340,6 @@
   window.cancelEdit = function() {
     editingAppt = null; 
     document.getElementById('editModalOverlay').classList.remove('active');
-    const hint = document.getElementById('smartDurationHint');
-    if (hint) hint.style.display = 'none';
   };
 
   window.closeEditModal = function(e) {
@@ -3486,15 +3354,12 @@
     const errEl = document.getElementById('editErrorMsg');
 
     if (!newStart || !newEnd) { 
-        errEl.textContent = '⚠ اختر الوقت'; 
+        errEl.textContent = 'اختر الوقت'; 
         errEl.classList.add('show'); 
         return; 
     }
-    
-    // 🧠 تحقق ذكي من المدة
-    const diff = calcMinutesDiff(newStart, newEnd);
-    if (diff <= 0) { 
-        errEl.textContent = '⚠ وقت النهاية يجب أن يكون بعد وقت البداية'; 
+    if (newStart >= newEnd) { 
+        errEl.textContent = 'وقت النهاية يجب أن يكون بعد وقت البداية'; 
         errEl.classList.add('show'); 
         return; 
     }
