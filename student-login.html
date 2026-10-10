@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>دخول الطالب - منصة احجزلي</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #e8f5ec 0%, #d4ecdc 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(30, 126, 52, 0.15);
+        max-width: 440px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .login-header {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.75) 100%),
+                    url('student.png') center/cover no-repeat;
+        padding: 50px 25px 40px;
+        text-align: center;
+        position: relative;
+        border-bottom: 4px solid #f1c40f;
+    }
+
+    .login-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
+    }
+
+    .login-header h1 {
+        font-size: 30px;
+        font-weight: 900;
+        color: #f1c40f;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .login-header p {
+        font-size: 15px;
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .login-body { padding: 30px 25px 20px; }
+
+    .auth-tabs {
+        display: flex;
+        background: #f0fdf4;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        padding: 4px;
+        border: 1px solid #bbf7d0;
+    }
+
+    .auth-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 800;
+        color: #166534;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+    .auth-tab.active {
+        background: #2ecc71;
+        color: white;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    }
+
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 900;
+        color: #166534;
+        margin-bottom: 8px;
+    }
+
+    .form-label .required { color: #dc3545; }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e0e4e8;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #166534;
+        background: #fff;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
+    .form-input:focus {
+        border-color: #2ecc71;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15);
+    }
+
+    .pin-wrapper { position: relative; }
+
+    .pin-input {
+        letter-spacing: 12px;
+        font-size: 22px;
+        text-align: center;
+        font-weight: 900;
+        padding-left: 50px;
+        padding-right: 16px;
+    }
+
+    .pin-toggle {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #f0fdf4;
+        border: none;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+    .pin-toggle:hover { background: #dcfce7; }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(180deg, #2ecc71 0%, #1e7e34 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 17px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #155724, 0 8px 15px rgba(0, 0, 0, 0.15);
+        transition: 0.2s;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .submit-btn:active {
+        transform: translateY(6px);
+        box-shadow: 0 0 0 #155724;
+    }
+
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .submit-btn.delete-mode {
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 6px 0 #991b1b, 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+    .submit-btn.delete-mode:active {
+        box-shadow: 0 0 0 #991b1b;
+    }
+
+    .error-msg, .success-msg {
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .error-msg { background: #fef2f2; border: 2px solid #fecaca; color: #991b1b; }
+    .success-msg { background: #f0fdf4; border: 2px solid #bbf7d0; color: #166534; }
+    
+    .error-msg.show, .success-msg.show { display: flex; }
+
+    .info-box {
+        background: #e0f2fe;
+        border: 2px solid #bae6fd;
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 15px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #075985;
+        line-height: 1.6;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 0 25px 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .footer-link {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .footer-link:hover { color: #2ecc71; }
+    
+    .delete-link { color: #ef4444; }
+    .delete-link:hover { color: #dc2626; }
+
+    .logout-link { color: #f59e0b; }
+    .logout-link:hover { color: #d97706; }
+    
+    .divider { color: #cbd5e1; }
+
+    .brand-signature {
+        margin-top: 25px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #155724;
+        text-align: center;
+        opacity: 0.9;
+    }
+
+    .brand-signature span {
+        color: #b45309;
+        background: #fef3c7;
+        padding: 3px 10px;
+        border-radius: 8px;
+        margin-right: 5px;
+        border: 1px dashed #f59e0b;
+        display: inline-block;
+    }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="login-header">
+        <h1>بوابة الطالب</h1>
+        <p>منصة احجزلي - دخول الطلاب</p>
+    </div>
+
+    <div class="login-body">
+        
+        <div class="auth-tabs" id="mainTabs">
+            <div class="auth-tab active" onclick="window.switchTab('login')">تسجيل دخول</div>
+            <div class="auth-tab" onclick="window.switchTab('register')">حساب جديد</div>
+        </div>
+
+        <div class="error-msg" id="errorMsg">
+            <span>⚠️</span>
+            <span id="errorText"></span>
+        </div>
+        <div class="success-msg" id="successMsg">
+            <span>✅</span>
+            <span id="successText"></span>
+        </div>
+
+        <form onsubmit="window.handleStudentAuth(event)">
+            
+            <div class="form-group" id="nameGroup" style="display: none;">
+                <label class="form-label">👤 اسم الطالب <span class="required">*</span></label>
+                <input type="text" id="studentName" class="form-input" 
+                       placeholder="اكتب اسم الطالب (مثال: يوسف محمد)">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
+                <input type="tel" id="studentPhone" class="form-input" 
+                       placeholder="01xxxxxxxxx" 
+                       maxlength="11" 
+                       required 
+                       dir="ltr"
+                       autocomplete="tel"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            </div>
+
+            <div class="form-group" id="pinGroup">
+                <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
+                <div class="pin-wrapper">
+                    <input type="password" id="studentPin" class="form-input pin-input" 
+                           placeholder="••••" 
+                           maxlength="4" 
+                           inputmode="numeric"
+                           required
+                           dir="ltr"
+                           autocomplete="new-password"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <button type="button" class="pin-toggle" onclick="window.togglePin('studentPin', this)">👁️</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="confirmPinGroup" style="display: none;">
+                <label class="form-label">🔒 تأكيد الرقم السري <span class="required">*</span></label>
+                <div class="pin-wrapper">
+                    <input type="password" id="studentPinConfirm" class="form-input pin-input" 
+                           placeholder="••••" 
+                           maxlength="4" 
+                           inputmode="numeric"
+                           dir="ltr"
+                           autocomplete="new-password"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <button type="button" class="pin-toggle" onclick="window.togglePin('studentPinConfirm', this)">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span id="submitBtnIcon">🚀</span>
+                <span id="submitBtnText">تسجيل الدخول</span>
+            </button>
+            
+            <div class="info-box" id="multiChildInfo" style="display: none;">
+                💡 <strong>لديك أكثر من طفل؟</strong> يمكنك التسجيل لهم بنفس رقم الهاتف، فقط تأكد من وضع <strong>رقم سري مختلف</strong> لكل طالب.
+            </div>
+        </form>
+    </div>
+
+    <div class="footer-links">
+        <a href="index.html" class="footer-link">← العودة الرئيسية</a>
+        <span class="divider">|</span>
+        <a href="javascript:void(0)" class="footer-link logout-link" onclick="window.handleLogout()">🚪 تسجيل الخروج</a>
+        <span class="divider">|</span>
+        <a href="javascript:void(0)" class="footer-link delete-link" onclick="window.switchTab('delete')">🗑️ حذف الحساب</a>
+    </div>
+</div>
+
+<div class="brand-signature">
+    تطوير وبناء <span>احجزلي 🚀</span>
+</div>
+
+<script type="module">
+    import { 
+        saveStudent, 
+        getStudent, 
+        getStudentByKey,
+        getStudentsByPhone, 
+        deleteStudentsByPhone,
+        checkStudentDevice,
+        updateStudentDevice,
+        generateDeviceId
+    } from './firebase-config.js';
+
+    let currentMode = 'login'; 
+
+    // ✅ التحقق من الجلسة عند فتح الصفحة
+    window.addEventListener('DOMContentLoaded', async () => {
+        const savedProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+        if (savedProfile.id) {
+            try {
+                const check = await checkStudentDevice(savedProfile.id);
+                if (!check.ok) {
+                    localStorage.removeItem('current_student_profile');
+                } else {
+                    window.location.href = 'talep.html';
+                }
+            } catch (e) {
+                console.error('خطأ في التحقق من الجلسة:', e);
+            }
+        }
+    });
+
+    window.switchTab = function(mode) {
+        currentMode = mode;
+        window.hideMessages();
+        
+        const tabs = document.querySelectorAll('.auth-tab');
+        const submitBtn = document.getElementById('submitBtn');
+
+        tabs.forEach(t => t.classList.remove('active'));
+
+        if (mode === 'login') {
+            tabs[0].classList.add('active');
+            
+            document.getElementById('nameGroup').style.display = 'none';
+            document.getElementById('studentName').required = false;
+
+            document.getElementById('pinGroup').style.display = 'block';
+            document.getElementById('studentPin').required = true;
+
+            document.getElementById('confirmPinGroup').style.display = 'none';
+            document.getElementById('studentPinConfirm').required = false;
+            
+            document.getElementById('multiChildInfo').style.display = 'none';
+            
+            document.getElementById('submitBtnIcon').textContent = '🚀';
+            document.getElementById('submitBtnText').textContent = 'تسجيل الدخول';
+            submitBtn.classList.remove('delete-mode');
+            
+        } else if (mode === 'register') {
+            tabs[1].classList.add('active');
+            
+            document.getElementById('nameGroup').style.display = 'block';
+            document.getElementById('studentName').required = true;
+
+            document.getElementById('pinGroup').style.display = 'block';
+            document.getElementById('studentPin').required = true;
+
+            document.getElementById('confirmPinGroup').style.display = 'block';
+            document.getElementById('studentPinConfirm').required = true;
+
+            document.getElementById('multiChildInfo').style.display = 'block';
+            
+            document.getElementById('submitBtnIcon').textContent = '✨';
+            document.getElementById('submitBtnText').textContent = 'إنشاء حساب جديد';
+            submitBtn.classList.remove('delete-mode');
+            
+        } else if (mode === 'delete') {
+            document.getElementById('nameGroup').style.display = 'none';
+            document.getElementById('studentName').required = false;
+
+            document.getElementById('pinGroup').style.display = 'none';
+            document.getElementById('studentPin').required = false;
+
+            document.getElementById('confirmPinGroup').style.display = 'none';
+            document.getElementById('studentPinConfirm').required = false;
+
+            document.getElementById('multiChildInfo').style.display = 'none';
+            
+            document.getElementById('submitBtnIcon').textContent = '🗑️';
+            document.getElementById('submitBtnText').textContent = 'حذف الحساب نهائياً';
+            submitBtn.classList.add('delete-mode');
+        }
+    };
+
+    window.togglePin = function(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
+
+    window.showError = function(msg) {
+        document.getElementById('errorText').textContent = msg;
+        document.getElementById('errorMsg').classList.add('show');
+        document.getElementById('successMsg').classList.remove('show');
+    };
+
+    window.showSuccess = function(msg) {
+        document.getElementById('successText').textContent = msg;
+        document.getElementById('successMsg').classList.add('show');
+        document.getElementById('errorMsg').classList.remove('show');
+    };
+
+    window.hideMessages = function() {
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
+    };
+
+    window.handleLogout = function() {
+        const savedProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+        
+        if (!savedProfile.id) {
+            window.showError('⚠️ لا يوجد حساب مسجل دخول حالياً.');
+            return;
+        }
+        
+        if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+            return;
+        }
+        
+        localStorage.removeItem('current_student_profile');
+        sessionStorage.removeItem('student_map_state');
+        window.showSuccess('✅ تم تسجيل الخروج بنجاح.');
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    };
+
+    window.handleStudentAuth = async function(e) {
+        e.preventDefault();
+        window.hideMessages();
+
+        const phone = document.getElementById('studentPhone').value.trim();
+        const btn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('submitBtnText');
+        
+        if (phone.length !== 11) {
+            window.showError('رقم التليفون يجب أن يتكون من 11 رقم بالضبط.');
+            return;
+        }
+
+        if (!/^01[0125][0-9]{8}$/.test(phone)) {
+            window.showError('يرجى إدخال رقم هاتف مصري صحيح (010, 011, 012, 015).');
+            return;
+        }
+
+        const originalText = btnText.textContent;
+        btn.disabled = true;
+        btnText.innerHTML = '⏳ جاري المعالجة...';
+
+        try {
+            // ==== حالة الحذف ====
+            if (currentMode === 'delete') {
+                const students = await getStudentsByPhone(phone);
+                
+                if (students.length === 0) {
+                    window.showError('⚠️ لا يوجد أي حساب مسجل بهذا الرقم.');
+                    return;
+                }
+
+                const deletedCount = await deleteStudentsByPhone(phone);
+
+                const existingProfile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
+                if (existingProfile.phone === phone) {
+                    localStorage.removeItem('current_student_profile');
+                }
+                
+                window.showSuccess(`✅ تم حذف ${deletedCount} حساب بنجاح.`);
+                document.getElementById('studentPhone').value = '';
+                
+                setTimeout(() => window.switchTab('login'), 3000);
+                return;
+            }
+
+            const pin = document.getElementById('studentPin').value.trim();
+            const accountKey = phone + '_' + pin;
+
+            // ==== حالة إنشاء حساب جديد ====
+            if (currentMode === 'register') {
+                const name = document.getElementById('studentName').value.trim();
+                const pinConfirm = document.getElementById('studentPinConfirm').value.trim();
+
+                if (name.length < 3) {
+                    window.showError('اسم الطالب يجب أن يكون 3 أحرف على الأقل.');
+                    return;
+                }
+
+                if (pin.length !== 4) {
+                    window.showError('الرقم السري يجب أن يتكون من 4 أرقام.');
+                    return;
+                }
+
+                if (pin !== pinConfirm) {
+                    window.showError('الرقم السري وتأكيده غير متطابقين.');
+                    return;
+                }
+
+                let existing = null;
+                try {
+                    existing = await getStudent(phone, pin);
+                } catch (err) {
+                    console.error('خطأ في getStudent:', err);
+                }
+                
+                if (existing) {
+                    window.showError('يوجد طالب مسجل بهذا الرقم والرقم السري! اختر رقم سري مختلف.');
+                    return;
+                }
+
+                const deviceId = generateDeviceId();
+                const studentData = {
+                    name: name,
+                    phone: phone,
+                    pin: pin,
+                    role: 'student',
+                    // ✅ حقول إضافية لتظهر في school.html
+                    gender: null,
+                    stage: null,
+                    grade: null,
+                    lat: null,
+                    lng: null,
+                    activeDeviceId: deviceId,
+                    lastLoginAt: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
+                };
+
+                const savedKey = await saveStudent(studentData);
+                
+                window.showSuccess(`🎉 تم إنشاء حساب (${name}) بنجاح!`);
+                window.loginStudent(savedKey, phone, name);
+
+            } 
+            // ==== حالة تسجيل الدخول ====
+            else if (currentMode === 'login') {
+                if (pin.length !== 4) {
+                    window.showError('الرقم السري يجب أن يتكون من 4 أرقام.');
+                    return;
+                }
+
+                let studentData = null;
+                try {
+                    studentData = await getStudent(phone, pin);
+                } catch (fetchErr) {
+                    console.error('❌ خطأ في getStudent:', fetchErr);
+                    window.showError('خطأ في الاتصال بقاعدة البيانات. حاول مرة أخرى.');
+                    return;
+                }
+
+                if (!studentData) {
+                    let studentsWithPhone = [];
+                    try {
+                        studentsWithPhone = await getStudentsByPhone(phone);
+                    } catch (e) {
+                        console.error('❌ خطأ في getStudentsByPhone:', e);
+                    }
+                    
+                    if (studentsWithPhone.length > 0) {
+                        window.showError('الرقم السري غير صحيح لهذا الطالب.');
+                    } else {
+                        window.showError('لا يوجد حساب مسجل بهذا الرقم.');
+                    }
+                    return;
+                }
+
+                try {
+                    const deviceCheck = await checkStudentDevice(accountKey);
+
+                    if (!deviceCheck.ok && deviceCheck.reason === 'different_device') {
+                        const confirmSwitch = confirm(
+                            '⚠️ تنبيه:\n\n' +
+                            'هذا الحساب مسجل دخول من جهاز آخر.\n' +
+                            'إذا أكملت، سيتم تسجيل خروج الجهاز الآخر تلقائياً.\n\n' +
+                            'هل تريد المتابعة؟'
+                        );
+
+                        if (!confirmSwitch) {
+                            window.showError('تم إلغاء تسجيل الدخول.');
+                            return;
+                        }
+                    }
+
+                    await updateStudentDevice(accountKey);
+                } catch (deviceErr) {
+                    console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
+                }
+
+                window.showSuccess(`✅ أهلاً بك يا ${studentData.name}!`);
+                window.loginStudent(accountKey, studentData.phone, studentData.name);
+            }
+
+        } catch (error) {
+            console.error("❌ خطأ عام:", error);
+            window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
+        } finally {
+            btn.disabled = false;
+            btnText.textContent = originalText;
+        }
+    };
+
+    // ✅ حفظ بيانات الدخول الأساسية والتحويل لـ talep.html
+    window.loginStudent = function(accountKey, phone, name) {
+        const studentProfile = {
+            id: accountKey,
+            phone: phone,
+            name: name,
+            gender: null,
+            stage: null,
+            grade: null
+        };
+        localStorage.setItem('current_student_profile', JSON.stringify(studentProfile));
+
+        setTimeout(() => {
+            window.location.href = 'talep.html';
+        }, 1200);
+    };
+</script>
+
+</body>
+</html>
