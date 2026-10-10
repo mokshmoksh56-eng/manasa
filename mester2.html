@@ -274,7 +274,7 @@
     .active-schedule-info-bar .btn-back:hover { transform: translateY(-1px); }
 
     /* ========================================== */
-    /* 🔒 كارت البيانات الثابتة في mester2 */
+    /* 🔒 كارت البيانات الثابتة مع الحقول المرئية */
     /* ========================================== */
     .fixed-data-preview-card {
         background: linear-gradient(160deg, #F0F9FF 0%, #E0F2FE 100%);
@@ -336,38 +336,60 @@
         letter-spacing: 0.3px;
     }
 
-    .fixed-preview-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
+    /* ✅ جسم الحقول المقفولة */
+    .fixed-fields-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         margin-bottom: 10px;
     }
 
-    .fixed-preview-item {
-        background: #fff;
-        border: 1px solid #BAE6FD;
-        border-radius: 8px;
-        padding: 8px 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
+    .fixed-fields-body .form-group {
+        margin-bottom: 0;
     }
 
-    .fixed-preview-item .fp-label {
-        font-size: 10.5px;
-        font-weight: 800;
-        color: #0369A1;
-        opacity: 0.85;
-    }
-
-    .fixed-preview-item .fp-value {
-        font-size: 13px;
-        font-weight: 900;
+    .fixed-fields-body .form-group label {
+        font-size: 12px;
         color: #075985;
-        word-break: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-weight: 900;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .fixed-fields-body .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    /* 🔒 الحقول المقفولة */
+    .locked-field {
+        background: linear-gradient(135deg, #FFFFFF, #F0F9FF) !important;
+        border: 1px solid #BAE6FD !important;
+        border-top: 2px solid #0284C7 !important;
+        color: #075985 !important;
+        font-weight: 900 !important;
+        cursor: not-allowed !important;
+        opacity: 1 !important;
+        pointer-events: none;
+        position: relative;
+        text-align: center;
+        letter-spacing: 0.2px;
+        padding: 10px 12px !important;
+        font-size: 13.5px !important;
+        border-radius: 10px !important;
+        font-family: 'Cairo', sans-serif !important;
+        box-shadow: inset 0 2px 4px rgba(2, 132, 199, 0.05) !important;
+        width: 100%;
+    }
+
+    .locked-field:disabled {
+        color: #075985 !important;
+        -webkit-text-fill-color: #075985;
+        opacity: 1 !important;
+        background: linear-gradient(135deg, #FFFFFF, #F0F9FF) !important;
     }
 
     .fixed-preview-hint {
@@ -375,7 +397,7 @@
         font-size: 10.5px;
         font-weight: 800;
         color: #075985;
-        opacity: 0.75;
+        opacity: 0.8;
         padding-top: 8px;
         border-top: 1px dashed #BAE6FD;
         line-height: 1.5;
@@ -1513,6 +1535,7 @@
         .step { font-size: 10.5px; }
         .booking-card { padding: 12px 10px; }
         .form-control, .form-group select { font-size: 13px; padding: 10px; }
+        .locked-field { font-size: 12.5px !important; padding: 9px 10px !important; }
         .cards-grid label { font-size: 10.5px; padding: 8px 3px; min-height: 55px; }
         .cards-grid label i { font-size: 16px; }
         .days div.cell { min-height: 55px; font-size: 11px; padding: 3px; }
@@ -1521,8 +1544,7 @@
         .btn-add { font-size: 14px; padding: 12px; }
         .summary-section-title { font-size: 14px; }
         .summary-total-badge { font-size: 11px; padding: 4px 10px; }
-        .fixed-preview-grid { grid-template-columns: 1fr; }
-        .fixed-preview-item .fp-value { font-size: 12px; }
+        .fixed-fields-body .form-grid-2 { grid-template-columns: 1fr; }
     }
 </style>
 </head>
@@ -1847,51 +1869,51 @@
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
-        <!-- 🔒 كارت البيانات الثابتة من mester1 -->
+        <!-- 🔒 كارت البيانات الثابتة مع الحقول المرئية -->
         <div id="fixedDataPreviewCard" class="fixed-data-preview-card" style="display:none;">
             <div class="fixed-preview-header">
                 <span class="fixed-preview-icon">🔒</span>
                 <span>بيانات المجموعة الثابتة</span>
                 <span class="fixed-preview-badge">من الجدول</span>
             </div>
-            <div class="fixed-preview-grid">
-                <div class="fixed-preview-item">
-                    <span class="fp-label">👥 المجموعة</span>
-                    <span class="fp-value" id="fp-group-name">-</span>
+
+            <div class="fixed-fields-body">
+                <div class="form-group">
+                    <label>👥 اسم المجموعة</label>
+                    <input type="text" id="group-name" class="locked-field" disabled>
                 </div>
-                <div class="fixed-preview-item" id="fp-center-item" style="display:none;">
-                    <span class="fp-label">🏫 السنتر</span>
-                    <span class="fp-value" id="fp-center-name">-</span>
+
+                <div class="form-group" id="center-name-group-display" style="display:none;">
+                    <label>🏫 اسم السنتر</label>
+                    <input type="text" id="center-name" class="locked-field" disabled>
                 </div>
-                <div class="fixed-preview-item">
-                    <span class="fp-label">👤 المستر</span>
-                    <span class="fp-value" id="fp-teacher-name">-</span>
+
+                <div class="form-group">
+                    <label>👤 اسم المستر</label>
+                    <input type="text" id="teacher-name" class="locked-field" disabled>
                 </div>
-                <div class="fixed-preview-item">
-                    <span class="fp-label">🎓 السعة</span>
-                    <span class="fp-value" id="fp-students-count">-</span>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>🎓 العدد المطلوب</label>
+                        <input type="text" id="students-count" class="locked-field" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ من الساعة</label>
+                        <input type="text" id="startTime" class="locked-field" disabled>
+                    </div>
                 </div>
-                <div class="fixed-preview-item">
-                    <span class="fp-label">⏰ من</span>
-                    <span class="fp-value" id="fp-start-time">-</span>
-                </div>
-                <div class="fixed-preview-item">
-                    <span class="fp-label">⏰ إلى</span>
-                    <span class="fp-value" id="fp-end-time">-</span>
+
+                <div class="form-group">
+                    <label>⏰ إلى الساعة</label>
+                    <input type="text" id="endTime" class="locked-field" disabled>
                 </div>
             </div>
+
             <div class="fixed-preview-hint">
                 💡 البيانات دي متثبتة من الجدول الأساسي — لو عايز تعدّلها ارجع لصفحة الجداول
             </div>
         </div>
-
-        <!-- 🔒 الحقول المخفية (تُعبّى تلقائياً من البيانات الثابتة) -->
-        <input type="hidden" id="group-name">
-        <input type="hidden" id="center-name">
-        <input type="hidden" id="teacher-name">
-        <input type="hidden" id="students-count" value="20">
-        <input type="hidden" id="startTime">
-        <input type="hidden" id="endTime">
 
         <div class="form-group">
             <label><span class="step-num" id="gender-num">1</span> الفئات المسموح بها</label>
@@ -2091,53 +2113,48 @@
               return false;
           }
           
-          // ✅ نعبّي الحقول المخفية
+          const fmtTime = (v) => {
+              if (!v) return '-';
+              const [h, m] = v.split(':').map(Number);
+              const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+              return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
+          };
+          
+          // ✅ نعبّي الحقول المرئية (disabled)
           document.getElementById('group-name').value = fd.groupName || '';
-          document.getElementById('center-name').value = fd.centerName || '';
           document.getElementById('teacher-name').value = fd.teacherName || '';
-          document.getElementById('students-count').value = fd.studentsCount || '20';
-          document.getElementById('startTime').value = fd.startTime || '';
-          document.getElementById('endTime').value = fd.endTime || '';
+          document.getElementById('students-count').value = (fd.studentsCount || '20') + ' طالب';
+          document.getElementById('startTime').value = fmtTime(fd.startTime);
+          document.getElementById('endTime').value = fmtTime(fd.endTime);
           
-          // ✅ نحفظ نسخة للاستخدام السريع
-          window._fixedData = fd;
+          // ✅ حقل السنتر: نعرضه لو موجود
+          const centerGroup = document.getElementById('center-name-group-display');
+          if (fd.centerName) {
+              document.getElementById('center-name').value = fd.centerName;
+              if (centerGroup) centerGroup.style.display = 'block';
+          } else {
+              if (centerGroup) centerGroup.style.display = 'none';
+          }
           
-          // ✅ نعرض كارت المعاينة
-          showFixedDataPreview(fd);
+          // ✅ نحفظ نسخة للاستخدام عند النشر
+          window._fixedData = {
+              groupName: fd.groupName || '',
+              centerName: fd.centerName || '',
+              teacherName: fd.teacherName || '',
+              studentsCount: fd.studentsCount || '20',
+              startTime: fd.startTime || '',
+              endTime: fd.endTime || ''
+          };
+          
+          // ✅ نظهر الكارت
+          const card = document.getElementById('fixedDataPreviewCard');
+          if (card) card.style.display = 'block';
           
           return true;
       } catch(e) {
           console.error('فشل تحميل البيانات الثابتة:', e);
           return false;
       }
-  }
-
-  function showFixedDataPreview(fd) {
-      const card = document.getElementById('fixedDataPreviewCard');
-      if (!card) return;
-      
-      const fmtTime = (v) => {
-          if (!v) return '-';
-          const [h, m] = v.split(':').map(Number);
-          const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
-          return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
-      };
-      
-      document.getElementById('fp-group-name').textContent = fd.groupName || '-';
-      document.getElementById('fp-teacher-name').textContent = fd.teacherName || '-';
-      document.getElementById('fp-students-count').textContent = (fd.studentsCount || '20') + ' طالب';
-      document.getElementById('fp-start-time').textContent = fmtTime(fd.startTime);
-      document.getElementById('fp-end-time').textContent = fmtTime(fd.endTime);
-      
-      const centerItem = document.getElementById('fp-center-item');
-      if (fd.centerName) {
-          document.getElementById('fp-center-name').textContent = fd.centerName;
-          centerItem.style.display = 'flex';
-      } else {
-          centerItem.style.display = 'none';
-      }
-      
-      card.style.display = 'block';
   }
 
   // ==========================================
@@ -2162,13 +2179,10 @@
       const locationValue = document.querySelector('input[name="location"]:checked').value;
       const fixedData = window._fixedData || {};
       
-      // ✅ لو المستخدم اختار "السنتر" ولازم يبقى فيه اسم سنتر
       if (locationValue === 'السنتر' && !fixedData.centerName) {
-          // نعرض تحذير بسيط
-          console.warn('⚠️ لا يوجد اسم سنتر محفوظ، لكن تم اختيار "السنتر"');
+          console.warn('⚠️ لا يوجد اسم سنتر محفوظ');
       }
       
-      // ✅ نحدّث أرقام الخطوات
       document.getElementById('gender-num').textContent = '1';
       document.getElementById('location-num').textContent = '2';
       document.getElementById('map-num').textContent = '3';
@@ -2593,16 +2607,15 @@
   window.publishSingleApptOnline = async function(appt) {
       const fixedData = window._fixedData || {};
       
-      // ✅ نستخدم البيانات الثابتة أولاً
-      const groupName = fixedData.groupName || appt.groupName || '';
-      const teacherName = fixedData.teacherName || appt.teacherName || '';
-      const centerName = fixedData.centerName || appt.centerName || '';
-      const studentsCount = fixedData.studentsCount || appt.studentsCount || '20';
-      const startTime = fixedData.startTime || appt.start || '';
-      const endTime = fixedData.endTime || appt.end || '';
+      const groupName = fixedData.groupName || '';
+      const teacherName = fixedData.teacherName || '';
+      const centerName = fixedData.centerName || '';
+      const studentsCount = fixedData.studentsCount || '20';
+      const startTime = fixedData.startTime || '';
+      const endTime = fixedData.endTime || '';
       
       if (!groupName || !teacherName || !startTime || !endTime) {
-          alert('⚠ البيانات الثابتة ناقصة. ارجع لصفحة الجداول وحدّث البيانات.');
+          alert('⚠ البيانات الثابتة ناقصة. ارجع لصفحة الجداول.');
           return;
       }
       
@@ -3024,7 +3037,7 @@
   };
 
   // ==========================================
-  // ✅ addAppointment (يستخدم البيانات الثابتة)
+  // ✅ addAppointment
   // ==========================================
   window.addAppointment = async function() {
     const phone = localStorage.getItem('current_teacher_phone');
@@ -3055,7 +3068,6 @@
         return; 
     }
 
-    // ✅ نستخدم البيانات الثابتة
     const fixedData = window._fixedData;
     if (!fixedData || !fixedData.groupName || !fixedData.teacherName || !fixedData.startTime || !fixedData.endTime) {
         showAddError('البيانات الثابتة ناقصة. ارجع لصفحة الجداول.');
@@ -3067,7 +3079,6 @@
     const isRecurring = document.getElementById('repeatWeekly').checked;
     const locationChecked = document.querySelector('input[name="location"]:checked').value;
 
-    // ✅ التحقق من الموقع فقط
     const gpsLocation = document.getElementById('gps-coords').value;
     if (!gpsLocation) { 
         showAddError('حدد الموقع'); 
@@ -3075,13 +3086,11 @@
         return; 
     }
 
-    // ✅ التحقق من التاريخ
     if (!selectedDateKey) { 
         showAddError('حدد يوم من التقويم'); 
         return; 
     }
 
-    // ✅ التحقق من التعارض
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
@@ -3115,7 +3124,6 @@
 
     await window.publishSingleApptOnline(newApptObj);
     
-    // ✅ نصفّر الحقول المؤقتة فقط
     document.getElementById('repeatWeekly').checked = false;
     document.getElementById('detailed-address').value = '';
     hideAddError(); 
@@ -3144,12 +3152,7 @@
   // 🚀 التهيئة
   // ==========================================
   function initApp() {
-      // ✅ أول حاجة: نحمّل البيانات الثابتة
-      const hasFixedData = loadFixedScheduleData();
-      
-      if (!hasFixedData) {
-          console.warn('⚠️ لا توجد بيانات ثابتة، جاري عرض تنبيه');
-      }
+      loadFixedScheduleData();
       
       initMap();
       setupSwipeCal();
