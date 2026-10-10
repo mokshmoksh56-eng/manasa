@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>منصة احجزلي - إعداد المجموعة والمواعيد</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,90 +23,177 @@
         --white: #ffffff;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; font-weight: 700; -webkit-tap-highlight-color: transparent;}
+    * { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+        font-family: 'Cairo', sans-serif; 
+        font-weight: 700; 
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+    }
     
     body { 
         background: var(--bg-color); 
         padding-bottom: 50px; 
-        color: var(--text-dark); 
+        color: var(--text-dark);
+        font-size: 14px;
     }
 
+    /* ========================================== */
+    /* 📱 الهيدر */
+    /* ========================================== */
     .header-3d { 
         width: 100%; 
         background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 100%), url('teacher2.png') center/cover no-repeat; 
-        padding: 30px 20px 45px; 
+        padding: 20px 12px 38px; 
         text-align: center; 
         position: relative; 
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
     }
-    .header-3d h1 { font-size: 22px; font-weight: 900; color: var(--white); margin-bottom: 8px; letter-spacing: 0.5px; text-shadow: 0 2px 5px rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    
+    .header-3d h1 { 
+        font-size: 18px; 
+        font-weight: 900; 
+        color: var(--white); 
+        margin-bottom: 8px; 
+        letter-spacing: 0.5px; 
+        text-shadow: 0 2px 5px rgba(0,0,0,0.7); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 8px; 
+        flex-wrap: wrap; 
+        line-height: 1.3;
+    }
     
     .schedule-badge-header {
         background: linear-gradient(135deg, #F59E0B, #D97706);
         color: #fff;
-        padding: 4px 14px;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 900;
         box-shadow: 0 4px 10px -2px rgba(245, 158, 11, 0.6);
         animation: badgePulse 2s ease-in-out infinite;
+        white-space: nowrap;
     }
     @keyframes badgePulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.05); }
     }
 
-    .stepper { display: flex; justify-content: center; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.35); border-radius: 50px; padding: 8px 16px; margin: 12px auto 0; width: fit-content; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.15); flex-wrap: wrap; }
-    .step { font-size: 13px; font-weight: bold; color: var(--white); opacity: 0.8; display: flex; align-items: center; gap: 5px; }
+    .stepper { 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        gap: 8px; 
+        background: rgba(0, 0, 0, 0.35); 
+        border-radius: 50px; 
+        padding: 6px 12px; 
+        margin: 10px auto 0; 
+        width: fit-content; 
+        backdrop-filter: blur(6px); 
+        border: 1px solid rgba(255,255,255,0.15); 
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+    .step { 
+        font-size: 11.5px; 
+        font-weight: bold; 
+        color: var(--white); 
+        opacity: 0.85; 
+        display: flex; 
+        align-items: center; 
+        gap: 4px; 
+        white-space: nowrap;
+    }
     .step.clickable { cursor: pointer; text-decoration: none; transition: all 0.2s; }
-    .step.clickable:hover { color: #00E5FF; opacity: 1; transform: scale(1.05); }
-    .step.active { color: #a8f0e5; opacity: 1; font-size: 14px; }
-    .step-divider { color: rgba(255,255,255,0.6); }
+    .step.clickable:hover { color: #00E5FF; opacity: 1; }
+    .step.active { color: #a8f0e5; opacity: 1; font-size: 12.5px; }
+    .step-divider { color: rgba(255,255,255,0.6); font-size: 10px; }
 
-    .main-container { width: 100%; max-width: 900px; margin: -25px auto 0; padding: 0 15px; position: relative; z-index: 10; }
+    .main-container { 
+        width: 100%; 
+        max-width: 900px; 
+        margin: -25px auto 0; 
+        padding: 0 10px; 
+        position: relative; 
+        z-index: 10; 
+    }
 
     .step-num {
         display: inline-flex; align-items: center; justify-content: center;
-        width: 24px; height: 24px; background: var(--primary-teal); color: var(--white);
-        border-radius: 6px; font-size: 14px; font-weight: 900; margin-left: 8px;
+        width: 22px; height: 22px; background: var(--primary-teal); color: var(--white);
+        border-radius: 6px; font-size: 12px; font-weight: 900; margin-left: 6px;
+        flex-shrink: 0;
     }
     .step-num-lg {
         display: inline-flex; align-items: center; justify-content: center;
-        width: 30px; height: 30px; background: var(--primary-teal); color: var(--white);
-        border-radius: 8px; font-size: 16px; font-weight: 900; margin-left: 10px;
+        width: 26px; height: 26px; background: var(--primary-teal); color: var(--white);
+        border-radius: 7px; font-size: 14px; font-weight: 900; margin-left: 8px;
+        flex-shrink: 0;
     }
 
     .booking-card { 
         background: var(--white); 
-        border-radius: 16px; 
+        border-radius: 14px; 
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(37, 150, 139, 0.05); 
-        padding: 24px; 
+        padding: 16px 12px; 
         width: 100%; 
         border-top: 4px solid var(--primary-teal); 
-        margin-bottom: 25px;
-        transform: translateZ(0);
+        margin-bottom: 18px;
     }
 
-    .form-section-title { font-size: 16px; font-weight: 900; color: var(--dark-teal); margin: 20px 0 12px; display: flex; align-items: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 8px; }
-    .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-    .form-group { margin-bottom: 15px; width: 100%; }
+    .form-section-title { 
+        font-size: 14.5px; 
+        font-weight: 900; 
+        color: var(--dark-teal); 
+        margin: 18px 0 10px; 
+        display: flex; 
+        align-items: center; 
+        border-bottom: 2px dashed #e2e8f0; 
+        padding-bottom: 8px; 
+        gap: 4px;
+    }
+    
+    .form-grid-row { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 10px; 
+        margin-bottom: 12px; 
+    }
+    
+    .form-group { margin-bottom: 12px; width: 100%; }
     .form-group.full-width { grid-column: 1 / -1; }
     
-    .form-group label { display: flex; align-items: center; font-size: 14px; color: var(--text-dark); font-weight: 900; margin-bottom: 8px; }
+    .form-group label { 
+        display: flex; 
+        align-items: center; 
+        font-size: 13px; 
+        color: var(--text-dark); 
+        font-weight: 900; 
+        margin-bottom: 6px; 
+        flex-wrap: wrap;
+    }
     
     .form-control { 
         width: 100%; 
-        padding: 13px 15px; 
+        padding: 11px 12px; 
         border: 1px solid #cbd5e1; 
         border-top: 2px solid #94a3b8; 
         border-radius: 10px; 
-        font-size: 14.5px; 
+        font-size: 14px; 
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         background-color: #f1f5f9; 
         font-family: inherit; 
         font-weight: 800; 
         color: var(--text-dark);
-        box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.06), 0 1px 0 rgba(255, 255, 255, 1);
     }
     
     .form-control:focus { 
@@ -114,146 +201,286 @@
         border-top: 1px solid var(--primary-teal);
         outline: none; 
         background-color: var(--white); 
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(37, 150, 139, 0.15), 0 0 0 3px rgba(37, 150, 139, 0.1); 
     }
     
     .fixed-subject-box { 
         background: var(--light-teal); 
         color: var(--dark-teal); 
-        padding: 12px 15px; 
+        padding: 10px 12px; 
         border-radius: 8px; 
         font-weight: 900; 
-        font-size: 15px; 
+        font-size: 13.5px; 
         text-align: center; 
         border: 1px solid var(--border-teal);
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.04);
         white-space: pre-line;
+        line-height: 1.5;
+        word-break: break-word;
     }
 
-    #center-name-group {
-        animation: slideDownFade 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    /* ========================================== */
+    /* 📱 شريط الجدول النشط */
+    /* ========================================== */
+    .active-schedule-info-bar {
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        border: 2px solid #F59E0B;
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        box-shadow: 0 4px 12px -4px rgba(245, 158, 11, 0.4);
+        flex-wrap: wrap;
     }
-
-    @keyframes slideDownFade {
-        from { opacity: 0; transform: translateY(-15px); max-height: 0; }
-        to { opacity: 1; transform: translateY(0); max-height: 200px; }
-    }
-
-    #center-name-group .form-control {
-        background: linear-gradient(160deg, #e0f2f0 0%, #f1f5f9 100%);
-        border-color: var(--border-teal);
-        border-top-color: var(--primary-teal);
+    .active-schedule-info-bar .info-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
         font-weight: 900;
-        color: var(--dark-teal);
+        color: #92400E;
+        flex: 1;
+        flex-wrap: wrap;
+        min-width: 0;
     }
-    #center-name-group .form-control:focus {
-        background: #fff;
-        border-color: var(--primary-teal);
-        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.2), 0 0 0 4px rgba(37, 150, 139, 0.12);
+    .active-schedule-info-bar .info-text .num-badge {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        box-shadow: 0 3px 8px -2px rgba(245, 158, 11, 0.6);
+        white-space: nowrap;
     }
-    #center-name-group label { color: var(--dark-teal); font-weight: 900; }
-    #center-name-group .step-num { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .active-schedule-info-bar .btn-back {
+        background: linear-gradient(135deg, #64748B, #475569);
+        color: #fff;
+        border: none;
+        padding: 7px 12px;
+        border-radius: 9px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 900;
+        font-size: 11.5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    .active-schedule-info-bar .btn-back:hover { transform: translateY(-1px); }
+    .active-schedule-info-bar .btn-back:active { transform: scale(0.96); }
 
-    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .cards-grid input[type="radio"] { display: none; }
-    .cards-grid label { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 900; color: var(--text-dark); font-size: 13px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
-    .cards-grid label i { font-size: 20px; margin-bottom: 6px; font-style: normal; }
-    .cards-grid input[type="radio"]:checked + label { 
-        background: var(--light-teal); 
-        border-color: var(--primary-teal); 
-        color: var(--dark-teal); 
-        transform: translateY(-4px); 
-        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 3px 6px rgba(37, 150, 139, 0.1); 
-    }
-    .cards-grid input[type="radio"]:checked + label::after { content: "✔"; position: absolute; top: -6px; left: -6px; width: 18px; height: 18px; background: var(--primary-teal); color: var(--white); border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-    
-    @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-
+    /* ========================================== */
+    /* 🗺️ الخريطة */
+    /* ========================================== */
     #map-container { 
-        width: 100%; height: 280px; border-radius: 10px; overflow: hidden; 
-        border: 2px solid #e2e8f0; position: relative; margin-bottom: 8px; z-index: 1; 
+        width: 100%; 
+        height: 220px; 
+        border-radius: 10px; 
+        overflow: hidden; 
+        border: 2px solid #e2e8f0; 
+        position: relative; 
+        margin-bottom: 8px; 
+        z-index: 1; 
         box-shadow: inset 0 5px 15px rgba(0,0,0,0.08);
     }
     #map { width: 100%; height: 100%; }
 
-    .leaflet-control-my-location button {
-        background: var(--white); border: 2px solid #e2e8f0; width: 36px; height: 36px; cursor: pointer; 
-        font-size: 18px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+    /* ========================================== */
+    /* 🏫 الكروت (Gender - Location) */
+    /* ========================================== */
+    .cards-grid { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 6px; 
     }
-    .leaflet-control-my-location button:hover { background: #f1f5f9; }
+    .cards-grid input[type="radio"] { display: none; }
+    .cards-grid label { 
+        position: relative; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        padding: 10px 4px; 
+        background: #f8fafc; 
+        border: 2px solid #e2e8f0; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        text-align: center; 
+        font-weight: 900; 
+        color: var(--text-dark); 
+        font-size: 11.5px; 
+        box-shadow: 0 3px 6px rgba(0,0,0,0.04); 
+        min-height: 60px;
+    }
+    .cards-grid label i { 
+        font-size: 18px; 
+        margin-bottom: 4px; 
+        font-style: normal; 
+    }
+    .cards-grid input[type="radio"]:checked + label { 
+        background: var(--light-teal); 
+        border-color: var(--primary-teal); 
+        color: var(--dark-teal); 
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 12px rgba(37, 150, 139, 0.15); 
+    }
+    .cards-grid input[type="radio"]:checked + label::after { 
+        content: "✔"; 
+        position: absolute; 
+        top: -5px; 
+        left: -5px; 
+        width: 16px; 
+        height: 16px; 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        border-radius: 50%; 
+        font-size: 9px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+    }
+    
+    @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
+    /* ========================================== */
+    /* ⏰ Selects */
+    /* ========================================== */
     .form-group select { 
         width: 100%; 
-        padding: 13px 15px; 
+        padding: 11px 12px; 
         border: 1px solid #cbd5e1; 
         border-top: 2px solid #94a3b8; 
         border-radius: 10px; 
-        font-size: 14.5px; 
+        font-size: 14px; 
         font-family: inherit; 
         outline: none; 
-        background: #f1f5f9 url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2325968b' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 15px center; 
-        background-size: 14px; 
-        padding-left: 36px; 
+        background: #f1f5f9 url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2325968b' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center; 
+        background-size: 13px; 
+        padding-left: 32px; 
         cursor: pointer; 
         appearance: none; 
         font-weight: 800; 
         color: var(--text-dark); 
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 1);
+        transition: all 0.3s;
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.06);
     }
     
     .form-group select:focus { 
         border-color: var(--primary-teal); 
         border-top: 1px solid var(--primary-teal);
         background-color: var(--white); 
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(37, 150, 139, 0.15), 0 0 0 4px rgba(37, 150, 139, 0.1); 
+        box-shadow: 0 6px 12px rgba(37, 150, 139, 0.15), 0 0 0 3px rgba(37, 150, 139, 0.1); 
     }
 
-    .time-row-cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-    .repeat-option { background: var(--light-teal); border: 1px solid var(--border-teal); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 15px 0; box-shadow: 0 3px 6px rgba(37, 150, 139, 0.05);}
-    .repeat-option input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-teal); }
-    .repeat-option label { font-size: 14px; color: var(--dark-teal); font-weight: 900; cursor: pointer; margin: 0; display: inline-block; }
-    .duration-info { background: #f8fafc; border-right: 4px solid var(--primary-teal); color: var(--dark-teal); padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 900; margin-top: 12px; text-align: center; display: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
+    /* ========================================== */
+    /* 🕐 الوقت */
+    /* ========================================== */
+    .time-row-cal { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 8px; 
+        margin-top: 8px; 
+    }
+    
+    .repeat-option { 
+        background: var(--light-teal); 
+        border: 1px solid var(--border-teal); 
+        border-radius: 10px; 
+        padding: 10px; 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        cursor: pointer; 
+        margin: 12px 0; 
+    }
+    .repeat-option input[type="checkbox"] { 
+        width: 20px; 
+        height: 20px; 
+        cursor: pointer; 
+        accent-color: var(--primary-teal); 
+        flex-shrink: 0;
+    }
+    .repeat-option label { 
+        font-size: 13px; 
+        color: var(--dark-teal); 
+        font-weight: 900; 
+        cursor: pointer; 
+        margin: 0; 
+        line-height: 1.4;
+    }
+    
+    .duration-info { 
+        background: #f8fafc; 
+        border-right: 4px solid var(--primary-teal); 
+        color: var(--dark-teal); 
+        padding: 8px 10px; 
+        border-radius: 6px; 
+        font-size: 12.5px; 
+        font-weight: 900; 
+        margin-top: 10px; 
+        text-align: center; 
+        display: none; 
+    }
     .duration-info.show { display: block; }
 
+    /* ========================================== */
+    /* 📍 GPS */
+    /* ========================================== */
     .btn-gps { 
-        background: var(--primary-teal); color: var(--white); border: none; padding: 12px 18px; border-radius: 8px; 
-        font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; 
-        justify-content: center; font-family: inherit; width: 100%; transition: all 0.3s;
+        background: var(--primary-teal); 
+        color: var(--white); 
+        border: none; 
+        padding: 11px 14px; 
+        border-radius: 8px; 
+        font-weight: 900; 
+        font-size: 13px; 
+        cursor: pointer; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-family: inherit; 
+        width: 100%; 
+        transition: all 0.3s;
         box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2);
+        white-space: nowrap;
     }
-    .btn-gps:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
-    .btn-gps:active { transform: translateY(0); box-shadow: 0 2px 5px rgba(37, 150, 139, 0.2); }
-    .btn-gps:disabled { opacity: 0.8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-gps:hover { background: var(--dark-teal); }
+    .btn-gps:disabled { opacity: 0.8; cursor: not-allowed; }
 
+    /* ========================================== */
+    /* 🏠 العنوان التفصيلي */
+    /* ========================================== */
     .detailed-address-box {
         background: linear-gradient(160deg, #FFFBEB 0%, #FEF3C7 100%);
         border: 2px dashed #FCD34D;
         border-radius: 12px;
-        padding: 14px;
-        margin-top: 12px;
+        padding: 12px;
+        margin-top: 10px;
         position: relative;
-        box-shadow: inset 0 2px 6px rgba(217, 119, 6, 0.05);
     }
     .detailed-address-box::before {
         content: '✨';
         position: absolute;
         top: -10px;
-        right: 15px;
+        right: 12px;
         background: #fff;
         padding: 0 6px;
-        font-size: 16px;
+        font-size: 14px;
         border-radius: 50%;
     }
     .detailed-address-box .label-row {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         margin-bottom: 8px;
-        font-size: 13.5px;
+        font-size: 12.5px;
         font-weight: 900;
         color: #92400E;
         flex-wrap: wrap;
@@ -264,81 +491,216 @@
         gap: 3px;
         background: linear-gradient(135deg, #F59E0B, #D97706);
         color: #fff;
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 6px;
-        font-size: 10px;
+        font-size: 9.5px;
         font-weight: 900;
-        box-shadow: 0 2px 4px -1px rgba(217, 119, 6, 0.4);
     }
     .detailed-address-box .hint-text {
-        font-size: 11.5px;
+        font-size: 11px;
         color: #92400E;
         margin-top: 6px;
         font-weight: 700;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 4px;
         opacity: 0.85;
+        line-height: 1.5;
     }
     .detailed-address-box .form-control {
         background: #fff !important;
         border-color: #FCD34D !important;
         border-top-color: #F59E0B !important;
-    }
-    .detailed-address-box .form-control:focus {
-        border-color: #D97706 !important;
-        box-shadow: 0 8px 15px rgba(217, 119, 6, 0.15), 0 0 0 4px rgba(245, 158, 11, 0.15) !important;
+        font-size: 13px;
     }
 
+    /* ========================================== */
+    /* 📅 التقويم */
+    /* ========================================== */
     .calendar-container-block { 
         background: var(--white); 
         border: 2px solid #e2e8f0; 
         border-radius: 12px; 
-        padding: 16px; 
-        margin: 20px 0; 
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 3px 6px rgba(0, 0, 0, 0.03);
+        padding: 12px 10px; 
+        margin: 16px 0; 
     }
-    .selected-day-banner { background: var(--light-teal); border: 1px solid var(--border-teal); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; box-shadow: 0 3px 8px rgba(37, 150, 139, 0.08); }
-    .selected-day-banner .title { color: var(--dark-teal); font-size: 15px; font-weight: 900; display: flex; align-items: center; }
-    .selected-day-banner .day-badge { color: var(--white); background: var(--primary-teal); padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 900; box-shadow: 0 2px 5px rgba(37, 150, 139, 0.3); }
-    .calendar-header { position: relative; overflow: hidden; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; min-height: 38px; display: flex; justify-content: center; align-items: center; }
-    .title-track { display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; }
-    .month-name { color: var(--text-dark); font-size: 20px; font-weight: 900; }
-    .month-number { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--primary-teal); color: var(--white); font-size: 15px; font-weight: 900; box-shadow: 0 3px 6px rgba(37, 150, 139, 0.25); }
-    .year-text { color: var(--text-gray); font-size: 17px; font-weight: 800; }
-    .month-appt-badge { display: inline-flex; align-items: center; gap: 5px; background: #ef4444; color: var(--white); padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 900; box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3); }
-    .month-appt-badge.zero { background: #94a3b8; box-shadow: none; }
     
-    .week-wrapper { position: relative; overflow: hidden; border-radius: 8px; border: 2px solid #e2e8f0; background: var(--white); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .selected-day-banner { 
+        background: var(--light-teal); 
+        border: 1px solid var(--border-teal); 
+        border-radius: 10px; 
+        padding: 10px 12px; 
+        margin-bottom: 12px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        flex-wrap: wrap; 
+        gap: 6px; 
+    }
+    .selected-day-banner .title { 
+        color: var(--dark-teal); 
+        font-size: 13px; 
+        font-weight: 900; 
+        display: flex; 
+        align-items: center; 
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+    .selected-day-banner .day-badge { 
+        color: var(--white); 
+        background: var(--primary-teal); 
+        padding: 4px 10px; 
+        border-radius: 6px; 
+        font-size: 12.5px; 
+        font-weight: 900; 
+        white-space: nowrap;
+    }
+    
+    .calendar-header { 
+        position: relative; 
+        overflow: hidden; 
+        margin-bottom: 12px; 
+        padding-bottom: 8px; 
+        border-bottom: 2px solid #e2e8f0; 
+        min-height: 34px; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+    }
+    .title-track { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        transition: transform 0.3s ease; 
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .month-name { color: var(--text-dark); font-size: 17px; font-weight: 900; }
+    .month-number { 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        font-size: 14px; 
+        font-weight: 900; 
+    }
+    .year-text { color: var(--text-gray); font-size: 15px; font-weight: 800; }
+    .month-appt-badge { 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 4px; 
+        background: #ef4444; 
+        color: var(--white); 
+        padding: 3px 9px; 
+        border-radius: 20px; 
+        font-size: 11.5px; 
+        font-weight: 900; 
+    }
+    .month-appt-badge.zero { background: #94a3b8; }
+    
+    .week-wrapper { 
+        position: relative; 
+        overflow: hidden; 
+        border-radius: 8px; 
+        border: 2px solid #e2e8f0; 
+        background: var(--white); 
+    }
     .week-track { transition: transform 0.3s ease; }
-    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--primary-teal); }
-    .weekdays div { text-align: center; font-weight: 900; color: var(--white); padding: 9px 3px; font-size: 13px; border-left: 1px solid rgba(255, 255, 255, 0.2); }
+    .weekdays { 
+        display: grid; 
+        grid-template-columns: repeat(7, 1fr); 
+        background: var(--primary-teal); 
+    }
+    .weekdays div { 
+        text-align: center; 
+        font-weight: 900; 
+        color: var(--white); 
+        padding: 7px 2px; 
+        font-size: 10.5px; 
+        border-left: 1px solid rgba(255, 255, 255, 0.2); 
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     .weekdays div:last-child { border-left: none; }
     .weekdays div.friday { color: #a8f0e5; }
     
-    .days-wrapper { position: relative; overflow: hidden; background: #e2e8f0; padding-top: 1px; touch-action: pan-y; }
-    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
-    .days div.cell { background: var(--white); min-height: 110px; padding: 8px; display: flex; flex-direction: column; align-items: flex-start; color: var(--text-dark); font-size: 14px; font-weight: 900; cursor: pointer; position: relative; transition: background 0.2s; }
-    .days div.cell:hover { background: #f8fafc !important; }
+    .days-wrapper { 
+        position: relative; 
+        overflow: hidden; 
+        background: #e2e8f0; 
+        padding-top: 1px; 
+        touch-action: pan-y; 
+    }
+    .days { 
+        display: grid; 
+        grid-template-columns: repeat(7, 1fr); 
+        gap: 1px; 
+        transition: transform 0.3s ease, opacity 0.3s ease; 
+    }
+    .days div.cell { 
+        background: var(--white); 
+        min-height: 62px; 
+        padding: 4px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: flex-start; 
+        color: var(--text-dark); 
+        font-size: 12px; 
+        font-weight: 900; 
+        cursor: pointer; 
+        position: relative; 
+        transition: background 0.2s; 
+    }
     .days div.cell:nth-child(7n), .days div.cell:nth-child(7n-1) { background: #fafbfc; }
     .days div.cell.out-of-month { background: #f1f5f9 !important; color: #cbd5e1; }
     
-    .days div.cell.past-cell { 
-        background: #f8fafc !important; 
-        cursor: not-allowed; 
-        opacity: 0.6; 
-    }
-    .days div.cell.past-cell .date-number { 
-        text-decoration: line-through; 
-        color: #94a3b8; 
-    }
-    .days div.cell.past-cell:hover { background: #f8fafc !important; }
+    .days div.cell.past-cell { background: #f8fafc !important; cursor: not-allowed; opacity: 0.6; }
+    .days div.cell.past-cell .date-number { text-decoration: line-through; color: #94a3b8; }
 
-    .cell .date-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 15px; }
-    .cell.today-cell .date-number { background: var(--dark-teal); color: var(--white); box-shadow: 0 2px 4px rgba(27, 115, 106, 0.3); }
-    .cell.selected-cell { box-shadow: inset 0 0 0 3px var(--primary-teal); background: var(--light-teal) !important;}
-    .badge { position: absolute; bottom: 8px; left: 8px; background: var(--primary-teal); color: var(--white); font-size: 11px; font-weight: 900; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(37, 150, 139, 0.4); }
-    .swipe-hint { text-align: center; font-size: 13px; font-weight: 800; color: var(--text-gray); margin-top: 10px; }
+    .cell .date-number { 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        width: 22px; 
+        height: 22px; 
+        border-radius: 50%; 
+        font-size: 12.5px; 
+    }
+    .cell.today-cell .date-number { 
+        background: var(--dark-teal); 
+        color: var(--white); 
+    }
+    .cell.selected-cell { 
+        box-shadow: inset 0 0 0 2px var(--primary-teal); 
+        background: var(--light-teal) !important;
+    }
+    .days .badge { 
+        position: absolute; 
+        bottom: 3px; 
+        left: 3px; 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        font-size: 9px; 
+        font-weight: 900; 
+        border-radius: 50%; 
+        width: 16px; 
+        height: 16px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+    }
+    .swipe-hint { 
+        text-align: center; 
+        font-size: 11.5px; 
+        font-weight: 800; 
+        color: var(--text-gray); 
+        margin-top: 8px; 
+    }
 
     .slide-out-left { animation: slideOutLeft 0.3s forwards; }
     .slide-out-right { animation: slideOutRight 0.3s forwards; }
@@ -349,207 +711,178 @@
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    .btn-add { width: 100%; background: var(--primary-teal); color: var(--white); border: none; border-radius: 10px; padding: 15px; font-size: 17px; font-weight: 900; cursor: pointer; transition: all 0.2s; margin-top: 10px; box-shadow: 0 6px 15px rgba(37, 150, 139, 0.25); }
-    .btn-add:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 150, 139, 0.35); }
-    .btn-add:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
-    .btn-cancel { width: 100%; background: #94a3b8; color: var(--white); border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 8px rgba(148, 163, 184, 0.2); }
-    .error-msg { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 12px; font-weight: 900; display: none; box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1); }
+    /* ========================================== */
+    /* 🔘 الأزرار */
+    /* ========================================== */
+    .btn-add { 
+        width: 100%; 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        border: none; 
+        border-radius: 10px; 
+        padding: 14px; 
+        font-size: 15px; 
+        font-weight: 900; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        margin-top: 10px; 
+        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.25); 
+    }
+    .btn-add:active { transform: scale(0.98); }
+    .btn-cancel { 
+        width: 100%; 
+        background: #94a3b8; 
+        color: var(--white); 
+        border: none; 
+        border-radius: 10px; 
+        padding: 10px; 
+        font-size: 13px; 
+        font-weight: 900; 
+        cursor: pointer; 
+        margin-top: 8px; 
+    }
+    .error-msg { 
+        background: #fef2f2; 
+        color: #dc2626; 
+        border: 2px solid #fecaca; 
+        border-radius: 8px; 
+        padding: 10px; 
+        font-size: 12.5px; 
+        margin-bottom: 10px; 
+        font-weight: 900; 
+        display: none; 
+    }
     .error-msg.show { display: block; }
 
+    /* ========================================== */
+    /* 📋 الكروت */
+    /* ========================================== */
     .summary-section { 
         background: var(--white); 
-        border-radius: 16px; 
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(37, 150, 139, 0.05); 
-        padding: 24px; 
+        border-radius: 14px; 
+        padding: 16px 12px; 
         border-top: 4px solid var(--primary-teal); 
         width: 100%; 
     }
-    .summary-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; flex-wrap: wrap; gap: 10px; }
-    .summary-section-title { color: var(--dark-teal); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-    .summary-total-badge { background: var(--light-teal); color: var(--dark-teal); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 900; border: 1px solid var(--border-teal); box-shadow: 0 2px 6px rgba(37, 150, 139, 0.1); }
-    .appts-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
+    .summary-section-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 14px; 
+        padding-bottom: 10px; 
+        border-bottom: 2px solid #f1f5f9; 
+        flex-wrap: wrap; 
+        gap: 8px; 
+    }
+    .summary-section-title { 
+        color: var(--dark-teal); 
+        font-size: 16px; 
+        font-weight: 900; 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+    }
+    .summary-total-badge { 
+        background: var(--light-teal); 
+        color: var(--dark-teal); 
+        padding: 5px 12px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: 900; 
+        border: 1px solid var(--border-teal); 
+    }
+    .appts-cards-grid { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 14px; 
+    }
 
     .summary-card { 
         background: var(--white); 
-        border-radius: 14px; 
+        border-radius: 12px; 
         padding: 0; 
         display: flex; 
         flex-direction: column; 
         overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04); 
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; 
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); 
         position: relative;
         border: 2px solid #e2e8f0;
     }
 
-    .summary-card:hover { 
-        transform: translateY(-6px); 
-        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15); 
-    }
+    .summary-card.recurring-card { border-color: #8b5cf6; background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%); }
+    .summary-card.recurring-card .sc-top-strip { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .summary-card.normal-card { border-color: #3b82f6; background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%); }
+    .summary-card.normal-card .sc-top-strip { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .summary-card.visible-card { border-color: #16a34a; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%); }
+    .summary-card.visible-card .sc-top-strip { background: linear-gradient(90deg, #16a34a, #4ade80); }
+    .summary-card.hidden-card { border-color: #dc2626; background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%); opacity: 0.95; }
+    .summary-card.hidden-card .sc-top-strip { background: linear-gradient(90deg, #dc2626, #f87171); }
 
-    .summary-card.recurring-card {
-        border-color: #8b5cf6;
-        background: linear-gradient(180deg, #faf5ff 0%, #ffffff 30%);
-    }
-    .summary-card.recurring-card .sc-top-strip {
-        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-    }
+    .sc-top-strip { height: 6px; width: 100%; }
 
-    .summary-card.normal-card {
-        border-color: #3b82f6;
-        background: linear-gradient(180deg, #eff6ff 0%, #ffffff 30%);
-    }
-    .summary-card.normal-card .sc-top-strip {
-        background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    }
-
-    .summary-card.visible-card {
-        border-color: #16a34a;
-        background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 30%);
-    }
-    .summary-card.visible-card .sc-top-strip {
-        background: linear-gradient(90deg, #16a34a, #4ade80);
-    }
-
-    .summary-card.hidden-card {
-        border-color: #dc2626;
-        background: linear-gradient(180deg, #fef2f2 0%, #ffffff 30%);
-        opacity: 0.95;
-    }
-    .summary-card.hidden-card .sc-top-strip {
-        background: linear-gradient(90deg, #dc2626, #f87171);
-    }
-    .summary-card.hidden-card .sc-group-name {
-        color: #991b1b;
-    }
-
-    .sc-top-strip {
-        height: 8px;
-        width: 100%;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    .sc-status-row {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        padding: 12px 14px 0;
+    .sc-status-row { 
+        display: flex; 
+        gap: 5px; 
+        flex-wrap: wrap; 
+        padding: 10px 12px 0; 
     }
 
     .badge-status { 
-        font-size: 11px; 
+        font-size: 10px; 
         font-weight: 900; 
-        padding: 5px 10px; 
+        padding: 4px 8px; 
         border-radius: 20px; 
         display: inline-flex; 
         align-items: center; 
-        gap: 4px; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        letter-spacing: 0.2px;
+        gap: 3px; 
     }
-    .badge-status.online { 
-        background: #16a34a; 
-        color: #fff; 
-        border: 1px solid #15803d;
-        animation: pulse-green 2s infinite;
-    }
-    @keyframes pulse-green {
-        0%, 100% { box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
-        50% { box-shadow: 0 2px 15px rgba(22, 163, 74, 0.8); }
-    }
-
-    .badge-status.recurring { 
-        background: #8b5cf6; 
-        color: #fff; 
-        border: 1px solid #7c3aed; 
-    }
-    .badge-status.one-time { 
-        background: #3b82f6; 
-        color: #fff; 
-        border: 1px solid #2563eb; 
-    }
-    .badge-status.schedule-badge {
-        background: #F59E0B;
-        color: #fff;
-        border: 1px solid #D97706;
-    }
+    .badge-status.online { background: #16a34a; color: #fff; }
+    .badge-status.recurring { background: #8b5cf6; color: #fff; }
+    .badge-status.one-time { background: #3b82f6; color: #fff; }
+    .badge-status.schedule-badge { background: #F59E0B; color: #fff; }
 
     .status-message {
-        margin: 0 14px 12px;
-        padding: 12px 16px;
+        margin: 0 12px 10px;
+        padding: 10px 12px;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 900;
         display: flex;
         align-items: center;
-        gap: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        gap: 8px;
         position: relative;
-        overflow: hidden;
-    }
-    .status-message::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 5px;
     }
     .status-message.visible-msg {
         background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
         color: #14532d;
         border: 2px solid #16a34a;
     }
-    .status-message.visible-msg::before {
-        background: #16a34a;
-    }
     .status-message.hidden-msg {
         background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
         color: #7f1d1d;
         border: 2px solid #dc2626;
-        animation: pulse-red 2s infinite;
     }
-    .status-message.hidden-msg::before {
-        background: #dc2626;
-    }
-    @keyframes pulse-red {
-        0%, 100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
-        50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6); }
-    }
-    .status-message .status-icon {
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-    .status-message .status-text {
-        flex: 1;
-        line-height: 1.4;
-    }
-    .status-message .status-text strong {
-        display: block;
-        font-size: 15px;
-        margin-bottom: 2px;
-    }
-    .status-message .status-text small {
-        font-size: 12px;
-        font-weight: 700;
-        opacity: 0.85;
-    }
+    .status-message .status-icon { font-size: 20px; flex-shrink: 0; }
+    .status-message .status-text { flex: 1; line-height: 1.4; min-width: 0; }
+    .status-message .status-text strong { display: block; font-size: 12.5px; margin-bottom: 2px; }
+    .status-message .status-text small { font-size: 10.5px; font-weight: 700; opacity: 0.85; }
 
     .sc-header { 
         display: flex; 
         justify-content: space-between; 
         align-items: flex-start; 
-        gap: 10px; 
-        padding: 8px 14px 12px;
+        gap: 8px; 
+        padding: 6px 12px 10px;
     }
     .sc-group-name { 
-        font-size: 18px; 
+        font-size: 15px; 
         font-weight: 900; 
         color: var(--text-dark); 
         line-height: 1.3; 
+        word-break: break-word;
     }
     .sc-teacher { 
-        font-size: 13px; 
+        font-size: 11.5px; 
         color: var(--text-gray); 
         font-weight: 800; 
         margin-top: 3px; 
@@ -558,47 +891,31 @@
         gap: 4px;
         align-items: center;
     }
-    .sc-teacher .center-tag {
-        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
-        color: #1b736a;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 12px;
-        border: 1px solid #b2dfdb;
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-    }
 
     .sc-subject-block {
         background: linear-gradient(135deg, #fef3c7, #fde68a);
         border: 2px solid #f59e0b;
         border-radius: 10px;
-        padding: 10px 12px;
-        margin: 0 14px 10px;
+        padding: 8px 10px;
+        margin: 0 12px 10px;
         text-align: center;
         font-weight: 900;
         color: #92400e;
-        font-size: 14px;
-        box-shadow: 0 3px 8px rgba(245, 158, 11, 0.2);
-    }
-    .sc-subject-block .subject-icon {
-        font-size: 16px;
-        margin-left: 4px;
+        font-size: 12.5px;
+        word-break: break-word;
     }
 
     .sc-time-banner { 
         background: linear-gradient(135deg, #1e293b, #334155);
         border-radius: 10px; 
-        padding: 12px 14px; 
+        padding: 10px 12px; 
         display: flex; 
         justify-content: space-between; 
         align-items: center; 
-        font-size: 14px; 
+        font-size: 12.5px; 
         font-weight: 900; 
-        margin: 0 14px 12px;
+        margin: 0 12px 10px;
         color: #fff;
-        box-shadow: 0 4px 10px rgba(30, 41, 59, 0.3);
         flex-wrap: wrap;
         gap: 6px;
     }
@@ -606,27 +923,30 @@
         color: #fff; 
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
+        flex-wrap: wrap;
+        flex: 1;
+        min-width: 0;
     }
     .sc-time-banner .duration-pill { 
         background: #fbbf24; 
         color: #78350f; 
-        padding: 3px 10px; 
+        padding: 3px 9px; 
         border-radius: 20px; 
-        font-size: 12px; 
+        font-size: 11px; 
         font-weight: 900;
-        box-shadow: 0 2px 5px rgba(251, 191, 36, 0.4);
+        white-space: nowrap;
     }
 
     .sc-details-grid { 
         display: grid; 
-        grid-template-columns: 1fr 1fr; 
-        gap: 8px; 
+        grid-template-columns: 1fr; 
+        gap: 6px; 
         background: #f8fafc; 
         border-radius: 10px; 
-        padding: 12px; 
-        font-size: 13px; 
-        margin: 0 14px 12px;
+        padding: 10px; 
+        font-size: 12px; 
+        margin: 0 12px 10px;
         border: 1px solid #e2e8f0;
     }
     .sc-detail-item { 
@@ -639,175 +959,238 @@
         background: #fff;
         border-radius: 6px;
         border: 1px solid #e2e8f0;
-    }
-    .sc-detail-item.full { 
-        grid-column: span 2; 
+        word-break: break-word;
     }
     .sc-detail-item .val { 
         font-weight: 900; 
         color: var(--text-dark); 
+        flex: 1;
     }
     .sc-detail-item.address-item {
         background: linear-gradient(135deg, #ecfdf5, #d1fae5);
         border-color: #6ee7b7;
         color: #065f46;
     }
-    .sc-detail-item.address-item .val {
-        color: #065f46;
-    }
+    .sc-detail-item.address-item .val { color: #065f46; }
     .sc-detail-item.detailed-address-item {
         background: linear-gradient(135deg, #fffbeb, #fef3c7);
         border-color: #fcd34d;
         color: #92400e;
     }
-    .sc-detail-item.detailed-address-item .val {
-        color: #92400e;
-    }
+    .sc-detail-item.detailed-address-item .val { color: #92400e; }
     .sc-detail-item.center-item {
         background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
         border-color: #25968b;
         color: #1b736a;
     }
-    .sc-detail-item.center-item .val {
-        color: #1b736a;
-    }
+    .sc-detail-item.center-item .val { color: #1b736a; }
 
     .sc-footer-actions { 
         display: flex; 
         justify-content: space-between; 
         align-items: center; 
-        gap: 8px; 
-        padding: 12px 14px; 
+        gap: 6px; 
+        padding: 10px 12px; 
         background: #f8fafc;
         border-top: 2px solid #e2e8f0;
         flex-wrap: wrap; 
     }
     .sc-actions-sub { 
         display: flex; 
-        gap: 6px; 
+        gap: 5px; 
+        flex-wrap: wrap;
     }
     .btn-action { 
         display: flex; 
         align-items: center; 
         justify-content: center; 
-        gap: 5px; 
-        font-size: 12px; 
+        gap: 4px; 
+        font-size: 11px; 
         font-weight: 900; 
-        padding: 8px 12px; 
+        padding: 7px 10px; 
         border-radius: 8px; 
         border: none; 
         cursor: pointer; 
         transition: all 0.2s; 
         font-family: inherit; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
     }
-    .btn-edit { 
-        background: #f1f5f9; 
-        color: #334155; 
-        border: 1px solid #cbd5e1; 
-    }
-    .btn-edit:hover { background: #e2e8f0; transform: translateY(-2px); }
-    .btn-delete { 
-        background: #fee2e2; 
-        color: #b91c1c; 
-        border: 1px solid #fecaca;
-    }
-    .btn-delete:hover { background: #fecaca; transform: translateY(-2px); }
+    .btn-edit { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-delete { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
     .btn-visibility {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        font-size: 13px;
+        gap: 4px;
+        font-size: 11.5px;
         font-weight: 900;
-        padding: 10px 16px;
+        padding: 8px 12px;
         border-radius: 10px;
         border: none;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         font-family: inherit;
         color: #fff;
-        letter-spacing: 0.3px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
     }
-    .btn-visibility.hide-state {
-        background: linear-gradient(135deg, #dc2626, #ef4444);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-    }
-    .btn-visibility.hide-state:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
-    }
-    .btn-visibility.show-state {
-        background: linear-gradient(135deg, #16a34a, #22c55e);
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
-        animation: pulse-show 2s infinite;
-    }
-    .btn-visibility.show-state:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6);
-    }
-    @keyframes pulse-show {
-        0%, 100% { box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
-        50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.8); }
-    }
+    .btn-visibility.hide-state { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .btn-visibility.show-state { background: linear-gradient(135deg, #16a34a, #22c55e); }
 
     .btn-view-details {
         background: linear-gradient(135deg, #25968b, #1b736a);
         color: #fff;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 900;
         padding: 8px 12px;
-        border-radius: 8px;
+        border-radius: 10px;
         border: none;
         cursor: pointer;
-        box-shadow: 0 3px 8px rgba(37, 150, 139, 0.3);
-        transition: all 0.2s;
         font-family: inherit;
-    }
-    .btn-view-details:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.5);
+        white-space: nowrap;
     }
 
-    .empty-cards-state { text-align: center; padding: 40px 20px; color: var(--text-gray); font-size: 16px; font-weight: 800; grid-column: 1 / -1; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; }
+    .empty-cards-state { 
+        text-align: center; 
+        padding: 30px 16px; 
+        color: var(--text-gray); 
+        font-size: 13.5px; 
+        font-weight: 800; 
+        background: #f8fafc; 
+        border-radius: 12px; 
+        border: 2px dashed #cbd5e1; 
+        line-height: 1.6;
+    }
 
-    .publish-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
+    /* ========================================== */
+    /* 🪟 المودالات */
+    /* ========================================== */
+    .publish-modal-overlay { 
+        display: none; 
+        position: fixed; 
+        inset: 0; 
+        background: rgba(0,0,0,0.5); 
+        z-index: 10000; 
+        justify-content: center; 
+        align-items: center; 
+        padding: 12px; 
+        backdrop-filter: blur(4px); 
+    }
     .publish-modal-overlay.active { display: flex; }
     .publish-modal-box { 
         background: var(--white); 
-        border-radius: 16px; 
+        border-radius: 14px; 
         width: 100%; 
         max-width: 500px; 
-        max-height: 90vh; 
+        max-height: 92vh; 
         display: flex; 
         flex-direction: column; 
         overflow: hidden; 
-        box-shadow: 0 25px 50px rgba(0,0,0,0.2), 0 10px 20px rgba(37, 150, 139, 0.1); 
-        transform: translateY(0) scale(1);
         animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    @keyframes modalPopIn { 0% { transform: translateY(20px) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-    .publish-modal-header { background: var(--primary-teal); color: var(--white); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .publish-modal-header h2 { font-size: 18px; font-weight: 900; margin: 0; }
-    .publish-modal-header .close-btn { background: none; border: none; color: var(--white); font-size: 24px; cursor: pointer; transition: transform 0.2s; }
-    .publish-modal-header .close-btn:hover { transform: scale(1.2); }
-    .publish-modal-content { padding: 20px; overflow-y: auto; font-size: 15px; color: var(--text-dark); font-weight: 800; line-height: 1.6; }
-    .publish-data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px dashed #e2e8f0; display: flex; flex-direction: column; }
+    @keyframes modalPopIn { 
+        0% { transform: translateY(20px) scale(0.95); opacity: 0; } 
+        100% { transform: translateY(0) scale(1); opacity: 1; } 
+    }
+    .publish-modal-header { 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        padding: 14px 16px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        flex-shrink: 0;
+    }
+    .publish-modal-header h2 { font-size: 15px; font-weight: 900; margin: 0; line-height: 1.3; }
+    .publish-modal-header .close-btn { 
+        background: none; 
+        border: none; 
+        color: var(--white); 
+        font-size: 22px; 
+        cursor: pointer; 
+        line-height: 1;
+        padding: 0 4px;
+    }
+    .publish-modal-content { 
+        padding: 16px 14px; 
+        overflow-y: auto; 
+        font-size: 13.5px; 
+        color: var(--text-dark); 
+        font-weight: 800; 
+        line-height: 1.6; 
+        -webkit-overflow-scrolling: touch;
+    }
+    .publish-data-item { 
+        margin-bottom: 10px; 
+        padding-bottom: 10px; 
+        border-bottom: 2px dashed #e2e8f0; 
+        display: flex; 
+        flex-direction: column; 
+    }
     .publish-data-item:last-child { border-bottom: none; }
-    .publish-data-label { color: var(--text-gray); font-weight: 900; font-size: 13px; margin-bottom: 4px; }
-    .publish-data-value { color: var(--text-dark); font-weight: 900; font-size: 15px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); flex-wrap: wrap; }
-    .publish-data-value.appts { background: var(--light-teal); border-color: var(--border-teal); color: var(--dark-teal); display: block; box-shadow: inset 0 2px 4px rgba(37, 150, 139, 0.04); }
-    .publish-data-value.address-detail { background: #FFFBEB; border-color: #FCD34D; color: #92400E; display: block; box-shadow: inset 0 2px 4px rgba(217, 119, 6, 0.04); }
-    .publish-data-value.center-value { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); color: #1b736a; border-color: #b2dfdb; }
-    .publish-data-value.schedule-value { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; border-color: #FCD34D; }
-    .publish-modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; display: flex; gap: 10px; }
-    .publish-modal-footer .btn-confirm { background: var(--primary-teal); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 16px; width: 100%; transition: all 0.2s; box-shadow: 0 4px 10px rgba(37, 150, 139, 0.2); }
-    .publish-modal-footer .btn-confirm:hover { background: var(--dark-teal); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 150, 139, 0.3); }
+    .publish-data-label { 
+        color: var(--text-gray); 
+        font-weight: 900; 
+        font-size: 11.5px; 
+        margin-bottom: 4px; 
+    }
+    .publish-data-value { 
+        color: var(--text-dark); 
+        font-weight: 900; 
+        font-size: 13.5px; 
+        background: #f8fafc; 
+        padding: 8px 10px; 
+        border-radius: 8px; 
+        border: 1px solid #e2e8f0; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        gap: 6px; 
+        flex-wrap: wrap; 
+        word-break: break-word;
+    }
+    .publish-data-value.appts { 
+        background: var(--light-teal); 
+        border-color: var(--border-teal); 
+        color: var(--dark-teal); 
+        display: block; 
+    }
+    .publish-data-value.address-detail { 
+        background: #FFFBEB; 
+        border-color: #FCD34D; 
+        color: #92400E; 
+        display: block; 
+    }
+    .publish-data-value.center-value { 
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb); 
+        color: #1b736a; 
+        border-color: #b2dfdb; 
+    }
+    .publish-data-value.schedule-value { 
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A); 
+        color: #92400E; 
+        border-color: #FCD34D; 
+    }
+    .publish-modal-footer { 
+        padding: 12px 16px; 
+        background: #f8fafc; 
+        border-top: 1px solid #e2e8f0; 
+        text-align: center; 
+        flex-shrink: 0;
+    }
+    .publish-modal-footer .btn-confirm { 
+        background: var(--primary-teal); 
+        color: var(--white); 
+        border: none; 
+        padding: 12px 20px; 
+        border-radius: 10px; 
+        font-weight: 900; 
+        cursor: pointer; 
+        font-size: 14px; 
+        width: 100%; 
+    }
 
+    /* ========================================== */
+    /* 🚫 الشاشات الخاصة */
+    /* ========================================== */
     .security-overlay {
         position: fixed;
         inset: 0;
@@ -818,32 +1201,22 @@
         align-items: center;
         justify-content: center;
         color: #fff;
-        gap: 20px;
-        transition: opacity 0.3s ease;
+        gap: 16px;
+        padding: 20px;
+        text-align: center;
     }
-    .security-overlay.hide {
-        opacity: 0;
-        pointer-events: none;
-    }
+    .security-overlay.hide { opacity: 0; pointer-events: none; }
     .security-spinner {
-        width: 60px;
-        height: 60px;
-        border: 5px solid rgba(255,255,255,0.3);
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
         border-top-color: #fff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    .security-overlay h2 {
-        font-size: 20px;
-        font-weight: 900;
-    }
-    .security-overlay p {
-        font-size: 14px;
-        opacity: 0.9;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .security-overlay h2 { font-size: 17px; font-weight: 900; }
+    .security-overlay p { font-size: 13px; opacity: 0.9; }
 
     .blocked-overlay {
         position: fixed;
@@ -853,174 +1226,92 @@
         display: none;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        padding: 24px;
+        justify-content: flex-start;
+        padding: 20px 14px;
         text-align: center;
         color: #fff;
-        animation: blockedFadeIn 0.4s ease;
         overflow-y: auto;
     }
     .blocked-overlay.show { display: flex; }
-
-    @keyframes blockedFadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .blocked-overlay .blocked-icon {
-        font-size: 80px;
-        margin-bottom: 16px;
-        animation: blockedPulse 1.5s infinite;
-        filter: drop-shadow(0 10px 25px rgba(0,0,0,0.4));
-    }
-    @keyframes blockedPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-
-    .blocked-overlay h1 {
-        font-size: 24px;
-        font-weight: 900;
-        margin-bottom: 12px;
-        text-shadow: 0 3px 10px rgba(0,0,0,0.4);
-        letter-spacing: 0.5px;
-    }
-
-    .blocked-overlay p {
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1.7;
-        max-width: 520px;
-        margin-bottom: 10px;
-        opacity: 0.95;
-    }
-
+    .blocked-overlay .blocked-icon { font-size: 60px; margin-bottom: 12px; }
+    .blocked-overlay h1 { font-size: 18px; font-weight: 900; margin-bottom: 10px; line-height: 1.3; }
+    .blocked-overlay p { font-size: 13px; font-weight: 700; line-height: 1.7; max-width: 520px; margin-bottom: 10px; }
     .blocked-overlay .support-box {
         background: rgba(255, 255, 255, 0.12);
         border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 20px;
-        padding: 22px;
-        margin-top: 22px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        border-radius: 16px;
+        padding: 16px 12px;
+        margin-top: 16px;
         max-width: 760px;
         width: 100%;
     }
-
-    .blocked-overlay .support-box .support-label {
-        font-size: 15px;
-        font-weight: 900;
-        margin-bottom: 16px;
-        letter-spacing: 0.5px;
-        text-align: center;
-        opacity: 0.98;
-    }
-
-    .contact-sent-msg {
-        display: none;
-        margin-top: 14px;
-        padding: 12px 16px;
-        border-radius: 12px;
-        background: rgba(34, 197, 94, 0.25);
-        border: 2px solid rgba(34, 197, 94, 0.6);
-        color: #fff;
-        font-size: 13px;
-        font-weight: 900;
-        animation: contactMsgPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        text-align: center;
-        line-height: 1.5;
-    }
-    .contact-sent-msg.show { display: block; }
-    .contact-sent-msg.error {
-        background: rgba(220, 38, 38, 0.3);
-        border-color: rgba(220, 38, 38, 0.7);
-    }
-    @keyframes contactMsgPop {
-        from { transform: scale(0.85); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
+    .blocked-overlay .support-box .support-label { font-size: 13.5px; font-weight: 900; margin-bottom: 12px; }
 
     .email-contact-box {
-        margin-top: 16px;
-        padding: 14px;
+        padding: 12px;
         background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
         border: 2px dashed #FCA5A5;
-        border-radius: 14px;
+        border-radius: 12px;
         text-align: center;
     }
-
     .email-contact-box .ec-title {
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: 900;
         color: #7F1D1D;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
     }
-
     .email-contact-box .ec-hint {
-        font-size: 11.5px;
+        font-size: 10.5px;
         color: #991B1B;
         margin-top: 8px;
         font-weight: 700;
-        opacity: 0.85;
         line-height: 1.5;
     }
 
     .contact-type-selector {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 12px;
+        gap: 6px;
+        margin-bottom: 10px;
     }
-
     .contact-type-btn {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 11px 14px;
+        gap: 8px;
+        padding: 10px 12px;
         background: #fff;
         border: 2px solid #FECACA;
-        border-radius: 12px;
+        border-radius: 10px;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         font-family: 'Cairo', sans-serif;
         text-align: right;
         width: 100%;
-        position: relative;
+        transition: all 0.2s;
     }
-
-    .contact-type-btn:hover {
-        border-color: #F87171;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
-    }
-
     .contact-type-btn.selected {
         background: linear-gradient(135deg, #FEE2E2, #FECACA);
         border-color: #DC2626;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
     }
-
-    .contact-type-btn .ct-icon { font-size: 22px; flex-shrink: 0; }
+    .contact-type-btn .ct-icon { font-size: 20px; flex-shrink: 0; }
     .contact-type-btn .ct-info { flex: 1; min-width: 0; text-align: right; }
-    .contact-type-btn .ct-info strong { display: block; font-size: 13px; font-weight: 900; color: #7F1D1D; margin-bottom: 2px; }
-    .contact-type-btn .ct-info small { display: block; font-size: 11px; font-weight: 700; color: #991B1B; opacity: 0.85; }
+    .contact-type-btn .ct-info strong { display: block; font-size: 12.5px; font-weight: 900; color: #7F1D1D; margin-bottom: 2px; }
+    .contact-type-btn .ct-info small { display: block; font-size: 10px; font-weight: 700; color: #991B1B; opacity: 0.85; }
     .contact-type-btn .ct-check {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
         border: 2px solid #FECACA;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-shrink: 0;
-        font-size: 12px;
+        font-size: 11px;
         color: transparent;
-        transition: all 0.2s;
         background: #fff;
+        flex-shrink: 0;
     }
     .contact-type-btn.selected .ct-check {
         background: #DC2626;
@@ -1030,28 +1321,21 @@
 
     .contact-details-input {
         width: 100%;
-        padding: 10px 12px;
+        padding: 10px;
         border: 2px solid #FECACA;
         border-radius: 10px;
         font-family: 'Cairo', sans-serif;
         font-weight: 800;
-        font-size: 12.5px;
+        font-size: 12px;
         outline: none;
         background: #fff;
         color: #0F172A;
         resize: vertical;
         min-height: 60px;
-        max-height: 140px;
-        margin-bottom: 12px;
-        transition: all 0.2s;
+        margin-bottom: 10px;
         display: none;
     }
     .contact-details-input.show { display: block; }
-    .contact-details-input:focus {
-        border-color: #DC2626;
-        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
-    }
-    .contact-details-input::placeholder { color: #94A3B8; font-weight: 700; }
 
     .btn-email-contact {
         display: inline-flex;
@@ -1061,37 +1345,49 @@
         background: linear-gradient(135deg, #EA4335, #C5221F);
         color: #fff;
         border: none;
-        padding: 12px 22px;
+        padding: 12px 16px;
         border-radius: 12px;
         font-family: 'Cairo', sans-serif;
         font-weight: 900;
-        font-size: 14px;
+        font-size: 13px;
         cursor: pointer;
-        text-decoration: none;
-        box-shadow: 0 6px 18px rgba(234, 67, 53, 0.45);
-        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        letter-spacing: 0.3px;
         width: 100%;
     }
-
-    .btn-email-contact:hover:not(:disabled) {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 25px rgba(234, 67, 53, 0.65);
-        filter: brightness(1.08);
-    }
-
-    .btn-email-contact:active:not(:disabled) { transform: translateY(0) scale(0.98); }
     .btn-email-contact:disabled {
         background: #94A3B8;
-        box-shadow: none;
         cursor: not-allowed;
         opacity: 0.6;
     }
-    .btn-email-contact .email-icon { font-size: 18px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+    .btn-email-contact .email-icon { font-size: 16px; }
     .btn-email-contact .email-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
-    .btn-email-contact .email-label small { font-size: 10.5px; font-weight: 700; opacity: 0.9; }
+    .btn-email-contact .email-label small { font-size: 9.5px; font-weight: 700; opacity: 0.9; }
 
-    @media (min-width: 500px) {
+    .blocked-overlay .blocked-note {
+        margin-top: 16px;
+        font-size: 11.5px;
+        font-weight: 700;
+        opacity: 0.85;
+        line-height: 1.6;
+        max-width: 480px;
+    }
+
+    /* ========================================== */
+    /* 📱 Responsive للشاشات الكبيرة */
+    /* ========================================== */
+    @media (min-width: 480px) {
+        .header-3d h1 { font-size: 22px; }
+        .booking-card { padding: 22px 18px; }
+        .form-grid-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+        #map-container { height: 280px; }
+        .days div.cell { min-height: 80px; padding: 6px; font-size: 13px; }
+        .weekdays div { font-size: 12px; padding: 9px 3px; }
+        .cell .date-number { width: 26px; height: 26px; font-size: 14px; }
+        .appts-cards-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+        .sc-details-grid { grid-template-columns: 1fr 1fr; }
+        .sc-detail-item.full { grid-column: span 2; }
+    }
+
+    @media (min-width: 600px) {
         .contact-type-selector { grid-template-columns: repeat(3, 1fr); }
         .contact-type-btn {
             flex-direction: column;
@@ -1100,83 +1396,28 @@
             padding: 14px 8px;
         }
         .contact-type-btn .ct-info { text-align: center; }
-        .contact-type-btn .ct-info strong { font-size: 12px; }
         .contact-type-btn .ct-info small { display: none; }
-        .contact-type-btn .ct-icon { font-size: 26px; }
-        .contact-type-btn .ct-check {
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-        }
+        .contact-type-btn .ct-icon { font-size: 24px; }
     }
 
-    .blocked-overlay .blocked-note {
-        margin-top: 22px;
-        font-size: 12.5px;
-        font-weight: 700;
-        opacity: 0.85;
-        line-height: 1.7;
-        max-width: 480px;
+    /* ========================================== */
+    /* 📱 موبايل صغير جداً (أقل من 360px) */
+    /* ========================================== */
+    @media (max-width: 359px) {
+        .header-3d h1 { font-size: 16px; }
+        .schedule-badge-header { font-size: 11px; padding: 3px 10px; }
+        .step { font-size: 10.5px; }
+        .booking-card { padding: 12px 10px; }
+        .form-control, .form-group select { font-size: 13px; padding: 10px; }
+        .cards-grid label { font-size: 10.5px; padding: 8px 3px; min-height: 55px; }
+        .cards-grid label i { font-size: 16px; }
+        .days div.cell { min-height: 55px; font-size: 11px; padding: 3px; }
+        .weekdays div { font-size: 9.5px; padding: 6px 1px; }
+        .cell .date-number { width: 20px; height: 20px; font-size: 11.5px; }
+        .btn-add { font-size: 14px; padding: 12px; }
+        .summary-section-title { font-size: 14px; }
+        .summary-total-badge { font-size: 11px; padding: 4px 10px; }
     }
-
-    @media (max-width: 640px) {
-        .blocked-overlay h1 { font-size: 20px; }
-        .blocked-overlay .blocked-icon { font-size: 60px; }
-        .blocked-overlay .support-box { padding: 16px; }
-    }
-
-    /* ⚡ شريط معلومات الجدول النشط */
-    .active-schedule-info-bar {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border: 2px solid #F59E0B;
-        border-radius: 12px;
-        padding: 10px 14px;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        box-shadow: 0 4px 12px -4px rgba(245, 158, 11, 0.4);
-        flex-wrap: wrap;
-    }
-    .active-schedule-info-bar .info-text {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13.5px;
-        font-weight: 900;
-        color: #92400E;
-        flex: 1;
-    }
-    .active-schedule-info-bar .info-text .num-badge {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: #fff;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        box-shadow: 0 3px 8px -2px rgba(245, 158, 11, 0.6);
-    }
-    .active-schedule-info-bar .btn-back {
-        background: linear-gradient(135deg, #64748B, #475569);
-        color: #fff;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 9px;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 900;
-        font-size: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s;
-        white-space: nowrap;
-    }
-    .active-schedule-info-bar .btn-back:hover { transform: translateY(-1px); }
-    .active-schedule-info-bar .btn-back:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -1188,13 +1429,11 @@
     <p>
         عذراً، لا يمكنك الوصول إلى لوحة التحكم أو إضافة مواعيد جديدة حالياً.
         <br>
-        حسابك يتطلب <b>مراجعة وتوثيق</b> من قبل إدارة منصة <b>احجزلي</b> لضمان جودة المنصة.
+        حسابك يتطلب <b>مراجعة وتوثيق</b> من قبل إدارة منصة <b>احجزلي</b>.
     </p>
 
     <div class="support-box">
-        <div class="support-label">🛡️ يرجى التواصل مع الإدارة لتوثيق حسابك</div>
-
-        <div class="contact-sent-msg" id="contactSentMsg"></div>
+        <div class="support-label">🛡️ تواصل مع الإدارة لتوثيق حسابك</div>
 
         <div class="email-contact-box">
             <div class="ec-title">
@@ -1207,7 +1446,7 @@
                     <span class="ct-icon">💬</span>
                     <div class="ct-info">
                         <strong>استفسار</strong>
-                        <small>سؤال عن المنصة أو المميزات</small>
+                        <small>سؤال عن المنصة</small>
                     </div>
                     <span class="ct-check">✓</span>
                 </button>
@@ -1216,7 +1455,7 @@
                     <span class="ct-icon">⚠️</span>
                     <div class="ct-info">
                         <strong>مشكلة تقنية</strong>
-                        <small>خطأ أو عطل في المنصة</small>
+                        <small>خطأ أو عطل</small>
                     </div>
                     <span class="ct-check">✓</span>
                 </button>
@@ -1225,7 +1464,7 @@
                     <span class="ct-icon">🛡️</span>
                     <div class="ct-info">
                         <strong>توثيق الحساب</strong>
-                        <small>تفعيل حسابك كمعلم معتمد</small>
+                        <small>تفعيل حسابك</small>
                     </div>
                     <span class="ct-check">✓</span>
                 </button>
@@ -1234,27 +1473,26 @@
             <textarea 
                 id="contactDetailsInput" 
                 class="contact-details-input" 
-                placeholder="اكتب تفاصيل المشكلة أو الاستفسار هنا..."
+                placeholder="اكتب التفاصيل هنا..."
                 maxlength="500"
             ></textarea>
 
             <button id="emailContactBtn" class="btn-email-contact" onclick="window.sendEmailContact(event)" disabled>
                 <span class="email-icon">✉️</span>
                 <span class="email-label">
-                    <span id="emailBtnText">اختر نوع التواصل أولاً</span>
-                    <small id="emailBtnHint">سيتم فتح Gmail برسالة جاهزة</small>
+                    <span id="emailBtnText">اختر نوع التواصل</span>
+                    <small>سيتم فتح Gmail برسالة جاهزة</small>
                 </span>
             </button>
 
             <div class="ec-hint">
-                💡 الرسالة هتتفتح ببياناتك تلقائياً — كل اللي عليك تضغط "إرسال" في Gmail
+                💡 الرسالة هتتفتح ببياناتك تلقائياً
             </div>
         </div>
     </div>
 
     <div class="blocked-note">
-        💡 بعد إتمام عملية التوثيق، سيتم تفعيل حسابك تلقائياً للبدء في نشر مواعيدك.<br>
-        للتواصل المباشر، يرجى مراسلة الدعم الفني.
+        💡 بعد إتمام التوثيق، سيتم تفعيل حسابك تلقائياً.
     </div>
 </div>
 
@@ -1265,15 +1503,10 @@
     <p>منصة احجزلي تحمي حسابك</p>
 </div>
 
-<!-- ✅ سكريبت حماية الجهاز + الحظر + التفعيل اللحظي -->
+<!-- ✅ سكريبت الحماية -->
 <script type="module">
     import { 
-        checkTeacherDevice, 
-        getTeacher, 
-        db, doc, updateDoc, setDoc, serverTimestamp,
-        getPricingSettings,
-        subscribePricing,
-        onSnapshot
+        checkTeacherDevice, getTeacher, db, doc, updateDoc, onSnapshot
     } from './firebase-config.js';
 
     window.checkTeacherActiveStatus = async function(phone) {
@@ -1287,14 +1520,11 @@
                 const until = typeof teacher.unlockUntil === 'number'
                     ? teacher.unlockUntil
                     : (teacher.unlockUntil.seconds ? teacher.unlockUntil.seconds * 1000 : 0);
-
                 if (until && until > Date.now()) return { active: true, reason: 'time_limited', until };
                 else if (until && until <= Date.now()) return { active: false, reason: 'expired', until };
             }
-
             return { active: false, reason: 'no_activation' };
         } catch (e) {
-            console.error('خطأ في فحص حالة الحظر:', e);
             return { active: false, reason: 'error' };
         }
     };
@@ -1303,14 +1533,9 @@
 
     window.selectContactType = function(type, event) {
         window.selectedContactType = type;
-
-        document.querySelectorAll('.contact-type-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-
-        if (event?.currentTarget) {
-            event.currentTarget.classList.add('selected');
-        } else {
+        document.querySelectorAll('.contact-type-btn').forEach(btn => btn.classList.remove('selected'));
+        if (event?.currentTarget) event.currentTarget.classList.add('selected');
+        else {
             const btn = document.querySelector(`.contact-type-btn[data-type="${type}"]`);
             if (btn) btn.classList.add('selected');
         }
@@ -1321,9 +1546,7 @@
         if (type === 'inquiry' || type === 'problem') {
             if (detailsInput) {
                 detailsInput.classList.add('show');
-                detailsInput.placeholder = type === 'problem' 
-                    ? 'اكتب تفاصيل المشكلة هنا... (مثال: لما أضغط على زر كذا، الصفحة بتقف)' 
-                    : 'اكتب استفسارك هنا...';
+                detailsInput.placeholder = type === 'problem' ? 'اكتب تفاصيل المشكلة هنا...' : 'اكتب استفسارك هنا...';
             }
             if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة للإدارة' : 'إرسال الاستفسار للإدارة';
         } else if (type === 'verification') {
@@ -1340,41 +1563,29 @@
 
     window.sendEmailContact = async function(e) {
         if (e) e.preventDefault();
-
         const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) {
-            alert('⚠️ يجب تسجيل الدخول أولاً');
-            return;
-        }
-
-        if (!window.selectedContactType) {
-            alert('⚠️ يرجى اختيار نوع التواصل أولاً');
-            return;
-        }
+        if (!phone) { alert('⚠️ يجب تسجيل الدخول'); return; }
+        if (!window.selectedContactType) { alert('⚠️ اختر نوع التواصل'); return; }
 
         const ADMIN_EMAIL = 'mmoksh162@gmail.com';
         const type = window.selectedContactType;
         const detailsText = (document.getElementById('contactDetailsInput')?.value || '').trim();
 
         if ((type === 'inquiry' || type === 'problem') && !detailsText) {
-            alert('⚠️ يرجى كتابة التفاصيل في المربع النصي');
+            alert('⚠️ اكتب التفاصيل');
             document.getElementById('contactDetailsInput')?.focus();
             return;
         }
 
-        let teacherName = '';
-        let teacherTitle = '';
+        let teacherName = '', teacherTitle = '';
         try {
             const t = await getTeacher(phone);
-            if (t) {
-                teacherName = t.name || '';
-                teacherTitle = t.title || '';
-            }
+            if (t) { teacherName = t.name || ''; teacherTitle = t.title || ''; }
         } catch (err) {}
 
         const typeInfo = {
-            'inquiry':      { label: '💬 استفسار',        emoji: '💬' },
-            'problem':      { label: '⚠️ مشكلة تقنية',    emoji: '⚠️' },
+            'inquiry': { label: '💬 استفسار', emoji: '💬' },
+            'problem': { label: '⚠️ مشكلة تقنية', emoji: '⚠️' },
             'verification': { label: '🛡️ طلب توثيق حساب', emoji: '🛡️' }
         };
         const tInfo = typeInfo[type] || typeInfo['inquiry'];
@@ -1382,10 +1593,8 @@
         const subject = `${tInfo.emoji} ${tInfo.label} من ${teacherTitle} ${teacherName}`;
 
         let bodyLines = [
-            `السلام عليكم،`,
-            ``,
-            `📌 نوع التواصل: ${tInfo.label}`,
-            ``,
+            `السلام عليكم،`, ``,
+            `📌 نوع التواصل: ${tInfo.label}`, ``,
             `━━━━━━━━━━━━━━━━━━`,
             `📋 بياناتي:`,
             `━━━━━━━━━━━━━━━━━━`,
@@ -1394,32 +1603,14 @@
         ];
 
         if (type === 'inquiry' || type === 'problem') {
-            bodyLines.push(
-                ``,
-                `━━━━━━━━━━━━━━━━━━`,
-                type === 'problem' ? `⚠️ تفاصيل المشكلة:` : `💬 تفاصيل الاستفسار:`,
-                `━━━━━━━━━━━━━━━━━━`,
-                detailsText,
-            );
+            bodyLines.push(``, `━━━━━━━━━━━━━━━━━━`, type === 'problem' ? `⚠️ تفاصيل المشكلة:` : `💬 تفاصيل الاستفسار:`, `━━━━━━━━━━━━━━━━━━`, detailsText);
         }
 
         if (type === 'verification') {
-            bodyLines.push(
-                ``,
-                `━━━━━━━━━━━━━━━━━━`,
-                `🛡️ طلب توثيق حساب المعلم:`,
-                `━━━━━━━━━━━━━━━━━━`,
-                `برجاء مراجعة بياناتي وتوثيق حسابي لفتح صلاحيات نشر المواعيد والمجموعات.`,
-                ``,
-            );
+            bodyLines.push(``, `━━━━━━━━━━━━━━━━━━`, `🛡️ طلب توثيق حساب المعلم:`, `━━━━━━━━━━━━━━━━━━`, `برجاء مراجعة بياناتي وتوثيق حسابي.`, ``);
         }
 
-        bodyLines.push(
-            ``,
-            `برجاء التواصل معي في أقرب وقت.`,
-            ``,
-            `شكراً لكم 🌹`
-        );
+        bodyLines.push(``, `برجاء التواصل معي في أقرب وقت.`, ``, `شكراً لكم 🌹`);
 
         const body = bodyLines.join('\n');
         const subjectEnc = encodeURIComponent(subject);
@@ -1434,16 +1625,13 @@
             try { window.location.href = gmailIntent; } catch (err) {}
             setTimeout(() => {
                 if (!document.hidden) {
-                    const gmailWeb = `https://mail.google.com/mail/?view=cm&fs=1&to=${ADMIN_EMAIL}&su=${subjectEnc}&body=${bodyEnc}`;
-                    window.open(gmailWeb, '_blank');
+                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${ADMIN_EMAIL}&su=${subjectEnc}&body=${bodyEnc}`, '_blank');
                 }
             }, 1200);
         } else if (isIOS) {
-            const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${subjectEnc}&body=${bodyEnc}`;
-            window.location.href = mailtoUrl;
+            window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subjectEnc}&body=${bodyEnc}`;
         } else {
-            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${ADMIN_EMAIL}&su=${subjectEnc}&body=${bodyEnc}`;
-            window.open(gmailUrl, '_blank');
+            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${ADMIN_EMAIL}&su=${subjectEnc}&body=${bodyEnc}`, '_blank');
         }
     };
 
@@ -1456,7 +1644,6 @@
         }
         if (blockedOverlay) blockedOverlay.classList.add('show');
         document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
     }
 
     function hideAllOverlays() {
@@ -1468,20 +1655,15 @@
         }
         if (blockedOverlay) blockedOverlay.classList.remove('show');
         document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
     }
 
     (async () => {
         const phone = localStorage.getItem('current_teacher_phone');
-        if (!phone) {
-            window.location.href = 'teacher-login.html';
-            return;
-        }
+        if (!phone) { window.location.href = 'teacher-login.html'; return; }
 
-        const unsubTeacher = onSnapshot(doc(db, 'teachers', phone), (docSnap) => {
+        onSnapshot(doc(db, 'teachers', phone), (docSnap) => {
             if (!docSnap.exists()) return;
             const teacher = docSnap.data();
-
             let isActive = false;
             if (teacher.isLocked !== true) {
                 if (teacher.lockType === 'permanent_open') isActive = true;
@@ -1492,7 +1674,6 @@
                     if (until > Date.now()) isActive = true;
                 }
             }
-
             if (isActive) {
                 hideAllOverlays();
                 localStorage.removeItem('teacher_is_blocked');
@@ -1500,51 +1681,41 @@
                 localStorage.setItem('teacher_is_blocked', 'true');
                 showBlockedScreen();
             }
-        }, (error) => {
-            console.error('خطأ في مستمع حالة المعلم:', error);
-        });
+        }, (error) => { console.error('خطأ:', error); });
 
         try {
             let check = null;
-            try {
-                check = await checkTeacherDevice(phone);
-            } catch (e) {
-                console.warn('فشل فحص الجهاز:', e);
-            }
-
+            try { check = await checkTeacherDevice(phone); } catch (e) {}
             if (check && check.locked === true) {
                 localStorage.setItem('teacher_is_blocked', 'true');
                 return;
             }
-
             if (!check || !check.ok) {
                 if (localStorage.getItem('teacher_is_blocked') !== 'true') {
                     localStorage.removeItem('current_teacher_profile');
                     localStorage.removeItem('current_teacher_phone');
-                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.\nسيتم تحويلك لصفحة الدخول.');
+                    alert('⚠️ تم تسجيل الدخول من جهاز آخر.');
                     window.location.href = 'teacher-login.html';
                     return;
                 }
             }
-
             hideAllOverlays();
         } catch (e) {
-            console.error('خطأ في التحقق:', e);
             hideAllOverlays();
         }
     })();
-
 </script>
 
+<!-- 📌 الهيدر -->
 <header class="header-3d">
     <h1 id="page-header-title">
-        <span>إعداد تفاصيل المجموعة والمواعيد</span>
+        <span>إعداد المجموعة والمواعيد</span>
         <span class="schedule-badge-header" id="headerScheduleBadge" style="display:none;">📋 جدول رقم 1</span>
     </h1>
     <div class="stepper">
         <a class="step clickable" onclick="window.goBackToSchedules()" title="الرجوع لصفحة الجداول">📋 جداولك</a>
         <div class="step-divider">❯</div>
-        <div class="step active">2. المواعيد والمجموعات</div>
+        <div class="step active">2. المواعيد</div>
     </div>
 </header>
 
@@ -1554,98 +1725,96 @@
     <div class="active-schedule-info-bar" id="activeScheduleInfoBar" style="display:none;">
         <div class="info-text">
             <span>📋</span>
-            <span>أنت تعمل الآن على</span>
+            <span>أنت تعمل على</span>
             <span class="num-badge" id="activeScheduleNumBadge">جدول رقم 1</span>
         </div>
         <button class="btn-back" onclick="window.goBackToSchedules()">
             <span>↩</span>
-            <span>الرجوع للجداول</span>
+            <span>رجوع</span>
         </button>
     </div>
 
     <div class="booking-card">
         
-        <div class="form-group" style="margin-bottom: 25px;">
-          <label style="color: var(--text-gray); font-size: 13px; justify-content: center;">المادة والصف المحددان مسبقاً</label>
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="color: var(--text-gray); font-size: 12px; justify-content: center;">المادة والصف المحددان مسبقاً</label>
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
         <div class="form-grid-row">
           <div class="form-group">
             <label><span class="step-num">1</span> اسم المجموعة</label>
-            <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة هنا">
+            <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة">
           </div>
           
           <div class="form-group" id="center-name-group" style="display: none;">
             <label><span class="step-num" id="center-step-num">2</span> اسم السنتر</label>
-            <input type="text" id="center-name" class="form-control" placeholder="مثال: سنتر النخبة التعليمي">
+            <input type="text" id="center-name" class="form-control" placeholder="سنتر النخبة التعليمي">
           </div>
           
           <div class="form-group" id="teacher-name-group">
             <label><span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر</label>
-            <input type="text" id="teacher-name" class="form-control" placeholder="أدخل اسمك أو اسم المركز">
+            <input type="text" id="teacher-name" class="form-control" placeholder="اسمك أو اسم المركز">
           </div>
         </div>
 
         <div class="form-grid-row">
           <div class="form-group">
-            <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب (السعة)</label>
-            <input type="number" id="students-count" class="form-control" placeholder="مثال: 20" min="1" value="20">
+            <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب</label>
+            <input type="number" id="students-count" class="form-control" placeholder="20" min="1" value="20">
           </div>
           <div class="form-group">
             <label><span class="step-num" id="gender-num">4</span> الفئات المسموح بها</label>
             <div class="cards-grid">
               <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
-              <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد فقط</label></div>
-              <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات فقط</label></div>
+              <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
+              <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
             </div>
           </div>
         </div>
 
-        <div class="form-grid-row">
-          <div class="form-group full-width">
-            <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
-            <div class="cards-grid">
-              <div><input type="radio" name="location" id="loc-center" value="السنتر" checked onchange="toggleCenterNameField()"><label for="loc-center"><i>🏫</i> السنتر</label></div>
-              <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر" onchange="toggleCenterNameField()"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
-              <div><input type="radio" name="location" id="loc-student" value="منزل الطالب" onchange="toggleCenterNameField()"><label for="loc-student"><i>🚗</i> منزل الطالب</label></div>
-            </div>
+        <div class="form-group full-width">
+          <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
+          <div class="cards-grid">
+            <div><input type="radio" name="location" id="loc-center" value="السنتر" checked onchange="toggleCenterNameField()"><label for="loc-center"><i>🏫</i> السنتر</label></div>
+            <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر" onchange="toggleCenterNameField()"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
+            <div><input type="radio" name="location" id="loc-student" value="منزل الطالب" onchange="toggleCenterNameField()"><label for="loc-student"><i>🚗</i> منزل الطالب</label></div>
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي</label>
+          <div id="map-container">
+            <div id="map"></div>
           </div>
           
-          <div class="form-group full-width">
-            <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي واسم الشارع</label>
-            <div id="map-container">
-              <div id="map"></div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px;">
-                <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد وتأكيد موقعي بدقة الآن</button>
-                <input type="hidden" id="gps-coords" value="">
-            </div>
-            <div id="location-text" style="color: var(--text-gray); font-size: 14px; font-weight: 900; margin-top: 8px; text-align: center;">يرجى تحديد الموقع من خلال الخريطة أو الزر للتأكيد</div>
+          <div style="margin-top: 8px;">
+              <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد موقعي بدقة</button>
+              <input type="hidden" id="gps-coords" value="">
+          </div>
+          <div id="location-text" style="color: var(--text-gray); font-size: 12.5px; font-weight: 900; margin-top: 8px; text-align: center; word-break: break-word;">حدد الموقع من خلال الخريطة أو الزر</div>
 
-            <div class="detailed-address-box">
-                <div class="label-row">
-                    <span>🏠</span>
-                    <span>العنوان التفصيلي / علامة مميزة</span>
-                    <span class="badge">✨ اختياري لكن مهم</span>
-                </div>
-                <input 
-                    type="text" 
-                    id="detailed-address" 
-                    class="form-control" 
-                    placeholder="مثال: أمام مسجد النور - الدور الثاني - شقة 5"
-                    maxlength="150"
-                >
-                <div class="hint-text">
-                    <span>💡</span>
-                    <span>اكتب تفاصيل تساعد الطالب في الوصول (علامة مميزة، الدور، الشقة، لون العمارة...)</span>
-                </div>
-            </div>
+          <div class="detailed-address-box">
+              <div class="label-row">
+                  <span>🏠</span>
+                  <span>العنوان التفصيلي</span>
+                  <span class="badge">✨ مهم</span>
+              </div>
+              <input 
+                  type="text" 
+                  id="detailed-address" 
+                  class="form-control" 
+                  placeholder="أمام مسجد النور - الدور الثاني - شقة 5"
+                  maxlength="150"
+              >
+              <div class="hint-text">
+                  <span>💡</span>
+                  <span>تفاصيل تساعد الطالب (علامة مميزة، الدور، الشقة...)</span>
+              </div>
           </div>
         </div>
 
-        <div class="form-section-title" style="margin-top: 15px;">
+        <div class="form-section-title" style="margin-top: 12px;">
             <span class="step-num-lg" id="time-num">7</span> توقيت الحصة
         </div>
         <div class="time-row-cal">
@@ -1668,7 +1837,7 @@
 
         <div class="calendar-container-block">
             <div class="selected-day-banner">
-              <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم من التقويم</span>
+              <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم</span>
               <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
             </div>
 
@@ -1686,13 +1855,13 @@
             <div class="week-wrapper">
               <div class="week-track" id="weekTrack">
                 <div class="weekdays">
-                  <div>السبت</div>
-                  <div>الأحد</div>
-                  <div>الاثنين</div>
-                  <div>الثلاثاء</div>
-                  <div>الأربعاء</div>
-                  <div>الخميس</div>
-                  <div class="friday">الجمعة</div>
+                  <div>سبت</div>
+                  <div>أحد</div>
+                  <div>اثنين</div>
+                  <div>ثلاثاء</div>
+                  <div>أربعاء</div>
+                  <div>خميس</div>
+                  <div class="friday">جمعة</div>
                 </div>
                 <div class="days-wrapper" id="daysWrapper">
                   <div class="days" id="days"></div>
@@ -1700,26 +1869,26 @@
               </div>
             </div>
 
-            <div class="swipe-hint">👈 اسحب يميناً أو يساراً لتغيير الشهر 👉</div>
+            <div class="swipe-hint">👈 اسحب يميناً أو يساراً 👉</div>
         </div>
 
         <button class="btn-add" onclick="addAppointment()">حفظ الموعد ونشره مباشرة</button>
-        <div class="error-msg" id="addErrorMsg" style="margin-top:15px;"></div>
+        <div class="error-msg" id="addErrorMsg" style="margin-top:12px;"></div>
     </div>
 
     <div class="summary-section" id="allSummarySection">
         <div class="summary-section-header">
             <div class="summary-section-title">
-                جدول المواعيد وملخص المجموعات
+                📅 جدول المواعيد
             </div>
-            <span class="summary-total-badge" id="summaryTotalBadge">المواعيد المسجلة: 0</span>
+            <span class="summary-total-badge" id="summaryTotalBadge">0 موعد</span>
         </div>
 
         <div class="appts-cards-grid" id="summaryCardsGrid"></div>
     </div>
 </div>
 
-<!-- ✏️ نافذة تعديل -->
+<!-- ✏️ تعديل -->
 <div class="publish-modal-overlay" id="editModalOverlay" onclick="closeEditModal(event)">
   <div class="publish-modal-box" style="max-width: 440px;">
     <div class="publish-modal-header">
@@ -1738,7 +1907,7 @@
           <select id="editEnd"></select>
         </div>
       </div>
-      <div class="repeat-option" style="margin-top: 5px; margin-bottom: 15px;">
+      <div class="repeat-option" style="margin-top: 5px; margin-bottom: 12px;">
         <input type="checkbox" id="editRepeatWeekly">
         <label for="editRepeatWeekly">تكرار أسبوعي</label>
       </div>
@@ -1748,59 +1917,46 @@
   </div>
 </div>
 
-<!-- 🎉 نافذة النشر التفصيلية -->
+<!-- 🎉 تفاصيل النشر -->
 <div class="publish-modal-overlay" id="publishModalOverlay" onclick="closePublishModal(event)">
   <div class="publish-modal-box">
     <div class="publish-modal-header">
-      <h2>تفاصيل نشر المجموعة وحالة الظهور</h2>
+      <h2>تفاصيل النشر</h2>
       <button class="close-btn" onclick="closePublishModal(event, true)">✖</button>
     </div>
     <div class="publish-modal-content" id="publishModalContent"></div>
     <div class="publish-modal-footer">
-      <button class="btn-confirm" onclick="closePublishModal(event, true)">إغلاق ومتابعة</button>
+      <button class="btn-confirm" onclick="closePublishModal(event, true)">إغلاق</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-  // ==========================================
-  // 🔥 استدعاء دوال Firebase
-  // ==========================================
   import { 
-    publishGroup, 
-    getAllGroups, 
-    deleteGroup, 
-    updateGroup
+    publishGroup, getAllGroups, deleteGroup, updateGroup
   } from './firebase-config.js';
 
   // ==========================================
-  // 📋 قراءة الجدول النشط
+  // 📋 الجدول النشط
   // ==========================================
   window.getActiveScheduleInfo = function() {
       const activeId = localStorage.getItem('active_schedule_id');
       const schedulesRaw = localStorage.getItem('teacher_schedules_list');
-      
       if (!activeId || !schedulesRaw) return { id: null, number: null };
-      
       try {
           const schedules = JSON.parse(schedulesRaw);
           const activeSch = schedules.find(s => s.id === activeId);
-          if (activeSch) {
-              return { id: activeSch.id, number: activeSch.number };
-          }
+          if (activeSch) return { id: activeSch.id, number: activeSch.number };
       } catch(e) {}
       return { id: null, number: null };
   };
 
-  // ==========================================
-  // ↩ زر الرجوع للجداول
-  // ==========================================
   window.goBackToSchedules = function() {
       window.location.href = 'mester1.html';
   };
 
   // ==========================================
-  // 🗺 جلب اسم الشارع
+  // 🗺 الشارع
   // ==========================================
   async function getStreetName(lat, lng) {
       try {
@@ -1810,19 +1966,13 @@
               const road = data.address.road || data.address.pedestrian || data.address.footway || data.address.path || data.address.street || '';
               const neighbourhood = data.address.neighbourhood || data.address.suburb || data.address.city_district || '';
               const city = data.address.city || data.address.town || data.address.village || data.address.state || '';
-              
               const addressParts = [road, neighbourhood, city].filter(Boolean);
               return addressParts.length > 0 ? addressParts.join('، ') : (data.display_name.split(',').slice(0, 3).join('، '));
           }
-      } catch (err) {
-          console.error("فشل جلب اسم الشارع:", err);
-      }
+      } catch (err) {}
       return '';
   }
 
-  // ==========================================
-  // 🏫 إظهار/إخفاء حقل اسم السنتر
-  // ==========================================
   window.toggleCenterNameField = function() {
       const locationValue = document.querySelector('input[name="location"]:checked').value;
       const centerGroup = document.getElementById('center-name-group');
@@ -1833,10 +1983,8 @@
       if (locationValue === 'السنتر') {
           centerGroup.style.display = 'block';
           centerInput.required = true;
-          
           teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">3</span> اسم المستر';
-          teacherInput.placeholder = 'أدخل اسمك هنا';
-          
+          teacherInput.placeholder = 'اسمك';
           document.getElementById('students-count-num').textContent = '4';
           document.getElementById('gender-num').textContent = '5';
           document.getElementById('location-num').textContent = '6';
@@ -1847,10 +1995,8 @@
           centerGroup.style.display = 'none';
           centerInput.required = false;
           centerInput.value = '';
-          
           teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر';
-          teacherInput.placeholder = 'أدخل اسمك أو اسم المركز';
-          
+          teacherInput.placeholder = 'اسمك أو اسم المركز';
           document.getElementById('students-count-num').textContent = '3';
           document.getElementById('gender-num').textContent = '4';
           document.getElementById('location-num').textContent = '5';
@@ -1861,21 +2007,21 @@
   };
 
   // ==========================================
-  // 🗺️ تهيئة الخريطة
+  // 🗺️ الخريطة
   // ==========================================
   let map, marker;
 
   function initMap() {
-      map = L.map('map').setView([26.8206, 30.8025], 5.5);
+      map = L.map('map', { zoomControl: true }).setView([26.8206, 30.8025], 5.5);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
+          attribution: '© OpenStreetMap'
       }).addTo(map);
 
       const gpsControl = L.control({position: 'topleft'});
       gpsControl.onAdd = function (map) {
           const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-          div.innerHTML = `<button type="button" style="background:#fff; border:none; width:34px; height:34px; cursor:pointer; font-size:18px; border-radius:4px;" title="مكاني الفعلي" onclick="getLocation(event)">🎯</button>`;
+          div.innerHTML = `<button type="button" style="background:#fff; border:none; width:32px; height:32px; cursor:pointer; font-size:16px; border-radius:4px;" title="مكاني" onclick="getLocation(event)">🎯</button>`;
           return div;
       };
       gpsControl.addTo(map);
@@ -1898,22 +2044,19 @@
   async function updateLocationInput(lat, lng, showPopup = false) {
       document.getElementById('gps-coords').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
       const txt = document.getElementById('location-text');
-      txt.textContent = `⏳ جاري تحديد اسم الشارع والموقع...`;
+      txt.textContent = `⏳ جاري تحديد الشارع...`;
       txt.style.color = '#d97706';
       
       const street = await getStreetName(lat, lng);
       txt.dataset.street = street || '';
       
-      if (street) {
-          txt.textContent = `📍 ${street}`;
-      } else {
-          txt.textContent = `تم تأكيد الموقع: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-      }
+      if (street) txt.textContent = `📍 ${street}`;
+      else txt.textContent = `تم تأكيد: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
       txt.style.color = '#1b736a';
       
       if(showPopup) {
-          const popupText = street ? `📍 ${street}` : '✅ تم تأكيد هذا الموقع';
-          marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:13px;'>${popupText}</div>`).openPopup();
+          const popupText = street ? `📍 ${street}` : '✅ تم تأكيد الموقع';
+          marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:12px;'>${popupText}</div>`).openPopup();
       }
   }
 
@@ -1926,15 +2069,12 @@
       let counter = 3; 
       btn.disabled = true;
       btn.style.background = '#94a3b8'; 
-      btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
+      btn.innerHTML = `⏳ تحديد... ${counter}`;
       
       const countdownInterval = setInterval(() => {
           counter--;
-          if (counter > 0) {
-              btn.innerHTML = `⏳ جاري تحديد الإحداثيات بدقة... ${counter}`;
-          } else {
-              btn.innerHTML = `⏳ جلب إشارة الأقمار...`;
-          }
+          if (counter > 0) btn.innerHTML = `⏳ تحديد... ${counter}`;
+          else btn.innerHTML = `⏳ جلب الإشارة...`;
       }, 1000);
 
       if (navigator.geolocation) {
@@ -1946,31 +2086,26 @@
                       const lng = position.coords.longitude;
                       
                       hiddenInput.value = `${lat},${lng}`;
-                      btn.innerHTML = '✅ تم التحديد وتأكيد الموقع'; 
+                      btn.innerHTML = '✅ تم التحديد'; 
                       btn.style.background = '#25968b';
                       btn.disabled = false;
                       
-                      textDisplay.textContent = '⏳ جاري التعرف على اسم الشارع...';
-                      textDisplay.style.color = '#d97706';
-
+                      textDisplay.textContent = '⏳ تحديد الشارع...';
+                      
                       marker.setLatLng([lat, lng]);
                       map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
                       
                       const street = await getStreetName(lat, lng);
                       textDisplay.dataset.street = street || '';
                       
-                      if (street) {
-                          textDisplay.textContent = `📍 ${street}`;
-                      } else {
-                          textDisplay.textContent = `موقعك الفعلي: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                      }
+                      if (street) textDisplay.textContent = `📍 ${street}`;
+                      else textDisplay.textContent = `موقعك: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                       textDisplay.style.color = '#1b736a';
 
                       setTimeout(() => {
-                        const popupText = street ? `📍 ${street}` : '✅ موقعك الحالي الدقيق';
-                        marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:13px;'>${popupText}</div>`).openPopup();
+                        const popupText = street ? `📍 ${street}` : '✅ موقعك الحالي';
+                        marker.bindPopup(`<div style='text-align:center; font-family:Cairo; font-weight:900; color:#1b736a; font-size:12px;'>${popupText}</div>`).openPopup();
                       }, 1600);
-
                   }, Math.max(0, (counter + 1) * 1000));
               },
               error => {
@@ -1978,14 +2113,14 @@
                   btn.innerHTML = '❌ فشل التحديد'; 
                   btn.style.background = '#dc2626';
                   btn.disabled = false;
-                  textDisplay.textContent = 'تأكد من تفعيل الـ GPS (الموقع) في هاتفك';
+                  textDisplay.textContent = 'فعّل GPS في هاتفك';
                   textDisplay.style.color = '#dc2626';
               },
               { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
           );
       } else {
           clearInterval(countdownInterval);
-          btn.innerHTML = '❌ الخدمة غير مدعومة';
+          btn.innerHTML = '❌ غير مدعوم';
           btn.disabled = false;
       }
   };
@@ -2047,8 +2182,8 @@
     const hours = Math.floor(diff / 60);
     const mins = diff % 60;
     let txt = '';
-    if (hours > 0) txt += `${hours} س `;
-    if (mins > 0) txt += `${mins} د`;
+    if (hours > 0) txt += `${hours}س `;
+    if (mins > 0) txt += `${mins}د`;
     return txt.trim();
   }
 
@@ -2067,8 +2202,8 @@
     const hours = Math.floor(diff / 60);
     const mins = diff % 60;
     let txt = 'المدة: ';
-    if (hours > 0) txt += `${hours} ساعة `;
-    if (mins > 0) txt += `${mins} دقيقة`;
+    if (hours > 0) txt += `${hours} س `;
+    if (mins > 0) txt += `${mins} د`;
     info.textContent = txt;
     info.classList.add('show');
   };
@@ -2080,28 +2215,14 @@
   function getDayAppointments(year, month, day) {
     const key = dateKey(year, month, day);
     const dayOfWeek = new Date(year, month, day).getDay();
-
     const normalOnline = (window.onlineAppointments[key] || []).map(a => ({ 
-        ...a, 
-        type: 'normal', 
-        isOnline: true,
-        date: key,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
-        start: a.startTime,
-        end: a.endTime
+        ...a, type: 'normal', isOnline: true, date: key, dayOfWeek, 
+        dayName: dayNames[dayOfWeek], start: a.startTime, end: a.endTime
     }));
     const recurringOnline = (window.onlineRecurring[dayOfWeek] || []).map(a => ({ 
-        ...a, 
-        type: 'recurring', 
-        isOnline: true,
-        date: key,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
-        start: a.startTime,
-        end: a.endTime
+        ...a, type: 'recurring', isOnline: true, date: key, dayOfWeek, 
+        dayName: dayNames[dayOfWeek], start: a.startTime, end: a.endTime
     }));
-
     return [...normalOnline, ...recurringOnline].sort((a, b) => 
         (a.startTime || a.start).localeCompare(b.startTime || b.start)
     );
@@ -2184,7 +2305,6 @@
 
       if (thisDate.getTime() < today.getTime()) {
           dayEl.classList.add('past-cell');
-          dayEl.title = "هذا اليوم فائت ولا يمكن الحجز فيه";
       } else {
           if (selectedDateKey === key) dayEl.classList.add('selected-cell');
           dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
@@ -2234,20 +2354,13 @@
       const wrapper = document.getElementById('daysWrapper');
       if(!wrapper) return;
       let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
-      let isSwiping = false, isHorizontalSwipe = false;
+      let isSwiping = false;
       const minSwipeDistance = 40, maxVerticalTolerance = 60;
 
       wrapper.addEventListener('touchstart', (e) => {
           touchStartX = e.changedTouches[0].screenX; 
           touchStartY = e.changedTouches[0].screenY;
-          isSwiping = true; isHorizontalSwipe = false;
-      }, { passive: true });
-
-      wrapper.addEventListener('touchmove', (e) => {
-          if (!isSwiping) return;
-          const diffX = Math.abs(e.changedTouches[0].screenX - touchStartX);
-          const diffY = Math.abs(e.changedTouches[0].screenY - touchStartY);
-          if (!isHorizontalSwipe && diffX > 10 && diffX > diffY) isHorizontalSwipe = true;
+          isSwiping = true;
       }, { passive: true });
 
       wrapper.addEventListener('touchend', (e) => {
@@ -2277,32 +2390,21 @@
   }
 
   // ==========================================
-  // 🎯 تحميل المواعيد من Firebase (مع فلترة الجدول)
+  // 🎯 تحميل المواعيد
   // ==========================================
   window.loadLocalPublishedSlots = async function() {
       try {
           const teacherPhone = localStorage.getItem('current_teacher_phone');
-          if (!teacherPhone) {
-              console.warn("لا يوجد رقم هاتف مسجل");
-              return;
-          }
+          if (!teacherPhone) return;
           
           const groups = await getAllGroups(); 
           const activeInfo = window.getActiveScheduleInfo();
           const activeScheduleId = activeInfo.id;
           
-          // ✅ فلترة المجموعات: نشطة + مخصصة للجدول الحالي
           const myGroups = groups.filter(g => {
               if (g.phone !== teacherPhone) return false;
-              
-              // لو فيه جدول نشط، نعرض بس مواعيده
-              if (activeScheduleId && g.scheduleId) {
-                  return g.scheduleId === activeScheduleId;
-              }
-              
-              // مواعيد بدون scheduleId (قديمة) — نعرضها فقط لو مفيش جدول نشط
+              if (activeScheduleId && g.scheduleId) return g.scheduleId === activeScheduleId;
               if (!activeScheduleId && !g.scheduleId) return true;
-              
               return false;
           });
 
@@ -2320,12 +2422,7 @@
                   slotId: data.id
               };
 
-              const uiItem = { 
-                  ...data, 
-                  appointment: appt, 
-                  isVisible: data.isActive,
-                  isOnline: true 
-              };
+              const uiItem = { ...data, appointment: appt, isVisible: data.isActive, isOnline: true };
 
               if (appt.type === 'recurring') {
                   const day = appt.dayOfWeek;
@@ -2340,12 +2437,12 @@
           renderCalendar();
           renderAllCardsSummary();
       } catch (error) {
-          console.error("فشل جلب المواعيد من Firebase:", error);
+          console.error("فشل الجلب:", error);
       }
   };
 
   // ==========================================
-  // 🚀 نشر موعد جديد
+  // 🚀 نشر موعد
   // ==========================================
   window.publishSingleApptOnline = async function(appt) {
       const groupName = appt.groupName || document.getElementById('group-name').value.trim();
@@ -2354,13 +2451,13 @@
       const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
 
       if (!groupName || !teacherName || !studentsCount) {
-          alert('⚠ يرجى التأكد من استكمال اسم المجموعة واسم المستر والعدد المطلوب قبل النشر.');
+          alert('⚠ تأكد من استكمال البيانات.');
           return;
       }
       
       const locationChecked = appt.location || document.querySelector('input[name="location"]:checked').value;
       if (locationChecked === 'السنتر' && !centerName) {
-          alert('⚠ يرجى تعبئة اسم السنتر قبل النشر.');
+          alert('⚠ اكتب اسم السنتر.');
           return;
       }
 
@@ -2400,35 +2497,24 @@
       const teacherProfile = JSON.parse(localStorage.getItem('current_teacher_profile') || '{}');
       const teacherTitle = teacherProfile.title || 'مستر';
 
-      // ✅ قراءة معلومات الجدول النشط
       const activeInfo = window.getActiveScheduleInfo();
 
       const classPayload = {
-          teacherName: teacherName,
-          centerName: centerName,
-          teacherTitle: teacherTitle,
+          teacherName, centerName, teacherTitle,
           subject: subjectData.replace(/الصف:.*?\|/g, '').replace(/المواد:\s*/g, '').trim(),
-          grade: grade,
-          groupName: groupName,
+          grade, groupName,
           maxCapacity: parseInt(studentsCount),
-          bookedBoys: 0,
-          bookedGirls: 0,
-          gender: genderMapped,
-          type: typeMapped,
-          location: location,
-          address: street || (gpsLocation ? 'تم التحديد عبر الخريطة' : ''),
+          bookedBoys: 0, bookedGirls: 0,
+          gender: genderMapped, type: typeMapped,
+          location, address: street || (gpsLocation ? 'تم التحديد عبر الخريطة' : ''),
           fullAddress: fullAddress || street || 'غير محدد',
-          detailedAddress: detailedAddress,
-          lat: lat,
-          lng: lng,
-          startTime: appt.start,
-          endTime: appt.end,
+          detailedAddress, lat, lng,
+          startTime: appt.start, endTime: appt.end,
           daysNames: [dayNames[dayOfWeek]],
           apptType: appt.type,
           date: dateTarget,
           phone: localStorage.getItem('current_teacher_phone') || '01000000000',
           isActive: true,
-          // ✅ ربط الموعد بالجدول النشط
           scheduleId: activeInfo.id || null,
           scheduleNumber: activeInfo.number || null
       };
@@ -2436,12 +2522,11 @@
       try {
           const newId = await publishGroup(classPayload);
           classPayload.id = newId;
-
           await window.loadLocalPublishedSlots();
           showPublishModalDetails(classPayload);
       } catch (error) {
-          console.error("خطأ أثناء الرفع:", error);
-          alert("حدث خطأ أثناء نشر الموعد، تأكد من اتصالك بالإنترنت.");
+          console.error("خطأ:", error);
+          alert("حدث خطأ أثناء النشر.");
       }
   };
 
@@ -2453,77 +2538,62 @@
               const newVis = !targetGroup.isActive;
               await updateGroup(slotId, { isActive: newVis });
               await window.loadLocalPublishedSlots();
-
               targetGroup.isActive = newVis; 
               if (document.getElementById('publishModalOverlay').classList.contains('active')) {
                   showPublishModalDetails(targetGroup);
               }
           }
-      } catch (error) {
-          console.error("خطأ التحديث:", error);
-      }
+      } catch (error) {}
   };
 
   window.updateAppointmentOnline = async function(slotId, newStart, newEnd, isRecurring) {
       try {
           await updateGroup(slotId, {
-              startTime: newStart,
-              endTime: newEnd,
+              startTime: newStart, endTime: newEnd,
               apptType: isRecurring ? 'recurring' : 'normal'
           });
           await window.loadLocalPublishedSlots();
-      } catch (error) {
-          console.error("خطأ التحديث:", error);
-      }
+      } catch (error) {}
   };
 
   window.deleteAppointmentOnline = async function(appt) {
-      if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
-
+      if (!confirm('تأكيد الحذف؟')) return;
       const idToDelete = appt.slotId || appt.id;
       if (idToDelete && !String(idToDelete).startsWith('local_')) {
           try {
               await deleteGroup(idToDelete);
               await window.loadLocalPublishedSlots();
-          } catch (error) {
-              console.error("خطأ الحذف:", error);
-          }
-      } else {
-          console.warn("لا يمكن حذف هذا العنصر: لا يوجد معرف سحابي صالح");
+          } catch (error) {}
       }
   };
 
-  // ==========================================
-  // 📋 عرض نافذة النشر التفصيلية
-  // ==========================================
   function showPublishModalDetails(data) {
       const appt = data.appointment || data;
       const dayNameStr = appt.dayName || (appt.daysNames ? appt.daysNames[0] : dayNames[appt.dayOfWeek]) || '';
       const isVisible = (data.isActive !== undefined) ? data.isActive : (data.isVisible !== undefined ? data.isVisible : true);
       
       let apptDetailsHtml = appt.apptType === 'recurring' || appt.type === 'recurring'
-          ? `<strong>تكرار أسبوعي كل يوم ${dayNameStr}:</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`
+          ? `<strong>تكرار أسبوعي كل ${dayNameStr}:</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`
           : `<strong>يوم ${appt.date} (${dayNameStr}):</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`;
 
-      let locationDisplay = data.address || data.street || data.gpsLocation || 'غير محدد على الخريطة';
+      let locationDisplay = data.address || data.street || 'غير محدد';
       const detailedAddress = data.detailedAddress || '';
       const fullAddress = data.fullAddress || '';
-      
-      const scheduleNumber = data.scheduleNumber || (window.getActiveScheduleInfo().number);
+      const scheduleNumber = data.scheduleNumber || window.getActiveScheduleInfo().number;
 
       const statusMessageHtml = isVisible 
           ? `<div class="status-message visible-msg">
                 <span class="status-icon">👁️</span>
                 <div class="status-text">
-                    <strong>أنت الآن ظاهر للطلبة</strong>
-                    <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها حالياً</small>
+                    <strong>ظاهر للطلبة</strong>
+                    <small>يمكن للطلاب رؤية المجموعة</small>
                 </div>
              </div>`
           : `<div class="status-message hidden-msg">
                 <span class="status-icon">🙈</span>
                 <div class="status-text">
-                    <strong>أنت الآن مخفي عن الطلبة</strong>
-                    <small>هذه المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                    <strong>مخفي عن الطلبة</strong>
+                    <small>المجموعة مخفية حالياً</small>
                 </div>
              </div>`;
 
@@ -2533,13 +2603,12 @@
           <div class="publish-data-item">
               <span class="publish-data-label">الجدول:</span>
               <span class="publish-data-value schedule-value">📋 جدول رقم ${scheduleNumber}</span>
-          </div>
-          ` : ''}
+          </div>` : ''}
           <div class="publish-data-item">
-              <span class="publish-data-label">حالة الظهور للطلبة:</span>
+              <span class="publish-data-label">حالة الظهور:</span>
               <div class="publish-data-value">
                   <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'}" onclick="window.toggleVisibilityOnline('${data.id || data.slotId}')">
-                      ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️ إظهار للطلبة'}
+                      ${isVisible ? '🙈 إخفاء' : '👁️ إظهار'}
                   </button>
               </div>
           </div>
@@ -2551,8 +2620,7 @@
           <div class="publish-data-item">
               <span class="publish-data-label">اسم السنتر:</span>
               <span class="publish-data-value center-value">🏫 ${data.centerName}</span>
-          </div>
-          ` : ''}
+          </div>` : ''}
           <div class="publish-data-item">
               <span class="publish-data-label">المادة والصف:</span>
               <span class="publish-data-value">${data.subjectData || (data.grade + ' | ' + data.subject) || 'غير محدد'}</span>
@@ -2562,7 +2630,7 @@
               <span class="publish-data-value">${data.groupName || 'غير محدد'}</span>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">العدد المطلوب (السعة):</span>
+              <span class="publish-data-label">السعة:</span>
               <span class="publish-data-value">${data.studentsCount || data.maxCapacity || 20} طالب</span>
           </div>
           <div class="publish-data-item">
@@ -2570,23 +2638,16 @@
               <span class="publish-data-value">${data.location || 'السنتر'}</span>
           </div>
           <div class="publish-data-item">
-              <span class="publish-data-label">اسم الشارع والموقع:</span>
+              <span class="publish-data-label">الموقع:</span>
               <span class="publish-data-value">📍 ${locationDisplay}</span>
           </div>
           ${detailedAddress ? `
           <div class="publish-data-item">
-              <span class="publish-data-label">🏠 العنوان التفصيلي / علامة مميزة:</span>
+              <span class="publish-data-label">🏠 العنوان التفصيلي:</span>
               <div class="publish-data-value address-detail">✨ ${detailedAddress}</div>
-          </div>
-          ` : ''}
-          ${fullAddress && detailedAddress ? `
+          </div>` : ''}
           <div class="publish-data-item">
-              <span class="publish-data-label">📍 العنوان الكامل (ما سيراه الطالب):</span>
-              <div class="publish-data-value address-detail">${fullAddress}</div>
-          </div>
-          ` : ''}
-          <div class="publish-data-item">
-              <span class="publish-data-label">أيام ومواعيد الحصة:</span>
+              <span class="publish-data-label">المواعيد:</span>
               <div class="publish-data-value appts">${apptDetailsHtml}</div>
           </div>
       `;
@@ -2594,7 +2655,7 @@
   }
 
   // ==========================================
-  // 📋 عرض الكروت
+  // 📋 الكروت
   // ==========================================
   function renderAllCardsSummary() {
     const grid = document.getElementById('summaryCardsGrid');
@@ -2602,28 +2663,21 @@
     grid.innerHTML = '';
 
     let allItems = [];
-
     for (const dKey in window.onlineAppointments) {
-        window.onlineAppointments[dKey].forEach(item => {
-            item.isOnline = true;
-            allItems.push(item);
-        });
+        window.onlineAppointments[dKey].forEach(item => { item.isOnline = true; allItems.push(item); });
     }
     for (const dWk in window.onlineRecurring) {
-        window.onlineRecurring[dWk].forEach(item => {
-            item.isOnline = true;
-            allItems.push(item);
-        });
+        window.onlineRecurring[dWk].forEach(item => { item.isOnline = true; allItems.push(item); });
     }
 
-    badge.textContent = `المواعيد المسجلة: ${allItems.length}`;
+    badge.textContent = `${allItems.length} موعد`;
 
     if (allItems.length === 0) {
         const activeInfo = window.getActiveScheduleInfo();
         grid.innerHTML = `
             <div class="empty-cards-state">
-                لا توجد مجموعات أو مواعيد مضافة ${activeInfo.number ? `للجدول رقم ${activeInfo.number}` : ''} حتى الآن.<br>
-                أكمل خطوات الإدخال بالترتيب واضغط <b>حفظ الموعد ونشره مباشرة</b>.
+                لا توجد مواعيد ${activeInfo.number ? `للجدول رقم ${activeInfo.number}` : ''} حتى الآن.<br>
+                أضف موعدك الأول من الأعلى ⬆️
             </div>
         `;
         return;
@@ -2655,7 +2709,6 @@
             ? '<span class="badge-status recurring">🔁 أسبوعي</span>' 
             : '<span class="badge-status one-time">📅 محدد</span>';
 
-        // ✅ شارة الجدول
         const scheduleNum = item.scheduleNumber || window.getActiveScheduleInfo().number;
         const scheduleBadge = scheduleNum 
             ? `<span class="badge-status schedule-badge">📋 جدول ${scheduleNum}</span>` 
@@ -2670,32 +2723,32 @@
 
         let addressHtml = '';
         if (streetStr) {
-            addressHtml += `<div class="sc-detail-item full address-item"><span>📍</span><span class="val">${streetStr}</span></div>`;
+            addressHtml += `<div class="sc-detail-item address-item"><span>📍</span><span class="val">${streetStr}</span></div>`;
         }
         if (detailedStr) {
-            addressHtml += `<div class="sc-detail-item full detailed-address-item"><span>🏠</span><span class="val">${detailedStr}</span></div>`;
+            addressHtml += `<div class="sc-detail-item detailed-address-item"><span>🏠</span><span class="val">${detailedStr}</span></div>`;
         }
         if (!addressHtml) {
-            addressHtml = `<div class="sc-detail-item full"><span>📍</span><span class="val">لم يتم تحديد العنوان</span></div>`;
+            addressHtml = `<div class="sc-detail-item"><span>📍</span><span class="val">لم يتم تحديد العنوان</span></div>`;
         }
 
         const centerHtml = item.centerName 
-            ? `<div class="sc-detail-item full center-item"><span>🏫</span><span class="val">${item.centerName}</span></div>` 
+            ? `<div class="sc-detail-item center-item"><span>🏫</span><span class="val">${item.centerName}</span></div>` 
             : '';
 
         const statusMessageHtml = isVisible 
             ? `<div class="status-message visible-msg">
                     <span class="status-icon">👁️</span>
                     <div class="status-text">
-                        <strong>أنت الآن ظاهر للطلبة</strong>
-                        <small>الطلاب يمكنهم رؤية هذه المجموعة وحجزها</small>
+                        <strong>ظاهر للطلبة</strong>
+                        <small>يمكن للطلاب رؤية المجموعة</small>
                     </div>
                </div>`
             : `<div class="status-message hidden-msg">
                     <span class="status-icon">🙈</span>
                     <div class="status-text">
-                        <strong>أنت الآن مخفي عن الطلبة</strong>
-                        <small>المجموعة مخفية ولا تظهر في تطبيق الطلاب</small>
+                        <strong>مخفي عن الطلبة</strong>
+                        <small>المجموعة مخفية</small>
                     </div>
                </div>`;
 
@@ -2709,22 +2762,20 @@
             </div>
 
             <div class="sc-header">
-                <div style="flex:1;">
+                <div style="flex:1; min-width:0;">
                     <div class="sc-group-name">${item.groupName}</div>
-                    <div class="sc-teacher">
-                        👤 ${item.teacherName}
-                    </div>
+                    <div class="sc-teacher">👤 ${item.teacherName}</div>
                 </div>
             </div>
 
             ${statusMessageHtml}
 
             <div class="sc-subject-block">
-                <span class="subject-icon">📚</span> ${subjectText}
+                <span>📚</span> ${subjectText}
             </div>
 
             <div class="sc-time-banner">
-                <span class="time-text">🕐 من ${formatTime(startTimeStr)} إلى ${formatTime(endTimeStr)}</span>
+                <span class="time-text">🕐 ${formatTime(startTimeStr)} - ${formatTime(endTimeStr)}</span>
                 ${durBadge}
             </div>
 
@@ -2740,7 +2791,7 @@
                 
                 <div class="sc-detail-item">
                     <span>${locIcon}</span>
-                    <span class="val">${item.location || (item.type === 'center' ? 'السنتر' : 'المنزل')}</span>
+                    <span class="val">${item.location || 'السنتر'}</span>
                 </div>
                 
                 <div class="sc-detail-item">
@@ -2750,18 +2801,18 @@
                 
                 <div class="sc-detail-item">
                     <span>👥</span>
-                    <span class="val">السعة: ${capacity} طالب</span>
+                    <span class="val">السعة: ${capacity}</span>
                 </div>
             </div>
 
             <div class="sc-footer-actions">
                 <div class="sc-actions-sub">
                     <button class="btn-action btn-edit btn-card-edit">✏️ تعديل</button>
-                    <button class="btn-action btn-delete btn-card-del">🗑 إلغاء</button>
+                    <button class="btn-action btn-delete btn-card-del">🗑 حذف</button>
                 </div>
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                    <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'} btn-card-toggle" title="${isVisible ? 'إخفاء المجموعة عن الطلبة' : 'إظهار المجموعة للطلبة'}">
-                        ${isVisible ? '🙈 إخفاء عن الطلبة' : '👁️️ إظهار للطلبة'}
+                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-visibility ${isVisible ? 'hide-state' : 'show-state'} btn-card-toggle">
+                        ${isVisible ? '🙈 إخفاء' : '👁️ إظهار'}
                     </button>
                     <button class="btn-view-details btn-card-view">👁 تفاصيل</button>
                 </div>
@@ -2804,12 +2855,12 @@
     const errEl = document.getElementById('editErrorMsg');
 
     if (!newStart || !newEnd) { 
-        errEl.textContent = 'يجب اختيار وقت البداية والنهاية'; 
+        errEl.textContent = 'اختر الوقت'; 
         errEl.classList.add('show'); 
         return; 
     }
     if (newStart >= newEnd) { 
-        errEl.textContent = 'وقت النهاية يجب أن يكون بعد وقت البداية'; 
+        errEl.textContent = 'وقت النهاية بعد البداية'; 
         errEl.classList.add('show'); 
         return; 
     }
@@ -2822,9 +2873,6 @@
     window.cancelEdit();
   };
 
-  // ==========================================
-  // ✅ addAppointment مع فحص الاشتراك
-  // ==========================================
   window.addAppointment = async function() {
     const phone = localStorage.getItem('current_teacher_phone');
     if (phone) {
@@ -2833,28 +2881,23 @@
             if (typeof window.checkTeacherActiveStatus === 'function') {
                 const status = await window.checkTeacherActiveStatus(phone);
                 isActive = status.active;
-                if (!isActive) isActive = false;
             }
             if (!isActive) {
                 const blockedOverlay = document.getElementById('blockedOverlay');
                 if (blockedOverlay) {
                     blockedOverlay.classList.add('show');
                     document.body.style.overflow = 'hidden';
-                    document.documentElement.style.overflow = 'hidden';
-                    blockedOverlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
                 return;
             }
-        } catch (e) {
-            console.error('خطأ فحص الاشتراك:', e);
-        }
+        } catch (e) {}
     }
 
     const currentSubject = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const savedSelections = localStorage.getItem('teacherSelections');
     
     if (currentSubject.includes("لم تختر") || !savedSelections || savedSelections === '{}') {
-        showAddError("لم تختر اى مادة، ارجع للخلف لتسجيل التخصص");
+        showAddError("لم تختر مادة، ارجع للخلف");
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
         return; 
     }
@@ -2869,58 +2912,17 @@
     const end = document.getElementById('endTime').value;
     const isRecurring = document.getElementById('repeatWeekly').checked;
 
-    if (!groupName) {
-        showAddError('يرجى تعبئة "اسم المجموعة" في الخطوة رقم 1');
-        document.getElementById('group-name').focus();
-        return;
-    }
-    
-    if (locationChecked === 'السنتر' && !centerName) {
-        showAddError('يرجى تعبئة "اسم السنتر" في الخطوة رقم 2');
-        document.getElementById('center-name').focus();
-        return;
-    }
-    
-    if (!teacherName) {
-        const errorMsg = locationChecked === 'السنتر' 
-            ? 'يرجى تعبئة "اسم المستر" في الخطوة رقم 3'
-            : 'يرجى تعبئة "اسم المستر / السنتر" في الخطوة رقم 2';
-        showAddError(errorMsg);
-        document.getElementById('teacher-name').focus();
-        return;
-    }
-    
-    if (!studentsCount || studentsCount < 1) {
-        const num = locationChecked === 'السنتر' ? 4 : 3;
-        showAddError(`يرجى تحديد "العدد المطلوب" بشكل صحيح في الخطوة رقم ${num}`);
-        document.getElementById('students-count').focus();
-        return;
-    }
+    if (!groupName) { showAddError('اكتب اسم المجموعة'); document.getElementById('group-name').focus(); return; }
+    if (locationChecked === 'السنتر' && !centerName) { showAddError('اكتب اسم السنتر'); document.getElementById('center-name').focus(); return; }
+    if (!teacherName) { showAddError('اكتب اسم المستر'); document.getElementById('teacher-name').focus(); return; }
+    if (!studentsCount || studentsCount < 1) { showAddError('حدد العدد'); document.getElementById('students-count').focus(); return; }
 
     const gpsLocation = document.getElementById('gps-coords').value;
-    if (!gpsLocation) {
-        const num = locationChecked === 'السنتر' ? 7 : 6;
-        showAddError(`يرجى تحديد وتأكيد الموقع من الخريطة في الخطوة رقم ${num} أولاً`);
-        document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
+    if (!gpsLocation) { showAddError('حدد الموقع'); document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
 
-    if (!start || !end) { 
-        const num = locationChecked === 'السنتر' ? 8 : 7;
-        showAddError(`يجب اختيار وقت البداية والنهاية في الخطوة رقم ${num}`); 
-        return; 
-    }
-    if (start >= end) { 
-        const num = locationChecked === 'السنتر' ? 8 : 7;
-        showAddError(`وقت النهاية يجب أن يكون بعد وقت البداية في الخطوة رقم ${num}`); 
-        return; 
-    }
-
-    if (!selectedDateKey) {
-        const num = locationChecked === 'السنتر' ? 9 : 8;
-        showAddError(`يرجى تحديد يوم من التقويم في الخطوة رقم ${num}`);
-        return;
-    }
+    if (!start || !end) { showAddError('اختر الوقت'); return; }
+    if (start >= end) { showAddError('وقت النهاية بعد البداية'); return; }
+    if (!selectedDateKey) { showAddError('حدد يوم من التقويم'); return; }
 
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
@@ -2928,7 +2930,7 @@
     const conflict = existing.find(appt => start < (appt.endTime || appt.end) && end > (appt.startTime || appt.start));
 
     if (conflict) { 
-        showAddError(`يوجد تعارض مع موعد مسجل من ${formatTime(conflict.startTime || conflict.start)} إلى ${formatTime(conflict.endTime || conflict.end)}`); 
+        showAddError(`تعارض مع موعد ${formatTime(conflict.startTime || conflict.start)}`); 
         return; 
     }
 
@@ -2939,20 +2941,10 @@
     const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
 
     const newApptObj = { 
-        start, 
-        end, 
-        groupName, 
-        teacherName, 
-        centerName,
-        studentsCount, 
-        genderAllowed, 
-        location, 
-        subjectData,
-        street,
-        detailedAddress,
-        date: selectedDateKey,
-        dayOfWeek: dayOfWeek,
-        dayName: dayNames[dayOfWeek],
+        start, end, groupName, teacherName, centerName,
+        studentsCount, genderAllowed, location, subjectData,
+        street, detailedAddress,
+        date: selectedDateKey, dayOfWeek, dayName: dayNames[dayOfWeek],
         type: isRecurring ? 'recurring' : 'normal'
     };
 
@@ -2992,7 +2984,6 @@
       initMap();
       setupSwipeCal();
       
-      // ✅ نعرض معلومات الجدول النشط في الهيدر
       const activeInfo = window.getActiveScheduleInfo();
       if (activeInfo.number) {
           const badge = document.getElementById('headerScheduleBadge');
@@ -3018,11 +3009,11 @@
               for (const stageId in savedData) {
                   const { grade, subjects } = savedData[stageId];
                   if (subjects && subjects.length > 0) {
-                      summaryParts.push(`${grade ? 'الصف: ' + grade + ' | ' : ''}المواد: ${subjects.join(' - ')}`);
+                      summaryParts.push(`${grade ? grade + ' | ' : ''}${subjects.join(' - ')}`);
                   }
               }
               if (summaryParts.length > 0) selectedSubjectsText = summaryParts.join('\n');
-          } catch(e) { console.error(e); }
+          } catch(e) {}
       }
       if(subjectDisplay) {
           subjectDisplay.textContent = selectedSubjectsText;
