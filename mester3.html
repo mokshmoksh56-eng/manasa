@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
     :root {
         --primary-teal: #25968b;
@@ -18,674 +17,608 @@
         --text-dark: #2c3e50;
         --text-gray: #64748b;
         --white: #ffffff;
-        --shadow-color: rgba(37, 150, 139, 0.15);
     }
-
-    * { 
-        box-sizing: border-box; 
-        margin: 0; 
-        padding: 0; 
-        font-family: 'Cairo', sans-serif; 
-        font-weight: 700; 
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 700;
         -webkit-tap-highlight-color: transparent;
     }
-    
-    body { 
-        background: var(--bg-color); 
-        padding-bottom: 50px; 
-        color: var(--text-dark); 
+    body {
+        background: var(--bg-color);
+        color: var(--text-dark);
         font-size: 14px;
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* ====== HEADER ====== */
-    .header-3d { 
-        width: 100%; 
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.65) 100%), 
-                    url('teacher2.png') center/cover no-repeat; 
-        padding: 30px 16px 45px; 
-        text-align: center; 
-        position: relative; 
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    /* ===== HEADER ===== */
+    .header-3d {
+        width: 100%;
+        background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%),
+                    url('teacher2.png') center/cover no-repeat;
+        padding: 35px 16px 45px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    
-    .header-3d h1 { 
-        font-size: 24px; 
-        font-weight: 900; 
-        color: var(--white); 
-        margin-bottom: 8px; 
-        letter-spacing: 0.5px; 
-        text-shadow: 0 3px 8px rgba(0,0,0,0.8); 
+    .header-3d h1 {
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--white);
+        margin-bottom: 8px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     }
-    
-    .header-3d p {
-        font-size: 14px;
+    .header-3d p.subtitle {
+        font-size: 13px;
         color: #e2e8f0;
         font-weight: 700;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    .cloud-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        backdrop-filter: blur(6px);
+    }
+    .cloud-badge .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22C55E;
+        box-shadow: 0 0 8px #22C55E;
+        animation: pulseDot 1.5s infinite;
+    }
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
     }
 
-    /* ====== MAIN CONTAINER ====== */
-    .main-container { 
-        width: 100%; 
-        max-width: 650px; 
-        margin: -25px auto 0; 
-        padding: 0 12px; 
-        position: relative; 
-        z-index: 10; 
+    /* ===== MAIN ===== */
+    .main-container {
+        width: 100%;
+        max-width: 650px;
+        margin: -25px auto 0;
+        padding: 0 14px 40px;
+        position: relative;
+        z-index: 10;
+        flex: 1;
     }
 
-    /* ====== MENU CARD ====== */
-    .menu-card {
+    /* ===== CARDS ===== */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .app-card {
         background: var(--white);
-        border-radius: 18px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px var(--shadow-color);
+        border-radius: 20px;
+        padding: 22px 18px;
+        box-shadow: 0 6px 25px rgba(15,23,41,0.08);
+        border: 1.5px solid #e2e8f0;
+        position: relative;
         overflow: hidden;
-        border-top: 5px solid var(--primary-teal);
-        padding: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    .app-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(15,23,41,0.15);
+    }
+    .app-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; left: 0;
+        height: 5px;
+    }
+    .app-card.card-mester1::before {
+        background: linear-gradient(90deg, #25968b, #38bdf8, #a78bfa);
+    }
+    .app-card.card-mester2::before {
+        background: linear-gradient(90deg, #f59e0b, #ea580c, #dc2626);
     }
 
-    /* ====== SECTION (Accordion Item) ====== */
-    .section {
-        background: #f8fafc;
-        border: 2px solid #e2e8f0;
-        border-radius: 14px;
-        margin-bottom: 10px;
-        overflow: hidden;
-        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .section:last-child {
-        margin-bottom: 0;
-    }
-
-    .section.open {
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-
-    /* ====== SECTION HEADER ====== */
-    .section-header {
+    .card-header {
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 16px 18px;
-        background: var(--white);
-        cursor: pointer;
-        user-select: none;
-        transition: background 0.3s ease;
-        position: relative;
+        margin-bottom: 14px;
     }
-
-    .section-header:hover {
-        background: #f1f5f9;
-    }
-
-    .section-header:active {
-        transform: scale(0.99);
-    }
-
-    .section-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
+    .card-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 28px;
         flex-shrink: 0;
-        transition: transform 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        color: #fff;
     }
-
-    .section.open .section-icon {
-        transform: scale(1.08) rotate(-5deg);
+    .card-mester1 .card-icon {
+        background: linear-gradient(135deg, #25968b, #1b736a);
+        box-shadow: 0 6px 18px rgba(37,150,139,0.35);
     }
-
-    .section-content-text {
-        flex: 1;
+    .card-mester2 .card-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 6px 18px rgba(245,158,11,0.35);
     }
-
-    .section-title {
-        font-size: 15px;
+    .card-title {
+        font-size: 18px;
         font-weight: 900;
         color: var(--text-dark);
-        margin-bottom: 3px;
+        margin-bottom: 4px;
     }
-
-    .section-desc {
-        font-size: 11px;
+    .card-desc {
+        font-size: 12px;
         color: var(--text-gray);
         font-weight: 700;
+        line-height: 1.5;
     }
 
-    /* ====== ARROW (لتحت دائماً) ====== */
-    .section-arrow {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: rgba(37, 150, 139, 0.1);
-        color: var(--primary-teal);
+    .card-status {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        flex-shrink: 0;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    background 0.3s ease;
-    }
-
-    .section.open .section-arrow {
-        transform: rotate(180deg);
-        background: var(--primary-teal);
-        color: var(--white);
-    }
-
-    /* ====== SECTION BODY (الروابط الفرعية) ====== */
-    .section-body {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    opacity 0.4s ease,
-                    padding 0.35s ease;
-        opacity: 0;
-        padding: 0 14px;
-        background: #f8fafc;
-    }
-
-    .section.open .section-body {
-        max-height: 800px;
-        opacity: 1;
-        padding: 12px 14px 14px;
-    }
-
-    /* ====== SUB-LINK ====== */
-    .sub-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 13px 15px;
-        background: var(--white);
-        border: 1.5px solid #e2e8f0;
+        gap: 8px;
+        padding: 10px 12px;
         border-radius: 10px;
-        margin-bottom: 8px;
-        cursor: pointer;
-        text-decoration: none;
-        color: var(--text-dark);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        overflow: hidden;
+        font-size: 12px;
+        font-weight: 900;
+        margin-top: 4px;
     }
-
-    .sub-link:last-child {
-        margin-bottom: 0;
+    .card-status.saved {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+        color: #14532d;
+        border: 1.5px solid #16a34a;
     }
-
-    .sub-link::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: var(--primary-teal);
-        transform: scaleY(0);
-        transition: transform 0.3s ease;
+    .card-status.empty {
+        background: #f1f5f9;
+        color: var(--text-gray);
+        border: 1.5px dashed #cbd5e1;
     }
-
-    .sub-link:hover {
-        border-color: var(--border-teal);
-        background: var(--light-teal);
-        transform: translateX(-6px);
-        box-shadow: 0 6px 15px rgba(37, 150, 139, 0.15);
-    }
-
-    .sub-link:hover::before {
-        transform: scaleY(1);
-    }
-
-    .sub-link:active {
-        transform: translateX(-3px) scale(0.98);
-    }
-
-    .sub-link .sub-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
+    .card-status .status-icon {
+        font-size: 16px;
         flex-shrink: 0;
-        background: linear-gradient(135deg, var(--light-teal), #b2dfdb);
-        transition: transform 0.3s ease;
     }
-
-    .sub-link:hover .sub-icon {
-        transform: scale(1.1) rotate(-5deg);
-    }
-
-    .sub-link .sub-text {
+    .card-status .status-text {
         flex: 1;
+        line-height: 1.4;
+    }
+    .card-status .status-text small {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        opacity: 0.8;
+        margin-top: 2px;
+    }
+
+    .card-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 12px;
         font-size: 14px;
         font-weight: 900;
-        color: var(--text-dark);
+        transition: all 0.3s;
+    }
+    .card-mester1 .card-arrow {
+        background: linear-gradient(135deg, #e0f2f0, #b2dfdb);
+        color: #1b736a;
+    }
+    .card-mester2 .card-arrow {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+    }
+    .app-card:hover .card-arrow {
+        transform: translateX(-4px);
     }
 
-    /* ====== سهم الرابط الفرعي (لتحت دائماً) ====== */
-    .sub-link .sub-arrow {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: rgba(37, 150, 139, 0.1);
-        color: var(--primary-teal);
+    .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    .btn-mini {
+        flex: 1;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: none;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 900;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
-        flex-shrink: 0;
-        transition: transform 0.3s ease, background 0.3s ease;
-        opacity: 0.85;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+    .btn-clear {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1.5px solid #fecaca;
+    }
+    .btn-clear:hover {
+        background: #fecaca;
+    }
+    .btn-view {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1.5px solid #cbd5e1;
+    }
+    .btn-view:hover {
+        background: #e2e8f0;
     }
 
-    .sub-link:hover .sub-arrow {
-        transform: translateY(4px);
-        background: var(--primary-teal);
-        color: var(--white);
+    .info-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding: 16px;
+        background: var(--white);
+        border-radius: 16px;
+        border: 1.5px dashed #cbd5e1;
+        font-size: 12px;
+        color: var(--text-gray);
+        font-weight: 700;
+        line-height: 1.7;
+    }
+    .info-footer strong {
+        color: var(--primary-teal);
+        font-weight: 900;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #1e293b;
+        color: #fff;
+        padding: 14px 24px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 900;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.4s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 90%;
+        text-align: center;
+    }
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
         opacity: 1;
     }
 
-    /* ====== COLOR VARIANTS ====== */
-    .section.section-teal .section-icon { background: linear-gradient(135deg, #e0f2f0, #b2dfdb); }
-    .section.section-teal .section-arrow { background: rgba(37, 150, 139, 0.1); color: #25968b; }
-    .section.section-teal.open .section-arrow { background: #25968b; color: #fff; }
-
-    .section.section-blue .section-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-    .section.section-blue .section-arrow { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-    .section.section-blue.open .section-arrow { background: #3b82f6; color: #fff; }
-    .section.section-blue .sub-link:hover { background: #eff6ff; border-color: #bfdbfe; }
-    .section.section-blue .sub-link::before { background: #3b82f6; }
-    .section.section-blue .sub-link .sub-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-    .section.section-blue .sub-link .sub-arrow { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-    .section.section-blue .sub-link:hover .sub-arrow { background: #3b82f6; color: #fff; }
-
-    .section.section-purple .section-icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
-    .section.section-purple .section-arrow { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-    .section.section-purple.open .section-arrow { background: #8b5cf6; color: #fff; }
-    .section.section-purple .sub-link:hover { background: #faf5ff; border-color: #ddd6fe; }
-    .section.section-purple .sub-link::before { background: #8b5cf6; }
-    .section.section-purple .sub-link .sub-icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
-    .section.section-purple .sub-link .sub-arrow { color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
-    .section.section-purple .sub-link:hover .sub-arrow { background: #8b5cf6; color: #fff; }
-
-    .section.section-green .section-icon { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
-    .section.section-green .section-arrow { background: rgba(22, 163, 74, 0.1); color: #16a34a; }
-    .section.section-green.open .section-arrow { background: #16a34a; color: #fff; }
-    .section.section-green .sub-link:hover { background: #f0fdf4; border-color: #bbf7d0; }
-    .section.section-green .sub-link::before { background: #16a34a; }
-    .section.section-green .sub-link .sub-icon { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
-    .section.section-green .sub-link .sub-arrow { color: #16a34a; background: rgba(22, 163, 74, 0.1); }
-    .section.section-green .sub-link:hover .sub-arrow { background: #16a34a; color: #fff; }
-
-    .section.section-orange .section-icon { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
-    .section.section-orange .section-arrow { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
-    .section.section-orange.open .section-arrow { background: #ea580c; color: #fff; }
-    .section.section-orange .sub-link:hover { background: #fff7ed; border-color: #fed7aa; }
-    .section.section-orange .sub-link::before { background: #ea580c; }
-    .section.section-orange .sub-link .sub-icon { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
-    .section.section-orange .sub-link .sub-arrow { color: #ea580c; background: rgba(234, 88, 12, 0.1); }
-    .section.section-orange .sub-link:hover .sub-arrow { background: #ea580c; color: #fff; }
-
-    /* ====== FOOTER ====== */
-    .footer-info {
-        text-align: center;
-        margin-top: 25px;
-        padding: 15px;
-        color: var(--text-gray);
-        font-size: 12px;
-        font-weight: 800;
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: rippleAnim 0.6s linear;
+        background: rgba(37,150,139,0.15);
+        pointer-events: none;
+        z-index: 5;
+    }
+    @keyframes rippleAnim {
+        to { transform: scale(4); opacity: 0; }
     }
 
-    .footer-info .heart {
-        color: #ef4444;
-        animation: heartbeat 1.5s infinite;
-        display: inline-block;
-    }
-
-    @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-
-    /* ====== RESPONSIVE ====== */
     @media (max-width: 480px) {
-        .header-3d { padding: 25px 12px 40px; }
-        .header-3d h1 { font-size: 20px; }
-        .header-3d p { font-size: 12px; }
-        .menu-card { padding: 10px; }
-        .section-header { padding: 14px 14px; gap: 12px; }
-        .section-icon { width: 44px; height: 44px; font-size: 20px; }
-        .section-title { font-size: 14px; }
-        .section-desc { font-size: 10px; }
-        .section-arrow { width: 30px; height: 30px; font-size: 12px; }
-        .sub-link { padding: 12px 12px; gap: 10px; }
-        .sub-link .sub-icon { width: 34px; height: 34px; font-size: 16px; }
-        .sub-link .sub-text { font-size: 13px; }
-        .sub-link .sub-arrow { width: 26px; height: 26px; font-size: 11px; }
-    }
-
-    @media (max-width: 360px) {
-        .section-icon { width: 40px; height: 40px; font-size: 18px; }
-        .section-title { font-size: 13px; }
-        .sub-link .sub-text { font-size: 12px; }
+        .header-3d h1 { font-size: 22px; }
+        .card-title { font-size: 16px; }
+        .card-icon { width: 52px; height: 52px; font-size: 24px; }
+        .app-card { padding: 18px 14px; }
     }
 </style>
 </head>
 <body>
 
 <header class="header-3d">
+    <div class="cloud-badge"><span class="dot"></span><span>تخزين محلي 💾</span></div>
     <h1>منصة احجزلي</h1>
-    <p>بوابة المعلم - اختر ما تريد</p>
+    <p class="subtitle">بوابة المعلم - اختر القسم المطلوب</p>
 </header>
 
 <div class="main-container">
-    <div class="menu-card">
+    <div class="cards-grid">
 
-        <!-- ====== الخانة الأولى: التخصص والمواعيد ====== -->
-        <div class="section section-teal" id="section-teal">
-            <div class="section-header" onclick="toggleSection('section-teal', event)">
-                <div class="section-icon">📚</div>
-                <div class="section-content-text">
-                    <div class="section-title">التخصص والمواعيد</div>
-                    <div class="section-desc">اختر المواد والصفوف وحدد المواعيد</div>
+        <!-- ===== MESTER 1 CARD ===== -->
+        <a href="mester1.html" class="app-card card-mester1" onclick="openCard(event, 'mester1')">
+            <div class="card-header">
+                <div class="card-icon">📚</div>
+                <div style="flex:1; min-width:0;">
+                    <div class="card-title">1. إعداد التخصص</div>
+                    <div class="card-desc">اختر المرحلة والصف والمواد الدراسية</div>
                 </div>
-                <div class="section-arrow">▼</div>
             </div>
-            <div class="section-body">
-                <!-- روابط التخصص -->
-                <a href="mester1.html" class="sub-link" onclick="navigateToPage(event, 'mester1.html')">
-                    <div class="sub-icon">✏️</div>
-                    <div class="sub-text">تعديل التخصص</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="mester1.html" class="sub-link" onclick="navigateToPage(event, 'mester1.html')">
-                    <div class="sub-icon">📖</div>
-                    <div class="sub-text">عرض المواد المختارة</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <!-- روابط المواعيد -->
-                <a href="mester2.html" class="sub-link" onclick="navigateToPage(event, 'mester2.html')">
-                    <div class="sub-icon">➕</div>
-                    <div class="sub-text">إضافة موعد جديد</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="mester2.html" class="sub-link" onclick="navigateToPage(event, 'mester2.html')">
-                    <div class="sub-icon">📋</div>
-                    <div class="sub-text">عرض المواعيد المسجلة</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
+            <div class="card-status" id="statusMester1">
+                <!-- filled by JS -->
             </div>
-        </div>
+            <div class="card-actions">
+                <button class="btn-mini btn-clear" onclick="clearStorage(event, 'mester1')">🗑 مسح البيانات</button>
+                <button class="btn-mini btn-view" onclick="viewStorage(event, 'mester1')">👁 عرض</button>
+            </div>
+            <div class="card-arrow">
+                <span>ابدأ إعداد التخصص</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                </svg>
+            </div>
+        </a>
 
-        <!-- ====== الخانة الثانية: المجموعات ====== -->
-        <div class="section section-purple" id="section-purple">
-            <div class="section-header" onclick="toggleSection('section-purple', event)">
-                <div class="section-icon">👥</div>
-                <div class="section-content-text">
-                    <div class="section-title">المجموعات</div>
-                    <div class="section-desc">إدارة المجموعات والطلاب المسجلين</div>
+        <!-- ===== MESTER 2 CARD ===== -->
+        <a href="mester2.html" class="app-card card-mester2" onclick="openCard(event, 'mester2')">
+            <div class="card-header">
+                <div class="card-icon">📅</div>
+                <div style="flex:1; min-width:0;">
+                    <div class="card-title">2. المواعيد والمجموعات</div>
+                    <div class="card-desc">أضف المواعيد والمجموعات والموقع الجغرافي</div>
                 </div>
-                <div class="section-arrow">▼</div>
             </div>
-            <div class="section-body">
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">📊</div>
-                    <div class="sub-text">قائمة الطلاب</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">✅</div>
-                    <div class="sub-text">الحضور والغياب</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">📝</div>
-                    <div class="sub-text">تسجيل طالب جديد</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
+            <div class="card-status" id="statusMester2">
+                <!-- filled by JS -->
             </div>
-        </div>
-
-        <!-- ====== قسم المدفوعات والحسابات ====== -->
-        <div class="section section-green" id="section-green">
-            <div class="section-header" onclick="toggleSection('section-green', event)">
-                <div class="section-icon">💰</div>
-                <div class="section-content-text">
-                    <div class="section-title">المدفوعات والحسابات</div>
-                    <div class="section-desc">إدارة المدفوعات والمستحقات</div>
-                </div>
-                <div class="section-arrow">▼</div>
+            <div class="card-actions">
+                <button class="btn-mini btn-clear" onclick="clearStorage(event, 'mester2')">🗑 مسح البيانات</button>
+                <button class="btn-mini btn-view" onclick="viewStorage(event, 'mester2')">👁 عرض</button>
             </div>
-            <div class="section-body">
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">💵</div>
-                    <div class="sub-text">المدفوعات المستلمة</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">📈</div>
-                    <div class="sub-text">التقارير المالية</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
+            <div class="card-arrow">
+                <span>ابدأ إعداد المواعيد</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                </svg>
             </div>
-        </div>
-
-        <!-- ====== قسم الإعدادات ====== -->
-        <div class="section section-orange" id="section-orange">
-            <div class="section-header" onclick="toggleSection('section-orange', event)">
-                <div class="section-icon">⚙️</div>
-                <div class="section-content-text">
-                    <div class="section-title">الإعدادات</div>
-                    <div class="section-desc">تعديل بيانات الحساب والإعدادات</div>
-                </div>
-                <div class="section-arrow">▼</div>
-            </div>
-            <div class="section-body">
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">👤</div>
-                    <div class="sub-text">الملف الشخصي</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">🔔</div>
-                    <div class="sub-text">الإشعارات</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-                <a href="#" class="sub-link" onclick="navigateToPage(event, '#')">
-                    <div class="sub-icon">🚪</div>
-                    <div class="sub-text">تسجيل الخروج</div>
-                    <div class="sub-arrow">▼</div>
-                </a>
-            </div>
-        </div>
+        </a>
 
     </div>
 
-    <div class="footer-info">
-        <p>صُنع بـ <span class="heart">❤️</span> لمنصة احجزلي</p>
+    <div class="info-footer">
+        💾 <strong>تخزين محلي مستقل</strong><br>
+        كل قسم يخزن بياناته في <strong>localStorage</strong> بشكل منفصل تماماً<br>
+        <span style="font-size:11px; opacity:0.8; margin-top:4px; display:block;">
+            mester1 → <code>teacherSelections</code> &nbsp;|&nbsp; mester2 → <code>mester2_appointments</code>
+        </span>
     </div>
 </div>
 
-<script>
-// ============ نظام الصوت ============
-let audioCtx = null;
+<div class="toast" id="toast"></div>
 
-function getAudioContext() {
-    if (!audioCtx) {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch(e) {
-            console.warn('Web Audio API غير مدعوم');
-            return null;
-        }
-    }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
-    }
+<script>
+// ==========================================================
+// SOUND
+// ==========================================================
+let audioCtx = null;
+function getCtx() {
+    if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; } }
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
     return audioCtx;
 }
-
-// صوت فتح القسم
-function playOpenSound() {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    const now = ctx.currentTime;
-    
-    const osc1 = ctx.createOscillator();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(600, now);
-    osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-
-    const gain1 = ctx.createGain();
-    gain1.gain.setValueAtTime(0, now);
-    gain1.gain.linearRampToValueAtTime(0.12, now + 0.02);
-    gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
-
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.22);
-
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(900, now + 0.05);
-    osc2.frequency.exponentialRampToValueAtTime(1400, now + 0.18);
-
-    const gain2 = ctx.createGain();
-    gain2.gain.setValueAtTime(0, now + 0.05);
-    gain2.gain.linearRampToValueAtTime(0.08, now + 0.07);
-    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(now + 0.05);
-    osc2.stop(now + 0.25);
-}
-
-// صوت إغلاق القسم
-function playCloseSound() {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
+function playClick(freq = 1800, dur = 0.035, vol = 0.08) {
+    const ctx = getCtx(); if (!ctx) return;
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(1200, now);
-    osc.frequency.exponentialRampToValueAtTime(500, now + 0.18);
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.25);
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(vol, now + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(now); osc.stop(now + dur + 0.02);
+}
+function createRipple(e, el) {
+    const r = document.createElement('span');
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const cx = e.clientX || (e.touches?.[0]?.clientX ?? rect.left + rect.width/2);
+    const cy = e.clientY || (e.touches?.[0]?.clientY ?? rect.top + rect.height/2);
+    r.style.width = r.style.height = size + 'px';
+    r.style.left = (cx - rect.left - size/2) + 'px';
+    r.style.top = (cy - rect.top - size/2) + 'px';
+    r.classList.add('ripple');
+    el.appendChild(r);
+    setTimeout(() => r.remove(), 600);
 }
 
-// صوت التنقل
-function playNavigationSound() {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    const now = ctx.currentTime;
-    const notes = [800, 1000, 1200];
-    
-    notes.forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now + i * 0.06);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.2, now + i * 0.06 + 0.08);
-
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0, now + i * 0.06);
-        gain.gain.linearRampToValueAtTime(0.08, now + i * 0.06 + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.06 + 0.1);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now + i * 0.06);
-        osc.stop(now + i * 0.06 + 0.12);
-    });
+// ==========================================================
+// TOAST
+// ==========================================================
+let toastTimer = null;
+function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    const icons = { info: 'ℹ️', success: '✅', error: '⚠️' };
+    t.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ============ فتح/إغلاق الأقسام ============
-function toggleSection(sectionId, event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    
-    const isOpen = section.classList.contains('open');
-    
-    // إغلاق باقي الأقسام
-    document.querySelectorAll('.section').forEach(sec => {
-        if (sec.id !== sectionId && sec.classList.contains('open')) {
-            sec.classList.remove('open');
+// ==========================================================
+// STORAGE KEYS
+// ==========================================================
+const KEYS = {
+    mester1: ['teacherSelections', 'mester1_selections', 'mester1_is_locked', 'mester1_last_saved'],
+    mester2: ['mester2_appointments']
+};
+
+// ==========================================================
+// STATUS RENDERING
+// ==========================================================
+function getStorageStatus(key) {
+    try {
+        const data = JSON.parse(localStorage.getItem(key) || 'null');
+        if (!data) return { saved: false, count: 0, data: null };
+        // mester1: object of stages
+        if (key === 'teacherSelections' || key === 'mester1_selections') {
+            const stages = Object.keys(data || {});
+            let subjectsCount = 0;
+            stages.forEach(s => { subjectsCount += (data[s]?.subjects?.length || 0); });
+            return {
+                saved: stages.length > 0,
+                count: subjectsCount,
+                detail: stages.length > 0 ? `${stages.length} مرحلة • ${subjectsCount} مادة` : '',
+                data
+            };
         }
-    });
-    
-    if (isOpen) {
-        section.classList.remove('open');
-        playCloseSound();
-        if (navigator.vibrate) navigator.vibrate(15);
-    } else {
-        section.classList.add('open');
-        playOpenSound();
-        if (navigator.vibrate) navigator.vibrate(30);
+        // mester2: array of appointments
+        if (Array.isArray(data)) {
+            return {
+                saved: data.length > 0,
+                count: data.length,
+                detail: data.length > 0 ? `${data.length} مجموعة مسجلة` : '',
+                data
+            };
+        }
+        return { saved: false, count: 0, data: null };
+    } catch(e) {
+        return { saved: false, count: 0, data: null };
     }
 }
 
-// ============ التنقل للصفحات ============
-function navigateToPage(event, url) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    if (!url || url === '#') {
-        playNavigationSound();
-        if (navigator.vibrate) navigator.vibrate(20);
+function renderStatus() {
+    // Mester 1
+    const s1 = getStorageStatus('teacherSelections');
+    const el1 = document.getElementById('statusMester1');
+    if (s1.saved) {
+        el1.className = 'card-status saved';
+        el1.innerHTML = `
+            <span class="status-icon">✅</span>
+            <div class="status-text">
+                <strong>تم حفظ التخصص</strong>
+                <small>${s1.detail}</small>
+            </div>`;
+    } else {
+        el1.className = 'card-status empty';
+        el1.innerHTML = `
+            <span class="status-icon">📝</span>
+            <div class="status-text">
+                <strong>لم يتم الإعداد بعد</strong>
+                <small>اضغط للبدء</small>
+            </div>`;
+    }
+
+    // Mester 2
+    const s2 = getStorageStatus('mester2_appointments');
+    const el2 = document.getElementById('statusMester2');
+    if (s2.saved) {
+        el2.className = 'card-status saved';
+        el2.innerHTML = `
+            <span class="status-icon">✅</span>
+            <div class="status-text">
+                <strong>تم حفظ المواعيد</strong>
+                <small>${s2.detail}</small>
+            </div>`;
+    } else {
+        el2.className = 'card-status empty';
+        el2.innerHTML = `
+            <span class="status-icon">📝</span>
+            <div class="status-text">
+                <strong>لم يتم الإعداد بعد</strong>
+                <small>اضغط للبدء</small>
+            </div>`;
+    }
+}
+
+// ==========================================================
+// ACTIONS
+// ==========================================================
+function openCard(e, card) {
+    playClick(1700, 0.04, 0.09);
+    createRipple(e, e.currentTarget);
+    if (navigator.vibrate) navigator.vibrate(20);
+    // navigation handled by <a href>
+}
+
+function clearStorage(e, card) {
+    e.preventDefault();
+    e.stopPropagation();
+    playClick(800, 0.08, 0.1);
+
+    const names = { mester1: 'التخصص', mester2: 'المواعيد والمجموعات' };
+    if (!confirm(`هل أنت متأكد من مسح بيانات "${names[card]}"؟\nلا يمكن التراجع عن هذا الإجراء.`)) return;
+
+    KEYS[card].forEach(k => localStorage.removeItem(k));
+    renderStatus();
+    showToast(`تم مسح بيانات ${names[card]} بنجاح`, 'success');
+    if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+}
+
+function viewStorage(e, card) {
+    e.preventDefault();
+    e.stopPropagation();
+    playClick(1500, 0.04, 0.09);
+
+    const names = { mester1: 'التخصص', mester2: 'المواعيد والمجموعات' };
+    let found = false;
+    let summary = '';
+
+    if (card === 'mester1') {
+        const s = getStorageStatus('teacherSelections');
+        if (s.saved) {
+            found = true;
+            const stages = Object.keys(s.data);
+            summary = stages.map(st => {
+                const g = s.data[st];
+                return `• ${st}: ${g.grade} (${g.subjects?.join('، ') || ''})`;
+            }).join('\n');
+        }
+    } else {
+        const s = getStorageStatus('mester2_appointments');
+        if (s.saved) {
+            found = true;
+            summary = s.data.map((a, i) =>
+                `${i+1}. ${a.groupName || 'مجموعة'} — ${a.dayName || ''} ${a.date || ''}`
+            ).join('\n');
+        }
+    }
+
+    if (!found) {
+        showToast(`لا توجد بيانات محفوظة في ${names[card]}`, 'error');
         return;
     }
-    
-    playNavigationSound();
-    
-    document.body.style.opacity = '0.7';
-    document.body.style.transition = 'opacity 0.2s ease';
-    
-    setTimeout(() => {
-        window.location.href = url;
-    }, 250);
+
+    alert(`📋 بيانات ${names[card]}:\n\n${summary}`);
 }
 
-// ============ تهيئة ============
-document.addEventListener('DOMContentLoaded', () => {
-    document.addEventListener('touchstart', () => getAudioContext(), { once: true, passive: true });
-    document.addEventListener('click', () => getAudioContext(), { once: true, passive: true });
+// ==========================================================
+// INIT
+// ==========================================================
+renderStatus();
+window.addEventListener('storage', renderStatus);
+// Re-check when returning from other pages
+window.addEventListener('pageshow', renderStatus);
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) renderStatus();
 });
 
-// ============ دعم لوحة المفاتيح ============
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-        const activeEl = document.activeElement;
-        if (activeEl && activeEl.classList.contains('section-header')) {
-            e.preventDefault();
-            activeEl.click();
-        }
-    }
-});
+document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
+document.addEventListener('click', () => getCtx(), { once: true, passive: true });
 </script>
 
 </body>
