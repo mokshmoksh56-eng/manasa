@@ -1408,7 +1408,7 @@
             }
         }
 
-        // 🧠 حساب فرق الدقائق
+        // 🧠 حساب فرق الدقائق (لا يزال مستخدماً في التحقق عند الحفظ)
         function calcMinutesDiffFG(startVal, endVal) {
             if (!startVal || !endVal) return 0;
             const [sh, sm] = startVal.split(':').map(Number);
@@ -1416,22 +1416,14 @@
             return (eh * 60 + em) - (sh * 60 + sm);
         }
 
-        function formatDurationFG(minutes) {
-            if (minutes <= 0) return '';
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            let txt = '';
-            if (h > 0) txt += `${h}س `;
-            if (m > 0) txt += `${m}د`;
-            return txt.trim();
-        }
-
         // ==========================================================
-        // 🧠 بناء خيارات الوقت بذكاء
+        // 🧠 بناء خيارات الوقت بذكاء (بدون عرض المدة)
         // ==========================================================
         // ✅ التعديل الجديد:
-        //    - الأوقات غير الصالحة: تظهر معطلة (disabled) + 🔒 + خط عليها
-        //    - الأوقات الصالحة: تظهر مع المدة + أول وقت صالح موسوم بـ ⭐
+        //    - إزالة نص المدة (⏱ Xس Yد) تماماً من أسماء الأوقات
+        //    - الأرقام تظهر نظيفة: "6:00 ص" فقط
+        //    - الأوقات المقفولة: 🔒 + خط عليها + رمادية
+        //    - أول وقت صالح: ⭐ موصى به
         // ==========================================================
         function buildSmartTimeOptions(selectEl, options = {}) {
             const {
@@ -1471,28 +1463,18 @@
                 const opt = document.createElement('option');
                 opt.value = slot.value;
 
-                // 🧠 حساب المدة
-                let durationText = '';
-                if (isEndTime && minMinutes >= 0) {
-                    const diff = slotMinutes - minMinutes;
-                    if (diff > 0) {
-                        durationText = ` (⏱ ${formatDurationFG(diff)})`;
-                    }
-                }
-
                 if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
                     // 🔒 وقت غير صالح → يظهر لكن معطل (disabled) + 🔒 + خط عليها
-                    opt.textContent = `🔒 ${slot.label} — غير متاح`;
+                    opt.textContent = `🔒 ${slot.label}`;
                     opt.disabled = true;
                     opt.classList.add('smart-invalid');
-                    // ✅ لا نستخدم hidden أو display:none — الأرقام تظهر لكنها مقفولة
                 } else if (isEndTime && slot.value === firstValidValue) {
                     // ⭐ أول وقت صالح → موصى به
-                    opt.textContent = `⭐ ${slot.label}${durationText} — موصى به`;
+                    opt.textContent = `⭐ ${slot.label} — موصى به`;
                     opt.classList.add('smart-recommended');
                 } else if (isEndTime && minMinutes >= 0) {
                     // ✅ وقت صالح
-                    opt.textContent = `${slot.label}${durationText}`;
+                    opt.textContent = slot.label;
                     opt.classList.add('smart-valid');
                 } else {
                     // ⏰ قائمة البداية: كل الأوقات طبيعية
