@@ -308,9 +308,127 @@
             box-shadow: 0 10px 25px -4px rgba(245, 158, 11, 0.85);
         }
         .btn-create-schedule:active { transform: scale(0.97); }
-        .btn-create-schedule .plus-icon {
-            font-size: 18px;
+        .btn-create-schedule .plus-icon { font-size: 18px; font-weight: 900; }
+
+        /* ========================================================== */
+        /* 🔒 كارت البيانات الثابتة للجدول */
+        /* ========================================================== */
+        .fixed-group-data-card {
+            background: linear-gradient(160deg, #F0F9FF 0%, #E0F2FE 100%);
+            border: 2px solid #0284C7;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 20px -8px rgba(2, 132, 199, 0.35);
+            position: relative;
+            overflow: hidden;
+            animation: lockCardAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .fixed-group-data-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #0284C7, #0369A1, #0284C7);
+        }
+
+        .fixed-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .fixed-group-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14.5px;
             font-weight: 900;
+            color: #075985;
+        }
+
+        .fixed-group-title .fixed-icon {
+            font-size: 18px;
+            animation: lockPulse 2s ease-in-out infinite;
+        }
+
+        .fixed-group-badge {
+            background: linear-gradient(135deg, #0284C7, #0369A1);
+            color: #fff;
+            font-size: 10.5px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .fixed-group-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .fixed-group-body .form-group {
+            margin-bottom: 0;
+        }
+
+        .fixed-group-body .form-group label {
+            font-size: 12px;
+            color: #075985;
+            font-weight: 900;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fixed-group-body .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #BAE6FD;
+            border-top: 2px solid #0284C7;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-family: inherit;
+            font-weight: 800;
+            color: var(--text-dark);
+            background: #fff;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+        }
+
+        .fixed-group-body .form-control:focus {
+            border-color: #0284C7;
+            box-shadow: 0 8px 15px rgba(2, 132, 199, 0.15), 0 0 0 4px rgba(2, 132, 199, 0.1);
+        }
+
+        .fixed-group-body select.form-control {
+            background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230284C7' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e") no-repeat left 12px center;
+            background-size: 13px;
+            padding-left: 32px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .fixed-group-body .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .fixed-group-hint {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #075985;
+            opacity: 0.8;
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px dashed #BAE6FD;
+            line-height: 1.5;
         }
 
         /* ========================================================== */
@@ -420,6 +538,29 @@
             padding: 3px 8px;
             border-radius: 6px;
             border: 1px solid #34D399;
+        }
+
+        /* ✅ البيانات الثابتة في كارت الجدول */
+        .fixed-data-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #BAE6FD;
+        }
+
+        .fixed-data-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            color: #075985;
+            font-size: 10.5px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid #7DD3FC;
         }
 
         .schedule-item-actions {
@@ -762,17 +903,11 @@
         }
 
         #stage-kg .btn-save-inline { background: var(--kg-color); box-shadow: 0 2px 6px rgba(216, 27, 96, 0.2); }
-        #stage-kg .btn-save-inline:hover { background: #ad1457; }
         #stage-primary .btn-save-inline { background: var(--primary-color); box-shadow: 0 2px 6px rgba(46, 125, 50, 0.2); }
-        #stage-primary .btn-save-inline:hover { background: #1b5e20; }
         #stage-prep .btn-save-inline { background: var(--prep-color); box-shadow: 0 2px 6px rgba(21, 101, 192, 0.2); }
-        #stage-prep .btn-save-inline:hover { background: #0d47a1; }
         #stage-secondary .btn-save-inline { background: var(--secondary-color); box-shadow: 0 2px 6px rgba(230, 81, 0, 0.2); }
-        #stage-secondary .btn-save-inline:hover { background: #bf360c; }
         .stage-item[data-custom="true"] .btn-save-inline { background: var(--custom-color); box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2); }
-        .stage-item[data-custom="true"] .btn-save-inline:hover { background: #5B21B6; }
         #stage-azhar .btn-save-inline, #stage-azhar_secondary .btn-save-inline { background: var(--azhar-color); box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2); }
-        #stage-azhar .btn-save-inline:hover, #stage-azhar_secondary .btn-save-inline:hover { background: #047857; }
 
         .btn-save-inline:hover { transform: translateY(-1px); }
         .btn-save-inline:active { transform: scale(0.96); }
@@ -834,6 +969,7 @@
             .subjects-grid { grid-template-columns: repeat(2, 1fr); }
             .schedule-item-actions { grid-template-columns: 1fr 1fr; }
             .schedule-item-actions .schedule-action-btn.delete { grid-column: span 2; }
+            .fixed-group-body .form-grid-2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1002,6 +1138,54 @@
             </button>
         </div>
 
+        <!-- ✅ كارت البيانات الثابتة للجدول -->
+        <div id="fixedGroupDataCard" class="fixed-group-data-card" style="display:none;">
+            <div class="fixed-group-header">
+                <div class="fixed-group-title">
+                    <span class="fixed-icon">🔒</span>
+                    <span>بيانات المجموعة (تُحفظ مع الجدول)</span>
+                </div>
+                <span class="fixed-group-badge">ثابتة</span>
+            </div>
+
+            <div class="fixed-group-body">
+                <div class="form-group">
+                    <label>👥 اسم المجموعة</label>
+                    <input type="text" id="fg-group-name" class="form-control" placeholder="مثال: مجموعة السبت">
+                </div>
+
+                <div class="form-group">
+                    <label>🏫 اسم السنتر (اختياري)</label>
+                    <input type="text" id="fg-center-name" class="form-control" placeholder="سنتر النخبة التعليمي">
+                </div>
+
+                <div class="form-group">
+                    <label>👤 اسم المستر</label>
+                    <input type="text" id="fg-teacher-name" class="form-control" placeholder="اسمك">
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>👥 العدد المطلوب</label>
+                        <input type="number" id="fg-students-count" class="form-control" min="1" value="20">
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ من الساعة</label>
+                        <select id="fg-start-time" class="form-control"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>⏰ إلى الساعة</label>
+                    <select id="fg-end-time" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="fixed-group-hint">
+                💡 البيانات دي هتتثبت تلقائياً في صفحة المواعيد ومش هتحتاج تدخلها تاني
+            </div>
+        </div>
+
         <!-- ✅ عنوان الصفحة -->
         <h2 class="page-title" id="pageTitle">ما هي المادة التي تدرسها؟ 📚</h2>
 
@@ -1144,13 +1328,14 @@
             return Math.max(...schedules.map(s => s.number || 0)) + 1;
         }
 
-        function addSchedule(selectionsData) {
+        function addSchedule(selectionsData, fixedData = null) {
             const schedules = getAllSchedules();
             const newId = 'sch_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             const newSchedule = {
                 id: newId,
                 number: getNextScheduleNumber(),
                 selections: selectionsData,
+                fixedGroupData: fixedData || {},
                 createdAt: Date.now()
             };
             schedules.push(newSchedule);
@@ -1158,11 +1343,14 @@
             return newSchedule;
         }
 
-        function updateSchedule(scheduleId, selectionsData) {
+        function updateSchedule(scheduleId, selectionsData, fixedData = null) {
             const schedules = getAllSchedules();
             const idx = schedules.findIndex(s => s.id === scheduleId);
             if (idx > -1) {
                 schedules[idx].selections = selectionsData;
+                if (fixedData !== null) {
+                    schedules[idx].fixedGroupData = fixedData;
+                }
                 schedules[idx].updatedAt = Date.now();
                 saveAllSchedules(schedules);
                 return schedules[idx];
@@ -1182,6 +1370,83 @@
         }
 
         // ==========================================================
+        // ✅ بيانات المجموعة الثابتة
+        // ==========================================================
+        const TIME_SLOTS_FG = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 30) {
+                const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+                const period = h < 12 ? 'ص' : 'م';
+                const mm = String(m).padStart(2, '0');
+                const value = `${String(h).padStart(2, '0')}:${mm}`;
+                const label = `${hour12}:${mm} ${period}`;
+                TIME_SLOTS_FG.push({ value, label });
+            }
+        }
+
+        function populateFixedGroupTimeSelects() {
+            const startSel = document.getElementById('fg-start-time');
+            const endSel = document.getElementById('fg-end-time');
+            if (!startSel || !endSel) return;
+            
+            const currentStart = startSel.value;
+            const currentEnd = endSel.value;
+            
+            const buildOptions = (sel, selectedVal) => {
+                sel.innerHTML = '<option value="">-- اختر --</option>';
+                TIME_SLOTS_FG.forEach(slot => {
+                    const opt = document.createElement('option');
+                    opt.value = slot.value;
+                    opt.textContent = slot.label;
+                    if (selectedVal && slot.value === selectedVal) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+            };
+            
+            buildOptions(startSel, currentStart);
+            buildOptions(endSel, currentEnd);
+        }
+
+        function captureFixedGroupData() {
+            return {
+                groupName: (document.getElementById('fg-group-name')?.value || '').trim(),
+                centerName: (document.getElementById('fg-center-name')?.value || '').trim(),
+                teacherName: (document.getElementById('fg-teacher-name')?.value || '').trim(),
+                studentsCount: document.getElementById('fg-students-count')?.value || '20',
+                startTime: document.getElementById('fg-start-time')?.value || '',
+                endTime: document.getElementById('fg-end-time')?.value || ''
+            };
+        }
+
+        function fillFixedGroupData(data) {
+            if (!data) data = {};
+            document.getElementById('fg-group-name').value = data.groupName || '';
+            document.getElementById('fg-center-name').value = data.centerName || '';
+            document.getElementById('fg-teacher-name').value = data.teacherName || '';
+            document.getElementById('fg-students-count').value = data.studentsCount || '20';
+            
+            populateFixedGroupTimeSelects();
+            
+            if (data.startTime) document.getElementById('fg-start-time').value = data.startTime;
+            if (data.endTime) document.getElementById('fg-end-time').value = data.endTime;
+        }
+
+        function clearFixedGroupData() {
+            document.getElementById('fg-group-name').value = '';
+            document.getElementById('fg-center-name').value = '';
+            document.getElementById('fg-teacher-name').value = '';
+            document.getElementById('fg-students-count').value = '20';
+            populateFixedGroupTimeSelects();
+        }
+
+        function formatTimeLabel(v) {
+            if (!v) return '';
+            const [h, m] = v.split(':').map(Number);
+            const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+            return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
+        }
+
+        // ==========================================================
         // ✅ عرض قائمة الجداول
         // ==========================================================
         function renderSchedulesList() {
@@ -1192,7 +1457,6 @@
 
             const schedules = getAllSchedules();
             
-            // ✅ كارت "إنشاء جدول جديد" يظهر دايمًا لو فيه جدول واحد على الأقل
             if (schedules.length === 0) {
                 card.style.display = 'none';
                 createCard.style.display = 'none';
@@ -1243,6 +1507,23 @@
                     });
                 }
 
+                // ✅ عرض البيانات الثابتة
+                let fixedDataHtml = '';
+                if (sch.fixedGroupData && (sch.fixedGroupData.groupName || sch.fixedGroupData.teacherName)) {
+                    const fd = sch.fixedGroupData;
+                    let chips = '';
+                    if (fd.groupName) chips += `<span class="fixed-data-chip">👥 ${fd.groupName}</span>`;
+                    if (fd.teacherName) chips += `<span class="fixed-data-chip">👤 ${fd.teacherName}</span>`;
+                    if (fd.centerName) chips += `<span class="fixed-data-chip">🏫 ${fd.centerName}</span>`;
+                    if (fd.studentsCount) chips += `<span class="fixed-data-chip">🎓 ${fd.studentsCount} طالب</span>`;
+                    if (fd.startTime && fd.endTime) {
+                        chips += `<span class="fixed-data-chip">⏰ ${formatTimeLabel(fd.startTime)} - ${formatTimeLabel(fd.endTime)}</span>`;
+                    }
+                    if (chips) {
+                        fixedDataHtml = `<div class="fixed-data-line">${chips}</div>`;
+                    }
+                }
+
                 const isActive = activeId === sch.id;
 
                 item.innerHTML = `
@@ -1253,6 +1534,7 @@
                     </div>
                     <div class="schedule-item-meta">${metaHtml}</div>
                     <div class="schedule-subjects-line">${subjectsHtml}</div>
+                    ${fixedDataHtml}
                     <div class="schedule-item-actions">
                         <button class="schedule-action-btn open" onclick="window.openSchedule('${sch.id}')">
                             <span>▶️</span><span>فتح</span>
@@ -1275,38 +1557,37 @@
         }
 
         // ==========================================================
-        // ✅ فتح جدول (يحفظ البيانات القديمة صح)
+        // ✅ فتح جدول (مع تمرير البيانات الثابتة)
         // ==========================================================
         window.openSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
             if (!sch) return;
             
-            // ✅ نحفظ الجدول النشط
             setActiveScheduleId(scheduleId);
             
-            // ✅ نحفظ الاختيارات بصيغة موحدة لـ mester2
+            // ✅ نمرر الاختيارات
             const dataCopy = JSON.parse(JSON.stringify(sch.selections));
             localStorage.setItem('teacherSelections', JSON.stringify(dataCopy));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
             
-            // ✅ ننقل لـ mester2
+            // ✅ نمرر البيانات الثابتة
+            const fixedData = sch.fixedGroupData || {};
+            localStorage.setItem('schedule_fixed_data', JSON.stringify(fixedData));
+            
             window.location.href = 'mester2.html';
         };
 
         // ==========================================================
-        // ✅ تعديل جدول (يحفظ البيانات القديمة صح)
+        // ✅ تعديل جدول
         // ==========================================================
         window.editSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
             if (!sch) return;
             
             currentEditingScheduleId = scheduleId;
-            
-            // ✅ نحفظ الجدول النشط
             setActiveScheduleId(scheduleId);
             
-            // ✅ نحمّل اختياراته في الواجهة
             selections = {};
             dynamicStages.forEach(stage => {
                 if (sch.selections[stage.id]) {
@@ -1321,12 +1602,12 @@
                 subjectsOpen[stage.id] = false;
             });
             
-            // ✅ نحفظ نسخة احتياطية
-            localStorage.setItem('edit_backup_' + scheduleId, JSON.stringify(sch.selections));
-            
             enterEditMode(true);
             buildStagesUI();
             restoreFromSelectionsObject();
+            
+            // ✅ نعبّي البيانات الثابتة
+            fillFixedGroupData(sch.fixedGroupData || {});
             
             const bannerText = document.getElementById('editModeBannerText');
             if (bannerText) bannerText.textContent = `أنت تعدّل الجدول رقم ${sch.number} — اختر صف ومواد ثم احفظ`;
@@ -1349,11 +1630,11 @@
             
             deleteSchedule(scheduleId);
 
-            // لو الجدول المحذوف كان النشط، نصفّره
             if (getActiveScheduleId() === scheduleId) {
                 localStorage.removeItem(ACTIVE_SCHEDULE_KEY);
                 localStorage.removeItem('teacherSelections');
                 localStorage.removeItem(MESTER1_SAVE_KEY);
+                localStorage.removeItem('schedule_fixed_data');
             }
             
             if (currentEditingScheduleId === scheduleId) {
@@ -1364,6 +1645,7 @@
 
             if (getAllSchedules().length === 0) {
                 enterEditMode(true);
+                clearFixedGroupData();
                 const bannerText = document.getElementById('editModeBannerText');
                 if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — اختر صف ومواد جديدة';
             }
@@ -1375,7 +1657,6 @@
         window.createNewSchedule = function() {
             currentEditingScheduleId = null;
             
-            // ✅ نصفّر الاختيارات
             selections = {};
             dynamicStages.forEach(stage => {
                 selections[stage.id] = { grade: '', subjects: [] };
@@ -1386,8 +1667,11 @@
             buildStagesUI();
             updateSummary();
             
+            // ✅ نصفّر البيانات الثابتة
+            clearFixedGroupData();
+            
             const bannerText = document.getElementById('editModeBannerText');
-            if (bannerText) bannerText.textContent = 'أنت تنشئ جدولاً جديداً — اختر الصف والمواد ثم احفظ';
+            if (bannerText) bannerText.textContent = 'أنت تنشئ جدولاً جديداً — أدخل البيانات واختر الصف والمواد';
             
             renderSchedulesList();
             
@@ -1413,11 +1697,13 @@
                 return null;
             }
             
+            const fixedData = captureFixedGroupData();
+            
             if (currentEditingScheduleId) {
-                updateSchedule(currentEditingScheduleId, finalData);
+                updateSchedule(currentEditingScheduleId, finalData, fixedData);
                 return currentEditingScheduleId;
             } else {
-                const newSch = addSchedule(finalData);
+                const newSch = addSchedule(finalData, fixedData);
                 currentEditingScheduleId = newSch.id;
                 return newSch.id;
             }
@@ -1455,7 +1741,7 @@
         }
 
         // ==========================================================
-        // ✅ Autosave bar
+        // ✅ Autosave
         // ==========================================================
         let autosaveTimer = null;
 
@@ -1478,9 +1764,7 @@
                 }
                 localStorage.setItem('mester1_draft', JSON.stringify(finalData));
                 showAutosaveBar();
-            } catch(e) {
-                console.error('خطأ في الحفظ التلقائي:', e);
-            }
+            } catch(e) {}
         }
 
         // ==========================================================
@@ -1505,6 +1789,7 @@
             currentEditingScheduleId = null;
             renderSchedulesList();
             document.getElementById('editModeBanner').style.display = 'none';
+            document.getElementById('fixedGroupDataCard').style.display = 'none';
             hideStagesUI();
         }
 
@@ -1513,7 +1798,9 @@
             document.getElementById('schedulesListCard').style.display = 'none';
             document.getElementById('createScheduleCard').style.display = 'none';
             document.getElementById('editModeBanner').style.display = 'flex';
+            document.getElementById('fixedGroupDataCard').style.display = 'block';
             showStagesUI();
+            populateFixedGroupTimeSelects();
         }
 
         window.cancelEditMode = function() {
@@ -1530,6 +1817,7 @@
                 });
                 buildStagesUI();
                 updateSummary();
+                clearFixedGroupData();
                 const bannerText = document.getElementById('editModeBannerText');
                 if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — اختر صف ومواد جديدة';
             }
@@ -1788,11 +2076,14 @@
             setActiveScheduleId(scheduleId);
             const sch = getScheduleById(scheduleId);
 
-            // ✅ نحفظ البيانات بصيغة موحدة
             const dataCopy = JSON.parse(JSON.stringify(sch.selections));
             localStorage.setItem('teacherSelections', JSON.stringify(dataCopy));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
+            
+            // ✅ نحفظ البيانات الثابتة
+            const fixedData = sch.fixedGroupData || {};
+            localStorage.setItem('schedule_fixed_data', JSON.stringify(fixedData));
 
             window.location.href = "mester2.html";
         };
@@ -1837,7 +2128,7 @@
         }
 
         // ==========================================================
-        // ✅ الترحيل من البيانات القديمة
+        // ✅ الترحيل
         // ==========================================================
         function migrateOldData() {
             const oldSelections = localStorage.getItem('mester1_selections') || localStorage.getItem('teacherSelections');
@@ -1851,7 +2142,7 @@
                         if (data[sid]?.subjects?.length > 0) { hasData = true; break; }
                     }
                     if (hasData) {
-                        const newSch = addSchedule(data);
+                        const newSch = addSchedule(data, {});
                         setActiveScheduleId(newSch.id);
                     }
                 } catch(e) {}
@@ -1867,6 +2158,7 @@
             window.setCloudStatus(null, 'جاري الاتصال...');
 
             migrateOldData();
+            populateFixedGroupTimeSelects();
 
             subscribeCurriculum((curriculum) => {
                 applyCurriculum(curriculum);
@@ -1881,7 +2173,7 @@
                     } else {
                         enterEditMode(true);
                         const bannerText = document.getElementById('editModeBannerText');
-                        if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — اختر صف ومواد جديدة';
+                        if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — أدخل البيانات واختر صف ومواد';
                     }
                     
                     isFirstLoad = false;
@@ -1911,7 +2203,7 @@
                     } else {
                         enterEditMode(true);
                         const bannerText = document.getElementById('editModeBannerText');
-                        if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — اختر صف ومواد جديدة';
+                        if (bannerText) bannerText.textContent = 'أنت الآن في وضع التعديل — أدخل البيانات واختر صف ومواد';
                     }
                     
                     isFirstLoad = false;
