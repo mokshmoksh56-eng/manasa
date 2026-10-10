@@ -5,99 +5,296 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>دخول المعلم - منصة احجزلي</title>
 <style>
-    /* التنسيقات العامة */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
     body {
         min-height: 100vh;
         background: linear-gradient(180deg, #e8f0fa 0%, #d4e3f7 100%);
-        display: flex; align-items: center; justify-content: center; padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
 
-    /* الكارت الرئيسي والهيدر */
     .login-card {
-        background: white; border-radius: 24px;
+        background: white;
+        border-radius: 24px;
         box-shadow: 0 20px 60px rgba(26, 60, 109, 0.15);
-        max-width: 440px; width: 100%; overflow: hidden;
+        max-width: 440px;
+        width: 100%;
+        overflow: hidden;
     }
+
     .login-header {
-        background-color: #e8f0fa; background-image: url('teacher.png');
-        background-position: center top; background-size: contain; background-repeat: no-repeat;
-        min-height: 270px; padding: 40px 25px 30px;
-        display: flex; flex-direction: column; justify-content: flex-end; text-align: center;
-        position: relative; transition: background-image 0.4s ease-in-out;
+        background-color: #e8f0fa;
+        background-image: url('teacher.png');
+        background-position: center top;
+        background-size: contain;
+        background-repeat: no-repeat;
+        min-height: 270px;
+        padding: 40px 25px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        text-align: center;
+        position: relative;
+        transition: background-image 0.4s ease-in-out;
     }
+
     .login-header::before {
-        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
-        background: linear-gradient(to top, rgba(26, 60, 109, 0.85), transparent); z-index: 1;
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(26, 60, 109, 0.85), transparent);
+        z-index: 1;
     }
+
     .login-header::after {
-        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%); z-index: 3;
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
+        z-index: 3;
     }
-    .login-header h1 { font-size: 26px; font-weight: 900; color: #f1c40f; margin-bottom: 5px; position: relative; z-index: 2; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
-    .login-header p { font-size: 13px; color: #ffffff; font-weight: 700; position: relative; z-index: 2; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
 
-    /* التبويبات (Tabs) */
-    .tabs { display: flex; background: #f1f5f9; border-radius: 12px; margin: 20px 25px 0; padding: 5px; gap: 5px; }
+    .login-header h1 {
+        font-size: 26px;
+        font-weight: 900;
+        color: #f1c40f;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+    }
+
+    .login-header p {
+        font-size: 13px;
+        color: #ffffff;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+    }
+
+    .tabs {
+        display: flex;
+        background: #f1f5f9;
+        border-radius: 12px;
+        margin: 20px 25px 0;
+        padding: 5px;
+        gap: 5px;
+    }
+
     .tab {
-        flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 900; color: #64748b;
-        background: transparent; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 900;
+        color: #64748b;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
-    .tab.active { background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%); color: white; box-shadow: 0 4px 12px rgba(43, 92, 158, 0.3); }
 
-    /* النماذج والإدخال */
-    .login-body { padding: 25px; }
-    .form-group { margin-bottom: 18px; }
-    .form-label { display: block; font-size: 13px; font-weight: 900; color: #1a3c6d; margin-bottom: 8px; }
-    .form-label .required { color: #dc3545; }
-    .form-input {
-        width: 100%; padding: 14px 16px; border: 2px solid #e0e4e8; border-radius: 12px;
-        font-size: 16px; font-weight: 700; color: #1a3c6d; background: #fff; transition: all 0.2s ease; font-family: inherit;
+    .tab.active {
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(43, 92, 158, 0.3);
     }
+
+    .login-body { padding: 25px; }
+
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 900;
+        color: #1a3c6d;
+        margin-bottom: 8px;
+    }
+
+    .form-label .required { color: #dc3545; }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e0e4e8;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a3c6d;
+        background: #fff;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
     select.form-input { cursor: pointer; }
-    .form-input:focus { border-color: #2b5c9e; outline: none; box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1); }
+
+    .form-input:focus {
+        border-color: #2b5c9e;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(43, 92, 158, 0.1);
+    }
+
     .form-input::placeholder { color: #94a3b8; font-weight: 500; }
     .form-input[dir="ltr"] { text-align: left; }
 
-    /* الرقم السري */
     .pin-wrapper { position: relative; }
-    .pin-input { letter-spacing: 12px; font-size: 22px; text-align: center; font-weight: 900; padding-left: 50px; padding-right: 16px; }
-    .pin-toggle {
-        position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: #f1f5f9;
-        border: none; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 16px;
-        display: flex; align-items: center; justify-content: center; transition: 0.2s;
+
+    .pin-input {
+        letter-spacing: 12px;
+        font-size: 22px;
+        text-align: center;
+        font-weight: 900;
+        padding-left: 50px;
+        padding-right: 16px;
     }
+
+    .pin-toggle {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #f1f5f9;
+        border: none;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
     .pin-toggle:hover { background: #e2e8f0; }
 
-    /* الأزرار والتنبيهات */
     .submit-btn {
-        width: 100%; padding: 16px; background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
-        color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 900; cursor: pointer;
-        box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.15); transition: 0.2s; margin-top: 8px;
-        display: flex; align-items: center; justify-content: center; gap: 8px;
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(180deg, #2b5c9e 0%, #1a3c6d 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 17px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #0d2342, 0 8px 15px rgba(0, 0, 0, 0.15);
+        transition: 0.2s;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
-    .submit-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0d2342; }
+
+    .submit-btn:active {
+        transform: translateY(6px);
+        box-shadow: 0 0 0 #0d2342;
+    }
+
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .error-msg, .success-msg {
-        padding: 12px 15px; border-radius: 10px; font-size: 13px; font-weight: 800;
-        margin-bottom: 15px; display: none; align-items: center; gap: 8px;
+    .error-msg {
+        background: #fef2f2;
+        border: 2px solid #fecaca;
+        color: #991b1b;
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        display: none;
+        align-items: center;
+        gap: 8px;
     }
-    .error-msg { background: #fef2f2; border: 2px solid #fecaca; color: #991b1b; }
-    .success-msg { background: #f0fdf4; border: 2px solid #bbf7d0; color: #166534; }
-    .error-msg.show, .success-msg.show { display: flex; }
+
+    .error-msg.show { display: flex; }
+
+    .success-msg {
+        background: #f0fdf4;
+        border: 2px solid #bbf7d0;
+        color: #166534;
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .success-msg.show { display: flex; }
 
     .form-view { display: none; }
     .form-view.active { display: block; }
 
-    /* الروابط السفلية */
-    .bottom-links { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 0 25px 25px; margin-top: 15px; }
-    .back-home { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 700; transition: 0.3s; }
+    .bottom-links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0 25px 25px;
+        margin-top: 15px;
+    }
+
+    .back-home {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
     .back-home:hover { color: #2b5c9e; }
-    .links-right { display: flex; gap: 12px; align-items: center; }
-    .delete-account { background: none; border: none; color: #dc3545; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
+
+    .links-right {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .delete-account {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.3s;
+    }
+
     .delete-account:hover { color: #b02a37; }
-    .logout-account { background: none; border: none; color: #f59e0b; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
+
+    .logout-account {
+        background: none;
+        border: none;
+        color: #f59e0b;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.3s;
+    }
+
     .logout-account:hover { color: #d97706; }
     
     .row-group { display: flex; gap: 15px; }
@@ -112,442 +309,539 @@
         <p>منصة احجزلي - دخول المعلمين</p>
     </div>
 
-    <div class="tabs" id="authTabs">
-        <button class="tab active" data-target="loginView">🔐 تسجيل دخول</button>
-        <button class="tab" data-target="registerView">✍ حساب جديد</button>
+    <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="window.switchTab('login')">🔐 تسجيل دخول</button>
+        <button class="tab" id="tabRegister" onclick="window.switchTab('register')">✍️️ حساب جديد</button>
     </div>
 
     <div class="login-body">
-        <div class="error-msg" id="errorMsg"><span>⚠️</span><span id="errorText"></span></div>
-        <div class="success-msg" id="successMsg"><span>✅</span><span id="successText"></span></div>
 
-        <!-- فورم تسجيل الدخول -->
+        <div class="error-msg" id="errorMsg">
+            <span>⚠️</span>
+            <span id="errorText"></span>
+        </div>
+        <div class="success-msg" id="successMsg">
+            <span>✅</span>
+            <span id="successText"></span>
+        </div>
+
         <div class="form-view active" id="loginView">
-            <form id="loginForm">
+            <form onsubmit="window.handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
-                    <input type="tel" id="loginPhone" class="form-input numeric-only" 
-                           placeholder="01xxxxxxxxx" pattern="01[0125][0-9]{8}" maxlength="11" required dir="ltr">
+                    <input type="tel" id="loginPhone" class="form-input" 
+                           placeholder="01xxxxxxxxx" 
+                           pattern="01[0125][0-9]{8}" 
+                           maxlength="11" 
+                           required 
+                           dir="ltr"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,''); window.checkLoginPhone(this.value);">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">🔒 الرقم السري (4 أرقام) <span class="required">*</span></label>
                     <div class="pin-wrapper">
-                        <input type="password" id="loginPin" class="form-input pin-input numeric-only" 
-                               placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr">
-                        <button type="button" class="pin-toggle" data-target="loginPin">👁</button>
+                        <input type="password" id="loginPin" class="form-input pin-input" 
+                               placeholder="••••" 
+                               maxlength="4" 
+                               pattern="[0-9]{4}"
+                               inputmode="numeric"
+                               required
+                               dir="ltr"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        <button type="button" class="pin-toggle" onclick="window.togglePin('loginPin', this)">👁</button>
                     </div>
                 </div>
 
                 <button type="submit" class="submit-btn" id="loginBtn">
-                    <span>🚀</span><span id="loginBtnText">تسجيل الدخول</span>
+                    <span>🚀</span>
+                    <span id="loginBtnText">تسجيل الدخول</span>
                 </button>
             </form>
         </div>
 
-        <!-- فورم إنشاء الحساب -->
         <div class="form-view" id="registerView">
-            <form id="registerForm">
+            <form onsubmit="window.handleRegister(event)">
+                
                 <div class="row-group">
                     <div class="form-group">
                         <label class="form-label">🎓 اللقب <span class="required">*</span></label>
-                        <select id="regTitle" class="form-input" required>
+                        <select id="regTitle" class="form-input" required onchange="window.updateHeaderImage(this.value)">
                             <option value="" disabled selected>اختر...</option>
                             <option value="مستر">مستر</option>
                             <option value="مس">مس</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label class="form-label">🎂 العمر <span class="required">*</span></label>
-                        <input type="text" id="regAge" class="form-input numeric-only" 
-                               placeholder="مثال: 30" inputmode="numeric" required dir="ltr" maxlength="2">
+                        <input type="text" id="regAge" class="form-input" 
+                               placeholder="مثال: 30" 
+                               inputmode="numeric"
+                               required
+                               dir="ltr"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2)">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">👤 الاسم <span class="required">*</span></label>
-                    <input type="text" id="regName" class="form-input" placeholder="مثال: أحمد محمد" required maxlength="50">
+                    <input type="text" id="regName" class="form-input" 
+                           placeholder="مثال: أحمد محمد" 
+                           required
+                           maxlength="50">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">📱 رقم التليفون <span class="required">*</span></label>
-                    <input type="tel" id="regPhone" class="form-input numeric-only" 
-                           placeholder="01xxxxxxxxx" pattern="01[0125][0-9]{8}" maxlength="11" required dir="ltr">
+                    <input type="tel" id="regPhone" class="form-input" 
+                           placeholder="01xxxxxxxxx" 
+                           pattern="01[0125][0-9]{8}" 
+                           maxlength="11" 
+                           required 
+                           dir="ltr"
+                           oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                 </div>
 
                 <div class="row-group">
                     <div class="form-group">
                         <label class="form-label">🔒 الرقم السري <span class="required">*</span></label>
                         <div class="pin-wrapper">
-                            <input type="password" id="regPin" class="form-input pin-input numeric-only" 
-                                   placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr" style="padding-left: 35px; letter-spacing: 5px;">
+                            <input type="password" id="regPin" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">🔒 تأكيد السري <span class="required">*</span></label>
                         <div class="pin-wrapper">
-                            <input type="password" id="regPinConfirm" class="form-input pin-input numeric-only" 
-                                   placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr" style="padding-left: 35px; letter-spacing: 5px;">
+                            <input type="password" id="regPinConfirm" class="form-input pin-input" 
+                                   placeholder="••••" 
+                                   maxlength="4" 
+                                   pattern="[0-9]{4}"
+                                   inputmode="numeric"
+                                   required
+                                   dir="ltr"
+                                   style="padding-left: 35px; letter-spacing: 5px;"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                         </div>
                     </div>
                 </div>
 
                 <button type="submit" class="submit-btn" id="registerBtn">
-                    <span>✨</span><span id="registerBtnText">إنشاء الحساب</span>
+                    <span>✨</span>
+                    <span id="registerBtnText">إنشاء الحساب</span>
                 </button>
             </form>
         </div>
+
     </div>
 
     <div class="bottom-links">
         <a href="index.html" class="back-home">← العودة للصفحة الرئيسية</a>
         <div class="links-right">
-            <button type="button" class="logout-account" id="btnLogout">🚪 تسجيل الخروج</button>
-            <button type="button" class="delete-account" id="btnDeleteAccount">🗑️ حذف الحساب</button>
+            <button type="button" class="logout-account" onclick="window.logoutAccount()">🚪 تسجيل الخروج</button>
+            <button type="button" class="delete-account" onclick="window.deleteAccount()">🗑️ حذف الحساب</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { 
-        saveTeacher, getTeacher, deleteTeacher, teacherExists,
-        checkTeacherDevice, updateTeacherDevice, generateDeviceId,
-        db, doc, updateDoc
+        saveTeacher, 
+        getTeacher, 
+        deleteTeacher, 
+        teacherExists,
+        checkTeacherDevice,
+        updateTeacherDevice,
+        generateDeviceId,
+        checkTeacherStatus
     } from './firebase-config.js';
 
     // ==========================================================
-    // وحدة واجهة المستخدم (UI Module)
+    // ✅ التحقق من الجلسة عند فتح الصفحة
     // ==========================================================
-    const UIModule = {
-        switchTab(targetId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
-            this.hideMessages();
-
-            document.querySelector(`[data-target="${targetId}"]`).classList.add('active');
-            document.getElementById(targetId).classList.add('active');
-
-            if (targetId === 'loginView') {
-                const phone = document.getElementById('loginPhone').value;
-                if (phone.length === 11) AuthModule.checkTeacherTitle(phone);
-            } else {
-                this.updateHeaderImage(document.getElementById('regTitle').value || 'مستر');
-            }
-        },
-        updateHeaderImage(title) {
-            const header = document.getElementById('headerSection');
-            header.style.backgroundImage = title === 'مس' ? "url('miss.png')" : "url('teacher.png')";
-        },
-        togglePinVisibility(btn) {
-            const inputId = btn.dataset.target;
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                btn.textContent = '👁️';
-            }
-        },
-        showError(msg) {
-            document.getElementById('errorText').textContent = msg;
-            document.getElementById('errorMsg').classList.add('show');
-            document.getElementById('successMsg').classList.remove('show');
-        },
-        showSuccess(msg) {
-            document.getElementById('successText').textContent = msg;
-            document.getElementById('successMsg').classList.add('show');
-            document.getElementById('errorMsg').classList.remove('show');
-        },
-        hideMessages() {
-            document.getElementById('errorMsg').classList.remove('show');
-            document.getElementById('successMsg').classList.remove('show');
-        }
-    };
-
-    // ==========================================================
-    // وحدة الأمان (Security Module)
-    // ==========================================================
-    const SecurityModule = {
-        async checkTeacherBlockStatus(phone) {
-            const result = { isBlocked: false, reason: null, teacherDoc: null };
+    window.addEventListener('DOMContentLoaded', async () => {
+        const savedPhone = localStorage.getItem('current_teacher_phone');
+        if (savedPhone) {
             try {
-                const teacherDoc = await getTeacher(phone);
-                result.teacherDoc = teacherDoc;
-                if (!teacherDoc) return result;
-
-                if (teacherDoc.unlockUntil && teacherDoc.isLocked !== true) {
-                    const until = typeof teacherDoc.unlockUntil === 'number'
-                        ? teacherDoc.unlockUntil : (teacherDoc.unlockUntil.seconds ? teacherDoc.unlockUntil.seconds * 1000 : 0);
-
-                    if (until && until <= Date.now()) {
-                        try {
-                            await updateDoc(doc(db, 'teachers', phone), {
-                                isLocked: true, lockType: 'auto_expired', autoLockedAt: Date.now()
-                            });
-                        } catch(e) {}
-                        result.isBlocked = true;
-                        localStorage.setItem('teacher_is_blocked', 'true');
-                        return result;
-                    } else {
-                        localStorage.removeItem('teacher_is_blocked');
-                        return result;
-                    }
-                }
-
-                if (teacherDoc.isLocked === true) {
-                    result.isBlocked = true;
+                // ✅ 1) فحص موحّد للحظر/الاشتراك
+                const status = await checkTeacherStatus(savedPhone);
+                
+                if (status.isBlocked) {
                     localStorage.setItem('teacher_is_blocked', 'true');
-                    return result;
+                    window.location.href = 'mester2.html';
+                    return;
                 }
 
-                localStorage.removeItem('teacher_is_blocked');
-                return result;
-            } catch (e) {
-                if (localStorage.getItem('teacher_is_blocked') === 'true') result.isBlocked = true;
-                return result;
-            }
-        },
-
-        async runInitialCheck() {
-            const savedPhone = localStorage.getItem('current_teacher_phone');
-            if (savedPhone) {
-                try {
-                    const blockStatus = await this.checkTeacherBlockStatus(savedPhone);
-                    if (blockStatus.isBlocked) {
+                // ✅ 2) فحص الجهاز
+                const check = await checkTeacherDevice(savedPhone);
+                
+                if (!check.ok) {
+                    localStorage.removeItem('current_teacher_profile');
+                    localStorage.removeItem('current_teacher_phone');
+                    localStorage.removeItem('teacher_is_blocked');
+                } else {
+                    // ✅ لو محظور حسب فحص الجهاز
+                    if (check.locked === true) {
+                        localStorage.setItem('teacher_is_blocked', 'true');
                         window.location.href = 'mester2.html';
                         return;
                     }
-                    const check = await checkTeacherDevice(savedPhone);
-                    if (!check.ok) {
-                        localStorage.removeItem('current_teacher_profile');
-                        localStorage.removeItem('current_teacher_phone');
-                        localStorage.removeItem('teacher_is_blocked');
-                    } else {
-                        if (check.locked === true) {
-                            localStorage.setItem('teacher_is_blocked', 'true');
-                            window.location.href = 'mester2.html';
-                            return;
-                        }
-                        window.location.href = 'mester1.html';
-                    }
-                } catch (e) { console.error('خطأ في التحقق:', e); }
+                    window.location.href = 'mester1.html';
+                }
+            } catch (e) {
+                console.error('خطأ في التحقق من الجلسة:', e);
             }
+        }
+    });
+
+    // ✅ تحديث صورة الهيدر حسب اللقب
+    window.updateHeaderImage = function(title) {
+        const header = document.getElementById('headerSection');
+        if (title === 'مس') {
+            header.style.backgroundImage = "url('miss.png')";
+        } else {
+            header.style.backgroundImage = "url('teacher.png')";
         }
     };
 
-    // ==========================================================
-    // وحدة المصادقة (Auth Module)
-    // ==========================================================
-    const AuthModule = {
-        async handleLogin(e) {
-            e.preventDefault();
-            UIModule.hideMessages();
-
-            const phone = document.getElementById('loginPhone').value.trim();
-            const pin = document.getElementById('loginPin').value.trim();
-            const btn = document.getElementById('loginBtn');
-            const btnText = document.getElementById('loginBtnText');
-
-            if (phone.length !== 11) return UIModule.showError('رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
-            if (pin.length !== 4) return UIModule.showError('الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
-
-            const originalText = btnText.textContent;
-            btn.disabled = true;
-            btnText.innerHTML = '⏳ جاري التحقق...';
-
+    // ✅ التحقق من الرقم أثناء الكتابة لتحديث الصورة
+    window.checkLoginPhone = async function(phone) {
+        if (phone.length === 11) {
             try {
                 const user = await getTeacher(phone);
-                if (!user || user.pin !== pin) {
-                    UIModule.showError('رقم التليفون أو الرقم السري غير صحيح.');
-                    return;
+                if (user && user.title === 'مس') {
+                    window.updateHeaderImage('مس');
+                } else {
+                    window.updateHeaderImage('مستر');
                 }
+            } catch (e) {
+                window.updateHeaderImage('مستر');
+            }
+        } else {
+            window.updateHeaderImage('مستر');
+        }
+    };
 
-                const blockStatus = await SecurityModule.checkTeacherBlockStatus(phone);
+    window.togglePin = function(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
 
-                if (blockStatus.isBlocked) {
-                    localStorage.setItem('current_teacher_profile', JSON.stringify(user));
-                    localStorage.setItem('current_teacher_phone', user.phone);
-                    UIModule.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
-                    setTimeout(() => window.location.href = 'mester2.html', 1200);
-                    return;
-                }
+    window.switchTab = function(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+        window.hideMessages();
 
+        if (tab === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('loginView').classList.add('active');
+            window.checkLoginPhone(document.getElementById('loginPhone').value);
+        } else {
+            document.getElementById('tabRegister').classList.add('active');
+            document.getElementById('registerView').classList.add('active');
+            window.updateHeaderImage(document.getElementById('regTitle').value || 'مستر');
+        }
+    };
+
+    window.showError = function(msg) {
+        document.getElementById('errorText').textContent = msg;
+        document.getElementById('errorMsg').classList.add('show');
+        document.getElementById('successMsg').classList.remove('show');
+    };
+
+    window.showSuccess = function(msg) {
+        document.getElementById('successText').textContent = msg;
+        document.getElementById('successMsg').classList.add('show');
+        document.getElementById('errorMsg').classList.remove('show');
+    };
+
+    window.hideMessages = function() {
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
+    };
+
+    // ==========================================================
+    // ✅ تسجيل الدخول
+    // ==========================================================
+    window.handleLogin = async function(e) {
+        e.preventDefault();
+        window.hideMessages();
+
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pin = document.getElementById('loginPin').value.trim();
+        const btn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('loginBtnText');
+
+        if (phone.length !== 11) {
+            window.showError('عفواً، رقم التليفون يجب أن يتكون من 11 رقم بالتمام.');
+            return;
+        }
+        if (pin.length !== 4) {
+            window.showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
+            return;
+        }
+
+        const originalText = btnText.textContent;
+        btn.disabled = true;
+        btnText.innerHTML = '⏳ جاري التحقق...';
+
+        try {
+            // ✅ جلب بيانات المعلم
+            let user = null;
+            try {
+                user = await getTeacher(phone);
+            } catch (fetchErr) {
+                console.error('❌ خطأ في getTeacher:', fetchErr);
+                window.showError('خطأ في الاتصال بقاعدة البيانات. حاول مرة أخرى.');
+                return;
+            }
+
+            if (!user || user.pin !== pin) {
+                window.showError('رقم التليفون أو الرقم السري غير صحيح.');
+                return;
+            }
+
+            // ✅ فحص موحّد للحظر/الاشتراك
+            const status = await checkTeacherStatus(phone);
+
+            // ✅ لو محظور: نسجله دخول ونوديه لصفحة mester2.html
+            if (status.isBlocked) {
+                console.log('🚫 المعلم محظور — السبب:', status.reason);
+                localStorage.setItem('teacher_is_blocked', 'true');
+                localStorage.setItem('current_teacher_profile', JSON.stringify(user));
+                localStorage.setItem('current_teacher_phone', user.phone);
+
+                window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
+
+                setTimeout(() => {
+                    window.location.href = 'mester2.html';
+                }, 1200);
+                return;
+            }
+
+            // ✅ نشط — نمسح علامة الحظر
+            localStorage.removeItem('teacher_is_blocked');
+
+            // ✅ التحقق من الجهاز
+            try {
                 const deviceCheck = await checkTeacherDevice(phone);
+
                 if (!deviceCheck.ok && deviceCheck.reason === 'different_device') {
-                    if (!confirm('⚠️ هذا الحساب مسجل دخول من جهاز آخر. المتابعة ستسجل الخروج من الجهاز الآخر. هل تريد المتابعة؟')) {
-                        UIModule.showError('تم إلغاء تسجيل الدخول.');
+                    const confirmSwitch = confirm(
+                        '⚠️ تنبيه:\n\n' +
+                        'هذا الحساب مسجل دخول من جهاز آخر.\n' +
+                        'إذا أكملت، سيتم تسجيل خروج الجهاز الآخر تلقائياً.\n\n' +
+                        'هل تريد المتابعة؟'
+                    );
+
+                    if (!confirmSwitch) {
+                        window.showError('تم إلغاء تسجيل الدخول.');
                         return;
                     }
                 }
 
+                // ✅ لو الجهاز رجع locked
                 if (deviceCheck.locked === true) {
                     localStorage.setItem('teacher_is_blocked', 'true');
                     localStorage.setItem('current_teacher_profile', JSON.stringify(user));
                     localStorage.setItem('current_teacher_phone', user.phone);
-                    UIModule.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
-                    setTimeout(() => window.location.href = 'mester2.html', 1200);
+                    window.showSuccess('⚠️ حسابك محظور — جاري عرض التفاصيل...');
+                    setTimeout(() => {
+                        window.location.href = 'mester2.html';
+                    }, 1200);
                     return;
                 }
 
+                // ✅ تحديث الجهاز النشط
                 await updateTeacherDevice(phone);
-
-                localStorage.setItem('current_teacher_profile', JSON.stringify(user));
-                localStorage.setItem('current_teacher_phone', user.phone);
-                UIModule.showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
-                setTimeout(() => window.location.href = 'mester1.html', 800);
-
-            } catch (error) {
-                UIModule.showError('حدث خطأ. تأكد من الإنترنت وحاول مرة أخرى.');
-            } finally {
-                btn.disabled = false;
-                btnText.textContent = originalText;
+            } catch (deviceErr) {
+                console.error('⚠️ خطأ في الجهاز (تم تجاهله):', deviceErr);
             }
-        },
 
-        async handleRegister(e) {
-            e.preventDefault();
-            UIModule.hideMessages();
+            localStorage.setItem('current_teacher_profile', JSON.stringify(user));
+            localStorage.setItem('current_teacher_phone', user.phone);
+            window.showSuccess('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
 
-            const title = document.getElementById('regTitle').value;
-            const age = document.getElementById('regAge').value.trim();
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pin = document.getElementById('regPin').value.trim();
-            const pinConfirm = document.getElementById('regPinConfirm').value.trim();
-            const btn = document.getElementById('registerBtn');
-            const btnText = document.getElementById('registerBtnText');
+            setTimeout(() => {
+                window.location.href = 'mester1.html';
+            }, 800);
 
-            if (!title) return UIModule.showError('يرجى اختيار اللقب.');
-            if (name.length < 3) return UIModule.showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
-            if (phone.length !== 11 || !/^01[0125][0-9]{8}$/.test(phone)) return UIModule.showError('يرجى إدخال رقم هاتف مصري صحيح.');
-            if (pin.length !== 4) return UIModule.showError('الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
-            if (pin !== pinConfirm) return UIModule.showError('الرقم السري وتأكيده غير متطابقين.');
-
-            const originalText = btnText.textContent;
-            btn.disabled = true;
-            btnText.innerHTML = '⏳ جاري إنشاء الحساب...';
-
-            try {
-                const exists = await teacherExists(phone);
-                if (exists) {
-                    UIModule.showError('هذا الرقم مسجل بالفعل! جرب تسجيل الدخول.');
-                    return;
-                }
-
-                const deviceId = generateDeviceId();
-                const teacherData = {
-                    id: phone, title, age, name, phone, pin, role: 'teacher',
-                    activeDeviceId: deviceId, lastLoginAt: new Date().toISOString()
-                };
-
-                await saveTeacher(teacherData);
-
-                localStorage.setItem('current_teacher_profile', JSON.stringify(teacherData));
-                localStorage.setItem('current_teacher_phone', phone);
-                localStorage.removeItem('teacher_is_blocked');
-                UIModule.showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
-                setTimeout(() => window.location.href = 'mester1.html', 800);
-
-            } catch (error) {
-                UIModule.showError('حدث خطأ. تأكد من الإنترنت وحاول مرة أخرى.');
-            } finally {
-                btn.disabled = false;
-                btnText.textContent = originalText;
-            }
-        },
-
-        logoutAccount() {
-            if (!localStorage.getItem('current_teacher_phone')) return UIModule.showError('⚠️ لا يوجد حساب مسجل دخول حالياً.');
-            if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
-            
-            localStorage.removeItem('current_teacher_profile');
-            localStorage.removeItem('current_teacher_phone');
-            localStorage.removeItem('teacher_is_blocked');
-            UIModule.showSuccess('✅ تم تسجيل الخروج بنجاح.');
-            setTimeout(() => window.location.reload(), 1000);
-        },
-
-        async deleteAccount() {
-            const phone = prompt('لحذف حسابك، يرجى إدخال رقم التليفون الخاص بك:');
-            if (!phone) return;
-
-            try {
-                const user = await getTeacher(phone);
-                if (!user) return alert('رقم التليفون غير مسجل لدينا.');
-
-                const pin = prompt('يرجى إدخال الرقم السري لتأكيد الحذف:');
-                if (user.pin !== pin) return alert('الرقم السري غير صحيح. تم الإلغاء.');
-
-                if (!confirm('هل أنت متأكد من حذف الحساب نهائياً؟ لا يمكن التراجع.')) return;
-
-                await deleteTeacher(phone);
-                if (localStorage.getItem('current_teacher_phone') === phone) {
-                    localStorage.removeItem('current_teacher_profile');
-                    localStorage.removeItem('current_teacher_phone');
-                    localStorage.removeItem('teacher_is_blocked');
-                }
-                alert('✅ تم حذف الحساب بنجاح.');
-                window.location.reload();
-            } catch (error) {
-                alert('حدث خطأ. حاول مرة أخرى.');
-            }
-        },
-
-        async checkTeacherTitle(phone) {
-            if (phone.length === 11) {
-                try {
-                    const user = await getTeacher(phone);
-                    UIModule.updateHeaderImage(user && user.title === 'مس' ? 'مس' : 'مستر');
-                } catch (e) { UIModule.updateHeaderImage('مستر'); }
-            } else {
-                UIModule.updateHeaderImage('مستر');
-            }
+        } catch (error) {
+            console.error("❌ خطأ في تسجيل الدخول:", error);
+            window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
+        } finally {
+            btn.disabled = false;
+            btnText.textContent = originalText;
         }
     };
 
     // ==========================================================
-    // تهيئة الأحداث (Event Binding)
+    // ✅ إنشاء حساب جديد
     // ==========================================================
-    function bindEvents() {
-        // إدارة التبويبات
-        document.getElementById('authTabs').addEventListener('click', (e) => {
-            if (e.target.classList.contains('tab')) UIModule.switchTab(e.target.dataset.target);
-        });
+    window.handleRegister = async function(e) {
+        e.preventDefault();
+        window.hideMessages();
 
-        // النماذج
-        document.getElementById('loginForm').addEventListener('submit', AuthModule.handleLogin);
-        document.getElementById('registerForm').addEventListener('submit', AuthModule.handleRegister);
+        const title = document.getElementById('regTitle').value;
+        const age = document.getElementById('regAge').value.trim();
+        const name = document.getElementById('regName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pin = document.getElementById('regPin').value.trim();
+        const pinConfirm = document.getElementById('regPinConfirm').value.trim();
+        const btn = document.getElementById('registerBtn');
+        const btnText = document.getElementById('registerBtnText');
 
-        // إظهار/إخفاء كلمة المرور
-        document.querySelectorAll('.pin-toggle').forEach(btn => {
-            btn.addEventListener('click', (e) => UIModule.togglePinVisibility(e.currentTarget));
-        });
+        if (!title) {
+            window.showError('يرجى اختيار اللقب.');
+            return;
+        }
+        if (age.length !== 2) {
+            window.showError('عفواً، العمر يجب أن يتكون من رقمين فقط.');
+            return;
+        }
+        if (name.length < 3) {
+            window.showError('الاسم يجب أن يكون 3 أحرف على الأقل.');
+            return;
+        }
+        if (phone.length !== 11 || !/^01[0125][0-9]{8}$/.test(phone)) {
+            window.showError('يرجى إدخال رقم هاتف مصري صحيح (010, 011, 012, 015).');
+            return;
+        }
+        if (pin.length !== 4) {
+            window.showError('عفواً، الرقم السري يجب أن يتكون من 4 أرقام بالتمام.');
+            return;
+        }
+        if (pin !== pinConfirm) {
+            window.showError('الرقم السري وتأكيده غير متطابقين.');
+            return;
+        }
 
-        // تقييد إدخال الأرقام فقط وتحديث صورة الهيدر
-        document.querySelectorAll('.numeric-only').forEach(input => {
-            input.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9]/g, '');
-                if (this.id === 'loginPhone') AuthModule.checkTeacherTitle(this.value);
-            });
-        });
+        const originalText = btnText.textContent;
+        btn.disabled = true;
+        btnText.innerHTML = '⏳ جاري إنشاء الحساب...';
 
-        // تغيير اللقب في التسجيل يغير الصورة
-        document.getElementById('regTitle').addEventListener('change', (e) => {
-            UIModule.updateHeaderImage(e.target.value);
-        });
+        try {
+            const exists = await teacherExists(phone);
+            if (exists) {
+                window.showError('هذا الرقم مسجل بالفعل! جرب تسجيل الدخول.');
+                return;
+            }
 
-        // الروابط السفلية
-        document.getElementById('btnLogout').addEventListener('click', AuthModule.logoutAccount);
-        document.getElementById('btnDeleteAccount').addEventListener('click', AuthModule.deleteAccount);
-    }
+            const deviceId = generateDeviceId();
+            const teacherData = {
+                id: phone,
+                title: title,
+                age: age,
+                name: name,
+                phone: phone,
+                pin: pin,
+                role: 'teacher',
+                activeDeviceId: deviceId,
+                lastLoginAt: new Date().toISOString()
+            };
 
-    // بدء التشغيل
-    window.addEventListener('DOMContentLoaded', () => {
-        bindEvents();
-        SecurityModule.runInitialCheck();
-    });
+            await saveTeacher(teacherData);
 
+            localStorage.setItem('current_teacher_profile', JSON.stringify(teacherData));
+            localStorage.setItem('current_teacher_phone', phone);
+            localStorage.removeItem('teacher_is_blocked');
+            window.showSuccess('🎉 تم إنشاء حسابك بنجاح! جاري التحويل...');
+
+            setTimeout(() => {
+                window.location.href = 'mester1.html';
+            }, 800);
+
+        } catch (error) {
+            console.error("❌ خطأ في إنشاء الحساب:", error);
+            window.showError('حدث خطأ: ' + (error.message || 'تأكد من الإنترنت وحاول مرة أخرى.'));
+        } finally {
+            btn.disabled = false;
+            btnText.textContent = originalText;
+        }
+    };
+
+    // ==========================================================
+    // ✅ تسجيل الخروج
+    // ==========================================================
+    window.logoutAccount = function() {
+        const savedPhone = localStorage.getItem('current_teacher_phone');
+        
+        if (!savedPhone) {
+            window.showError('⚠️ لا يوجد حساب مسجل دخول حالياً.');
+            return;
+        }
+        
+        if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+            return;
+        }
+        
+        localStorage.removeItem('current_teacher_profile');
+        localStorage.removeItem('current_teacher_phone');
+        localStorage.removeItem('teacher_is_blocked');
+        
+        window.showSuccess('✅ تم تسجيل الخروج بنجاح.');
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    };
+
+    // ==========================================================
+    // ✅ حذف الحساب
+    // ==========================================================
+    window.deleteAccount = async function() {
+        const phone = prompt('لحذف حسابك، يرجى إدخال رقم التليفون الخاص بك:');
+        if (!phone) return;
+
+        try {
+            const user = await getTeacher(phone);
+            if (!user) {
+                alert('رقم التليفون غير مسجل لدينا.');
+                return;
+            }
+
+            const pin = prompt('يرجى إدخال الرقم السري المكون من 4 أرقام لتأكيد الحذف:');
+            if (user.pin !== pin) {
+                alert('الرقم السري غير صحيح. تم إلغاء عملية الحذف.');
+                return;
+            }
+
+            if (!confirm('هل أنت متأكد من حذف الحساب نهائياً؟ لا يمكن التراجع عن هذه الخطوة.')) {
+                return;
+            }
+
+            await deleteTeacher(phone);
+
+            if (localStorage.getItem('current_teacher_phone') === phone) {
+                localStorage.removeItem('current_teacher_profile');
+                localStorage.removeItem('current_teacher_phone');
+                localStorage.removeItem('teacher_is_blocked');
+            }
+
+            alert('✅ تم حذف الحساب بنجاح.');
+            window.location.reload();
+
+        } catch (error) {
+            console.error("❌ خطأ في حذف الحساب:", error);
+            alert('حدث خطأ. حاول مرة أخرى.');
+        }
+    };
 </script>
+
 </body>
 </html>
