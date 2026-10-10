@@ -2459,7 +2459,7 @@
   let selectedDateKey = null;
   let editingAppt = null;
   let isAnimating = false;
-  let isRepeatWeekly = false; // ✅ وضع التكرار الأسبوعي
+  let isRepeatWeekly = false;
 
   window.onlineAppointments = {};
   window.onlineRecurring = {};
@@ -2497,12 +2497,16 @@
       return { period, ...info[period] };
   }
 
+  // ✅ دالة محسّنة لبناء خيارات الوقت
+  // - عند isEndTime: يتم تعطيل كل الأوقات الأصغر من أو تساوي وقت البداية
+  // - يتم استرجاع القيمة السابقة لو ما زالت صالحة
   function buildTimeOptions(selectEl, options = {}) {
       const { 
           isEndTime = false,
           startTimeValue = ''
       } = options;
       
+      const previousValue = selectEl.value;
       selectEl.innerHTML = '<option value="">-- اختر --</option>';
       
       let minMinutes = -1;
@@ -2521,15 +2525,23 @@
           opt.textContent = `${periodInfo.emoji} ${slot.label}`;
           opt.classList.add(`period-${periodInfo.class}`);
           
+          // 🔒 تعطيل الأوقات الأصغر من أو تساوي وقت البداية لمنع اللخبطة
           if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
               opt.disabled = true;
               opt.textContent = `🔒 ${slot.label}`;
               opt.style.textDecoration = 'line-through';
               opt.style.opacity = '0.5';
+              opt.style.background = '#F1F5F9';
           }
           
           selectEl.appendChild(opt);
       });
+      
+      // ✅ استرجاع القيمة السابقة لو ما زالت متاحة
+      if (previousValue) {
+          const prevOpt = Array.from(selectEl.options).find(o => o.value === previousValue && !o.disabled);
+          if (prevOpt) selectEl.value = previousValue;
+      }
       
       updateSelectColor(selectEl);
   }
@@ -2551,6 +2563,8 @@
       setupTimeSelectEvents();
   }
 
+  // ✅ دالة محسّنة لإعداد أحداث الـ selects
+  // - عند تغيير وقت البداية: إعادة بناء خيارات النهاية + مسح وقت النهاية لو أصبح غير صالح
   function setupTimeSelectEvents() {
       const editStart = document.getElementById('editStart');
       const editEnd = document.getElementById('editEnd');
@@ -2561,18 +2575,41 @@
               updateSelectColor(this);
               if (editEnd) {
                   const currentEndValue = editEnd.value;
+                  
+                  // 🔁 إعادة بناء خيارات النهاية بناءً على وقت البداية الجديد
                   buildTimeOptions(editEnd, {
                       isEndTime: true,
                       startTimeValue: this.value
                   });
+                  
+                  // ✅ لو وقت النهاية الحالي أصبح غير صالح (أصغر أو يساوي البداية) → امسحه
                   if (currentEndValue) {
-                      const opt = Array.from(editEnd.options).find(o => o.value === currentEndValue && !o.disabled);
-                      if (opt) {
-                          editEnd.value = currentEndValue;
-                          updateSelectColor(editEnd);
-                      } else {
+                      const [sh, sm] = this.value.split(':').map(Number);
+                      const [eh, em] = currentEndValue.split(':').map(Number);
+                      const startMin = sh * 60 + sm;
+                      const endMin = eh * 60 + em;
+                      
+                      if (endMin <= startMin) {
+                          // وقت النهاية غير صالح → امسحه مع تنبيه
                           editEnd.value = '';
                           updateSelectColor(editEnd);
+                          
+                          const errEl = document.getElementById('editErrorMsg');
+                          if (errEl) {
+                              errEl.textContent = '⚠ تم مسح وقت النهاية لأنه أصبح قبل وقت البداية';
+                              errEl.classList.add('show');
+                              setTimeout(() => errEl.classList.remove('show'), 3000);
+                          }
+                      } else {
+                          // وقت النهاية لا يزال صالحاً
+                          const opt = Array.from(editEnd.options).find(o => o.value === currentEndValue && !o.disabled);
+                          if (opt) {
+                              editEnd.value = currentEndValue;
+                              updateSelectColor(editEnd);
+                          } else {
+                              editEnd.value = '';
+                              updateSelectColor(editEnd);
+                          }
                       }
                   }
               }
@@ -2650,7 +2687,6 @@
     if (count === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
   }
 
-  // ✅ تغيير حالة التكرار الأسبوعي
   window.handleRepeatChange = function() {
       isRepeatWeekly = document.getElementById('repeatWeekly').checked;
       renderCalendar();
@@ -2662,7 +2698,6 @@
       }
   };
 
-  // ✅ التحقق لو اليوم ضمن التكرار الأسبوعي المحدد
   function isRecurringDay(cellYear, cellMonth, cellDate) {
       if (!isRepeatWeekly || !selectedDateKey) return false;
       
@@ -2720,7 +2755,6 @@
       const dayAppts = getDayAppointments(cellYear, cellMonth, cellDate);
       const totalCount = dayAppts.length;
 
-      // ✅ التحقق لو اليوم ضمن التكرار الأسبوعي
       const isRecur = isRecurringDay(cellYear, cellMonth, cellDate);
       
       if (isRecur && !dayEl.classList.contains('out-of-month')) {
@@ -3273,17 +3307,29 @@
     const editStart = document.getElementById('editStart');
     const editEnd = document.getElementById('editEnd');
     
+    // ✅ بناء خيارات البداية أولاً
     buildTimeOptions(editStart);
+    
+    // ✅ تعيين قيمة البداية
+    editStart.value = startVal;
+    updateSelectColor(editStart);
+    
+    // ✅ بناء خيارات النهاية بناءً على وقت البداية
     buildTimeOptions(editEnd, {
         isEndTime: true,
         startTimeValue: startVal
     });
     
-    editStart.value = startVal;
-    updateSelectColor(editStart);
-    
-    editEnd.value = endVal;
-    updateSelectColor(editEnd);
+    // ✅ تعيين قيمة النهاية لو ما زالت صالحة
+    if (endVal) {
+        const endOpt = Array.from(editEnd.options).find(o => o.value === endVal && !o.disabled);
+        if (endOpt) {
+            editEnd.value = endVal;
+        } else {
+            editEnd.value = '';
+        }
+        updateSelectColor(editEnd);
+    }
     
     const isRec = appt.appointment ? appt.appointment.type === 'recurring' : appt.type === 'recurring';
     document.getElementById('editRepeatWeekly').checked = isRec;
@@ -3313,7 +3359,7 @@
         return; 
     }
     if (newStart >= newEnd) { 
-        errEl.textContent = 'وقت النهاية بعد البداية'; 
+        errEl.textContent = 'وقت النهاية يجب أن يكون بعد وقت البداية'; 
         errEl.classList.add('show'); 
         return; 
     }
