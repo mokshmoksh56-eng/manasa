@@ -2,12 +2,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
     getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, 
-    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp 
+    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp, arrayUnion 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { 
     getAuth, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyABNlQQpyIw3k_ziw_-xT7SUrMV_v8Tt1Y",
@@ -19,10 +18,20 @@ const firebaseConfig = {
     measurementId: "G-VG0KN2RMS0"
 };
 
+// ✅ تهيئة Firebase — بدون analytics (عشان ما يعلّقش الصفحة)
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-const analytics = getAnalytics(app);
+
+// ✅ تهيئة auth بشكل آمن
+let auth = null;
+try {
+    auth = getAuth(app);
+} catch (e) {
+    console.warn('⚠️ فشل تهيئة Auth (تم تجاهله):', e);
+}
+
+// ✅ analytics معطّل عشان ما يعلّقش الصفحة
+const analytics = null;
 
 // ============ دوال المعلمين ============
 export async function saveTeacher(teacher) {
@@ -96,7 +105,7 @@ export async function deleteStudentByKey(key) {
 }
 
 export async function updateStudentProfile(accountKey, data) {
-    const allowed = ['name', 'gender', 'stage', 'grade', 'phone', 'lat', 'lng', 'address'];
+    const allowed = ['name', 'gender', 'stage', 'grade', 'phone', 'lat', 'lng', 'address', 'age', 'parentPhone'];
     const updates = {};
     for (const k of allowed) {
         if (data[k] !== undefined && data[k] !== null && data[k] !== '') {
@@ -239,6 +248,9 @@ export async function updateTeacherDevice(phone) {
     return deviceId;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ✅ checkStudentDevice — مُحسّنة: fire-and-forget للمزامنة
+// ═══════════════════════════════════════════════════════════════
 export async function checkStudentDevice(accountKey) {
     const student = await getStudentByKey(accountKey);
     if (!student) return { ok: false, locked: false, reason: 'not_found' };
@@ -249,6 +261,7 @@ export async function checkStudentDevice(accountKey) {
 
     const currentDeviceId = generateDeviceId();
     
+    // ✅ المزامنة في الخلفية بدون await — تمنع تعليق الشاشة الأولية
     try {
         const profile = JSON.parse(localStorage.getItem('current_student_profile') || '{}');
         if (profile.id === accountKey) {
@@ -259,12 +272,14 @@ export async function checkStudentDevice(accountKey) {
             if (profile.name && student.name !== profile.name) updates.name = profile.name;
             
             if (Object.keys(updates).length > 0) {
-                await updateDoc(doc(db, "students", accountKey), updates);
-                console.log('✅ تمت مزامنة بيانات الطالب مع Firestore');
+                // ✅ fire-and-forget — بدون await
+                updateDoc(doc(db, "students", accountKey), updates)
+                    .then(() => console.log('✅ تمت مزامنة بيانات الطالب مع Firestore'))
+                    .catch(e => console.warn('⚠️ فشل المزامنة:', e));
             }
         }
     } catch (e) {
-        console.warn('⚠️ فشل المزامنة (تم تجاهله):', e);
+        console.warn('⚠️ فشل تجهيز المزامنة (تم تجاهله):', e);
     }
     
     if (!student.activeDeviceId) return { ok: true, locked: false, isFirst: true, student };
@@ -286,10 +301,8 @@ export async function isTeacherLocked(phone) {
         const teacher = await getTeacher(phone);
         if (!teacher) return false;
 
-        // ✅ فحص الحظر الصريح
         if (teacher.isLocked === true) return true;
 
-        // ✅ فحص انتهاء مدة التفعيل المؤقت
         if (teacher.unlockUntil) {
             const until = typeof teacher.unlockUntil === 'number'
                 ? teacher.unlockUntil
@@ -614,7 +627,6 @@ export async function approveSubscription(requestId, adminNote = '') {
         subscriptionStatus: 'active',
         subscriptionEnd: endDate.toISOString(),
         isPremium: true,
-        // ✅ نضيف كمان تحديث الـ unlockUntil للتناسق مع باقي النظام
         isLocked: false,
         unlockedAt: now.getTime(),
         unlockUntil: endDate.getTime(),
@@ -703,24 +715,18 @@ export async function getTeacherSubscription(phone) {
 // ==========================================================
 export async function isSubscriptionActive(phone) {
     try {
-        // ============================================
-        // ✅ 1) فحص أولاً: هل التفعيل من الإدارة اليدوية (teachers.unlockUntil)؟
-        // ============================================
         const teacher = await getTeacher(phone);
         if (teacher) {
-            // 🚫 الحساب محظور يدوياً → مش نشط
             if (teacher.isLocked === true) {
                 console.log('🚫 الاشتراك غير نشط — المعلم محظور يدوياً');
                 return false;
             }
 
-            // ♾️ فتح دائم من الإدارة → نشط
             if (teacher.lockType === 'permanent_open') {
                 console.log('♾️ الاشتراك نشط — فتح دائم من الإدارة');
                 return true;
             }
 
-            // ⏰ تفعيل مؤقت (3 شهور / 6 شهور / سنة) من الإدارة
             if (teacher.unlockUntil) {
                 const until = typeof teacher.unlockUntil === 'number'
                     ? teacher.unlockUntil
@@ -732,14 +738,10 @@ export async function isSubscriptionActive(phone) {
                     return true;
                 } else if (until && until <= Date.now()) {
                     console.log('⏰ الاشتراك منتهي — انتهت مدة التفعيل من الإدارة');
-                    // نكمل للفحص التالي بدل ما نرجع false مباشرة
                 }
             }
         }
 
-        // ============================================
-        // ✅ 2) فحص ثانياً: الاشتراك من نظام الاشتراكات (subscriptions collection)
-        // ============================================
         const sub = await getTeacherSubscription(phone);
 
         if (!sub) {
@@ -747,25 +749,21 @@ export async function isSubscriptionActive(phone) {
             return false;
         }
 
-        // 🆓 الباقة المجانية → نشطة دائماً
         if (sub.planId === 'free') {
             console.log('🆓 الباقة المجانية نشطة');
             return true;
         }
 
-        // ❌ لو الحالة مش active
         if (sub.status !== 'active') {
             console.log(`❌ الاشتراك غير نشط — الحالة: ${sub.status}`);
             return false;
         }
 
-        // ✅ لو مفيش endDate → نشط
         if (!sub.endDate) {
             console.log('✅ الاشتراك نشط — بدون تاريخ انتهاء');
             return true;
         }
 
-        // ✅ فحص التاريخ
         const isActive = new Date(sub.endDate) > new Date();
         if (isActive) {
             const daysLeft = Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24));
@@ -877,11 +875,34 @@ export function subscribePricing(callback) {
     });
 }
 
+// ============ دوال التقييمات ============
+export async function saveTeacherRating(teacherKey, ratingData) {
+    const ref = doc(db, "ratings", teacherKey);
+    await setDoc(ref, {
+        reviews: arrayUnion(ratingData),
+        updatedAt: serverTimestamp()
+    }, { merge: true });
+}
+
+export async function getAllTeacherRatings() {
+    try {
+        const snap = await getDocs(collection(db, "ratings"));
+        let ratingsMap = {};
+        snap.forEach(doc => {
+            ratingsMap[doc.id] = doc.data().reviews || [];
+        });
+        return ratingsMap;
+    } catch (e) {
+        console.error("فشل جلب التقييمات:", e);
+        return {};
+    }
+}
+
 // ==========================================================
 // التصدير النهائي
 // ==========================================================
 export { 
-    app, db, auth, analytics,
+    app, db, auth,
     doc, setDoc, getDoc, updateDoc, deleteDoc,
-    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp
+    collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp, arrayUnion
 };
