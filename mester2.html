@@ -272,7 +272,114 @@
         white-space: nowrap;
     }
     .active-schedule-info-bar .btn-back:hover { transform: translateY(-1px); }
-    .active-schedule-info-bar .btn-back:active { transform: scale(0.96); }
+
+    /* ========================================== */
+    /* 🔒 كارت البيانات الثابتة في mester2 */
+    /* ========================================== */
+    .fixed-data-preview-card {
+        background: linear-gradient(160deg, #F0F9FF 0%, #E0F2FE 100%);
+        border: 2px solid #0284C7;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+        animation: fixedCardAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .fixed-data-preview-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; left: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0284C7, #0369A1, #0284C7);
+    }
+
+    @keyframes fixedCardAppear {
+        from { opacity: 0; transform: translateY(15px) scale(0.97); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .fixed-preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #BAE6FD;
+        flex-wrap: wrap;
+    }
+
+    .fixed-preview-header .fixed-preview-icon {
+        font-size: 18px;
+        animation: lockPulse 2s ease-in-out infinite;
+    }
+    @keyframes lockPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.15) rotate(-5deg); }
+    }
+
+    .fixed-preview-header > span:nth-child(2) {
+        flex: 1;
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #075985;
+    }
+
+    .fixed-preview-badge {
+        background: linear-gradient(135deg, #0284C7, #0369A1);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 3px 9px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+    }
+
+    .fixed-preview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .fixed-preview-item {
+        background: #fff;
+        border: 1px solid #BAE6FD;
+        border-radius: 8px;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .fixed-preview-item .fp-label {
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #0369A1;
+        opacity: 0.85;
+    }
+
+    .fixed-preview-item .fp-value {
+        font-size: 13px;
+        font-weight: 900;
+        color: #075985;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .fixed-preview-hint {
+        text-align: center;
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #075985;
+        opacity: 0.75;
+        padding-top: 8px;
+        border-top: 1px dashed #BAE6FD;
+        line-height: 1.5;
+    }
 
     /* ========================================== */
     /* 🗺️ الخريطة */
@@ -1372,7 +1479,7 @@
     }
 
     /* ========================================== */
-    /* 📱 Responsive للشاشات الكبيرة */
+    /* 📱 Responsive */
     /* ========================================== */
     @media (min-width: 480px) {
         .header-3d h1 { font-size: 22px; }
@@ -1400,9 +1507,6 @@
         .contact-type-btn .ct-icon { font-size: 24px; }
     }
 
-    /* ========================================== */
-    /* 📱 موبايل صغير جداً (أقل من 360px) */
-    /* ========================================== */
     @media (max-width: 359px) {
         .header-3d h1 { font-size: 16px; }
         .schedule-badge-header { font-size: 11px; padding: 3px 10px; }
@@ -1417,6 +1521,8 @@
         .btn-add { font-size: 14px; padding: 12px; }
         .summary-section-title { font-size: 14px; }
         .summary-total-badge { font-size: 11px; padding: 4px 10px; }
+        .fixed-preview-grid { grid-template-columns: 1fr; }
+        .fixed-preview-item .fp-value { font-size: 12px; }
     }
 </style>
 </head>
@@ -1548,7 +1654,7 @@
                 detailsInput.classList.add('show');
                 detailsInput.placeholder = type === 'problem' ? 'اكتب تفاصيل المشكلة هنا...' : 'اكتب استفسارك هنا...';
             }
-            if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة للإدارة' : 'إرسال الاستفسار للإدارة';
+            if (btnText) btnText.textContent = type === 'problem' ? 'إرسال المشكلة' : 'إرسال الاستفسار';
         } else if (type === 'verification') {
             if (detailsInput) {
                 detailsInput.classList.remove('show');
@@ -1741,40 +1847,63 @@
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
-        <div class="form-grid-row">
-          <div class="form-group">
-            <label><span class="step-num">1</span> اسم المجموعة</label>
-            <input type="text" id="group-name" class="form-control" placeholder="اكتب اسم المجموعة">
-          </div>
-          
-          <div class="form-group" id="center-name-group" style="display: none;">
-            <label><span class="step-num" id="center-step-num">2</span> اسم السنتر</label>
-            <input type="text" id="center-name" class="form-control" placeholder="سنتر النخبة التعليمي">
-          </div>
-          
-          <div class="form-group" id="teacher-name-group">
-            <label><span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر</label>
-            <input type="text" id="teacher-name" class="form-control" placeholder="اسمك أو اسم المركز">
-          </div>
+        <!-- 🔒 كارت البيانات الثابتة من mester1 -->
+        <div id="fixedDataPreviewCard" class="fixed-data-preview-card" style="display:none;">
+            <div class="fixed-preview-header">
+                <span class="fixed-preview-icon">🔒</span>
+                <span>بيانات المجموعة الثابتة</span>
+                <span class="fixed-preview-badge">من الجدول</span>
+            </div>
+            <div class="fixed-preview-grid">
+                <div class="fixed-preview-item">
+                    <span class="fp-label">👥 المجموعة</span>
+                    <span class="fp-value" id="fp-group-name">-</span>
+                </div>
+                <div class="fixed-preview-item" id="fp-center-item" style="display:none;">
+                    <span class="fp-label">🏫 السنتر</span>
+                    <span class="fp-value" id="fp-center-name">-</span>
+                </div>
+                <div class="fixed-preview-item">
+                    <span class="fp-label">👤 المستر</span>
+                    <span class="fp-value" id="fp-teacher-name">-</span>
+                </div>
+                <div class="fixed-preview-item">
+                    <span class="fp-label">🎓 السعة</span>
+                    <span class="fp-value" id="fp-students-count">-</span>
+                </div>
+                <div class="fixed-preview-item">
+                    <span class="fp-label">⏰ من</span>
+                    <span class="fp-value" id="fp-start-time">-</span>
+                </div>
+                <div class="fixed-preview-item">
+                    <span class="fp-label">⏰ إلى</span>
+                    <span class="fp-value" id="fp-end-time">-</span>
+                </div>
+            </div>
+            <div class="fixed-preview-hint">
+                💡 البيانات دي متثبتة من الجدول الأساسي — لو عايز تعدّلها ارجع لصفحة الجداول
+            </div>
         </div>
 
-        <div class="form-grid-row">
-          <div class="form-group">
-            <label><span class="step-num" id="students-count-num">3</span> العدد المطلوب</label>
-            <input type="number" id="students-count" class="form-control" placeholder="20" min="1" value="20">
-          </div>
-          <div class="form-group">
-            <label><span class="step-num" id="gender-num">4</span> الفئات المسموح بها</label>
+        <!-- 🔒 الحقول المخفية (تُعبّى تلقائياً من البيانات الثابتة) -->
+        <input type="hidden" id="group-name">
+        <input type="hidden" id="center-name">
+        <input type="hidden" id="teacher-name">
+        <input type="hidden" id="students-count" value="20">
+        <input type="hidden" id="startTime">
+        <input type="hidden" id="endTime">
+
+        <div class="form-group">
+            <label><span class="step-num" id="gender-num">1</span> الفئات المسموح بها</label>
             <div class="cards-grid">
-              <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
-              <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
-              <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
+                <div><input type="radio" name="gender" id="gender-mixed" value="مختلط" checked><label for="gender-mixed"><i>👫</i> مختلط</label></div>
+                <div><input type="radio" name="gender" id="gender-boys" value="أولاد فقط"><label for="gender-boys"><i>👨‍🎓</i> أولاد</label></div>
+                <div><input type="radio" name="gender" id="gender-girls" value="بنات فقط"><label for="gender-girls"><i>👩‍🎓</i> بنات</label></div>
             </div>
-          </div>
         </div>
 
         <div class="form-group full-width">
-          <label><span class="step-num" id="location-num">5</span> مكان الدرس</label>
+          <label><span class="step-num" id="location-num">2</span> مكان الدرس</label>
           <div class="cards-grid">
             <div><input type="radio" name="location" id="loc-center" value="السنتر" checked onchange="toggleCenterNameField()"><label for="loc-center"><i>🏫</i> السنتر</label></div>
             <div><input type="radio" name="location" id="loc-teacher" value="بيت المستر" onchange="toggleCenterNameField()"><label for="loc-teacher"><i>🏠</i> بيت المستر</label></div>
@@ -1783,7 +1912,7 @@
         </div>
         
         <div class="form-group full-width">
-          <label><span class="step-num" id="map-num">6</span> الموقع الجغرافي</label>
+          <label><span class="step-num" id="map-num">3</span> الموقع الجغرافي</label>
           <div id="map-container">
             <div id="map"></div>
           </div>
@@ -1815,20 +1944,8 @@
         </div>
 
         <div class="form-section-title" style="margin-top: 12px;">
-            <span class="step-num-lg" id="time-num">7</span> توقيت الحصة
+            <span class="step-num-lg" id="cal-num">4</span> تحديد اليوم من التقويم
         </div>
-        <div class="time-row-cal">
-          <div class="form-group">
-            <label>من الساعة</label>
-            <select id="startTime" onchange="updateDuration()"></select>
-          </div>
-          <div class="form-group">
-            <label>إلى الساعة</label>
-            <select id="endTime" onchange="updateDuration()"></select>
-          </div>
-        </div>
-
-        <div class="duration-info" id="durationInfo"></div>
 
         <div class="repeat-option">
           <input type="checkbox" id="repeatWeekly">
@@ -1837,8 +1954,8 @@
 
         <div class="calendar-container-block">
             <div class="selected-day-banner">
-              <span class="title"><span class="step-num-lg" id="cal-num">8</span> تحديد اليوم</span>
-              <span class="day-badge" id="selectedDayLabel">اليوم المحدد</span>
+              <span class="title">📅 اليوم المحدد</span>
+              <span class="day-badge" id="selectedDayLabel">اليوم</span>
             </div>
 
             <div class="calendar-header">
@@ -1956,6 +2073,74 @@
   };
 
   // ==========================================
+  // 🔒 تحميل البيانات الثابتة من mester1
+  // ==========================================
+  window._fixedData = null;
+
+  function loadFixedScheduleData() {
+      const raw = localStorage.getItem('schedule_fixed_data');
+      if (!raw) {
+          console.warn('لا توجد بيانات ثابتة في localStorage');
+          return false;
+      }
+      
+      try {
+          const fd = JSON.parse(raw);
+          if (!fd || (!fd.groupName && !fd.teacherName)) {
+              console.warn('البيانات الثابتة فارغة');
+              return false;
+          }
+          
+          // ✅ نعبّي الحقول المخفية
+          document.getElementById('group-name').value = fd.groupName || '';
+          document.getElementById('center-name').value = fd.centerName || '';
+          document.getElementById('teacher-name').value = fd.teacherName || '';
+          document.getElementById('students-count').value = fd.studentsCount || '20';
+          document.getElementById('startTime').value = fd.startTime || '';
+          document.getElementById('endTime').value = fd.endTime || '';
+          
+          // ✅ نحفظ نسخة للاستخدام السريع
+          window._fixedData = fd;
+          
+          // ✅ نعرض كارت المعاينة
+          showFixedDataPreview(fd);
+          
+          return true;
+      } catch(e) {
+          console.error('فشل تحميل البيانات الثابتة:', e);
+          return false;
+      }
+  }
+
+  function showFixedDataPreview(fd) {
+      const card = document.getElementById('fixedDataPreviewCard');
+      if (!card) return;
+      
+      const fmtTime = (v) => {
+          if (!v) return '-';
+          const [h, m] = v.split(':').map(Number);
+          const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+          return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
+      };
+      
+      document.getElementById('fp-group-name').textContent = fd.groupName || '-';
+      document.getElementById('fp-teacher-name').textContent = fd.teacherName || '-';
+      document.getElementById('fp-students-count').textContent = (fd.studentsCount || '20') + ' طالب';
+      document.getElementById('fp-start-time').textContent = fmtTime(fd.startTime);
+      document.getElementById('fp-end-time').textContent = fmtTime(fd.endTime);
+      
+      const centerItem = document.getElementById('fp-center-item');
+      if (fd.centerName) {
+          document.getElementById('fp-center-name').textContent = fd.centerName;
+          centerItem.style.display = 'flex';
+      } else {
+          centerItem.style.display = 'none';
+      }
+      
+      card.style.display = 'block';
+  }
+
+  // ==========================================
   // 🗺 الشارع
   // ==========================================
   async function getStreetName(lat, lng) {
@@ -1975,35 +2160,19 @@
 
   window.toggleCenterNameField = function() {
       const locationValue = document.querySelector('input[name="location"]:checked').value;
-      const centerGroup = document.getElementById('center-name-group');
-      const centerInput = document.getElementById('center-name');
-      const teacherLabel = document.getElementById('teacher-name-group').querySelector('label');
-      const teacherInput = document.getElementById('teacher-name');
+      const fixedData = window._fixedData || {};
       
-      if (locationValue === 'السنتر') {
-          centerGroup.style.display = 'block';
-          centerInput.required = true;
-          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">3</span> اسم المستر';
-          teacherInput.placeholder = 'اسمك';
-          document.getElementById('students-count-num').textContent = '4';
-          document.getElementById('gender-num').textContent = '5';
-          document.getElementById('location-num').textContent = '6';
-          document.getElementById('map-num').textContent = '7';
-          document.getElementById('time-num').textContent = '8';
-          document.getElementById('cal-num').textContent = '9';
-      } else {
-          centerGroup.style.display = 'none';
-          centerInput.required = false;
-          centerInput.value = '';
-          teacherLabel.innerHTML = '<span class="step-num" id="teacher-step-num">2</span> اسم المستر / السنتر';
-          teacherInput.placeholder = 'اسمك أو اسم المركز';
-          document.getElementById('students-count-num').textContent = '3';
-          document.getElementById('gender-num').textContent = '4';
-          document.getElementById('location-num').textContent = '5';
-          document.getElementById('map-num').textContent = '6';
-          document.getElementById('time-num').textContent = '7';
-          document.getElementById('cal-num').textContent = '8';
+      // ✅ لو المستخدم اختار "السنتر" ولازم يبقى فيه اسم سنتر
+      if (locationValue === 'السنتر' && !fixedData.centerName) {
+          // نعرض تحذير بسيط
+          console.warn('⚠️ لا يوجد اسم سنتر محفوظ، لكن تم اختيار "السنتر"');
       }
+      
+      // ✅ نحدّث أرقام الخطوات
+      document.getElementById('gender-num').textContent = '1';
+      document.getElementById('location-num').textContent = '2';
+      document.getElementById('map-num').textContent = '3';
+      document.getElementById('cal-num').textContent = '4';
   };
 
   // ==========================================
@@ -2159,8 +2328,6 @@
   }
 
   function populateTimeSelects() {
-    buildTimeOptions(document.getElementById('startTime'));
-    buildTimeOptions(document.getElementById('endTime'));
     buildTimeOptions(document.getElementById('editStart'));
     buildTimeOptions(document.getElementById('editEnd'));
   }
@@ -2186,27 +2353,6 @@
     if (mins > 0) txt += `${mins}د`;
     return txt.trim();
   }
-
-  window.updateDuration = function() {
-    const start = document.getElementById('startTime').value;
-    const end = document.getElementById('endTime').value;
-    const info = document.getElementById('durationInfo');
-    if (!start || !end) { info.classList.remove('show'); return; }
-
-    const [sh, sm] = start.split(':').map(Number);
-    const [eh, em] = end.split(':').map(Number);
-    const diff = (eh * 60 + em) - (sh * 60 + sm);
-
-    if (diff <= 0) { info.classList.remove('show'); return; }
-
-    const hours = Math.floor(diff / 60);
-    const mins = diff % 60;
-    let txt = 'المدة: ';
-    if (hours > 0) txt += `${hours} س `;
-    if (mins > 0) txt += `${mins} د`;
-    info.textContent = txt;
-    info.classList.add('show');
-  };
 
   function dateKey(year, month, day) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -2442,22 +2588,27 @@
   };
 
   // ==========================================
-  // 🚀 نشر موعد
+  // 🚀 نشر موعد (يستخدم البيانات الثابتة)
   // ==========================================
   window.publishSingleApptOnline = async function(appt) {
-      const groupName = appt.groupName || document.getElementById('group-name').value.trim();
-      const teacherName = appt.teacherName || document.getElementById('teacher-name').value.trim();
-      const centerName = appt.centerName || document.getElementById('center-name')?.value.trim() || '';
-      const studentsCount = appt.studentsCount || document.getElementById('students-count').value;
-
-      if (!groupName || !teacherName || !studentsCount) {
-          alert('⚠ تأكد من استكمال البيانات.');
+      const fixedData = window._fixedData || {};
+      
+      // ✅ نستخدم البيانات الثابتة أولاً
+      const groupName = fixedData.groupName || appt.groupName || '';
+      const teacherName = fixedData.teacherName || appt.teacherName || '';
+      const centerName = fixedData.centerName || appt.centerName || '';
+      const studentsCount = fixedData.studentsCount || appt.studentsCount || '20';
+      const startTime = fixedData.startTime || appt.start || '';
+      const endTime = fixedData.endTime || appt.end || '';
+      
+      if (!groupName || !teacherName || !startTime || !endTime) {
+          alert('⚠ البيانات الثابتة ناقصة. ارجع لصفحة الجداول وحدّث البيانات.');
           return;
       }
       
       const locationChecked = appt.location || document.querySelector('input[name="location"]:checked').value;
       if (locationChecked === 'السنتر' && !centerName) {
-          alert('⚠ اكتب اسم السنتر.');
+          alert('⚠ اختر مكان آخر (لا يوجد اسم سنتر محفوظ).');
           return;
       }
 
@@ -2509,7 +2660,7 @@
           location, address: street || (gpsLocation ? 'تم التحديد عبر الخريطة' : ''),
           fullAddress: fullAddress || street || 'غير محدد',
           detailedAddress, lat, lng,
-          startTime: appt.start, endTime: appt.end,
+          startTime, endTime,
           daysNames: [dayNames[dayOfWeek]],
           apptType: appt.type,
           date: dateTarget,
@@ -2578,7 +2729,6 @@
 
       let locationDisplay = data.address || data.street || 'غير محدد';
       const detailedAddress = data.detailedAddress || '';
-      const fullAddress = data.fullAddress || '';
       const scheduleNumber = data.scheduleNumber || window.getActiveScheduleInfo().number;
 
       const statusMessageHtml = isVisible 
@@ -2873,6 +3023,9 @@
     window.cancelEdit();
   };
 
+  // ==========================================
+  // ✅ addAppointment (يستخدم البيانات الثابتة)
+  // ==========================================
   window.addAppointment = async function() {
     const phone = localStorage.getItem('current_teacher_phone');
     if (phone) {
@@ -2902,28 +3055,33 @@
         return; 
     }
 
-    const groupName = document.getElementById('group-name').value.trim();
-    const teacherName = document.getElementById('teacher-name').value.trim();
-    const centerName = document.getElementById('center-name')?.value.trim() || '';
-    const locationChecked = document.querySelector('input[name="location"]:checked').value;
-    const studentsCount = document.getElementById('students-count').value;
-    
-    const start = document.getElementById('startTime').value;
-    const end = document.getElementById('endTime').value;
+    // ✅ نستخدم البيانات الثابتة
+    const fixedData = window._fixedData;
+    if (!fixedData || !fixedData.groupName || !fixedData.teacherName || !fixedData.startTime || !fixedData.endTime) {
+        showAddError('البيانات الثابتة ناقصة. ارجع لصفحة الجداول.');
+        return;
+    }
+
+    const start = fixedData.startTime;
+    const end = fixedData.endTime;
     const isRecurring = document.getElementById('repeatWeekly').checked;
+    const locationChecked = document.querySelector('input[name="location"]:checked').value;
 
-    if (!groupName) { showAddError('اكتب اسم المجموعة'); document.getElementById('group-name').focus(); return; }
-    if (locationChecked === 'السنتر' && !centerName) { showAddError('اكتب اسم السنتر'); document.getElementById('center-name').focus(); return; }
-    if (!teacherName) { showAddError('اكتب اسم المستر'); document.getElementById('teacher-name').focus(); return; }
-    if (!studentsCount || studentsCount < 1) { showAddError('حدد العدد'); document.getElementById('students-count').focus(); return; }
-
+    // ✅ التحقق من الموقع فقط
     const gpsLocation = document.getElementById('gps-coords').value;
-    if (!gpsLocation) { showAddError('حدد الموقع'); document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    if (!gpsLocation) { 
+        showAddError('حدد الموقع'); 
+        document.getElementById('custom-gps-btn').scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+        return; 
+    }
 
-    if (!start || !end) { showAddError('اختر الوقت'); return; }
-    if (start >= end) { showAddError('وقت النهاية بعد البداية'); return; }
-    if (!selectedDateKey) { showAddError('حدد يوم من التقويم'); return; }
+    // ✅ التحقق من التاريخ
+    if (!selectedDateKey) { 
+        showAddError('حدد يوم من التقويم'); 
+        return; 
+    }
 
+    // ✅ التحقق من التعارض
     const [y, m, d] = selectedDateKey.split('-').map(Number);
     const dayOfWeek = new Date(y, m - 1, d).getDay();
     const existing = getDayAppointments(y, m - 1, d);
@@ -2935,24 +3093,29 @@
     }
 
     const genderAllowed = document.querySelector('input[name="gender"]:checked').value;
-    const location = locationChecked;
     const subjectData = document.getElementById('fixed-subject').dataset.value || document.getElementById('fixed-subject').textContent;
     const street = document.getElementById('location-text').dataset.street || '';
     const detailedAddress = document.getElementById('detailed-address')?.value.trim() || '';
 
     const newApptObj = { 
-        start, end, groupName, teacherName, centerName,
-        studentsCount, genderAllowed, location, subjectData,
+        start, end,
+        groupName: fixedData.groupName,
+        teacherName: fixedData.teacherName,
+        centerName: fixedData.centerName || '',
+        studentsCount: fixedData.studentsCount || '20',
+        genderAllowed,
+        location: locationChecked,
+        subjectData,
         street, detailedAddress,
-        date: selectedDateKey, dayOfWeek, dayName: dayNames[dayOfWeek],
+        date: selectedDateKey,
+        dayOfWeek,
+        dayName: dayNames[dayOfWeek],
         type: isRecurring ? 'recurring' : 'normal'
     };
 
     await window.publishSingleApptOnline(newApptObj);
     
-    document.getElementById('startTime').value = ''; 
-    document.getElementById('endTime').value = '';
-    document.getElementById('durationInfo').classList.remove('show'); 
+    // ✅ نصفّر الحقول المؤقتة فقط
     document.getElementById('repeatWeekly').checked = false;
     document.getElementById('detailed-address').value = '';
     hideAddError(); 
@@ -2981,6 +3144,13 @@
   // 🚀 التهيئة
   // ==========================================
   function initApp() {
+      // ✅ أول حاجة: نحمّل البيانات الثابتة
+      const hasFixedData = loadFixedScheduleData();
+      
+      if (!hasFixedData) {
+          console.warn('⚠️ لا توجد بيانات ثابتة، جاري عرض تنبيه');
+      }
+      
       initMap();
       setupSwipeCal();
       
