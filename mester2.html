@@ -274,7 +274,7 @@
     .active-schedule-info-bar .btn-back:hover { transform: translateY(-1px); }
 
     /* ========================================== */
-    /* 🔒 كارت البيانات الثابتة مع الحقول المرئية */
+    /* 🔒 كارت البيانات الثابتة */
     /* ========================================== */
     .fixed-data-preview-card {
         background: linear-gradient(160deg, #F0F9FF 0%, #E0F2FE 100%);
@@ -336,7 +336,6 @@
         letter-spacing: 0.3px;
     }
 
-    /* ✅ جسم الحقول المقفولة */
     .fixed-fields-body {
         display: flex;
         flex-direction: column;
@@ -344,9 +343,7 @@
         margin-bottom: 10px;
     }
 
-    .fixed-fields-body .form-group {
-        margin-bottom: 0;
-    }
+    .fixed-fields-body .form-group { margin-bottom: 0; }
 
     .fixed-fields-body .form-group label {
         font-size: 12px;
@@ -364,7 +361,6 @@
         gap: 10px;
     }
 
-    /* 🔒 الحقول المقفولة */
     .locked-field {
         background: linear-gradient(135deg, #FFFFFF, #F0F9FF) !important;
         border: 1px solid #BAE6FD !important;
@@ -419,8 +415,31 @@
     }
     #map { width: 100%; height: 100%; }
 
+    .map-overlay-hint {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #25968b;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        z-index: 500;
+        pointer-events: none;
+        animation: hintPulse 2s ease-in-out infinite;
+        text-align: center;
+        line-height: 1.5;
+    }
+    @keyframes hintPulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+
     /* ========================================== */
-    /* 🏫 الكروت (Gender - Location) */
+    /* 🏫 الكروت */
     /* ========================================== */
     .cards-grid { 
         display: grid; 
@@ -479,7 +498,7 @@
     @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
     /* ========================================== */
-    /* ⏰ Selects */
+    /* 🕐 Selects مع الألوان */
     /* ========================================== */
     .form-group select { 
         width: 100%; 
@@ -508,6 +527,99 @@
         box-shadow: 0 6px 12px rgba(37, 150, 139, 0.15), 0 0 0 3px rgba(37, 150, 139, 0.1); 
     }
 
+    /* 🎨 تحسين قوائم الوقت بألوان حسب الفترة */
+    .time-enhanced-select {
+        background-image: none !important;
+        padding-left: 12px !important;
+        font-weight: 900 !important;
+        transition: all 0.3s ease;
+        text-align: right;
+        direction: rtl;
+    }
+
+    /* 🌙 ساعات الليل المتأخر (12 ص - 5:59 ص) */
+    .time-enhanced-select.period-night {
+        background: linear-gradient(135deg, #1E293B 0%, #334155 100%) !important;
+        color: #E2E8F0 !important;
+        border-color: #1E293B !important;
+        border-top-color: #0F172A !important;
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    }
+    .time-enhanced-select.period-night option {
+        background: #1E293B;
+        color: #E2E8F0;
+        font-weight: 900;
+    }
+
+    /* 🌅 ساعات الصبح (6 ص - 11:59 ص) */
+    .time-enhanced-select.period-morning {
+        background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%) !important;
+        color: #78350F !important;
+        border-color: #FCD34D !important;
+        border-top-color: #F59E0B !important;
+        box-shadow: inset 0 4px 8px rgba(245, 158, 11, 0.15) !important;
+    }
+    .time-enhanced-select.period-morning option {
+        background: #FEF3C7;
+        color: #78350F;
+        font-weight: 900;
+    }
+
+    /* ☀️ ساعات الظهر (12 م - 4:59 م) */
+    .time-enhanced-select.period-afternoon {
+        background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%) !important;
+        color: #7C2D12 !important;
+        border-color: #FB923C !important;
+        border-top-color: #EA580C !important;
+        box-shadow: inset 0 4px 8px rgba(234, 88, 12, 0.15) !important;
+    }
+    .time-enhanced-select.period-afternoon option {
+        background: #FED7AA;
+        color: #7C2D12;
+        font-weight: 900;
+    }
+
+    /* 🌆 ساعات المساء (5 م - 7:59 م) */
+    .time-enhanced-select.period-evening {
+        background: linear-gradient(135deg, #C2410C 0%, #EA580C 100%) !important;
+        color: #FFFFFF !important;
+        border-color: #9A3412 !important;
+        border-top-color: #7C2D12 !important;
+        box-shadow: inset 0 4px 8px rgba(124, 45, 18, 0.3) !important;
+    }
+    .time-enhanced-select.period-evening option {
+        background: #C2410C;
+        color: #FFFFFF;
+        font-weight: 900;
+    }
+
+    /* 🌃 ساعات الليل (8 م - 11:59 م) */
+    .time-enhanced-select.period-late-night {
+        background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 100%) !important;
+        color: #E9D5FF !important;
+        border-color: #3B0764 !important;
+        border-top-color: #2E1065 !important;
+        box-shadow: inset 0 4px 8px rgba(46, 16, 101, 0.4) !important;
+    }
+    .time-enhanced-select.period-late-night option {
+        background: #4C1D95;
+        color: #E9D5FF;
+        font-weight: 900;
+    }
+
+    .time-enhanced-select option:disabled {
+        background: #F1F5F9 !important;
+        color: #94A3B8 !important;
+        text-decoration: line-through;
+        font-weight: 700 !important;
+        opacity: 0.5;
+    }
+
+    .time-enhanced-select:not([class*="period-"]) {
+        background: #f1f5f9 !important;
+        color: var(--text-dark) !important;
+    }
+
     /* ========================================== */
     /* 🕐 الوقت */
     /* ========================================== */
@@ -528,7 +640,9 @@
         gap: 8px; 
         cursor: pointer; 
         margin: 12px 0; 
+        transition: all 0.2s;
     }
+    .repeat-option:hover { background: #d1ebe7; }
     .repeat-option input[type="checkbox"] { 
         width: 20px; 
         height: 20px; 
@@ -544,20 +658,6 @@
         margin: 0; 
         line-height: 1.4;
     }
-    
-    .duration-info { 
-        background: #f8fafc; 
-        border-right: 4px solid var(--primary-teal); 
-        color: var(--dark-teal); 
-        padding: 8px 10px; 
-        border-radius: 6px; 
-        font-size: 12.5px; 
-        font-weight: 900; 
-        margin-top: 10px; 
-        text-align: center; 
-        display: none; 
-    }
-    .duration-info.show { display: block; }
 
     /* ========================================== */
     /* 📍 GPS */
@@ -808,6 +908,30 @@
         box-shadow: inset 0 0 0 2px var(--primary-teal); 
         background: var(--light-teal) !important;
     }
+
+    /* ✅ الأيام المتكررة أسبوعياً */
+    .cell.recurring-cell {
+        background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%) !important;
+        position: relative;
+    }
+    .cell.recurring-cell::before {
+        content: '🔁';
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        font-size: 10px;
+        opacity: 0.7;
+    }
+    .cell.recurring-cell .date-number {
+        background: #8B5CF6;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+    }
+    .cell.recurring-selected-cell {
+        box-shadow: inset 0 0 0 3px #8B5CF6 !important;
+        background: linear-gradient(135deg, #DDD6FE 0%, #C4B5FD 100%) !important;
+    }
+
     .days .badge { 
         position: absolute; 
         bottom: 3px; 
@@ -822,6 +946,9 @@
         display: flex; 
         align-items: center; 
         justify-content: center; 
+    }
+    .days .recurring-badge {
+        background: #8B5CF6;
     }
     .swipe-hint { 
         text-align: center; 
@@ -1869,7 +1996,7 @@
           <div id="fixed-subject" class="fixed-subject-box">جاري جلب المادة...</div>
         </div>
 
-        <!-- 🔒 كارت البيانات الثابتة مع الحقول المرئية -->
+        <!-- 🔒 كارت البيانات الثابتة -->
         <div id="fixedDataPreviewCard" class="fixed-data-preview-card" style="display:none;">
             <div class="fixed-preview-header">
                 <span class="fixed-preview-icon">🔒</span>
@@ -1934,16 +2061,19 @@
         </div>
         
         <div class="form-group full-width">
-          <label><span class="step-num" id="map-num">3</span> الموقع الجغرافي</label>
+          <label><span class="step-num" id="map-num">3</span> الموقع الجغرافي — <span style="color: #25968b; font-size: 12px;">اضغط على "📍 اضغط للتحديد" أو حدد من الخريطة</span></label>
           <div id="map-container">
             <div id="map"></div>
+            <div class="map-overlay-hint" id="mapOverlayHint">
+              👇 اضغط على "📍 اضغط للتحديد"<br>أو حدد موقعك على الخريطة
+            </div>
           </div>
           
           <div style="margin-top: 8px;">
-              <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 تحديد موقعي بدقة</button>
+              <button class="btn-gps" id="custom-gps-btn" type="button" onclick="getLocation(event)">📍 اضغط للتحديد</button>
               <input type="hidden" id="gps-coords" value="">
           </div>
-          <div id="location-text" style="color: var(--text-gray); font-size: 12.5px; font-weight: 900; margin-top: 8px; text-align: center; word-break: break-word;">حدد الموقع من خلال الخريطة أو الزر</div>
+          <div id="location-text" style="color: var(--text-gray); font-size: 12.5px; font-weight: 900; margin-top: 8px; text-align: center; word-break: break-word;">لم يتم تحديد الموقع بعد</div>
 
           <div class="detailed-address-box">
               <div class="label-row">
@@ -1970,8 +2100,8 @@
         </div>
 
         <div class="repeat-option">
-          <input type="checkbox" id="repeatWeekly">
-          <label for="repeatWeekly">تكرار أسبوعي كل <span id="repeatDayName">...</span></label>
+          <input type="checkbox" id="repeatWeekly" onchange="handleRepeatChange()">
+          <label for="repeatWeekly">🔁 تكرار أسبوعي كل <span id="repeatDayName">...</span> (تحديد تلقائي لكل الأسابيع القادمة)</label>
         </div>
 
         <div class="calendar-container-block">
@@ -2039,16 +2169,16 @@
       <div class="time-row-cal">
         <div class="form-group">
           <label>من الساعة</label>
-          <select id="editStart"></select>
+          <select id="editStart" class="time-enhanced-select"></select>
         </div>
         <div class="form-group">
           <label>إلى الساعة</label>
-          <select id="editEnd"></select>
+          <select id="editEnd" class="time-enhanced-select"></select>
         </div>
       </div>
       <div class="repeat-option" style="margin-top: 5px; margin-bottom: 12px;">
         <input type="checkbox" id="editRepeatWeekly">
-        <label for="editRepeatWeekly">تكرار أسبوعي</label>
+        <label for="editRepeatWeekly">🔁 تكرار أسبوعي</label>
       </div>
       <button class="btn-add" style="margin-top: 0;" onclick="saveEdit()">حفظ التعديل</button>
       <button class="btn-cancel" onclick="cancelEdit()">إلغاء</button>
@@ -2095,7 +2225,7 @@
   };
 
   // ==========================================
-  // 🔒 تحميل البيانات الثابتة من mester1
+  // 🔒 تحميل البيانات الثابتة
   // ==========================================
   window._fixedData = null;
 
@@ -2120,14 +2250,12 @@
               return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
           };
           
-          // ✅ نعبّي الحقول المرئية (disabled)
           document.getElementById('group-name').value = fd.groupName || '';
           document.getElementById('teacher-name').value = fd.teacherName || '';
           document.getElementById('students-count').value = (fd.studentsCount || '20') + ' طالب';
           document.getElementById('startTime').value = fmtTime(fd.startTime);
           document.getElementById('endTime').value = fmtTime(fd.endTime);
           
-          // ✅ حقل السنتر: نعرضه لو موجود
           const centerGroup = document.getElementById('center-name-group-display');
           if (fd.centerName) {
               document.getElementById('center-name').value = fd.centerName;
@@ -2136,7 +2264,6 @@
               if (centerGroup) centerGroup.style.display = 'none';
           }
           
-          // ✅ نحفظ نسخة للاستخدام عند النشر
           window._fixedData = {
               groupName: fd.groupName || '',
               centerName: fd.centerName || '',
@@ -2146,7 +2273,6 @@
               endTime: fd.endTime || ''
           };
           
-          // ✅ نظهر الكارت
           const card = document.getElementById('fixedDataPreviewCard');
           if (card) card.style.display = 'block';
           
@@ -2224,11 +2350,22 @@
       });
   }
 
+  function hideMapHint() {
+      const hint = document.getElementById('mapOverlayHint');
+      if (hint) {
+          hint.style.transition = 'opacity 0.3s ease';
+          hint.style.opacity = '0';
+          setTimeout(() => hint.remove(), 300);
+      }
+  }
+
   async function updateLocationInput(lat, lng, showPopup = false) {
       document.getElementById('gps-coords').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
       const txt = document.getElementById('location-text');
       txt.textContent = `⏳ جاري تحديد الشارع...`;
       txt.style.color = '#d97706';
+      
+      hideMapHint();
       
       const street = await getStreetName(lat, lng);
       txt.dataset.street = street || '';
@@ -2278,6 +2415,8 @@
                       marker.setLatLng([lat, lng]);
                       map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
                       
+                      hideMapHint();
+                      
                       const street = await getStreetName(lat, lng);
                       textDisplay.dataset.street = street || '';
                       
@@ -2320,6 +2459,7 @@
   let selectedDateKey = null;
   let editingAppt = null;
   let isAnimating = false;
+  let isRepeatWeekly = false; // ✅ وضع التكرار الأسبوعي
 
   window.onlineAppointments = {};
   window.onlineRecurring = {};
@@ -2336,14 +2476,115 @@
     }
   }
 
-  function buildTimeOptions(selectEl) {
-    selectEl.innerHTML = '<option value="">-- اختر --</option>';
-    TIME_SLOTS.forEach(slot => { selectEl.innerHTML += `<option value="${slot.value}">${slot.label}</option>`; });
+  // 🎨 تحديد الفترة الزمنية
+  function getTimePeriod(hour) {
+      if (hour >= 0 && hour < 6) return 'night';
+      if (hour >= 6 && hour < 12) return 'morning';
+      if (hour >= 12 && hour < 17) return 'afternoon';
+      if (hour >= 17 && hour < 20) return 'evening';
+      return 'late-night';
+  }
+
+  function getTimePeriodInfo(hour) {
+      const period = getTimePeriod(hour);
+      const info = {
+          'night':       { emoji: '🌙', label: 'ليل',  class: 'night' },
+          'morning':     { emoji: '🌅', label: 'صبح',  class: 'morning' },
+          'afternoon':   { emoji: '☀️', label: 'ظهر',  class: 'afternoon' },
+          'evening':     { emoji: '🌆', label: 'مساء', class: 'evening' },
+          'late-night':  { emoji: '🌃', label: 'ليل',  class: 'late-night' }
+      };
+      return { period, ...info[period] };
+  }
+
+  function buildTimeOptions(selectEl, options = {}) {
+      const { 
+          isEndTime = false,
+          startTimeValue = ''
+      } = options;
+      
+      selectEl.innerHTML = '<option value="">-- اختر --</option>';
+      
+      let minMinutes = -1;
+      if (isEndTime && startTimeValue) {
+          const [sh, sm] = startTimeValue.split(':').map(Number);
+          minMinutes = sh * 60 + sm;
+      }
+      
+      TIME_SLOTS.forEach(slot => {
+          const [h, m] = slot.value.split(':').map(Number);
+          const slotMinutes = h * 60 + m;
+          const periodInfo = getTimePeriodInfo(h);
+          
+          const opt = document.createElement('option');
+          opt.value = slot.value;
+          opt.textContent = `${periodInfo.emoji} ${slot.label}`;
+          opt.classList.add(`period-${periodInfo.class}`);
+          
+          if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
+              opt.disabled = true;
+              opt.textContent = `🔒 ${slot.label}`;
+              opt.style.textDecoration = 'line-through';
+              opt.style.opacity = '0.5';
+          }
+          
+          selectEl.appendChild(opt);
+      });
+      
+      updateSelectColor(selectEl);
+  }
+
+  function updateSelectColor(selectEl) {
+      selectEl.classList.remove('period-night', 'period-morning', 'period-afternoon', 'period-evening', 'period-late-night');
+      
+      const value = selectEl.value;
+      if (!value) return;
+      
+      const [h] = value.split(':').map(Number);
+      const period = getTimePeriod(h);
+      selectEl.classList.add(`period-${period}`);
   }
 
   function populateTimeSelects() {
-    buildTimeOptions(document.getElementById('editStart'));
-    buildTimeOptions(document.getElementById('editEnd'));
+      buildTimeOptions(document.getElementById('editStart'));
+      buildTimeOptions(document.getElementById('editEnd'));
+      setupTimeSelectEvents();
+  }
+
+  function setupTimeSelectEvents() {
+      const editStart = document.getElementById('editStart');
+      const editEnd = document.getElementById('editEnd');
+      
+      if (editStart && !editStart.dataset.eventsSetup) {
+          editStart.dataset.eventsSetup = '1';
+          editStart.addEventListener('change', function() {
+              updateSelectColor(this);
+              if (editEnd) {
+                  const currentEndValue = editEnd.value;
+                  buildTimeOptions(editEnd, {
+                      isEndTime: true,
+                      startTimeValue: this.value
+                  });
+                  if (currentEndValue) {
+                      const opt = Array.from(editEnd.options).find(o => o.value === currentEndValue && !o.disabled);
+                      if (opt) {
+                          editEnd.value = currentEndValue;
+                          updateSelectColor(editEnd);
+                      } else {
+                          editEnd.value = '';
+                          updateSelectColor(editEnd);
+                      }
+                  }
+              }
+          });
+      }
+      
+      if (editEnd && !editEnd.dataset.eventsSetup) {
+          editEnd.dataset.eventsSetup = '1';
+          editEnd.addEventListener('change', function() {
+              updateSelectColor(this);
+          });
+      }
   }
 
   function formatTime(value) {
@@ -2409,6 +2650,29 @@
     if (count === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
   }
 
+  // ✅ تغيير حالة التكرار الأسبوعي
+  window.handleRepeatChange = function() {
+      isRepeatWeekly = document.getElementById('repeatWeekly').checked;
+      renderCalendar();
+      
+      if (isRepeatWeekly && selectedDateKey) {
+          const [y, m, d] = selectedDateKey.split('-').map(Number);
+          const dayOfWeek = new Date(y, m - 1, d).getDay();
+          console.log(`🔁 تم تفعيل التكرار الأسبوعي - كل ${dayNames[dayOfWeek]}`);
+      }
+  };
+
+  // ✅ التحقق لو اليوم ضمن التكرار الأسبوعي المحدد
+  function isRecurringDay(cellYear, cellMonth, cellDate) {
+      if (!isRepeatWeekly || !selectedDateKey) return false;
+      
+      const [sy, sm, sd] = selectedDateKey.split('-').map(Number);
+      const selectedDayOfWeek = new Date(sy, sm - 1, sd).getDay();
+      const cellDayOfWeek = new Date(cellYear, cellMonth, cellDate).getDay();
+      
+      return cellDayOfWeek === selectedDayOfWeek;
+  }
+
   function renderCalendar() {
     updateTitle();
     const year = currentDate.getFullYear();
@@ -2456,6 +2720,13 @@
       const dayAppts = getDayAppointments(cellYear, cellMonth, cellDate);
       const totalCount = dayAppts.length;
 
+      // ✅ التحقق لو اليوم ضمن التكرار الأسبوعي
+      const isRecur = isRecurringDay(cellYear, cellMonth, cellDate);
+      
+      if (isRecur && !dayEl.classList.contains('out-of-month')) {
+          dayEl.classList.add('recurring-cell');
+      }
+
       if (totalCount > 0) {
         const badge = document.createElement('span');
         badge.classList.add('badge');
@@ -2466,7 +2737,10 @@
       if (thisDate.getTime() < today.getTime()) {
           dayEl.classList.add('past-cell');
       } else {
-          if (selectedDateKey === key) dayEl.classList.add('selected-cell');
+          if (selectedDateKey === key) {
+              dayEl.classList.add('selected-cell');
+              if (isRecur) dayEl.classList.add('recurring-selected-cell');
+          }
           dayEl.onclick = () => selectDay(cellYear, cellMonth, cellDate);
       }
 
@@ -2602,7 +2876,7 @@
   };
 
   // ==========================================
-  // 🚀 نشر موعد (يستخدم البيانات الثابتة)
+  // 🚀 نشر موعد
   // ==========================================
   window.publishSingleApptOnline = async function(appt) {
       const fixedData = window._fixedData || {};
@@ -2737,7 +3011,7 @@
       const isVisible = (data.isActive !== undefined) ? data.isActive : (data.isVisible !== undefined ? data.isVisible : true);
       
       let apptDetailsHtml = appt.apptType === 'recurring' || appt.type === 'recurring'
-          ? `<strong>تكرار أسبوعي كل ${dayNameStr}:</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`
+          ? `<strong>🔁 تكرار أسبوعي كل ${dayNameStr}:</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`
           : `<strong>يوم ${appt.date} (${dayNameStr}):</strong><br>من ${formatTime(appt.startTime || appt.start)} إلى ${formatTime(appt.endTime || appt.end)}`;
 
       let locationDisplay = data.address || data.street || 'غير محدد';
@@ -2993,8 +3267,24 @@
 
   window.startEdit = function(appt) {
     editingAppt = { ...appt };
-    document.getElementById('editStart').value = appt.startTime || appt.start; 
-    document.getElementById('editEnd').value = appt.endTime || appt.end;
+    const startVal = appt.startTime || appt.start;
+    const endVal = appt.endTime || appt.end;
+    
+    const editStart = document.getElementById('editStart');
+    const editEnd = document.getElementById('editEnd');
+    
+    buildTimeOptions(editStart);
+    buildTimeOptions(editEnd, {
+        isEndTime: true,
+        startTimeValue: startVal
+    });
+    
+    editStart.value = startVal;
+    updateSelectColor(editStart);
+    
+    editEnd.value = endVal;
+    updateSelectColor(editEnd);
+    
     const isRec = appt.appointment ? appt.appointment.type === 'recurring' : appt.type === 'recurring';
     document.getElementById('editRepeatWeekly').checked = isRec;
     document.getElementById('editErrorMsg').classList.remove('show');
@@ -3125,8 +3415,10 @@
     await window.publishSingleApptOnline(newApptObj);
     
     document.getElementById('repeatWeekly').checked = false;
+    isRepeatWeekly = false;
     document.getElementById('detailed-address').value = '';
     hideAddError(); 
+    renderCalendar();
 
     setTimeout(() => {
         document.getElementById('allSummarySection').scrollIntoView({ behavior: 'smooth' });
