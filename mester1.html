@@ -447,11 +447,13 @@
             color: #78350F !important;
             font-weight: 900 !important;
         }
+        /* 🔒 الأوقات المقفولة: تظهر بخط عليها + لون رمادي */
         select.smart-time-select option.smart-invalid {
             background: #F1F5F9 !important;
             color: #94A3B8 !important;
             text-decoration: line-through;
             opacity: 0.5;
+            font-weight: 700 !important;
         }
 
         /* ========================================================== */
@@ -1427,6 +1429,10 @@
         // ==========================================================
         // 🧠 بناء خيارات الوقت بذكاء
         // ==========================================================
+        // ✅ التعديل الجديد:
+        //    - الأوقات غير الصالحة: تظهر معطلة (disabled) + 🔒 + خط عليها
+        //    - الأوقات الصالحة: تظهر مع المدة + أول وقت صالح موسوم بـ ⭐
+        // ==========================================================
         function buildSmartTimeOptions(selectEl, options = {}) {
             const {
                 isEndTime = false,
@@ -1475,12 +1481,11 @@
                 }
 
                 if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
-                    // 🔒 وقت غير صالح → معطل ومخفي
-                    opt.textContent = `🔒 ${slot.label} (قبل وقت البداية)`;
+                    // 🔒 وقت غير صالح → يظهر لكن معطل (disabled) + 🔒 + خط عليها
+                    opt.textContent = `🔒 ${slot.label} — غير متاح`;
                     opt.disabled = true;
-                    opt.hidden = true;
-                    opt.style.display = 'none';
                     opt.classList.add('smart-invalid');
+                    // ✅ لا نستخدم hidden أو display:none — الأرقام تظهر لكنها مقفولة
                 } else if (isEndTime && slot.value === firstValidValue) {
                     // ⭐ أول وقت صالح → موصى به
                     opt.textContent = `⭐ ${slot.label}${durationText} — موصى به`;
@@ -1562,24 +1567,12 @@
                 });
 
                 // ✅ لو وقت النهاية السابق غير صالح → يتم اختيار أول وقت صالح تلقائياً
-                // (buildSmartTimeOptions تفعل هذا تلقائياً)
-                // لكن نتحقق لو الوقت السابق كان موجود وغير صالح → نعرض تنبيه بسيط
                 if (currentEnd) {
                     const diff = calcMinutesDiffFG(this.value, currentEnd);
                     if (diff <= 0) {
-                        // تنبيه بسيط
-                        const oldText = endSel.value
-                            ? `تم اختيار ${formatTimeLabelFG(endSel.value)} تلقائياً`
-                            : 'اختر وقت النهاية';
-                        console.log(`⚠️ وقت النهاية السابق كان قبل البداية — ${oldText}`);
+                        console.log(`⚠️ وقت النهاية السابق كان قبل البداية — تم اختيار ${formatTimeLabelFG(endSel.value)} تلقائياً`);
                     }
                 }
-            });
-
-            // عند تغيير وقت النهاية: لا نحتاج لفعل شيء
-            // لكن ممكن نحفظ في localStorage
-            endSel.addEventListener('change', function() {
-                console.log(`✅ وقت النهاية: ${formatTimeLabelFG(this.value)}`);
             });
         }
 
