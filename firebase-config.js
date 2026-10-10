@@ -30,9 +30,6 @@ try {
     console.warn('⚠️ فشل تهيئة Auth (تم تجاهله):', e);
 }
 
-// ✅ analytics معطّل عشان ما يعلّقش الصفحة
-const analytics = null;
-
 // ============ دوال المعلمين ============
 export async function saveTeacher(teacher) {
     await setDoc(doc(db, "teachers", teacher.phone), {
