@@ -432,6 +432,29 @@
         }
 
         /* ========================================================== */
+        /* ✅ Smart Time Select Styles */
+        /* ========================================================== */
+        select.smart-time-select {
+            transition: all 0.3s ease;
+        }
+        select.smart-time-select option.smart-valid {
+            background: linear-gradient(135deg, #D1FAE5, #A7F3D0) !important;
+            color: #065F46 !important;
+            font-weight: 900 !important;
+        }
+        select.smart-time-select option.smart-recommended {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A) !important;
+            color: #78350F !important;
+            font-weight: 900 !important;
+        }
+        select.smart-time-select option.smart-invalid {
+            background: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        /* ========================================================== */
         /* 🔢 كارت كل جدول */
         /* ========================================================== */
         .schedule-item-card {
@@ -540,7 +563,6 @@
             border: 1px solid #34D399;
         }
 
-        /* ✅ البيانات الثابتة في كارت الجدول */
         .fixed-data-line {
             display: flex;
             flex-wrap: wrap;
@@ -1171,13 +1193,13 @@
                     </div>
                     <div class="form-group">
                         <label>⏰ من الساعة</label>
-                        <select id="fg-start-time" class="form-control"></select>
+                        <select id="fg-start-time" class="form-control smart-time-select"></select>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>⏰ إلى الساعة</label>
-                    <select id="fg-end-time" class="form-control"></select>
+                    <select id="fg-end-time" class="form-control smart-time-select"></select>
                 </div>
             </div>
 
@@ -1370,7 +1392,7 @@
         }
 
         // ==========================================================
-        // ✅ بيانات المجموعة الثابتة
+        // ✅ بيانات المجموعة الثابتة - مع منطق ذكي للوقت
         // ==========================================================
         const TIME_SLOTS_FG = [];
         for (let h = 0; h < 24; h++) {
@@ -1384,27 +1406,188 @@
             }
         }
 
-        function populateFixedGroupTimeSelects() {
+        // 🧠 حساب فرق الدقائق
+        function calcMinutesDiffFG(startVal, endVal) {
+            if (!startVal || !endVal) return 0;
+            const [sh, sm] = startVal.split(':').map(Number);
+            const [eh, em] = endVal.split(':').map(Number);
+            return (eh * 60 + em) - (sh * 60 + sm);
+        }
+
+        function formatDurationFG(minutes) {
+            if (minutes <= 0) return '';
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            let txt = '';
+            if (h > 0) txt += `${h}س `;
+            if (m > 0) txt += `${m}د`;
+            return txt.trim();
+        }
+
+        // ==========================================================
+        // 🧠 بناء خيارات الوقت بذكاء
+        // ==========================================================
+        function buildSmartTimeOptions(selectEl, options = {}) {
+            const {
+                isEndTime = false,
+                startTimeValue = ''
+            } = options;
+
+            const previousValue = selectEl.value;
+            selectEl.innerHTML = '';
+
+            // ➕ placeholder
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- اختر --';
+            selectEl.appendChild(placeholder);
+
+            let minMinutes = -1;
+            if (isEndTime && startTimeValue) {
+                const [sh, sm] = startTimeValue.split(':').map(Number);
+                minMinutes = sh * 60 + sm;
+            }
+
+            // 🔍 أول وقت صالح
+            let firstValidValue = null;
+            if (isEndTime && minMinutes >= 0) {
+                const validSlot = TIME_SLOTS_FG.find(slot => {
+                    const [h, m] = slot.value.split(':').map(Number);
+                    return (h * 60 + m) > minMinutes;
+                });
+                if (validSlot) firstValidValue = validSlot.value;
+            }
+
+            TIME_SLOTS_FG.forEach(slot => {
+                const [h, m] = slot.value.split(':').map(Number);
+                const slotMinutes = h * 60 + m;
+
+                const opt = document.createElement('option');
+                opt.value = slot.value;
+
+                // 🧠 حساب المدة
+                let durationText = '';
+                if (isEndTime && minMinutes >= 0) {
+                    const diff = slotMinutes - minMinutes;
+                    if (diff > 0) {
+                        durationText = ` (⏱ ${formatDurationFG(diff)})`;
+                    }
+                }
+
+                if (isEndTime && minMinutes >= 0 && slotMinutes <= minMinutes) {
+                    // 🔒 وقت غير صالح → معطل ومخفي
+                    opt.textContent = `🔒 ${slot.label} (قبل وقت البداية)`;
+                    opt.disabled = true;
+                    opt.hidden = true;
+                    opt.style.display = 'none';
+                    opt.classList.add('smart-invalid');
+                } else if (isEndTime && slot.value === firstValidValue) {
+                    // ⭐ أول وقت صالح → موصى به
+                    opt.textContent = `⭐ ${slot.label}${durationText} — موصى به`;
+                    opt.classList.add('smart-recommended');
+                } else if (isEndTime && minMinutes >= 0) {
+                    // ✅ وقت صالح
+                    opt.textContent = `${slot.label}${durationText}`;
+                    opt.classList.add('smart-valid');
+                } else {
+                    // ⏰ قائمة البداية: كل الأوقات طبيعية
+                    opt.textContent = slot.label;
+                }
+
+                selectEl.appendChild(opt);
+            });
+
+            // ✅ استرجاع أو اختيار تلقائي
+            if (previousValue) {
+                const prevOpt = Array.from(selectEl.options).find(
+                    o => o.value === previousValue && !o.disabled
+                );
+                if (prevOpt) {
+                    selectEl.value = previousValue;
+                } else if (isEndTime && firstValidValue) {
+                    // 🧠 اختيار أول وقت صالح تلقائياً
+                    selectEl.value = firstValidValue;
+                }
+            }
+        }
+
+        function populateFixedGroupTimeSelects(preserveStart = null, preserveEnd = null) {
             const startSel = document.getElementById('fg-start-time');
             const endSel = document.getElementById('fg-end-time');
             if (!startSel || !endSel) return;
-            
-            const currentStart = startSel.value;
-            const currentEnd = endSel.value;
-            
-            const buildOptions = (sel, selectedVal) => {
-                sel.innerHTML = '<option value="">-- اختر --</option>';
-                TIME_SLOTS_FG.forEach(slot => {
-                    const opt = document.createElement('option');
-                    opt.value = slot.value;
-                    opt.textContent = slot.label;
-                    if (selectedVal && slot.value === selectedVal) opt.selected = true;
-                    sel.appendChild(opt);
+
+            const currentStart = preserveStart !== null ? preserveStart : startSel.value;
+            const currentEnd = preserveEnd !== null ? preserveEnd : endSel.value;
+
+            // 1️⃣ بناء قائمة البداية (كل الأوقات متاحة)
+            buildSmartTimeOptions(startSel, { isEndTime: false });
+            if (currentStart) {
+                startSel.value = currentStart;
+            }
+
+            // 2️⃣ بناء قائمة النهاية بناءً على البداية (ذكي!)
+            buildSmartTimeOptions(endSel, {
+                isEndTime: true,
+                startTimeValue: startSel.value
+            });
+            if (currentEnd) {
+                // استرجاع النهاية لو ما زالت صالحة
+                const endOpt = Array.from(endSel.options).find(
+                    o => o.value === currentEnd && !o.disabled
+                );
+                if (endOpt) endSel.value = currentEnd;
+            }
+        }
+
+        // ==========================================================
+        // 🎯 ربط الأحداث: عند تغيير وقت البداية → تحديث النهاية
+        // ==========================================================
+        function setupFixedGroupTimeEvents() {
+            const startSel = document.getElementById('fg-start-time');
+            const endSel = document.getElementById('fg-end-time');
+            if (!startSel || !endSel) return;
+
+            // نستخدم flag لمنع التكرار
+            if (startSel.dataset.smartSetup === '1') return;
+            startSel.dataset.smartSetup = '1';
+            endSel.dataset.smartSetup = '1';
+
+            startSel.addEventListener('change', function() {
+                const currentEnd = endSel.value;
+
+                // 🔁 إعادة بناء خيارات النهاية بذكاء
+                buildSmartTimeOptions(endSel, {
+                    isEndTime: true,
+                    startTimeValue: this.value
                 });
-            };
-            
-            buildOptions(startSel, currentStart);
-            buildOptions(endSel, currentEnd);
+
+                // ✅ لو وقت النهاية السابق غير صالح → يتم اختيار أول وقت صالح تلقائياً
+                // (buildSmartTimeOptions تفعل هذا تلقائياً)
+                // لكن نتحقق لو الوقت السابق كان موجود وغير صالح → نعرض تنبيه بسيط
+                if (currentEnd) {
+                    const diff = calcMinutesDiffFG(this.value, currentEnd);
+                    if (diff <= 0) {
+                        // تنبيه بسيط
+                        const oldText = endSel.value
+                            ? `تم اختيار ${formatTimeLabelFG(endSel.value)} تلقائياً`
+                            : 'اختر وقت النهاية';
+                        console.log(`⚠️ وقت النهاية السابق كان قبل البداية — ${oldText}`);
+                    }
+                }
+            });
+
+            // عند تغيير وقت النهاية: لا نحتاج لفعل شيء
+            // لكن ممكن نحفظ في localStorage
+            endSel.addEventListener('change', function() {
+                console.log(`✅ وقت النهاية: ${formatTimeLabelFG(this.value)}`);
+            });
+        }
+
+        function formatTimeLabelFG(v) {
+            if (!v) return '';
+            const [h, m] = v.split(':').map(Number);
+            const hour12 = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+            return `${hour12}:${String(m).padStart(2, '0')} ${h < 12 ? 'ص' : 'م'}`;
         }
 
         function captureFixedGroupData() {
@@ -1424,11 +1607,12 @@
             document.getElementById('fg-center-name').value = data.centerName || '';
             document.getElementById('fg-teacher-name').value = data.teacherName || '';
             document.getElementById('fg-students-count').value = data.studentsCount || '20';
-            
-            populateFixedGroupTimeSelects();
-            
-            if (data.startTime) document.getElementById('fg-start-time').value = data.startTime;
-            if (data.endTime) document.getElementById('fg-end-time').value = data.endTime;
+
+            // ✅ بناء القوائم مع الحفاظ على القيم
+            populateFixedGroupTimeSelects(
+                data.startTime || null,
+                data.endTime || null
+            );
         }
 
         function clearFixedGroupData() {
@@ -1436,7 +1620,9 @@
             document.getElementById('fg-center-name').value = '';
             document.getElementById('fg-teacher-name').value = '';
             document.getElementById('fg-students-count').value = '20';
-            populateFixedGroupTimeSelects();
+
+            // ✅ إعادة بناء القوائم نظيفة
+            populateFixedGroupTimeSelects(null, null);
         }
 
         function formatTimeLabel(v) {
@@ -1507,7 +1693,6 @@
                     });
                 }
 
-                // ✅ عرض البيانات الثابتة
                 let fixedDataHtml = '';
                 if (sch.fixedGroupData && (sch.fixedGroupData.groupName || sch.fixedGroupData.teacherName)) {
                     const fd = sch.fixedGroupData;
@@ -1557,7 +1742,7 @@
         }
 
         // ==========================================================
-        // ✅ فتح جدول (مع تمرير البيانات الثابتة)
+        // ✅ فتح جدول
         // ==========================================================
         window.openSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
@@ -1565,13 +1750,11 @@
             
             setActiveScheduleId(scheduleId);
             
-            // ✅ نمرر الاختيارات
             const dataCopy = JSON.parse(JSON.stringify(sch.selections));
             localStorage.setItem('teacherSelections', JSON.stringify(dataCopy));
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
             
-            // ✅ نمرر البيانات الثابتة
             const fixedData = sch.fixedGroupData || {};
             localStorage.setItem('schedule_fixed_data', JSON.stringify(fixedData));
             
@@ -1606,7 +1789,7 @@
             buildStagesUI();
             restoreFromSelectionsObject();
             
-            // ✅ نعبّي البيانات الثابتة
+            // ✅ نعبّي البيانات الثابتة (مع القوائم الذكية)
             fillFixedGroupData(sch.fixedGroupData || {});
             
             const bannerText = document.getElementById('editModeBannerText');
@@ -1667,7 +1850,6 @@
             buildStagesUI();
             updateSummary();
             
-            // ✅ نصفّر البيانات الثابتة
             clearFixedGroupData();
             
             const bannerText = document.getElementById('editModeBannerText');
@@ -1698,6 +1880,15 @@
             }
             
             const fixedData = captureFixedGroupData();
+            
+            // ✅ تحقق من الوقت
+            if (fixedData.startTime && fixedData.endTime) {
+                const diff = calcMinutesDiffFG(fixedData.startTime, fixedData.endTime);
+                if (diff <= 0) {
+                    alert('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية');
+                    return null;
+                }
+            }
             
             if (currentEditingScheduleId) {
                 updateSchedule(currentEditingScheduleId, finalData, fixedData);
@@ -1800,7 +1991,10 @@
             document.getElementById('editModeBanner').style.display = 'flex';
             document.getElementById('fixedGroupDataCard').style.display = 'block';
             showStagesUI();
+            
+            // ✅ تهيئة القوائم الذكية + ربط الأحداث
             populateFixedGroupTimeSelects();
+            setupFixedGroupTimeEvents();
         }
 
         window.cancelEditMode = function() {
@@ -2081,7 +2275,6 @@
             localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
             
-            // ✅ نحفظ البيانات الثابتة
             const fixedData = sch.fixedGroupData || {};
             localStorage.setItem('schedule_fixed_data', JSON.stringify(fixedData));
 
@@ -2158,7 +2351,10 @@
             window.setCloudStatus(null, 'جاري الاتصال...');
 
             migrateOldData();
+            
+            // ✅ تهيئة القوائم الذكية + ربط الأحداث
             populateFixedGroupTimeSelects();
+            setupFixedGroupTimeEvents();
 
             subscribeCurriculum((curriculum) => {
                 applyCurriculum(curriculum);
