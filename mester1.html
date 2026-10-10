@@ -161,7 +161,7 @@
         }
 
         /* ========================================================== */
-        /* 🔒 كارت الجداول المحفوظة (متعدد) */
+        /* 🔒 كارت الجداول المحفوظة */
         /* ========================================================== */
         .locked-selection-card {
             background: linear-gradient(160deg, #ECFDF5 0%, #D1FAE5 100%);
@@ -228,45 +228,89 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 14px;
         }
 
-        .locked-card-actions {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
+        /* ========================================================== */
+        /* ➕ كارت إنشاء جدول جديد (منفصل) */
+        /* ========================================================== */
+        .create-schedule-card {
+            background: linear-gradient(160deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 2px dashed #F59E0B;
+            border-radius: 16px;
+            padding: 18px 16px;
+            box-shadow: 0 8px 20px -8px rgba(245, 158, 11, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: lockCardAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+            text-align: center;
+        }
+        .create-schedule-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #F59E0B, #D97706, #F59E0B);
         }
 
-        .locked-btn-continue {
-            background: linear-gradient(135deg, #10B981, #047857);
-            color: #fff;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-family: 'Cairo', sans-serif;
+        .create-schedule-card .create-icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 8px;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .create-schedule-card .create-title {
+            font-size: 16px;
             font-weight: 900;
-            font-size: 14px;
-            cursor: pointer;
+            color: #92400E;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.6);
-            transition: all 0.25s ease;
+            gap: 6px;
         }
-        .locked-btn-continue:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px -4px rgba(16, 185, 129, 0.75);
-        }
-        .locked-btn-continue:active { transform: scale(0.97); }
 
-        .locked-hint {
-            text-align: center;
-            font-size: 11.5px;
+        .create-schedule-card .create-desc {
+            font-size: 12.5px;
             font-weight: 800;
-            color: #065F46;
-            opacity: 0.75;
-            margin-top: 8px;
+            color: #B45309;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            opacity: 0.9;
+        }
+
+        .btn-create-schedule {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: #fff;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 900;
+            font-size: 14.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 18px -4px rgba(245, 158, 11, 0.7);
+            transition: all 0.25s ease;
+            width: 100%;
+            max-width: 320px;
+            letter-spacing: 0.3px;
+        }
+        .btn-create-schedule:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -4px rgba(245, 158, 11, 0.85);
+        }
+        .btn-create-schedule:active { transform: scale(0.97); }
+        .btn-create-schedule .plus-icon {
+            font-size: 18px;
+            font-weight: 900;
         }
 
         /* ========================================================== */
@@ -339,6 +383,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .schedule-item-meta {
@@ -588,19 +633,14 @@
 
         .stage-item#stage-kg .badge-grade { background: var(--kg-color); }
         .stage-item#stage-kg .badge { background: #ad1457; } 
-
         .stage-item#stage-primary .badge-grade { background: var(--primary-color); }
         .stage-item#stage-primary .badge { background: #1b5e20; }
-
         .stage-item#stage-prep .badge-grade { background: var(--prep-color); }
         .stage-item#stage-prep .badge { background: #0d47a1; }
-
         .stage-item#stage-secondary .badge-grade { background: var(--secondary-color); }
         .stage-item#stage-secondary .badge { background: #bf360c; }
-
         .stage-item[data-custom="true"] .badge-grade { background: var(--custom-color); }
         .stage-item[data-custom="true"] .badge { background: #5B21B6; }
-
         #stage-azhar .badge-grade, #stage-azhar_secondary .badge-grade { background: var(--azhar-color); }
         #stage-azhar .badge, #stage-azhar_secondary .badge { background: #047857; }
 
@@ -614,7 +654,6 @@
             align-items: center;
             gap: 3px;
         }
-
         .badge { font-size: 10.5px; padding: 2px 7px; }
 
         .arrow {
@@ -625,7 +664,6 @@
         }
 
         .stage-item.active .arrow { transform: rotate(180deg); }
-        
         #stage-kg.active .arrow { border-top-color: var(--kg-color); }
         #stage-primary.active .arrow { border-top-color: var(--primary-color); }
         #stage-prep.active .arrow { border-top-color: var(--prep-color); }
@@ -703,16 +741,12 @@
 
         #stage-kg .subject-btn:hover { border-color: var(--kg-color); color: var(--kg-color); }
         #stage-kg .subject-btn.selected { background: var(--kg-color); border-color: #ad1457; color: white; }
-
         #stage-primary .subject-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
         #stage-primary .subject-btn.selected { background: var(--primary-color); border-color: #1b5e20; color: white; }
-
         #stage-prep .subject-btn:hover { border-color: var(--prep-color); color: var(--prep-color); }
         #stage-prep .subject-btn.selected { background: var(--prep-color); border-color: #0d47a1; color: white; }
-
         #stage-secondary .subject-btn:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
         #stage-secondary .subject-btn.selected { background: var(--secondary-color); border-color: #bf360c; color: white; }
-
         .stage-item[data-custom="true"] .subject-btn:hover { border-color: var(--custom-color); color: var(--custom-color); }
         .stage-item[data-custom="true"] .subject-btn.selected { background: var(--custom-color); border-color: #5B21B6; color: white; }
         #stage-azhar .subject-btn:hover, #stage-azhar_secondary .subject-btn:hover { border-color: var(--azhar-color); color: var(--azhar-color); }
@@ -729,16 +763,12 @@
 
         #stage-kg .btn-save-inline { background: var(--kg-color); box-shadow: 0 2px 6px rgba(216, 27, 96, 0.2); }
         #stage-kg .btn-save-inline:hover { background: #ad1457; }
-
         #stage-primary .btn-save-inline { background: var(--primary-color); box-shadow: 0 2px 6px rgba(46, 125, 50, 0.2); }
         #stage-primary .btn-save-inline:hover { background: #1b5e20; }
-
         #stage-prep .btn-save-inline { background: var(--prep-color); box-shadow: 0 2px 6px rgba(21, 101, 192, 0.2); }
         #stage-prep .btn-save-inline:hover { background: #0d47a1; }
-
         #stage-secondary .btn-save-inline { background: var(--secondary-color); box-shadow: 0 2px 6px rgba(230, 81, 0, 0.2); }
         #stage-secondary .btn-save-inline:hover { background: #bf360c; }
-
         .stage-item[data-custom="true"] .btn-save-inline { background: var(--custom-color); box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2); }
         .stage-item[data-custom="true"] .btn-save-inline:hover { background: #5B21B6; }
         #stage-azhar .btn-save-inline, #stage-azhar_secondary .btn-save-inline { background: var(--azhar-color); box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2); }
@@ -802,6 +832,8 @@
         @media (max-width: 380px) {
             .grades-grid { grid-template-columns: repeat(2, 1fr); }
             .subjects-grid { grid-template-columns: repeat(2, 1fr); }
+            .schedule-item-actions { grid-template-columns: 1fr 1fr; }
+            .schedule-item-actions .schedule-action-btn.delete { grid-column: span 2; }
         }
     </style>
 </head>
@@ -820,14 +852,14 @@
         <span>تم تحديث المواد من السحابة</span>
     </div>
 
-    <!-- ✅ سكريبت حماية الجهاز + فحص الحظر -->
+    <!-- ✅ سكريبت حماية الجهاز -->
     <script type="module">
         import { checkTeacherDevice, getTeacher, db, doc, updateDoc } from './firebase-config.js';
         
         (async () => {
             const overlay = document.getElementById('securityOverlay');
-            
             const phone = localStorage.getItem('current_teacher_phone');
+            
             if (!phone) {
                 window.location.href = 'teacher-login.html';
                 return;
@@ -869,10 +901,6 @@
                     } 
                     else {
                         localStorage.removeItem('teacher_is_blocked');
-                    }
-                } else {
-                    if (localStorage.getItem('teacher_is_blocked') === 'true') {
-                        isLocked = true;
                     }
                 }
 
@@ -933,7 +961,7 @@
 
     <div class="container">
 
-        <!-- ✅ كارت الجداول المحفوظة (متعدد) -->
+        <!-- ✅ كارت الجداول المحفوظة -->
         <div id="schedulesListCard" class="locked-selection-card" style="display:none;">
             <div class="locked-card-header">
                 <div class="locked-card-title">
@@ -944,17 +972,22 @@
             </div>
 
             <div class="locked-card-body" id="schedulesListBody"></div>
+        </div>
 
-            <div class="locked-card-actions">
-                <button class="locked-btn-continue" onclick="window.createNewSchedule()">
-                    <span>➕</span>
-                    <span>إنشاء جدول جديد</span>
-                </button>
+        <!-- ✅ كارت إنشاء جدول جديد (منفصل) -->
+        <div id="createScheduleCard" class="create-schedule-card" style="display:none;">
+            <span class="create-icon">✨</span>
+            <div class="create-title">
+                <span>🆕</span>
+                <span>عايز تفتح جدول جديد؟</span>
             </div>
-
-            <div class="locked-hint">
-                💡 كل جدول له تخصص ومواعيد مستقلة في صفحة المواعيد
+            <div class="create-desc">
+                اعمل جدول بتخصص مختلف (صف أو مواد تانية) بمواعيد مستقلة تماماً
             </div>
+            <button class="btn-create-schedule" onclick="window.createNewSchedule()">
+                <span class="plus-icon">➕</span>
+                <span>إنشاء جدول جديد</span>
+            </button>
         </div>
 
         <!-- ✅ بانر التعديل -->
@@ -995,14 +1028,8 @@
     </div>
 
     <script type="module">
-        // ==========================================================
-        // ✅ استيراد دوال Firebase
-        // ==========================================================
         import { subscribeCurriculum, DEFAULT_CURRICULUM } from './firebase-config.js';
 
-        // ==========================================================
-        // ✅ 1) حالة السحابة
-        // ==========================================================
         window.setCloudStatus = function(status, text) {
             const badge = document.getElementById('cloudBadge');
             const txt = document.getElementById('cloudText');
@@ -1012,16 +1039,10 @@
             txt.textContent = text;
         };
 
-        // ==========================================================
-        // ✅ 2) هيكل المراحل (ديناميكي)
-        // ==========================================================
         let dynamicStages = [];
         let subjectsData = {};
-
         let selections = {};
         let subjectsOpen = {};
-
-        // ✅ حالة القفل
         let isLocked = false;
         let currentEditingScheduleId = null;
 
@@ -1060,7 +1081,6 @@
 
             allStageIds.forEach(stageId => {
                 const s = curriculum[stageId];
-                
                 let icon = s.icon || null;
                 let cleanName = s.name || stageId;
                 
@@ -1090,12 +1110,10 @@
             });
 
             initSelectionsFromStages();
-            
-            console.log('✅ المراحل المحمّلة:', dynamicStages.map(s => `${s.icon} ${s.name}`));
         }
 
         // ==========================================================
-        // ✅ 3) نظام الجداول المتعددة (LocalStorage)
+        // ✅ نظام الجداول المتعددة
         // ==========================================================
         const SCHEDULES_KEY = 'teacher_schedules_list';
         const ACTIVE_SCHEDULE_KEY = 'active_schedule_id';
@@ -1164,16 +1182,20 @@
         }
 
         // ==========================================================
-        // ✅ 4) عرض قائمة الجداول
+        // ✅ عرض قائمة الجداول
         // ==========================================================
         function renderSchedulesList() {
             const card = document.getElementById('schedulesListCard');
+            const createCard = document.getElementById('createScheduleCard');
             const body = document.getElementById('schedulesListBody');
             const statsBadge = document.getElementById('schedulesStatsBadge');
 
             const schedules = getAllSchedules();
+            
+            // ✅ كارت "إنشاء جدول جديد" يظهر دايمًا لو فيه جدول واحد على الأقل
             if (schedules.length === 0) {
                 card.style.display = 'none';
+                createCard.style.display = 'none';
                 return;
             }
 
@@ -1249,34 +1271,58 @@
 
             statsBadge.textContent = `📋 ${schedules.length} جدول • 📚 ${totalSubjects} مادة`;
             card.style.display = 'block';
+            createCard.style.display = 'block';
         }
 
         // ==========================================================
-        // ✅ 5) دوال تفاعلية للجداول
+        // ✅ فتح جدول (يحفظ البيانات القديمة صح)
         // ==========================================================
         window.openSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
             if (!sch) return;
+            
+            // ✅ نحفظ الجدول النشط
             setActiveScheduleId(scheduleId);
-            localStorage.setItem('teacherSelections', JSON.stringify(sch.selections));
-            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(sch.selections));
+            
+            // ✅ نحفظ الاختيارات بصيغة موحدة لـ mester2
+            const dataCopy = JSON.parse(JSON.stringify(sch.selections));
+            localStorage.setItem('teacherSelections', JSON.stringify(dataCopy));
+            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
+            
+            // ✅ ننقل لـ mester2
             window.location.href = 'mester2.html';
         };
 
+        // ==========================================================
+        // ✅ تعديل جدول (يحفظ البيانات القديمة صح)
+        // ==========================================================
         window.editSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
             if (!sch) return;
+            
             currentEditingScheduleId = scheduleId;
             
-            // نحمّل اختياراته في الواجهة
+            // ✅ نحفظ الجدول النشط
+            setActiveScheduleId(scheduleId);
+            
+            // ✅ نحمّل اختياراته في الواجهة
             selections = {};
             dynamicStages.forEach(stage => {
-                selections[stage.id] = sch.selections[stage.id] 
-                    ? JSON.parse(JSON.stringify(sch.selections[stage.id]))
-                    : { grade: '', subjects: [] };
+                if (sch.selections[stage.id]) {
+                    const stageSel = sch.selections[stage.id];
+                    selections[stage.id] = {
+                        grade: stageSel.grade || '',
+                        subjects: Array.isArray(stageSel.subjects) ? [...stageSel.subjects] : []
+                    };
+                } else {
+                    selections[stage.id] = { grade: '', subjects: [] };
+                }
                 subjectsOpen[stage.id] = false;
             });
+            
+            // ✅ نحفظ نسخة احتياطية
+            localStorage.setItem('edit_backup_' + scheduleId, JSON.stringify(sch.selections));
             
             enterEditMode(true);
             buildStagesUI();
@@ -1286,8 +1332,16 @@
             if (bannerText) bannerText.textContent = `أنت تعدّل الجدول رقم ${sch.number} — اختر صف ومواد ثم احفظ`;
             
             renderSchedulesList();
+            
+            setTimeout(() => {
+                const el = document.getElementById('pageTitle');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 200);
         };
 
+        // ==========================================================
+        // ✅ حذف جدول
+        // ==========================================================
         window.removeSchedule = function(scheduleId) {
             const sch = getScheduleById(scheduleId);
             if (!sch) return;
@@ -1315,14 +1369,19 @@
             }
         };
 
+        // ==========================================================
+        // ✅ إنشاء جدول جديد
+        // ==========================================================
         window.createNewSchedule = function() {
             currentEditingScheduleId = null;
-            // نصفّر الاختيارات
+            
+            // ✅ نصفّر الاختيارات
             selections = {};
             dynamicStages.forEach(stage => {
                 selections[stage.id] = { grade: '', subjects: [] };
                 subjectsOpen[stage.id] = false;
             });
+            
             enterEditMode(true);
             buildStagesUI();
             updateSummary();
@@ -1339,7 +1398,7 @@
         };
 
         // ==========================================================
-        // ✅ 6) حفظ الاختيارات في جدول
+        // ✅ حفظ الاختيارات في جدول
         // ==========================================================
         function saveCurrentSelectionsToSchedule() {
             const finalData = {};
@@ -1365,10 +1424,9 @@
         }
 
         // ==========================================================
-        // ✅ 7) استرجاع من كائن selections
+        // ✅ استرجاع من كائن selections
         // ==========================================================
         function restoreFromSelectionsObject() {
-            // نطبّق الاختيارات على واجهة المراحل
             for (const stageId in selections) {
                 const sel = selections[stageId];
                 if (!sel || !sel.grade || !sel.subjects || sel.subjects.length === 0) continue;
@@ -1378,7 +1436,6 @@
                     .find(b => b.textContent.trim() === sel.grade);
                 if (gradeBtn) {
                     gradeBtn.classList.add('selected');
-                    // نفتح المرحلة
                     const stageEl = document.getElementById(`stage-${stageId}`);
                     if (stageEl) stageEl.classList.add('active');
 
@@ -1398,7 +1455,7 @@
         }
 
         // ==========================================================
-        // ✅ 8) Autosave bar
+        // ✅ Autosave bar
         // ==========================================================
         let autosaveTimer = null;
 
@@ -1412,7 +1469,6 @@
 
         function autoSaveMester1() {
             try {
-                // في وضع التعديل — نحفظ الاختيارات الحالية فقط كـ draft
                 const finalData = {};
                 for (const stageId in selections) {
                     const { grade, subjects } = selections[stageId];
@@ -1428,7 +1484,7 @@
         }
 
         // ==========================================================
-        // ✅ 9) hide/show UI
+        // ✅ hide/show UI
         // ==========================================================
         function hideStagesUI() {
             document.getElementById('stagesContainer').style.display = 'none';
@@ -1449,17 +1505,15 @@
             currentEditingScheduleId = null;
             renderSchedulesList();
             document.getElementById('editModeBanner').style.display = 'none';
-            document.getElementById('schedulesListCard').style.display = 'block';
             hideStagesUI();
-            console.log('🔒 دخل وضع الجداول');
         }
 
         function enterEditMode(skipRestore = false) {
             isLocked = false;
             document.getElementById('schedulesListCard').style.display = 'none';
+            document.getElementById('createScheduleCard').style.display = 'none';
             document.getElementById('editModeBanner').style.display = 'flex';
             showStagesUI();
-            console.log('🔓 دخل وضع التعديل');
         }
 
         window.cancelEditMode = function() {
@@ -1468,7 +1522,6 @@
             if (schedules.length > 0) {
                 enterLockedMode();
             } else {
-                // مفيش جداول — نرجّع الوضع العادي
                 enterEditMode(true);
                 selections = {};
                 dynamicStages.forEach(stage => {
@@ -1483,7 +1536,7 @@
         };
 
         // ==========================================================
-        // ✅ 10) بناء واجهة المراحل
+        // ✅ بناء واجهة المراحل
         // ==========================================================
         function buildStagesUI() {
             const container = document.getElementById('stagesContainer');
@@ -1537,7 +1590,7 @@
         }
 
         // ==========================================================
-        // ✅ 11) التفاعلات
+        // ✅ التفاعلات
         // ==========================================================
         window.toggleStage = function(event, header) {
             header.parentElement.classList.toggle('active');
@@ -1716,7 +1769,7 @@
         }
 
         // ==========================================================
-        // ✅ 12) حفظ نهائي
+        // ✅ حفظ نهائي
         // ==========================================================
         window.saveSelection = function() {
             let total = 0;
@@ -1735,15 +1788,17 @@
             setActiveScheduleId(scheduleId);
             const sch = getScheduleById(scheduleId);
 
-            localStorage.setItem('teacherSelections', JSON.stringify(sch.selections));
-            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(sch.selections));
+            // ✅ نحفظ البيانات بصيغة موحدة
+            const dataCopy = JSON.parse(JSON.stringify(sch.selections));
+            localStorage.setItem('teacherSelections', JSON.stringify(dataCopy));
+            localStorage.setItem(MESTER1_SAVE_KEY, JSON.stringify(dataCopy));
             localStorage.setItem('mester1_is_locked', 'true');
 
             window.location.href = "mester2.html";
         };
 
         // ==========================================================
-        // ✅ 13) تحديث الواجهة عند تغيير المناهج
+        // ✅ تحديث الواجهة عند تغيير المناهج
         // ==========================================================
         function rebuildUIWithPreserve() {
             const backup = JSON.parse(JSON.stringify(selections));
@@ -1782,7 +1837,7 @@
         }
 
         // ==========================================================
-        // ✅ 14) الترحيل من البيانات القديمة
+        // ✅ الترحيل من البيانات القديمة
         // ==========================================================
         function migrateOldData() {
             const oldSelections = localStorage.getItem('mester1_selections') || localStorage.getItem('teacherSelections');
@@ -1791,7 +1846,6 @@
             if (oldSelections && existingSchedules.length === 0) {
                 try {
                     const data = JSON.parse(oldSelections);
-                    // نتأكد إنه فيه مواد
                     let hasData = false;
                     for (const sid in data) {
                         if (data[sid]?.subjects?.length > 0) { hasData = true; break; }
@@ -1799,21 +1853,19 @@
                     if (hasData) {
                         const newSch = addSchedule(data);
                         setActiveScheduleId(newSch.id);
-                        console.log('✅ تم ترحيل البيانات القديمة لجدول رقم 1');
                     }
-                } catch(e) { console.warn('فشل ترحيل البيانات القديمة:', e); }
+                } catch(e) {}
             }
         }
 
         // ==========================================================
-        // ✅ 15) التهيئة
+        // ✅ التهيئة
         // ==========================================================
         let isFirstLoad = true;
 
         window.addEventListener('DOMContentLoaded', () => {
             window.setCloudStatus(null, 'جاري الاتصال...');
 
-            // ترحيل البيانات القديمة أولاً
             migrateOldData();
 
             subscribeCurriculum((curriculum) => {
@@ -1850,7 +1902,6 @@
 
             setTimeout(() => {
                 if (isFirstLoad) {
-                    console.warn('⚠️ تأخر الاتصال بالسحابة، استخدام النسخة الافتراضية');
                     applyCurriculum(DEFAULT_CURRICULUM);
                     buildStagesUI();
                     
@@ -1883,7 +1934,7 @@
         });
     </script>
 
-    <!-- 🔊 صوت ضغط رفيع لكل الأزرار -->
+    <!-- 🔊 صوت ضغط رفيع -->
     <script>
     (function initClickSound() {
         let audioCtx = null;
@@ -1892,93 +1943,63 @@
             if (!audioCtx) {
                 try {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (e) {
-                    return null;
-                }
+                } catch (e) { return null; }
             }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume().catch(() => {});
-            }
+            if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
             return audioCtx;
         }
 
         window.playClick = function(freq = 1800, duration = 0.035, volume = 0.08) {
             const ctx = getCtx();
             if (!ctx) return;
-
             const now = ctx.currentTime;
             const osc = ctx.createOscillator();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, now);
             osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
-
             const gain = ctx.createGain();
             gain.gain.setValueAtTime(0, now);
             gain.gain.linearRampToValueAtTime(volume, now + 0.004);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
             const filter = ctx.createBiquadFilter();
             filter.type = 'highpass';
             filter.frequency.value = 1000;
             filter.Q.value = 0.7;
-
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(ctx.destination);
-
             osc.start(now);
             osc.stop(now + duration + 0.02);
         };
 
         function attachClickSound() {
             const selectors = [
-                '.grade-btn',
-                '.subject-btn',
-                '.stage-header',
-                '.btn-save-inline',
-                '.save-btn',
-                '.step.clickable',
-                '.banner-cancel',
-                '.locked-btn-continue',
-                '.schedule-action-btn',
-                'button:not([disabled])'
+                '.grade-btn', '.subject-btn', '.stage-header', '.btn-save-inline',
+                '.save-btn', '.step.clickable', '.banner-cancel', '.schedule-action-btn',
+                '.btn-create-schedule', 'button:not([disabled])'
             ].join(', ');
 
             document.querySelectorAll(selectors).forEach(el => {
                 if (el.dataset.soundAttached === '1') return;
                 el.dataset.soundAttached = '1';
-
                 el.addEventListener('click', () => {
                     if (el.disabled) return;
-
-                    if (el.classList.contains('subject-btn')) {
-                        window.playClick(2000, 0.035, 0.09);
-                    } else if (el.classList.contains('grade-btn')) {
-                        window.playClick(1700, 0.04, 0.09);
-                    } else if (el.classList.contains('save-btn') || el.classList.contains('locked-btn-continue')) {
-                        window.playClick(1400, 0.06, 0.13);
-                    } else if (el.classList.contains('schedule-action-btn')) {
-                        if (el.classList.contains('delete')) {
-                            window.playClick(1200, 0.05, 0.11);
-                        } else if (el.classList.contains('edit')) {
-                            window.playClick(1600, 0.05, 0.11);
-                        } else {
-                            window.playClick(1800, 0.04, 0.10);
-                        }
-                    } else if (el.classList.contains('stage-header')) {
-                        window.playClick(1500, 0.04, 0.09);
-                    } else {
-                        window.playClick(1800, 0.035, 0.08);
+                    if (el.classList.contains('subject-btn')) window.playClick(2000, 0.035, 0.09);
+                    else if (el.classList.contains('grade-btn')) window.playClick(1700, 0.04, 0.09);
+                    else if (el.classList.contains('save-btn') || el.classList.contains('btn-create-schedule')) window.playClick(1400, 0.06, 0.13);
+                    else if (el.classList.contains('schedule-action-btn')) {
+                        if (el.classList.contains('delete')) window.playClick(1200, 0.05, 0.11);
+                        else if (el.classList.contains('edit')) window.playClick(1600, 0.05, 0.11);
+                        else window.playClick(1800, 0.04, 0.10);
                     }
+                    else if (el.classList.contains('stage-header')) window.playClick(1500, 0.04, 0.09);
+                    else window.playClick(1800, 0.035, 0.08);
                 }, { passive: true });
             });
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', attachClickSound);
-        } else {
-            attachClickSound();
-        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attachClickSound);
+        else attachClickSound();
 
         const observer = new MutationObserver(() => {
             clearTimeout(window._soundAttachTimer);
@@ -1988,7 +2009,6 @@
 
         document.addEventListener('touchstart', () => getCtx(), { once: true, passive: true });
         document.addEventListener('click', () => getCtx(), { once: true, passive: true });
-
     })();
     </script>
 
