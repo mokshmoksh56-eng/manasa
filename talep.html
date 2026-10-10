@@ -2753,12 +2753,26 @@ body.dark-mode .address-badge-full {
         });
     };
 
+    // ✅ معدّلة: تستخدم رقم المعلم الحقيقي من قاعدة البيانات
     window.bookClass = function(classId) {
         const cls = window.classesDB.find(c => c.id === classId);
         if(!cls) return;
-        if (window.confetti) confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 }, colors: ['#25D366', '#10B981'] });
+        
+        // ✅ التحقق من وجود رقم المعلم
+        const teacherPhone = cls.phone || '';
+        if (!teacherPhone) {
+            alert('⚠️ رقم المعلم غير متوفر، يرجى التواصل مع الإدارة.');
+            return;
+        }
+        
+        if (window.confetti) {
+            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 }, colors: ['#25D366', '#10B981'] });
+        }
+        
         const msg = `السلام عليكم ${cls.teacherTitle} ${cls.teacherName}،\nأنا الطالب: ${studentProfile.name}\nحابب احجز معاك في مجموعة ( ${cls.groupName} ) لمادة ${cls.subject}.`;
-        const whatsappUrl = `https://wa.me/201000000000?text=${encodeURIComponent(msg)}`;
+        
+        // ✅ استخدام رقم المعلم الحقيقي
+        const whatsappUrl = `https://wa.me/2${teacherPhone}?text=${encodeURIComponent(msg)}`;
         window.open(whatsappUrl, '_blank');
     };
 
